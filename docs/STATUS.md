@@ -31,11 +31,13 @@ Two consequential decisions were added after the original Stage 0 pass:
 
 Current executable implementation:
 
-`weather + calendar + RSS -> candidates -> clustering/ranking -> publication -> four-page A4 HTML -> validated PDF -> print/email -> archive`
+`weather + calendar + RSS -> candidates -> clustering/ranking -> publication -> four-page A4 HTML -> validated PDF -> archive -> print/email`
 
 Available commands:
 
 - `kushluk run` / `kushluk run-status` — local receipt and at-most-once delivery boundary (not yet real unattended host proof)
+- `kushluk deliver-archived` — explicit archived-only resend, separate receipt
+- `kushluk print-proof` — synthetic offline A4/A3 PDFs + inspection checklist
 - `kushluk doctor`
 - `kushluk generate --no-pdf`
 - `kushluk generate`
@@ -86,7 +88,9 @@ Available commands:
 - archive listing;
 - runtime doctor;
 - CI tests, linting and walking-skeleton smoke test;
-- local run-state receipts blocking repeated/uncertain delivery (full unattended system is unverified).
+- local run-state receipts blocking repeated/uncertain delivery (full unattended system is unverified);
+- crash-safe archival before delivery, typed stage snapshots, human-authorized recovery from archive;
+- reproducible offline print-proof kit with file checksums (real paper acceptance pending).
 
 ## Decided but not yet implemented
 
