@@ -10,7 +10,7 @@
 | What code actually does | tests, source, CI evidence and STATUS.md |
 | Which operational tasks still need work | WORK_LEDGER.md (task IDs, not GitHub issue count) |
 | Which GitHub discussions/issues exist | [Master ledger #43](https://github.com/interzettel/kushluk/issues/43), with dated manual snapshots |
-| Where operational IDs belong | [Draft crosswalk PR #53](https://github.com/interzettel/kushluk/pull/53) until merged |
+| Where operational IDs belong | [ISSUE_CROSSWALK.md](ISSUE_CROSSWALK.md), merged by [PR #53](https://github.com/interzettel/kushluk/pull/53) |
 | What counts as demonstrated delivery | [PROGRESS.md](PROGRESS.md) plus [progress-manifest.json](progress-manifest.json) evidence links |
 | What was considered/rejected | Individual RFCs, ADRs and issue closure notes |
 
@@ -50,6 +50,6 @@ A gate's **verified** state requires an ISO date and at least one HTTPS link to 
 
 ## Branches, discussions and licensing
 
-PR #53 is a separate *docs-only* reconciliation PR. This engineering-foundation PR should remain reviewable independently and must not silently change the current MIT license or both accepted ADR 0012 variants. Contributor copyright/inbound rules remain an open governance decision under #38; no CLAs or DCO sign-offs are imposed by this workflow change.
+Documentation PR #53, engineering foundation PR #55, research PR #27 and branded README/progress PR #61 have merged to main as of 2026-10-16. Those merges did not change the current MIT license or silently reconcile the duplicate accepted ADR 0012 variants. Contributor copyright/inbound rules remain an open governance decision under #38; no CLAs or DCO sign-offs are imposed. Use [ISSUE_GOVERNANCE.md](ISSUE_GOVERNANCE.md) and #62 for the separate native GitHub Project / field configuration and evidence of issue-to-development linking.
 
 Use [SECURITY.md](../SECURITY.md) for sensitive reporting guidance. Avoid publishing raw data and credentials even in an error screenshot.
