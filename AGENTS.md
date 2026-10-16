@@ -64,9 +64,9 @@ Stage 1 is active and the software walking skeleton is executable.
 
 Current path:
 
-`Open-Meteo + ICS/fixture calendar + RSS -> canonical candidates -> clustering/ranking -> publication -> current one-page A4 HTML/PDF -> CUPS/SMTP -> archive`
+`Open-Meteo + ICS/fixture calendar + RSS -> canonical candidates -> clustering/ranking -> publication -> four logical A4 pages in HTML/PDF -> CUPS/SMTP -> archive`
 
-This executable path predates ADR 0013. The accepted target is four logical A4 pages plus A4/A3 print profiles; migration work is tracked in `docs/WORK_LEDGER.md`.
+This executable path predates ADR 0013. The canonical four-page migration is implemented in #45; A4/A3 physical profiles and real-world acceptance remain under #46/#13.
 
 Implemented infrastructure includes:
 - typed failures and run summaries;
