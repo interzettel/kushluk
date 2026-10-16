@@ -5,6 +5,10 @@ Documentation and issue inventory reviewed: 2026-10-16.
 
 **Status caveat:** the 2026-10-16 inventory did **not** independently rerun CI or physical print tests. Do not infer four-page migration, unattended execution, or real-reader trials are done from the new planning issues. [#43](https://github.com/interzettel/kushluk/issues/43) indexes all issues, and [ISSUE_CROSSWALK.md](ISSUE_CROSSWALK.md) maps the 90 existing work-ledger tasks to accountable issues. Execution blockers have dedicated issues: [#45](https://github.com/interzettel/kushluk/issues/45) format, [#46](https://github.com/interzettel/kushluk/issues/46) print profiles, [#47](https://github.com/interzettel/kushluk/issues/47) local scheduler/retries. Docs/ADR ambiguities: [#44](https://github.com/interzettel/kushluk/issues/44).
 
+## Planning and next release
+
+The source package currently says `0.1.0`; it is **not** a demonstrated tagged public release. [32 stable feature IDs](FEATURE_CATALOG.md) now map technical/reader outcomes to epics, milestone evidence, target versions and issues. Proposed first public *prerelease* is `v0.2.0-alpha.1` after installation/source-preview gates; first stable `v1.0.0` requires real hardware + five unattended mornings and privacy/source-rights proof per [RELEASE_PLAN.md](RELEASE_PLAN.md). There is no dated release promise. External source review ballots are provisional until an independent Claude review and founder decision: [REUSE_REVIEWS.md](REUSE_REVIEWS.md).
+
 ## Repository hygiene
 
 - Default branch: `main`.
@@ -49,6 +53,7 @@ Available commands:
 ## Implemented
 
 ### Inputs
+- local **read-only OPML subscription import/export proposal**; new sources are not activated or fetched (F-006, #49);
 - Open-Meteo weather;
 - RSS/Atom;
 - generic ICS calendar;
