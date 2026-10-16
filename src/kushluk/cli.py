@@ -17,6 +17,12 @@ def build_parser() -> argparse.ArgumentParser:
     generate.add_argument("--date", dest="target_date", help="YYYY-MM-DD; defaults to today")
     generate.add_argument("--no-pdf", action="store_true", help="Skip PDF rendering")
     generate.add_argument(
+        "--print-profile",
+        choices=("a4-home", "a3-folded"),
+        default="a4-home",
+        help="Select output sheet geometry (default: a4-home)",
+    )
+    generate.add_argument(
         "--print",
         dest="send_to_printer",
         action="store_true",
@@ -42,10 +48,13 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main(argv: list[str] | None = None) -> int:
-    args = build_parser().parse_args(argv)
+    parser = build_parser()
+    args = parser.parse_args(argv)
     settings = Settings.from_env()
 
     if args.command == "generate":
+        if args.no_pdf and args.print_profile == "a3-folded":
+            parser.error("A3 folded imposition requires PDF rendering")
         target = date.fromisoformat(args.target_date) if args.target_date else date.today()
         result = run_pipeline(
             settings,
@@ -54,11 +63,14 @@ def main(argv: list[str] | None = None) -> int:
             send_to_printer=args.send_to_printer,
             send_email=args.send_email,
             email_on_print_failure=args.email_on_print_failure,
+            print_profile=args.print_profile,
         )
         print(f"Edition: {result.publication.edition_id}")
         print(f"Markdown: {result.markdown_path}")
         print(f"HTML: {result.html_path}")
         print(f"PDF: {result.pdf_path or 'not rendered'}")
+        print(f"Print profile: {args.print_profile}")
+        print(f"Printable PDF: {result.printable_pdf_path or 'not rendered'}")
         print(f"Archive: {result.archive_dir}")
         if result.warnings:
             print("Warnings:")

@@ -14,6 +14,7 @@ def archive_publication(
     *,
     html_path: Path | None = None,
     pdf_path: Path | None = None,
+    imposed_pdf_path: Path | None = None,
     run_summary: dict[str, Any] | None = None,
 ) -> Path:
     edition_dir = archive_root / publication.edition_id
@@ -31,6 +32,8 @@ def archive_publication(
         (edition_dir / "edition.html").write_text(html, encoding="utf-8")
     if pdf_path and pdf_path.exists():
         (edition_dir / "edition.pdf").write_bytes(pdf_path.read_bytes())
+    if imposed_pdf_path and imposed_pdf_path.exists():
+        (edition_dir / "edition.a3-folded.pdf").write_bytes(imposed_pdf_path.read_bytes())
     return edition_dir
 
 

@@ -1,6 +1,6 @@
 # Run Kushluk on macOS
 
-Kushluk's local Python engine is intended to run on a Mac without Docker or a hosted service. The executable **Stage 1 software** produces four ordered logical A4 pages. Native A4/A3 physical imposition and real-printer testing are separate delivery work.
+Kushluk's local Python engine is intended to run on a Mac without Docker or a hosted service. The executable **Stage 1 software** produces four ordered logical A4 pages. A4-home and A3-folded PDF print profiles are supported in software; actual paper, duplex/feed orientation and real-printer acceptance remain separate delivery work.
 
 This guide covers **native Apple Silicon and Intel Macs**. macOS software compatibility is checked in CI. Successful printer submission does **not** establish that a physical sheet emerged correctly.
 
@@ -53,9 +53,17 @@ kushluk doctor
 kushluk generate --print  # submits a newly generated, validated PDF
 ```
 
-Do not use `--print` until you've verified the printer and paper settings. The current print profile is **A4**, with automatic two-sided long-edge printing only if CUPS advertises duplex support; otherwise the request is explicitly single-sided. An explicit `KUSHLUK_PRINTER` wins; if unset, the CUPS `LPDEST`, `PRINTER`, and system/default destination are considered in that order. Missing/unknown printer capabilities must not be described as proven support.
+Do not use `--print` until you've verified the printer and paper settings. The default print profile is **a4-home**: four logical A4 pages, two sheets if CUPS advertises duplex (long-edge), or explicitly single-sided otherwise. The A3 option below requires printer media and duplex capability checks. An explicit `KUSHLUK_PRINTER` wins; if unset, the CUPS `LPDEST`, `PRINTER`, and system/default destination are considered in that order. Missing/unknown printer capabilities must not be described as proven support.
 
 `lp` returning successfully means **the job was submitted**, not that the job printed. Check the actual queue, duplex orientation, media, margins, and the resulting paper. Physical A4/A3 profile trials remain open under [#46](https://github.com/interzettel/kushluk/issues/46) and [#13](https://github.com/interzettel/kushluk/issues/13).
+
+For A3-capable printers, first generate **without printing**:
+
+```zsh
+kushluk generate --print-profile a3-folded
+```
+
+This creates an additional landscape A3 PDF with booklet order `4|1` and `2|3`. The original four logical A4 pages are preserved. `kushluk generate --print-profile a3-folded --print` submits only when CUPS explicitly advertises A3 and duplex support; otherwise it refuses. Short-edge duplex is the initial output setting, **not a claim** that every Mac/printer feeds it correctly. Verify on paper before enabling regular print jobs.
 
 Each explicit `kushluk generate --print` call can submit another job. **Do not install a repeating scheduler yet**; idempotent unattended execution and duplicate-print guards are still tracked in [#47](https://github.com/interzettel/kushluk/issues/47).
 

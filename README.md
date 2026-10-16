@@ -93,6 +93,8 @@ python -m pip install -e ".[pdf]"
 kushluk generate
 ```
 
+The default `--print-profile a4-home` uses the canonical four-page A4 PDF; `--print-profile a3-folded` creates a separate two-side, landscape A3 booklet PDF (outside `4|1`, inside `2|3`) while preserving the four-page source archive. Both are software print profiles; physical media, feed and duplex orientation still require real-printer tests.
+
 Printing and email are **separately configured**. If a compatible local CUPS printer is available, use `kushluk generate --print`; for SMTP delivery use `kushluk generate --email`. Neither command makes a printer or mail account appear automatically. Read [onboarding](docs/ONBOARDING.md), the [macOS print/setup guide](docs/MACOS.md) when applicable, and [.env.example](.env.example).
 
 **Configuration detail:** `.env.example` documents environment variable names; the Python application does **not** automatically load a `.env` file. Set/export the values in your shell or use a local secret manager. Never commit credentials or private editions.

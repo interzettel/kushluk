@@ -88,6 +88,9 @@ def print_pdf(
     *,
     execute: bool = False,
     duplex: bool = True,
+    media: str = "A4",
+    duplex_edge: str = "long",
+    require_duplex: bool = False,
 ) -> PrintResult:
     if not execute:
         return PrintResult(False, True, "Print skipped (dry-run). Use --print to submit the job.")
@@ -100,14 +103,30 @@ def print_pdf(
 
     capabilities = detect_printer_capabilities(printer)
     resolved = capabilities.printer or printer
+    if media not in {"A4", "A3"} or duplex_edge not in {"long", "short"}:
+        return PrintResult(True, False, "Unsupported print media or duplex edge.", printer=resolved)
+    if require_duplex and not capabilities.duplex_supported:
+        return PrintResult(
+            True, False, "Selected print profile needs a confirmed duplex-capable printer.",
+            printer=resolved,
+        )
+    if media == "A3":
+        if not capabilities.available:
+            return PrintResult(True, False, "A3 printer is unavailable or offline.", printer=resolved)
+        if not any("a3" in value.lower() for value in capabilities.media_options):
+            return PrintResult(
+                True, False,
+                "Printer does not advertise A3 media; refusing unverified A3 submission.",
+                printer=resolved,
+            )
     command = [lp]
     if resolved:
         command += ["-d", resolved]
-    command += ["-o", "media=A4"]
+    command += ["-o", f"media={media}"]
 
     duplex_used = bool(duplex and capabilities.duplex_supported)
     # Explicit simplex avoids inheriting a conflicting user-default duplex setting.
-    command += ["-o", "sides=two-sided-long-edge" if duplex_used else "sides=one-sided"]
+    command += ["-o", f"sides=two-sided-{duplex_edge}-edge" if duplex_used else "sides=one-sided"]
 
     command.append(str(pdf_path))
     try:
