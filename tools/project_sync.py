@@ -323,9 +323,6 @@ def main(argv: list[str] | None = None) -> int:
             )
             if not isinstance(all_issues, list):
                 raise SyncError("Cannot list repository issues")
-            absent = [
-                issue for issue in all_issues if issue["url"] not in members
-            ]
             if args.action == "backfill":
                 if set(FIELDS) - project_fields(client):
                     raise SyncError("Run bootstrap before backfill")
