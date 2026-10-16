@@ -94,8 +94,7 @@ Implemented:
 - optional WeasyPrint PDF rendering.
 
 Next migration:
-- four logical A4 pages;
-- finite page-archetype family and layout manifest;
+- richer page-archetype family and layout manifest beyond the shipped four-page baseline;
 - A4 Home Printer and A3 Folded Newspaper output profiles;
 - final production typography after physical tests.
 
@@ -104,13 +103,13 @@ Next migration:
 Implemented:
 - canonical publication preflight;
 - link checks;
-- current one-page PDF validation (legacy walking skeleton);
+- four-page PDF count, geometry and logical page-order validation;
 - deterministic editorial compaction;
 - repeated render/check/cut loop;
 - malformed output prevented from being sent to the printer;
 - overflow debug PDF preservation.
 
-Next validation work must replace the one-page assumption with four-page identity/order, per-page overflow, image-resolution/crop checks, binding/fold safe areas, and imposition regression fixtures.
+Next validation work must deepen text-fit and asset preflight, binding/fold-safe areas, and imposition regression fixtures beyond the baseline four-page page-ID/count/dimension gate.
 
 ## Epic 8 — Printing — SOFTWARE DONE (v0), PHYSICAL TRIAL PENDING
 
@@ -164,7 +163,7 @@ This path is exercised by CI, including a walking-skeleton smoke test.
 
 The physical-format decision is resolved by ADR 0013. Completion now depends on implementation and local evidence:
 
-1. **Four-page migration:** update publication schema, renderer, validator, and archive assumptions.
+1. **Four-page baseline completed in PR #80:** production archetype and fit tuning remain #51 and physical acceptance remains #13.
 2. **Print profiles:** implement A4 two-sheet duplex and A3 folded-newspaper imposition.
 3. **Local runtime host:** decide where the scheduled morning job runs so it can reach the printer and private connectors.
 4. **Personal connector setup:** provide/configure real calendar, task, and mail sources.
