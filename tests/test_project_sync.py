@@ -21,12 +21,16 @@ ISSUE = {
 class FakeGH:
     def __init__(self, *, existing_item=False, all_fields=True, empty_priority=False):
         self.calls = []
-        self.fields = [{"name": "Status"}]
+        self.fields = [
+            {"name": "Status"},
+            {"name": "Priority", "id": "derived-Priority",
+             "type": "ProjectV2SingleSelectField", "options": []},
+        ]
         if all_fields:
             self.fields += [
                 {"name": key, "id": "field-" + key,
                  "type": "ProjectV2SingleSelectField",
-                 "options": ([] if key == "Priority" and empty_priority else
+                 "options": ([] if key == "Triage Priority" and empty_priority else
                              [{"name": option} for option in options])}
                 for key, options in FIELDS.items()
             ]
@@ -34,7 +38,7 @@ class FakeGH:
             [{
                 "content": {"url": URL},
                 "status": "In progress",
-                "priority": "P0",
+                "triagePriority": "P0",
                 "workstream": "B",
                 "maturity": "Research",
                 "evidence": "Partial",
@@ -128,13 +132,21 @@ class ProjectMetadataTests(unittest.TestCase):
         with self.assertRaisesRegex(SyncError, "bootstrap"):
             sync_issue(Client(FakeGH(all_fields=False)), ISSUE)
 
-    def test_adds_options_to_existing_empty_priority_without_replacing_field(self):
+    def test_refuses_incompatible_custom_triage_options(self):
         fake = FakeGH(empty_priority=True)
-        self.assertEqual(bootstrap(Client(fake)), [])
-        edits = [args for args in fake.calls if args[1:3] == ["api", "graphql"]]
-        self.assertEqual(len(edits), 1)
-        self.assertTrue(any("updateProjectV2Field" in x for x in edits[0]))
-        self.assertEqual(bootstrap(Client(fake)), [])
+        with self.assertRaisesRegex(SyncError, "incompatible"):
+            bootstrap(Client(fake))
+        self.assertFalse(any(
+            args[1:3] == ["api", "graphql"] for args in fake.calls
+        ))
+
+    def test_preserves_readonly_builtin_priority(self):
+        fake = FakeGH(all_fields=False)
+        self.assertIn("Triage Priority", bootstrap(Client(fake)))
+        self.assertTrue(any(
+            field["name"] == "Priority" and not field["options"]
+            for field in fake.fields
+        ))
 
     def test_bootstrap_is_idempotent_and_reuses_status(self):
         fake = FakeGH(all_fields=False)
