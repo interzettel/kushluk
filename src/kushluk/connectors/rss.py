@@ -25,7 +25,7 @@ class RSSConnector:
                     "User-Agent": "Kushluk/0.1 (+https://github.com/yigit-denktas/kushluk)"
                 },
             )
-            # The URL comes from explicit Kuşluk configuration.
+            # The URL comes from explicit Kushluk configuration.
             with urlopen(request, timeout=12) as response:
                 xml_bytes = response.read()
             root = ET.fromstring(xml_bytes)

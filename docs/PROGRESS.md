@@ -1,4 +1,4 @@
-# Kuşluk progress and evidence gates
+# Kushluk progress and evidence gates
 
 **Snapshot reviewed:** 2026-10-16 · Sources: [WORK_LEDGER.md](WORK_LEDGER.md), [progress-manifest.json](progress-manifest.json)
 

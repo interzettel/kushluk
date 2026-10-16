@@ -13,7 +13,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="kushluk")
     sub = parser.add_subparsers(dest="command", required=True)
 
-    generate = sub.add_parser("generate", help="Generate one Kuşluk edition")
+    generate = sub.add_parser("generate", help="Generate one Kushluk edition")
     generate.add_argument("--date", dest="target_date", help="YYYY-MM-DD; defaults to today")
     generate.add_argument("--no-pdf", action="store_true", help="Skip PDF rendering")
     generate.add_argument(
@@ -34,10 +34,10 @@ def build_parser() -> argparse.ArgumentParser:
         help="Send email only if requested printing fails",
     )
 
-    archive = sub.add_parser("archive-list", help="List recent local Kuşluk editions")
+    archive = sub.add_parser("archive-list", help="List recent local Kushluk editions")
     archive.add_argument("--limit", type=int, default=20)
 
-    sub.add_parser("doctor", help="Check local Kuşluk runtime readiness")
+    sub.add_parser("doctor", help="Check local Kushluk runtime readiness")
     return parser
 
 
