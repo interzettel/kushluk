@@ -21,8 +21,12 @@ OWNER = "interzettel"
 REPO = "interzettel/kushluk"
 PROJECT = "3"
 STEWARD = "yigit-denktas"
+PRIORITIES = ["P0", "P1", "P2", "P3"]
+# The existing reserved Priority field is not editable through Projects API.
+# Use a distinct custom single-select field for agent triage instead.
+PRIORITY_FIELD = "Triage Priority"
 FIELDS = {
-    "Priority": ["P0", "P1", "P2", "P3"],
+    PRIORITY_FIELD: PRIORITIES,
     "Workstream": [*list("ABCDEFGH"), "Untriaged"],
     "Maturity": ["Idea", "Research", "Accepted", "Implemented", "Verified"],
     "Evidence": ["Missing", "Partial", "Verified"],
@@ -91,35 +95,21 @@ def bootstrap(client: Client) -> list[str]:
     if "Status" not in existing:
         raise SyncError("Missing native Status; do not create a duplicate Stage")
 
-    # The owner-created Priority is an EMPTY single-select field. Preserve the
-    # existing field ID and populate options; refuse conflicting configurations.
-    priority = fields.get("Priority")
-    if priority is not None:
-        if priority.get("type") != "ProjectV2SingleSelectField":
-            raise SyncError("Existing Priority field is not single-select")
-        current = [
-            item["name"] for item in priority.get("options", [])
-            if isinstance(item, dict) and item.get("name")
-        ]
-        if not current:
-            mutation = (
-                "mutation($fieldId: ID!) { updateProjectV2Field(input: "
-                "{fieldId: $fieldId, singleSelectOptions: ["
-                '{name:"P0", color:RED, description:"Critical"},'
-                '{name:"P1", color:ORANGE, description:"High"},'
-                '{name:"P2", color:YELLOW, description:"Normal"},'
-                '{name:"P3", color:GRAY, description:"Low"}'
-                "]}) { projectV2Field { ... on ProjectV2SingleSelectField "
-                "{ id options { name } } } } }"
-            )
-            client.json(
-                "api", "graphql", "-f", f"query={mutation}",
-                "-F", f"fieldId={priority['id']}"
-            )
-        elif not set(FIELDS["Priority"]).issubset(current):
+    # Keep the built-in Priority untouched. GitHub rejects mutations of
+    # reserved fields even when they appear to be single-select fields.
+    # A separate custom 'Triage Priority' is safe to provision and edit.
+    configured = fields.get(PRIORITY_FIELD)
+    if configured:
+        if configured.get("type") != "ProjectV2SingleSelectField":
+            raise SyncError("Triage Priority must be a single-select field")
+        present_options = {
+            option.get("name") for option in configured.get("options", [])
+            if isinstance(option, dict)
+        }
+        if not set(PRIORITIES).issubset(present_options):
             raise SyncError(
-                "Priority has custom options: refusing to replace them. "
-                "Review field configuration manually."
+                "Triage Priority options differ from P0–P3; "
+                "review in the GitHub Project rather than replacing them."
             )
     created: list[str] = []
     for name, options in FIELDS.items():
@@ -140,7 +130,7 @@ def bootstrap(client: Client) -> list[str]:
     definitions = {
         **{
             f"priority:{p}": ("F3D77B", "Triage priority, not delivery evidence")
-            for p in FIELDS["Priority"]
+            for p in PRIORITIES
         },
         **{
             f"workstream:{w.lower()}": ("E8C9B8", "Primary project workstream")
@@ -205,8 +195,8 @@ def desired_metadata(issue: dict) -> dict[str, str]:
     ]
     raw_priority = body_field("Priority") if trusted_author else None
     priority = (
-        next((x for x in labeled_priority if x in FIELDS["Priority"]), None)
-        or (raw_priority if raw_priority in FIELDS["Priority"] else "P2")
+        next((x for x in labeled_priority if x in PRIORITIES), None)
+        or (raw_priority if raw_priority in PRIORITIES else "P2")
     )
 
     labeled_area = [
@@ -221,7 +211,7 @@ def desired_metadata(issue: dict) -> dict[str, str]:
         "kind": kind,
         "Status": "Done" if str(issue.get("state", "")).lower() == "closed"
                   else "Backlog",
-        "Priority": priority,
+        PRIORITY_FIELD: priority,
         "Workstream": area,
         "Maturity": "Research" if kind in ("research", "decision") else "Idea",
         "Evidence": "Missing",  # NEVER infer Verified from issue prose
@@ -270,7 +260,7 @@ def sync_issue(
         )
     required_labels = (
         ("kind:", f"kind:{wanted['kind']}"),
-        ("priority:", f"priority:{wanted['Priority']}"),
+        ("priority:", f"priority:{wanted[PRIORITY_FIELD]}"),
         ("workstream:", f"workstream:{wanted['Workstream'].lower()}"),
     )
     for prefix, label in required_labels:
