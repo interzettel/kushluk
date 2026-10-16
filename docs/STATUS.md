@@ -9,6 +9,10 @@ Documentation and issue inventory reviewed: 2026-10-16.
 
 The source package currently says `0.1.0`; it is **not** a demonstrated tagged public release. [32 stable feature IDs](FEATURE_CATALOG.md) now map technical/reader outcomes to epics, milestone evidence, target versions and issues. Proposed first public *prerelease* is `v0.2.0-alpha.1` after installation/source-preview gates; first stable `v1.0.0` requires real hardware + five unattended mornings and privacy/source-rights proof per [RELEASE_PLAN.md](RELEASE_PLAN.md). There is no dated release promise. External source review ballots are provisional until an independent Claude review and founder decision: [REUSE_REVIEWS.md](REUSE_REVIEWS.md).
 
+### Experimental EPUB exporter (F-016)
+
+The offline `kushluk export-epub --date YYYY-MM-DD` command builds an EPUB3 ZIP with four reflowable chapters from the archived semantic metadata. It never fetches sources or sends email/print jobs. EPUB XML/ZIP checks and unit tests exist; physical e-reader compatibility/epubcheck/accessibility remain unverified, so this is **not a shipped v1.1 feature**. See [EPUB.md](EPUB.md) and [#33](https://github.com/interzettel/kushluk/issues/33).
+
 ## Repository hygiene
 
 - Default branch: `main`.
