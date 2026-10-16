@@ -26,3 +26,33 @@ jobs:
           kushluk generate --date 2026-09-23 --no-pdf
           test -n "$(find output -name '*.html' -print -quit)"
           test -n "$(find archive -name 'metadata.json' -print -quit)"
+
+  macos:
+    name: macOS / ${{ matrix.runner }}
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # GitHub's macos-15 is arm64; macos-15-intel is x86_64.
+        runner: [macos-15, macos-15-intel]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Install native PDF text rendering dependencies
+        run: |
+          brew install pango
+          echo "DYLD_FALLBACK_LIBRARY_PATH=$(brew --prefix)/lib" >> "$GITHUB_ENV"
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install -e ".[dev,pdf]"
+      - name: Verify native PDF dependencies
+        run: python -m weasyprint --info
+      - run: ruff check src tests tools
+      - run: pytest -q
+      - name: macOS CLI + PDF smoke test
+        run: |
+          kushluk doctor
+          kushluk generate --date 2026-09-23
+          python -c 'from pathlib import Path; from pypdf import PdfReader; files = list(Path("output").glob("*.pdf")); assert files, "Kushluk produced no PDF"; assert all(len(PdfReader(str(f)).pages) == 1 for f in files), "Stage 1 PDF must validate as one page"'
+          test -n "$(find archive -name metadata.json -print -quit)"

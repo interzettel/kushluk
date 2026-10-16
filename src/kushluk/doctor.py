@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import importlib
 import importlib.util
 import shutil
 import sys
@@ -80,6 +81,18 @@ def _pdf_check() -> HealthCheck:
     has_weasy = importlib.util.find_spec("weasyprint") is not None
     has_pypdf = importlib.util.find_spec("pypdf") is not None
     if has_weasy and has_pypdf:
+        try:
+            # A distribution can be installed while its native Pango libraries are missing.
+            # Importing the renderer detects this common macOS setup failure.
+            importlib.import_module("weasyprint")
+            importlib.import_module("pypdf")
+        except (ImportError, OSError) as exc:
+            return HealthCheck(
+                "pdf",
+                "optional",
+                f"PDF libraries installed but unusable: {type(exc).__name__}: {exc}. "
+                "On macOS, install Homebrew Pango and check DYLD_FALLBACK_LIBRARY_PATH.",
+            )
         return HealthCheck("pdf", "ready", "WeasyPrint + pypdf available.")
     return HealthCheck(
         "pdf",

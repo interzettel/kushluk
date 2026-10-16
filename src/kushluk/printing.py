@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import shutil
 import subprocess
 from dataclasses import dataclass
@@ -27,7 +28,7 @@ class PrintResult:
 def detect_printer_capabilities(printer: str | None = None) -> PrinterCapabilities:
     lpoptions = shutil.which("lpoptions")
     lpstat = shutil.which("lpstat")
-    resolved = printer or _default_printer(lpstat)
+    resolved = _preferred_printer(printer, lpstat)
     if not resolved:
         return PrinterCapabilities(None, False, False, (), "No configured default printer.")
     if not lpoptions:
@@ -35,12 +36,18 @@ def detect_printer_capabilities(printer: str | None = None) -> PrinterCapabiliti
             resolved, False, False, (), "CUPS 'lpoptions' command is not available."
         )
 
-    completed = subprocess.run(
-        [lpoptions, "-p", resolved, "-l"],
-        capture_output=True,
-        text=True,
-        check=False,
-    )
+    try:
+        completed = subprocess.run(
+            [lpoptions, "-p", resolved, "-l"],
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=15,
+        )
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        return PrinterCapabilities(
+            resolved, False, False, (), f"CUPS query failed: {type(exc).__name__}: {exc}"
+        )
     if completed.returncode != 0:
         detail = completed.stderr.strip() or "Unable to query printer capabilities."
         return PrinterCapabilities(resolved, False, False, (), detail)
@@ -99,11 +106,22 @@ def print_pdf(
     command += ["-o", "media=A4"]
 
     duplex_used = bool(duplex and capabilities.duplex_supported)
-    if duplex_used:
-        command += ["-o", "sides=two-sided-long-edge"]
+    # Explicit simplex avoids inheriting a conflicting user-default duplex setting.
+    command += ["-o", "sides=two-sided-long-edge" if duplex_used else "sides=one-sided"]
 
     command.append(str(pdf_path))
-    completed = subprocess.run(command, capture_output=True, text=True, check=False)
+    try:
+        completed = subprocess.run(
+            command, capture_output=True, text=True, check=False, timeout=30
+        )
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        return PrintResult(
+            True,
+            False,
+            f"CUPS print submission failed: {type(exc).__name__}: {exc}",
+            printer=resolved,
+            duplex_used=duplex_used,
+        )
     if completed.returncode == 0:
         return PrintResult(
             True,
@@ -121,10 +139,24 @@ def print_pdf(
     )
 
 
+def _preferred_printer(printer: str | None, lpstat: str | None) -> str | None:
+    # Same precedence as CUPS: explicit Kushluk destination, LPDEST, PRINTER,
+    # then the system/user's lpstat default (works on Linux and macOS).
+    for candidate in (printer, os.getenv("LPDEST"), os.getenv("PRINTER")):
+        if candidate and candidate.strip():
+            return candidate.strip()
+    return _default_printer(lpstat)
+
+
 def _default_printer(lpstat: str | None) -> str | None:
     if not lpstat:
         return None
-    completed = subprocess.run([lpstat, "-d"], capture_output=True, text=True, check=False)
+    try:
+        completed = subprocess.run(
+            [lpstat, "-d"], capture_output=True, text=True, check=False, timeout=15
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return None
     if completed.returncode != 0:
         return None
     text = completed.stdout.strip()
@@ -136,12 +168,16 @@ def _default_printer(lpstat: str | None) -> str | None:
 def _printer_available(lpstat: str | None, printer: str) -> bool:
     if not lpstat:
         return False
-    completed = subprocess.run(
-        [lpstat, "-p", printer],
-        capture_output=True,
-        text=True,
-        check=False,
-    )
+    try:
+        completed = subprocess.run(
+            [lpstat, "-p", printer],
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=15,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return False
     if completed.returncode != 0:
         return False
     lowered = completed.stdout.lower()
