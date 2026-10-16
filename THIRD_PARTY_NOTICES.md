@@ -18,9 +18,16 @@ The following projects were reviewed as architecture/product references. No sour
 - `cruftbox/firstlight` — MIT; useful reference for Open-Meteo, RSS, single-page local printing and archive patterns.
 - `dmthepm/morning-paper` — MIT; useful reference for an owned newsroom, finite editions and CLI/PDF separation.
 - `falense/openpaper` — MIT; useful reference for deterministic source fetchers and separating ingestion from curation.
-- `vaelkeep/hermes-paper-agent` — architectural reference for generator/press separation, validation loops and provenance. Exact license must be verified before any code reuse.
+- `vaelkeep/hermes-paper-agent` — **MIT LICENSE verified 17 Oct 2026**; architectural reference for generator/press separation, validation loops and provenance; no code copied.
 - `drkpxl/drkpxl-skills` — earlier morning-briefing/print workflow reference; verify exact source and license before copying anything.
 - Karen X. Cheng's personal newspaper example — design/product reference only.
+
+- `j6k4m8/goosepaper` — **Apache-2.0 LICENSE verified 17 Oct 2026**; reviewed config/provider and reMarkable delivery boundaries; no code copied.
+- `harshit181/RSSPub` — **MIT LICENSE verified 17 Oct 2026**; EPUB, OPDS, local image processing and e-reader transport reference; no code copied.
+- `offscroll/offscroll` — **Apache-2.0 LICENSE verified 17 Oct 2026**; OPML, semantic dedup and alternative Typst rendering reference; no code copied.
+- `vaelkeep/vael-paper` — **MIT LICENSE verified 17 Oct 2026**; independent Markdown-to-reader pagination reference; no code copied.
+
+For all reviewed sources including **AGPL-3.0-or-later Newsprint** and unlicensed candidates, see [25-project research + rights caveats](docs/research/newspaper-ecosystem-2026-10-17.md) and [the CSV matrix](docs/research/newspaper-project-matrix-2026-10-17.csv). This references their ideas only: **no third-party source code, fonts, article text or images are incorporated by the survey**.
 
 See `docs/UPSTREAM_REVIEW.md` for the current reuse assessment.
 
