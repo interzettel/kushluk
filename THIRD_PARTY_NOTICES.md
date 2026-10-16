@@ -1,6 +1,6 @@
 # Third-Party Notices
 
-Kuşluk is MIT licensed. This file records third-party code, templates, layouts, and other material incorporated into the repository.
+Kushluk is MIT licensed. This file records third-party code, templates, layouts, and other material incorporated into the repository.
 
 ## Policy
 
@@ -13,7 +13,7 @@ Before copying or substantially adapting third-party material:
 
 ## References reviewed — no code incorporated
 
-The following projects were reviewed as architecture/product references. No source code or template from them has been copied into Kuşluk by the Stage 1 implementation:
+The following projects were reviewed as architecture/product references. No source code or template from them has been copied into Kushluk by the Stage 1 implementation:
 
 - `cruftbox/firstlight` — MIT; useful reference for Open-Meteo, RSS, single-page local printing and archive patterns.
 - `dmthepm/morning-paper` — MIT; useful reference for an owned newsroom, finite editions and CLI/PDF separation.
@@ -28,4 +28,4 @@ See `docs/UPSTREAM_REVIEW.md` for the current reuse assessment.
 
 None recorded yet beyond normal declared package dependencies.
 
-When code or substantial adapted material is incorporated, add the exact source, license, copyright notice and affected Kuşluk files here.
+When code or substantial adapted material is incorporated, add the exact source, license, copyright notice and affected Kushluk files here.

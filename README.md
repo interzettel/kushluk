@@ -1,6 +1,6 @@
 <div align="center">
 
-![Kuşluk masthead — your own morning edition](docs/kushluk-masthead.svg)
+![Kushluk masthead — your own morning edition](docs/kushluk-masthead.svg)
 
 **A small newspaper, assembled from the sources you choose, ready for your morning.**
 
@@ -8,7 +8,7 @@
 
 </div>
 
-Kuşluk is **local-first, print-first personal publishing software**. It gathers useful signals from your day and information sources you are entitled to access, selects what matters, and assembles a finite edition that you can read away from the screen. It is **not** a news subscription, a hosted library of other publishers' articles, or an AI-generated feed to scroll forever.
+Kushluk is **local-first, print-first personal publishing software**. It gathers useful signals from your day and information sources you are entitled to access, selects what matters, and assembles a finite edition that you can read away from the screen. It is **not** a news subscription, a hosted library of other publishers' articles, or an AI-generated feed to scroll forever.
 
 The intended object is **four logical DIN A4 pages**, composed once and delivered through different physical profiles:
 
@@ -20,7 +20,7 @@ The intended object is **four logical DIN A4 pages**, composed once and delivere
 
 ## The idea
 
-A newspaper is useful partly because it **ends**. Kuşluk applies that editorial discipline to your own calendar, RSS feeds, newsletters and other eligible sources.
+A newspaper is useful partly because it **ends**. Kushluk applies that editorial discipline to your own calendar, RSS feeds, newsletters and other eligible sources.
 
 - **Today first.** Useful commitments and practical orientation take priority over noisy breaking-news widgets.
 - **For you, with room for surprise.** Editorial relevance and serendipity matter more than maximizing engagement.
@@ -28,7 +28,7 @@ A newspaper is useful partly because it **ends**. Kuşluk applies that editorial
 - **AI is optional infrastructure.** Providers and agents can assist research and editorial decisions; approved templates and print geometry remain deterministic.
 - **The paper is real.** Duplex settings, folds, margins, reading comfort, ink use and offline recovery matter.
 
-No proprietary model subscription or Kuşluk-operated account should be required for the basic engine. Optional model API calls, external connectors, printers and email services can have their own costs or terms. Rights to subscribed material are **not** transferred by using this software.
+No proprietary model subscription or Kushluk-operated account should be required for the basic engine. Optional model API calls, external connectors, printers and email services can have their own costs or terms. Rights to subscribed material are **not** transferred by using this software.
 
 ## What works today
 
@@ -93,7 +93,7 @@ The progress command is available on the [foundation review branch (PR #55)](htt
 
 ## Development and progress
 
-[![Kuşluk progress — proof gates and operational checklist](docs/progress.svg)](docs/PROGRESS.md)
+[![Kushluk progress — proof gates and operational checklist](docs/progress.svg)](docs/PROGRESS.md)
 
 **[Open the evidence report](docs/PROGRESS.md)** · [Master issue ledger #43](https://github.com/interzettel/kushluk/issues/43) · [Engineering foundation #54](https://github.com/interzettel/kushluk/issues/54)
 
@@ -118,7 +118,7 @@ python tools/project_health.py write
 python tools/project_health.py check
 ```
 
-The board uses Kuşluk's paper-led palette, stays readable without color, and is checked in CI for deterministic output.
+The board uses Kushluk's paper-led palette, stays readable without color, and is checked in CI for deterministic output.
 
 ## How it works
 
@@ -137,13 +137,13 @@ For deeper details see [architecture](docs/ARCHITECTURE.md), [editorial system](
 
 ## Decisions and trust
 
-**Source rights.** You control your generated files, local archive and your own original contributions. That does **not** transfer copyrights in third-party articles, newsletter text, photographs or fonts. Private copying, reassembly, printing and sharing depend on applicable rights, contracts and jurisdictions. Kuşluk does not offer subscription circumvention or a central licensed-news catalog.
+**Source rights.** You control your generated files, local archive and your own original contributions. That does **not** transfer copyrights in third-party articles, newsletter text, photographs or fonts. Private copying, reassembly, printing and sharing depend on applicable rights, contracts and jurisdictions. Kushluk does not offer subscription circumvention or a central licensed-news catalog.
 
 **Privacy.** The intended default is a reader-controlled personal data plane, not telemetry or centralized reading profiles. External weather/RSS/services still make their own network requests when enabled. Optional future cloud storage or printing requires its own disclosed consent, data flow and legal analysis.
 
 **License.** The source code currently ships under **[MIT](LICENSE)**. A future MPL-2.0 core / Apache-2.0 interoperability split remains under [discussion #38](https://github.com/interzettel/kushluk/issues/38), not adopted. Separate artwork, subscription materials and official branding may have different rights; inspect [third-party notices](THIRD_PARTY_NOTICES.md).
 
-**Name.** Write **Kuşluk**, preserving its Turkish **ş** in all user-facing prose. Keep `kushluk` for ASCII technical identifiers (GitHub, Python package, CLI and environment configuration).
+**Name.** Write **Kushluk**, preserving its Turkish **ş** in all user-facing prose. Keep `kushluk` for ASCII technical identifiers (GitHub, Python package, CLI and environment configuration).
 
 ## Contributing
 
@@ -151,4 +151,4 @@ This project welcomes fixes, carefully scoped ideas, independent plugins, though
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md) and [AGENTS.md](AGENTS.md). The maintainers' current focus is making the existing engine robust: [four-page format #45](https://github.com/interzettel/kushluk/issues/45), [print profiles #46](https://github.com/interzettel/kushluk/issues/46), and [unattended local runs #47](https://github.com/interzettel/kushluk/issues/47), followed by [real morning-print trials #13](https://github.com/interzettel/kushluk/issues/13).
 
-Kuşluk is built to give the morning back to its reader.
+Kushluk is built to give the morning back to its reader.

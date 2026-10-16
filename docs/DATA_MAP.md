@@ -2,7 +2,7 @@
 
 ## Principle
 
-Store the minimum durable personal state needed to make Kuşluk useful.
+Store the minimum durable personal state needed to make Kushluk useful.
 
 Raw personal data stays inside the user's personal data plane by default.
 
@@ -63,7 +63,7 @@ For derivative mode, retain only what is needed for provenance, deduplication, a
 
 For personal-copy/direct-inclusion mode, raw content may be processed locally for the user's private edition, but this must not be treated as public redistribution permission.
 
-Do not mirror the user's entire mailbox into Kuşluk by default.
+Do not mirror the user's entire mailbox into Kushluk by default.
 
 ### 5. Social signals
 Possible future inputs:
@@ -188,4 +188,4 @@ Users must be able to remove:
 - retained morning-intent transcripts/cues where configured;
 - cached media assets.
 
-Deletion should not depend on contacting a central Kuşluk service in local/self-hosted mode.
+Deletion should not depend on contacting a central Kushluk service in local/self-hosted mode.
