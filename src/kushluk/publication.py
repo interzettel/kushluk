@@ -3,7 +3,17 @@ from __future__ import annotations
 from datetime import date, datetime
 from zoneinfo import ZoneInfo
 
-from kushluk.models import PracticalItem, Publication, Story
+from kushluk.models import EditionPage, PracticalItem, Publication, Story
+
+
+def plan_pages(practical: list[PracticalItem], stories: list[Story]) -> list[EditionPage]:
+    """Deterministic four-page reading order independent of printer and imposition."""
+    return [
+        EditionPage(1, "front", list(range(min(3, len(practical)))), [s.id for s in stories[:1]]),
+        EditionPage(2, "day", list(range(3, len(practical)))),
+        EditionPage(3, "stories", story_ids=[s.id for s in stories[1:]]),
+        EditionPage(4, "sources"),
+    ]
 
 
 def build_publication(
@@ -27,6 +37,7 @@ def build_publication(
         practical=practical,
         stories=stories,
         notes=notes or [],
+        pages=plan_pages(practical, stories),
     )
 
 
@@ -37,6 +48,8 @@ def publication_markdown(publication: Publication) -> str:
         f"date: {publication.target_date}",
         f"timezone: {publication.timezone}",
         f"generated_at: {publication.generated_at}",
+        f"schema_version: {publication.schema_version}",
+        f"logical_pages: {len(publication.pages)}",
         "---",
         "",
         "# Kushluk",
