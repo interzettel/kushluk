@@ -62,4 +62,7 @@ def validate_a3_booklet(path: Path) -> list[str]:
         for marker in markers:
             if f"{marker} / 4" not in text:
                 errors.append(f"Side {side} does not contain logical page {marker}.")
+        if all(f"{marker} / 4" in text for marker in markers):
+            if text.index(f"{markers[0]} / 4") > text.index(f"{markers[1]} / 4"):
+                errors.append(f"Side {side} has reversed left/right booklet order.")
     return errors
