@@ -16,6 +16,7 @@ from kushluk.opml import (
     write_private_file, write_proposal,
 )
 from kushluk.print_proof import make_print_proof
+from kushluk.print_inspection import PrintInspectionError, inspect_print_pdf
 from kushluk.recovery import deliver_archived
 from kushluk.scheduled import read_run_status, run_once
 from kushluk.source_registry import (
@@ -124,6 +125,16 @@ def build_parser() -> argparse.ArgumentParser:
     epub.add_argument("--date", dest="target_date", required=True, help="YYYY-MM-DD")
     epub.add_argument("--output", type=Path,
                       help="New private EPUB path (default: edition.epub in archive)")
+
+    inspection = sub.add_parser(
+        "inspect-print", help="Offline structural/text geometry proof and optional page PNGs"
+    )
+    inspection.add_argument("--pdf", type=Path, required=True)
+    inspection.add_argument("--output-dir", type=Path, required=True)
+    inspection.add_argument("--profile", choices=("a4-home", "a3-folded"),
+                            default="a4-home")
+    inspection.add_argument("--rasterize", action="store_true")
+    inspection.add_argument("--dpi", type=int, default=100)
 
     archive = sub.add_parser("archive-list", help="List recent local Kushluk editions")
     archive.add_argument("--limit", type=int, default=20)
@@ -277,6 +288,25 @@ def main(argv: list[str] | None = None) -> int:
             return 2
         print(json.dumps(result, ensure_ascii=False))
         return 0
+
+    if args.command == "inspect-print":
+        try:
+            report = inspect_print_pdf(
+                args.pdf, args.output_dir, profile=args.profile,
+                rasterize=args.rasterize, dpi=args.dpi,
+            )
+        except PrintInspectionError as exc:
+            print(json.dumps({"status": "rejected", "error": str(exc)}))
+            return 2
+        print(json.dumps({
+            "status": report["automated_status"],
+            "structural_errors": len(report["structural_errors"]),
+            "raster_status": report["raster_status"],
+            "human_visual_review_required": True,
+            "physical_verified": False,
+            "report": str(args.output_dir / "inspection.json"),
+        }))
+        return 2 if report["structural_errors"] else 0
 
     if args.command == "archive-list":
         for item in list_editions(settings.archive_dir, limit=max(1, args.limit)):
