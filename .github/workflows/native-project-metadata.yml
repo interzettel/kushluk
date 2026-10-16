@@ -3,9 +3,10 @@ name: Native Project metadata
 # Runs for every new issue. Manual dispatch handles first-time field creation
 # and the one-time existing-issue backfill. Requires a scoped org Project token.
 on:
-  push:
-    branches: [main]
-    paths: [.github/workflows/native-project-metadata.yml]
+  # Resume a small amount of remaining historical metadata work every two
+  # hours; skip automatically when the owner's token budget is low.
+  schedule:
+    - cron: "37 */2 * * *"
   issues:
     types: [opened, reopened, edited, labeled, closed]
   workflow_dispatch:
@@ -15,6 +16,10 @@ on:
         type: choice
         required: true
         options: [bootstrap, audit, backfill]
+      batch_size:
+        description: Maximum issues per backfill run (1–20)
+        type: number
+        default: 5
 
 permissions:
   contents: read
@@ -38,7 +43,7 @@ jobs:
 
   maintenance:
     name: Project field setup or coverage audit
-    if: github.event_name == 'workflow_dispatch' || github.event_name == 'push'
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -46,16 +51,19 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.KUSHLUK_PROJECT_TOKEN }}
           MODE: ${{ inputs.mode }}
+          BATCH_SIZE: ${{ inputs.batch_size || 5 }}
         run: |
           if [ -z "$GH_TOKEN" ]; then
             echo "::error::Project token secret KUSHLUK_PROJECT_TOKEN is not configured."
             exit 1
           fi
-          if [ "${{ github.event_name }}" = "push" ]; then
-            echo "Provisioning editable Triage Priority, then backfilling Project metadata."
-            python tools/project_sync.py bootstrap
-            python tools/project_sync.py backfill
-            python tools/project_sync.py audit
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            remaining=$(gh api rate_limit --jq '.resources.graphql.remaining')
+            if ! [[ "$remaining" =~ ^[0-9]+$ ]] || [ "$remaining" -lt 250 ]; then
+              echo "GraphQL API budget low; preserving quota and retrying on the next schedule."
+              exit 0
+            fi
+            python tools/project_sync.py backfill --batch-size 5
           else
-            python tools/project_sync.py "$MODE"
+            python tools/project_sync.py "$MODE" --batch-size "$BATCH_SIZE"
           fi

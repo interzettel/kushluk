@@ -166,6 +166,35 @@ def project_items(client: Client) -> dict[str, dict]:
     return result
 
 
+def field_value(item: dict, name: str) -> object | None:
+    """Read GitHub CLI JSON fields regardless of punctuation or casing."""
+    normalized = re.sub(r"[^a-z0-9]", "", name.lower())
+    for key, value in item.items():
+        if re.sub(r"[^a-z0-9]", "", key.lower()) == normalized:
+            return value
+    return None
+
+
+def needs_sync(issue: dict, record: dict | None) -> bool:
+    if not record or any(
+        field_value(record, name) in (None, "")
+        for name in ("Status", *FIELDS)
+    ):
+        return True
+    assignees = {
+        user.get("login") for user in issue.get("assignees", [])
+        if isinstance(user, dict)
+    }
+    labels = {
+        row.get("name", "") for row in issue.get("labels", [])
+        if isinstance(row, dict)
+    }
+    return STEWARD not in assignees or any(
+        not any(label.startswith(prefix) for label in labels)
+        for prefix in ("kind:", "priority:", "workstream:")
+    )
+
+
 def desired_metadata(issue: dict) -> dict[str, str]:
     labels = {
         x.get("name", "") for x in issue.get("labels", []) if isinstance(x, dict)
@@ -219,7 +248,8 @@ def desired_metadata(issue: dict) -> dict[str, str]:
 
 
 def sync_issue(
-    client: Client, issue: dict, known_items: dict[str, dict] | None = None
+    client: Client, issue: dict, known_items: dict[str, dict] | None = None,
+    known_fields: set[str] | None = None,
 ) -> dict:
     url = issue.get("html_url") or issue.get("url")
     if not isinstance(url, str) or not re.fullmatch(
@@ -237,7 +267,7 @@ def sync_issue(
         record = {"content": {"url": url}}
         known_items[url] = record
 
-    present = project_fields(client)
+    present = known_fields if known_fields is not None else project_fields(client)
     missing = (set(FIELDS) | {"Status"}) - present
     if missing:
         raise SyncError(
@@ -292,12 +322,13 @@ def sync_issue(
 
     # Defaults only fill missing values. Manual triage remains authoritative.
     for field in ("Status", *FIELDS):
-        existing = record.get(field.lower(), record.get(field))
+        existing = field_value(record, field)
         if existing is None or existing == "":
             client.run(
                 "project", "item-edit", PROJECT, "--owner", OWNER,
                 "--url", url, "--field", field, "--value", wanted[field]
             )
+            record[field] = wanted[field]
     return {
         "issue": number,
         "url": url,
@@ -324,8 +355,14 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("--issue", help="Issue number for sync")
     parser.add_argument("--event-file", help="GitHub issues event file")
+    parser.add_argument(
+        "--batch-size", type=int, default=5,
+        help="Maximum incomplete issues to update in one backfill run (1–20).",
+    )
     args = parser.parse_args(argv)
     try:
+        if not 1 <= args.batch_size <= 20:
+            raise SyncError("Batch size must be between 1 and 20")
         require_token()
         client = Client(real_call)
         if args.action == "bootstrap":
@@ -351,19 +388,26 @@ def main(argv: list[str] | None = None) -> int:
             )
             if not isinstance(all_issues, list):
                 raise SyncError("Cannot list repository issues")
+            processed = []
             if args.action == "backfill":
-                if set(FIELDS) - project_fields(client):
+                configured = project_fields(client)
+                if (set(FIELDS) | {"Status"}) - configured:
                     raise SyncError("Run bootstrap before backfill")
-                for issue in all_issues:
+                pending = [
+                    issue for issue in all_issues
+                    if needs_sync(issue, members.get(issue["url"]))
+                ]
+                for issue in pending[:args.batch_size]:
                     sync_issue(
-                        client, {**issue, "html_url": issue["url"]}, members
+                        client, {**issue, "html_url": issue["url"]},
+                        members, known_fields=configured,
                     )
-            if args.action == "backfill":
+                    processed.append(issue["url"])
                 members = project_items(client)
             current_missing = {
                 field: sum(
-                    not members.get(issue["url"], {}).get(field.lower(),
-                        members.get(issue["url"], {}).get(field))
+                    field_value(members.get(issue["url"], {}), field)
+                    in (None, "")
                     for issue in all_issues
                 )
                 for field in ("Status", *FIELDS)
@@ -378,6 +422,11 @@ def main(argv: list[str] | None = None) -> int:
                 ],
                 "missing_values_by_field": current_missing,
                 "mode": args.action,
+                "processed_issue_urls": processed,
+                "pending_issue_count": sum(
+                    needs_sync(issue, members.get(issue["url"]))
+                    for issue in all_issues
+                ),
             }
         print(json.dumps(result, indent=2))
     except (SyncError, KeyError, OSError, ValueError) as exc:
