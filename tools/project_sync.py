@@ -248,7 +248,7 @@ def sync_issue(
     # CLI issue list lacks the full current type for many versions.
     if "type" in issue and not issue["type"]:
         try:
-            enabled = client.json("api", f"repos/{REPO}/issue-types")
+            enabled = client.json("api", f"orgs/{OWNER}/issue-types")
         except SyncError:
             enabled = []
         known = {
@@ -285,9 +285,10 @@ def sync_issue(
 def issue_from_cli(client: Client, number: str) -> dict:
     issue = client.json(
         "issue", "view", number, "--repo", REPO,
-        "--json", "url,title,body,labels,assignees,state,author",
+        "--json", "url,title,body,labels,assignees,state,author,issueType",
     )
-    return {**issue, "html_url": issue.get("url")}
+    return {**issue, "html_url": issue.get("url"),
+            "type": issue.get("issueType") or None}
 
 
 def main(argv: list[str] | None = None) -> int:
