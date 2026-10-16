@@ -123,7 +123,9 @@ Start with:
 
 - [AGENTS.md](AGENTS.md)
 - [docs/STATUS.md](docs/STATUS.md)
-- [docs/WORK_LEDGER.md](docs/WORK_LEDGER.md) — operational tasks and evidence\n- [docs/ISSUE_CROSSWALK.md](docs/ISSUE_CROSSWALK.md) — all numbered tasks mapped to GitHub issues\n- [GitHub issue #43 — master issue ledger](https://github.com/interzettel/kushluk/issues/43) — portfolio-wide issue states, dependencies and decisions
+- [docs/WORK_LEDGER.md](docs/WORK_LEDGER.md) — operational tasks and evidence
+- [docs/ISSUE_CROSSWALK.md](docs/ISSUE_CROSSWALK.md) — all numbered tasks mapped to GitHub issues
+- [GitHub issue #43 — master issue ledger](https://github.com/interzettel/kushluk/issues/43) — portfolio-wide issue states, dependencies and decisions
 - [docs/FULL_AUTOMATION.md](docs/FULL_AUTOMATION.md)
 - [docs/CHAT_RECONCILIATION.md](docs/CHAT_RECONCILIATION.md)
 - [docs/PRODUCT.md](docs/PRODUCT.md)
