@@ -25,7 +25,7 @@ class FakeClient:
     def run(self, *args):
         self.calls.append(args)
         if args[:2] == ("issue", "create"):
-            return "https://github.com/interzettel/kushluk/issues/99\\n"
+            return "https://github.com/interzettel/kushluk/issues/99\n"
         raise AssertionError(args)
 
 
