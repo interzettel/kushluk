@@ -9,6 +9,7 @@ from zoneinfo import ZoneInfo
 from kushluk.archive import list_editions
 from kushluk.config import Settings
 from kushluk.doctor import core_ready, run_doctor
+from kushluk.epub import EpubError, export_archived_epub
 from kushluk.pipeline import run_pipeline
 from kushluk.opml import (
     OPMLImportError, read_opml, read_proposal, render_opml,
@@ -99,6 +100,13 @@ def build_parser() -> argparse.ArgumentParser:
     )
     sources_export.add_argument("file", type=Path, help="Existing proposed-only JSON file")
     sources_export.add_argument("--output", type=Path, required=True)
+
+    epub = sub.add_parser(
+        "export-epub", help="Export an archived four-page edition to private EPUB3 (offline)"
+    )
+    epub.add_argument("--date", dest="target_date", required=True, help="YYYY-MM-DD")
+    epub.add_argument("--output", type=Path,
+                      help="New private EPUB path (default: archived edition/edition.epub)")
 
     archive = sub.add_parser("archive-list", help="List recent local Kushluk editions")
     archive.add_argument("--limit", type=int, default=20)
@@ -207,6 +215,23 @@ def main(argv: list[str] | None = None) -> int:
             "activated": 0, "network_requests": 0,
             "output": str(args.output),
         }, ensure_ascii=False))
+        return 0
+
+    if args.command == "export-epub":
+        try:
+            target = date.fromisoformat(args.target_date)
+            path = args.output or (
+                settings.archive_dir / f"{target:%Y%m%d}-001" / "edition.epub"
+            )
+            result = export_archived_epub(settings.archive_dir, target, path)
+        except (EpubError, ValueError) as exc:
+            code = "archive_export_rejected"
+            # Never print arbitrary source excerpts, private paths or provider errors.
+            if isinstance(exc, EpubError):
+                code = str(exc)
+            print(json.dumps({"status": "rejected", "error": code}))
+            return 2
+        print(json.dumps(result, ensure_ascii=False))
         return 0
 
     if args.command == "archive-list":
