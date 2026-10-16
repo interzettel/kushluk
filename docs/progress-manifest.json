@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "review_date": "2026-10-16",
+  "task_groups": {
+    "DOC": 5,
+    "FMT": 10,
+    "AUT": 13,
+    "SRC": 10,
+    "IMG": 9,
+    "LAY": 11,
+    "DES-EXT": 5,
+    "RES-NEWS": 3,
+    "RES-AUTO": 2,
+    "RES-IMG": 1,
+    "ED": 6,
+    "UX": 8,
+    "TRIAL": 7
+  },
+  "gates": [
+    {
+      "id": "G1",
+      "name": "Four-page format",
+      "status": "unverified",
+      "issues": [
+        45,
+        21
+      ],
+      "evidence": []
+    },
+    {
+      "id": "G2",
+      "name": "Real A4/A3 delivery",
+      "status": "unverified",
+      "issues": [
+        46,
+        7,
+        13
+      ],
+      "evidence": []
+    },
+    {
+      "id": "G3",
+      "name": "Unattended automation",
+      "status": "unverified",
+      "issues": [
+        47,
+        17,
+        13
+      ],
+      "evidence": []
+    },
+    {
+      "id": "G4",
+      "name": "Sources and security",
+      "status": "unverified",
+      "issues": [
+        4,
+        16,
+        48,
+        49
+      ],
+      "evidence": []
+    },
+    {
+      "id": "G5",
+      "name": "User-owned portability",
+      "status": "unverified",
+      "issues": [
+        5,
+        15,
+        37
+      ],
+      "evidence": []
+    },
+    {
+      "id": "G6",
+      "name": "Public trust and legal copy",
+      "status": "unverified",
+      "issues": [
+        10,
+        34
+      ],
+      "evidence": []
+    },
+    {
+      "id": "G7",
+      "name": "Licensing and contribution governance",
+      "status": "unverified",
+      "issues": [
+        38,
+        54
+      ],
+      "evidence": []
+    },
+    {
+      "id": "G8",
+      "name": "Real reader trials",
+      "status": "unverified",
+      "issues": [
+        6,
+        13
+      ],
+      "evidence": []
+    }
+  ]
+}
