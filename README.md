@@ -70,7 +70,9 @@ This is an early open-source prototype. Check the [status report](docs/STATUS.md
 
 ## Make an edition
 
-Requires **Python 3.11+**. Clone the actual public repository:
+Requires **Python 3.11+**. Native **macOS (Apple Silicon and Intel)** setup, Pango/PDF installation, and CUPS printer commands are documented in the [Mac setup guide](docs/MACOS.md). Mac CI covers software behavior; physical printing still requires a real-machine trial.
+
+Clone the actual public repository:
 
 ```bash
 git clone https://github.com/interzettel/kushluk.git
@@ -91,7 +93,7 @@ python -m pip install -e ".[pdf]"
 kushluk generate
 ```
 
-Printing and email are **separately configured**. If a compatible local CUPS printer is available, use `kushluk generate --print`; for SMTP delivery use `kushluk generate --email`. Neither command makes a printer or mail account appear automatically. Read [onboarding](docs/ONBOARDING.md) and [.env.example](.env.example).
+Printing and email are **separately configured**. If a compatible local CUPS printer is available, use `kushluk generate --print`; for SMTP delivery use `kushluk generate --email`. Neither command makes a printer or mail account appear automatically. Read [onboarding](docs/ONBOARDING.md), the [macOS print/setup guide](docs/MACOS.md) when applicable, and [.env.example](.env.example).
 
 **Configuration detail:** `.env.example` documents environment variable names; the Python application does **not** automatically load a `.env` file. Set/export the values in your shell or use a local secret manager. Never commit credentials or private editions.
 
