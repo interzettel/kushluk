@@ -148,6 +148,21 @@ class ProjectMetadataTests(unittest.TestCase):
         self.assertFalse(any(call[1:3] == ["project", "item-edit"] for call in fake.calls))
         self.assertFalse(any(call[1:3] == ["project", "item-add"] for call in fake.calls))
 
+    def test_closed_issue_moves_to_done_without_verifying_evidence(self):
+        from tools.project_sync import needs_sync
+        fake = FakeGH(existing_item=True)
+        issue = {**ISSUE, "state": "closed"}
+        self.assertTrue(needs_sync(issue, fake.items[0]))
+        sync_issue(Client(fake), issue)
+        edits = [
+            cmd for cmd in fake.calls
+            if cmd[1:3] == ["project", "item-edit"]
+        ]
+        self.assertEqual(len(edits), 1)
+        self.assertIn("Status", edits[0])
+        self.assertIn("Done", edits[0])
+        self.assertNotIn("Verified", edits[0])
+
     def test_requires_actual_project_fields(self):
         with self.assertRaisesRegex(SyncError, "bootstrap"):
             sync_issue(Client(FakeGH(all_fields=False)), ISSUE)
