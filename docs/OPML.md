@@ -41,3 +41,17 @@ If an approved registry exists and `KUSHLUK_RSS_URLS` is not set, only its appro
 **Permissions:** `--acknowledge-feed-access` is a personal statement that the reader is entitled to retrieve the selected RSS feed. It is **not a copyright or republication grant**, and the only active mode today is `reference-only` (headlines and feed-provided snippets with attribution). Derivative summaries and private direct inclusion still require their own rights checks and source-mode UI under #4/#48. Approved endpoints can access the network **only during a run**; do not approve feeds pointing at sensitive local/admin addresses or URLs containing secrets. The CLI does not check all DNS targets or prevent redirects; additional source-network hardening is still tracked under #49 and must precede an exposed/multiuser service.
 
 This workflow is intentionally a developer-friendly first source-approval path, not a full nontechnical setup wizard, mailbox/newsletter discovery, or evidence that all source rights are resolved.
+
+## Four reader-intent modes (staged rights enforcement)
+
+```bash
+kushluk sources-set-mode --id SOURCE_ID --mode ignore
+kushluk sources-set-mode --id SOURCE_ID --mode reference-only
+kushluk sources-set-mode --id SOURCE_ID --mode derivative --acknowledge-rights-boundary
+kushluk sources-set-mode --id SOURCE_ID --mode private-direct --acknowledge-rights-boundary
+kushluk sources-list
+```
+
+The registry preserves the selected mode and durable source ID, but **only `reference-only` is currently active and fetched**. Choosing `ignore` pauses that source. Choosing `derivative` or `private-direct` records an intention and **automatically disables the feed** until future authorisation and generation/copy paths are implemented: a reader's click is not a legal determination. Each active reference-only feed *discards* incoming RSS item descriptions and HTML bodies **before editorial selection** and emits only the headline and a neutral source pointer. Already archived editions remain immutable after revocation; removal affects subsequent runs only.
+
+Do not confuse saved `derivative` or `private-direct` preferences with actual support for those workflows. Neither is currently allowed to fetch article bodies, save them in an edition, or be distributed. This is not a legal rights-verification service. Additionally, explicitly configured legacy `KUSHLUK_RSS_URLS` feeds are **outside the registry policy**; they may still ingest feed-provided summaries and should not be used with private/restricted feeds until isolated by the same policy. The source-mode control is a protective increment, not the complete permissions acceptance gate.
