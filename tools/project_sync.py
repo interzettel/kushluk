@@ -126,8 +126,6 @@ def project_items(client: Client) -> dict[str, dict]:
     data = client.json(
         "project", "item-list", PROJECT, "--owner", OWNER,
         "--limit", "500", "--format", "json",
-        "--field", "Status", "--field", "Priority",
-        "--field", "Workstream", "--field", "Maturity", "--field", "Evidence",
     )
     if not isinstance(data, dict) or not isinstance(data.get("items"), list):
         raise SyncError("Cannot inspect Project membership")
@@ -325,9 +323,6 @@ def main(argv: list[str] | None = None) -> int:
             )
             if not isinstance(all_issues, list):
                 raise SyncError("Cannot list repository issues")
-            absent = [
-                issue for issue in all_issues if issue["url"] not in members
-            ]
             if args.action == "backfill":
                 if set(FIELDS) - project_fields(client):
                     raise SyncError("Run bootstrap before backfill")
@@ -335,10 +330,25 @@ def main(argv: list[str] | None = None) -> int:
                     sync_issue(
                         client, {**issue, "html_url": issue["url"]}, members
                     )
+            if args.action == "backfill":
+                members = project_items(client)
+            current_missing = {
+                field: sum(
+                    not members.get(issue["url"], {}).get(field.lower(),
+                        members.get(issue["url"], {}).get(field))
+                    for issue in all_issues
+                )
+                for field in ("Status", *FIELDS)
+            }
             result = {
                 "issues": len(all_issues),
-                "already_in_project": len(all_issues) - len(absent),
-                "missing_issue_urls": [i["url"] for i in absent],
+                "already_in_project": sum(
+                    issue["url"] in members for issue in all_issues
+                ),
+                "missing_issue_urls": [
+                    i["url"] for i in all_issues if i["url"] not in members
+                ],
+                "missing_values_by_field": current_missing,
                 "mode": args.action,
             }
         print(json.dumps(result, indent=2))
