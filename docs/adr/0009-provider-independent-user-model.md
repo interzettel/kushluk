@@ -4,7 +4,7 @@
 
 ## Decision
 
-Durable interests, preferences, and feedback live in Kuşluk's own canonical local model, not inside one AI vendor's memory system.
+Durable interests, preferences, and feedback live in Kushluk's own canonical local model, not inside one AI vendor's memory system.
 
 External AI subscriptions or memories may contribute candidate signals, but they are optional connectors.
 
@@ -14,4 +14,4 @@ The publication must survive provider churn and preserve accumulated preference 
 
 ## Consequences
 
-No model provider is the system of record for the user's long-term Kuşluk profile.
+No model provider is the system of record for the user's long-term Kushluk profile.

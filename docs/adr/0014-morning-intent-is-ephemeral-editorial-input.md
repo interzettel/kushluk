@@ -10,7 +10,7 @@ A short spoken or typed briefing is a natural way to express this context.
 
 ## Decision
 
-Kuşluk may accept an optional **morning intent** before candidate ranking.
+Kushluk may accept an optional **morning intent** before candidate ranking.
 
 Morning intent can be entered by voice or text and is normalised into temporary editorial cues such as:
 - topics to emphasise;
@@ -29,7 +29,7 @@ Morning intent must not bypass source verification, privacy boundaries, or requi
 
 This gives the user direct editorial agency without forcing preference maintenance or making the system infer durable traits from transient speech.
 
-It also creates a useful interaction model: the user can briefly talk to the editor, then let Kuşluk do the research and composition work.
+It also creates a useful interaction model: the user can briefly talk to the editor, then let Kushluk do the research and composition work.
 
 ## Consequences
 

@@ -8,7 +8,7 @@ The editorial system reserves room for material outside the user's established i
 
 ## Rationale
 
-Pure personalisation narrows the world. Kuşluk should occasionally surface something globally important, locally relevant, culturally meaningful, or simply unusually interesting.
+Pure personalisation narrows the world. Kushluk should occasionally surface something globally important, locally relevant, culturally meaningful, or simply unusually interesting.
 
 ## Consequences
 
