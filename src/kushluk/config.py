@@ -4,6 +4,8 @@ import os
 from dataclasses import dataclass
 from pathlib import Path
 
+from kushluk.source_registry import approved_urls
+
 
 @dataclass(slots=True)
 class Settings:
@@ -31,11 +33,17 @@ class Settings:
 
     @classmethod
     def from_env(cls) -> "Settings":
-        rss = tuple(
-            item.strip()
-            for item in os.getenv("KUSHLUK_RSS_URLS", "https://hnrss.org/frontpage").split(",")
-            if item.strip()
-        )
+        # A configured registry is a deliberately approved source list.
+        # Legacy explicit KUSHLUK_RSS_URLS remains supported, but no default
+        # Hacker News feed is silently added to a registry-backed profile.
+        registry = approved_urls()
+        raw_urls = os.getenv("KUSHLUK_RSS_URLS")
+        if raw_urls is None:
+            rss = registry or (("https://hnrss.org/frontpage",) if not
+                               _has_source_registry() else ())
+        else:
+            legacy = tuple(part.strip() for part in raw_urls.split(",") if part.strip())
+            rss = tuple(dict.fromkeys((*legacy, *registry)))
         return cls(
             home_name=os.getenv("KUSHLUK_HOME_NAME", "Cologne"),
             latitude=float(os.getenv("KUSHLUK_LATITUDE", "50.9384")),
@@ -57,6 +65,11 @@ class Settings:
             email_to=os.getenv("KUSHLUK_EMAIL_TO") or None,
             smtp_starttls=_env_bool("KUSHLUK_SMTP_STARTTLS", True),
         )
+
+
+def _has_source_registry() -> bool:
+    from kushluk.source_registry import registry_path
+    return registry_path().exists()
 
 
 def _env_bool(name: str, default: bool) -> bool:
