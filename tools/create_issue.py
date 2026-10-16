@@ -6,11 +6,11 @@ import argparse
 import json
 from pathlib import Path
 import re
-import subprocess
 import sys
 import tempfile
 
-from project_sync import Client, FIELDS, REPO, STEWARD, issue_from_cli, real_call, sync_issue
+from tools.project_sync import (Client, FIELDS, REPO, STEWARD, SyncError,
+                                issue_from_cli, real_call, sync_issue)
 
 KINDS = ("bug", "feature", "task", "research", "decision")
 
@@ -99,7 +99,7 @@ def main() -> int:
     try:
         print(create())
         return 0
-    except (ValueError, OSError, json.JSONDecodeError, RuntimeError) as error:
+    except (ValueError, OSError, json.JSONDecodeError, SyncError) as error:
         print(f"Could not create or synchronize issue: {error}", file=sys.stderr)
         return 1
 
