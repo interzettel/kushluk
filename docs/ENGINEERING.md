@@ -43,7 +43,8 @@ A gate's **verified** state requires an ISO date and at least one HTTPS link to 
 
 ## CI tiers and known limitations
 
-- Existing CI: Ruff, pytest, an executable CLI walking-skeleton smoke test; Python 3.12.
+- Existing Linux CI: Ruff, pytest, an executable CLI walking-skeleton smoke test; Python 3.12.
+- Added native macOS CI: Apple Silicon and Intel, Python 3.12, Homebrew Pango, WeasyPrint import, Ruff/pytest and current one-page validated PDF CLI smoke. This checks software portability, not actual printer output. See [MACOS.md](MACOS.md).
 - New Project health CI: no network/paid APIs, validates 90-item task inventory, G1–G8 evidence metadata and committed progress snapshot on Python 3.11/3.12.
 - **Known debt:** the older smoke job uses default network-backed weather and RSS. It is not fully hermetic. Track fixture substitution and isolated optional live integration tests in #54 rather than claiming that CI now guarantees network independence.
 - **Not yet gated:** real printer access, PDF physical samples, migrations/backups, supply-chain/release attestation, trained LLM behavior. #13, #45–#51 and #54 own those future checks.
