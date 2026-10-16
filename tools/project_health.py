@@ -49,6 +49,12 @@ def analyze(root: Path) -> dict:
             f"unexpected={unexpected}. Reconcile manifest AND issue mapping."
         )
     done = {key for key, checked in observed if checked}
+    detailed = []
+    for match in TASK.finditer(ledger):
+        end = ledger.find("\n", match.end())
+        detail = ledger[match.end():end if end != -1 else len(ledger)].strip()
+        detailed.append({"id": match["id"], "checked": match["mark"] == "x",
+                         "summary": detail})
     rows = [
         {"group": key, "checked": sum(f"{key}-{i:02d}" in done
                                       for i in range(1, maximum + 1)),
@@ -90,7 +96,8 @@ def analyze(root: Path) -> dict:
             raise HealthError(f"{label}: only verified gates can have verified_on")
     return {
         "review_date": conf["review_date"],
-        "task_progress": {"checked": len(done), "total": len(expected), "groups": rows},
+        "task_progress": {"checked": len(done), "total": len(expected),
+                          "groups": rows, "items": detailed},
         "gates": gates,
         "verified_count": sum(g["status"] == "verified" for g in gates),
     }
@@ -140,6 +147,28 @@ def render(s: dict) -> str:
     lines += [
         f"| **TOTAL** | **{tasks['checked']}** | **{tasks['total']}** |",
         "",
+        "## Individual tasks",
+        "",
+        "The lines below are generated from WORK_LEDGER.md. Each task ID has a primary "
+        "owner in [ISSUE_CROSSWALK.md](ISSUE_CROSSWALK.md), not its own invented progress weight.",
+        "",
+    ]
+    for group in tasks["groups"]:
+        prefix = group["group"] + "-"
+        lines.extend([
+            f"<details><summary><strong>{group['group']} — "
+            f"{group['checked']}/{group['total']} checked</strong></summary>",
+            "",
+            "| Task ID | Ledger state | Description |",
+            "| --- | --- | --- |",
+        ])
+        for item in tasks["items"]:
+            if item["id"].startswith(prefix):
+                summary = item["summary"].replace("|", r"\|").replace("\n", " ")
+                state = "CHECKED" if item["checked"] else "OPEN"
+                lines.append(f"| `{item['id']}` | {state} | {summary} |")
+        lines.extend(["", "</details>", ""])
+    lines += [
         "## Update protocol",
         "",
         "1. Complete an owning issue's acceptance tests and attach reproducible evidence.",
