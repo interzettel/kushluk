@@ -21,6 +21,13 @@ class HealthError(ValueError):
     pass
 
 
+def format_percent(completed: int, total: int) -> str:
+    """Two decimal places, zero-padded below 10%, from explicit counts."""
+    if total <= 0 or not 0 <= completed <= total:
+        raise HealthError("Percent requires 0 <= completed <= positive total")
+    return f"{100 * completed / total:05.2f}%"
+
+
 def analyze(root: Path) -> dict:
     ledger = (root / "docs/WORK_LEDGER.md").read_text(encoding="utf-8")
     conf = json.loads((root / "docs/progress-manifest.json").read_text(encoding="utf-8"))
@@ -58,7 +65,9 @@ def analyze(root: Path) -> dict:
     rows = [
         {"group": key, "checked": sum(f"{key}-{i:02d}" in done
                                       for i in range(1, maximum + 1)),
-         "total": maximum}
+         "total": maximum,
+         "percentage": format_percent(sum(f"{key}-{i:02d}" in done
+                                          for i in range(1, maximum + 1)), maximum)}
         for key, maximum in groups.items()
     ]
     gates = conf.get("gates")
@@ -97,9 +106,13 @@ def analyze(root: Path) -> dict:
     return {
         "review_date": conf["review_date"],
         "task_progress": {"checked": len(done), "total": len(expected),
+                          "percentage": format_percent(len(done), len(expected)),
                           "groups": rows, "items": detailed},
         "gates": gates,
         "verified_count": sum(g["status"] == "verified" for g in gates),
+        "verified_percentage": format_percent(
+            sum(g["status"] == "verified" for g in gates), len(gates)
+        ),
     }
 
 
@@ -119,7 +132,8 @@ def render(s: dict) -> str:
         "",
         "## Delivery evidence gates",
         "",
-        f"**{s['verified_count']} of 8 verified with evidence.** "
+        f"**{s['verified_count']} of 8 verified with evidence "
+        f"({s['verified_percentage']}).** "
         "Unverified does not mean failed.",
         "",
         "| Gate | State | Owner issues |",
@@ -136,16 +150,17 @@ def render(s: dict) -> str:
         "",
         "## Operational work ledger",
         "",
-        f"**{tasks['checked']} of {tasks['total']} task checkboxes checked.** "
+        f"**{tasks['checked']} of {tasks['total']} task checkboxes checked "
+        f"({tasks['percentage']}).** "
         "This measures task-record state, not overall readiness.",
         "",
-        "| Task group | Checked | Total |",
-        "| --- | ---: | ---: |",
+        "| Task group | Checked | Total | Progress |",
+        "| --- | ---: | ---: | ---: |",
     ]
     for row in tasks["groups"]:
-        lines.append(f"| {row['group']} | {row['checked']} | {row['total']} |")
+        lines.append(f"| {row['group']} | {row['checked']} | {row['total']} | {row['percentage']} |")
     lines += [
-        f"| **TOTAL** | **{tasks['checked']}** | **{tasks['total']}** |",
+        f"| **TOTAL** | **{tasks['checked']}** | **{tasks['total']}** | **{tasks['percentage']}** |",
         "",
         "## Individual tasks",
         "",
@@ -157,7 +172,8 @@ def render(s: dict) -> str:
         prefix = group["group"] + "-"
         lines.extend([
             f"<details><summary><strong>{group['group']} — "
-            f"{group['checked']}/{group['total']} checked</strong></summary>",
+            f"{group['checked']}/{group['total']} checked · "
+            f"{group['percentage']}</strong></summary>",
             "",
             "| Task ID | Ledger state | Description |",
             "| --- | --- | --- |",
@@ -264,17 +280,21 @@ def render_svg(s: dict) -> str:
         p.append(txt(x + 28, y + 29, gate["id"] + "  " + gate["name"], 17, 650))
         p.append(txt(x + 28, y + 55, status_words[gate["status"]], 12, 700, color=MUTED, letter="0.65"))
         p.append(txt(x + 336, y + 55, "ISSUE " + ", ".join(str(i) for i in gate["issues"][:4]), 11, 400, color=MUTED))
+    p.append(txt(847, 595, f"{s['verified_count']}/8 VERIFIED · "
+                 f"{s['verified_percentage']}", 12, 600, color=MUTED))
     p.append(rect(68, 602, 1024, 1, RULE))
     p.append(txt(68, 642, "02  /  OPERATIONAL TASKS", 19, 700, letter="0.8"))
     task = s["task_progress"]
-    p.append(txt(839, 642, f'{task["checked"]} / {task["total"]} CHECKED', 15, 700, color=INK))
+    p.append(txt(802, 642, f'{task["checked"]} / {task["total"]} CHECKED · '
+                 f'{task["percentage"]}', 15, 700, color=INK))
     p.append(txt(68, 668, "Checkboxes from the work ledger, not a product-completion estimate.", 14, 400, color=MUTED))
     rows = task["groups"]
     for i, group in enumerate(rows):
         col, row = i % 2, i // 2
         x, y = 68 + col * 518, 702 + row * 44
         p.append(txt(x, y, GROUP_NAMES.get(group["group"], group["group"]), 15, 500))
-        p.append(txt(x + 410, y, f'{group["checked"]} / {group["total"]}', 14, 600, color=MUTED))
+        p.append(txt(x + 344, y, f'{group["checked"]} / {group["total"]} · '
+                     f'{group["percentage"]}', 13, 600, color=MUTED))
         p.append(rect(x, y + 9, 474, 7, "#DDD6C9", radius=3))
         fill = 474 * group["checked"] / group["total"]
         if fill:
