@@ -100,7 +100,7 @@ def render(s: dict) -> str:
     tasks = s["task_progress"]
     gates = s["gates"]
     lines = [
-        "# Kuşluk progress and evidence gates",
+        "# Kushluk progress and evidence gates",
         "",
         f"**Snapshot reviewed:** {s['review_date']} · Sources: "
         "[WORK_LEDGER.md](WORK_LEDGER.md), "
@@ -159,7 +159,7 @@ def render(s: dict) -> str:
 
 
 
-# Warm editorial Kuşluk palette. Source: docs/DESIGN_BRIEF.md and
+# Warm editorial Kushluk palette. Source: docs/DESIGN_BRIEF.md and
 # src/kushluk/templates/edition.html. SVG remains useful in monochrome.
 PAPER = "#F3EFE4"
 INK = "#1A1A1A"
@@ -210,14 +210,14 @@ def render_svg(s: dict) -> str:
         '<svg xmlns="http://www.w3.org/2000/svg" role="img" '
         'aria-labelledby="title desc" viewBox="0 0 1160 1100" '
         'width="1160" height="1100">',
-        "<title id=\"title\">Kuşluk — development and proof of delivery</title>",
+        "<title id=\"title\">Kushluk — development and proof of delivery</title>",
         "<desc id=\"desc\">An evidence status map with eight delivery gates "
         "and a separate count of checked operational tasks. The presence "
         "of a task checkbox is not a percentage of completed product.</desc>",
         rect(0, 0, 1160, 1100, PAPER),
         rect(36, 35, 1088, 1030, WHITE, radius=3, stroke=RULE),
         # Masthead: ink rules + restrained sun, no stock illustration
-        txt(68, 111, "Kuşluk", 51, 700, letter="-2"),
+        txt(68, 111, "Kushluk", 51, 700, letter="-2"),
         txt(71, 142, "AN OPEN PERSONAL MORNING PUBLICATION", 13, 600, color=MUTED, letter="1.25"),
         '<circle cx="1072" cy="91" r="20" fill="' + YELLOW + '"/>',
         rect(68, 171, 1024, 2, INK),

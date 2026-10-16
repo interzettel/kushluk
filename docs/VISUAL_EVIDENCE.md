@@ -1,6 +1,6 @@
 # Visual evidence and diagram production
 
-Kuşluk visual work should look like an **editorial system printed on warm paper**, not a glossy product dashboard. Authoritative values come from [DESIGN_BRIEF.md](DESIGN_BRIEF.md) and the current `src/kushluk/templates/edition.html`.
+Kushluk visual work should look like an **editorial system printed on warm paper**, not a glossy product dashboard. Authoritative values come from [DESIGN_BRIEF.md](DESIGN_BRIEF.md) and the current `src/kushluk/templates/edition.html`.
 
 ## Design tokens (prototype, currently documented)
 
@@ -17,10 +17,10 @@ These colors are **visual vocabulary, not evidence status semantics**. Every sta
 ## Candidate skills and provenance
 
 The founder requested that diagram and proof methods be explicitly considered:
-- **[diagram-design](https://github.com/cathrynlavery/diagram-design)** — a publicly documented skill for branded HTML/SVG diagrams. Confirm install, version, editable profile and output license before using its templates; it is **not a required Kuşluk dependency**.
-- **proof visualization / proof-visualization** — desired evidence-first visual inspection method; exact upstream package, skill text and provenance **not yet verified** in Kuşluk or the consulted personal repos. Locate and review the actual user-provided skill before adopting its instructions.
+- **[diagram-design](https://github.com/cathrynlavery/diagram-design)** — a publicly documented skill for branded HTML/SVG diagrams. Confirm install, version, editable profile and output license before using its templates; it is **not a required Kushluk dependency**.
+- **proof visualization / proof-visualization** — desired evidence-first visual inspection method; exact upstream package, skill text and provenance **not yet verified** in Kushluk or the consulted personal repos. Locate and review the actual user-provided skill before adopting its instructions.
 - **Sheeha visualization** — exact name/version/source **unverified**. Preserve this user-supplied name in the discussion; don't silently equate it with a different library or claim the skill is installed.
-- Kuşluk-native progress visualization currently uses a **small Python standard-library SVG generator**, derived from [project_health.py](../tools/project_health.py), for a transparent source→output chain.
+- Kushluk-native progress visualization currently uses a **small Python standard-library SVG generator**, derived from [project_health.py](../tools/project_health.py), for a transparent source→output chain.
 
 See [#59](https://github.com/interzettel/kushluk/issues/59) for the skill-provenance investigation and optional improvements. Skill examples remain research inputs, not authoritative product requirements or automatically installed code.
 

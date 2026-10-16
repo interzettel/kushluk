@@ -1,6 +1,6 @@
-# How Kuşluk work moves
+# How Kushluk work moves
 
-**For one product steward and interchangeable development agents.** This is neither Scrum nor a claim that Kuşluk is autonomously maintained.
+**For one product steward and interchangeable development agents.** This is neither Scrum nor a claim that Kushluk is autonomously maintained.
 
 ## The hierarchy
 
