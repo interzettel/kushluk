@@ -48,9 +48,7 @@ Implemented legacy walking-skeleton path:
 - runtime doctor;
 - CI smoke test.
 
-Immediate migration work (ADR 0013/0014):
-- four logical A4 pages in the publication model;
-- four-page renderer and per-page validation;
+Four-page canonical software migration landed under #45; remaining delivery work (ADR 0013/0014):
 - A4 two-sheet duplex profile and optional staple marks;
 - A3 folded-newspaper imposition;
 - optional morning-intent input;
