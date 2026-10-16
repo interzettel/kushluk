@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import json
 import unittest
-from tools.project_sync import Client, SyncError, bootstrap, desired_metadata, sync_issue, FIELDS
+from tools.project_sync import Client, SyncError, bootstrap, desired_metadata, sync_issue, FIELDS, PRIORITY_FIELD, PRIORITIES
 
 URL = "https://github.com/interzettel/kushluk/issues/65"
 ISSUE = {
@@ -26,15 +26,20 @@ class FakeGH:
             self.fields += [
                 {"name": key, "id": "field-" + key,
                  "type": "ProjectV2SingleSelectField",
-                 "options": ([] if key == "Priority" and empty_priority else
-                             [{"name": option} for option in options])}
+                 "options": [{"name": option} for option in options]}
                 for key, options in FIELDS.items()
             ]
+        if empty_priority:
+            self.fields = [field for field in self.fields if field["name"] != PRIORITY_FIELD]
+            self.fields.append({"name": "Priority",
+                                "type": "ProjectV2SingleSelectField",
+                                "id": "built-in-priority", "options": []})
         self.items = (
             [{
                 "content": {"url": URL},
                 "status": "In progress",
-                "priority": "P0",
+                "priority": "",
+                "triage priority": "P0",
                 "workstream": "B",
                 "maturity": "Research",
                 "evidence": "Partial",
@@ -63,18 +68,13 @@ class FakeGH:
                 "options": [{"name": option} for option in
                             cmd[cmd.index("--single-select-options") + 1].split(",")],
             })
-        if cmd[:2] == ["api", "graphql"]:
-            for field in self.fields:
-                if field["name"] == "Priority":
-                    field["options"] = [{"name": p} for p in FIELDS["Priority"]]
-            return json.dumps({"data": {"updateProjectV2Field": {}}})
         return "{}"
 
 
 class ProjectMetadataTests(unittest.TestCase):
     def test_defaults_never_claim_proof(self):
         data = desired_metadata(ISSUE)
-        self.assertEqual(data["Priority"], "P1")
+        self.assertEqual(data[PRIORITY_FIELD], "P1")
         self.assertEqual(data["Workstream"], "A")
         self.assertEqual(data["Evidence"], "Missing")
         self.assertEqual(
@@ -128,13 +128,17 @@ class ProjectMetadataTests(unittest.TestCase):
         with self.assertRaisesRegex(SyncError, "bootstrap"):
             sync_issue(Client(FakeGH(all_fields=False)), ISSUE)
 
-    def test_adds_options_to_existing_empty_priority_without_replacing_field(self):
+    def test_reserved_priority_is_not_mutated_and_custom_one_is_created(self):
         fake = FakeGH(empty_priority=True)
+        self.assertEqual(bootstrap(Client(fake)), [PRIORITY_FIELD])
         self.assertEqual(bootstrap(Client(fake)), [])
-        edits = [args for args in fake.calls if args[1:3] == ["api", "graphql"]]
-        self.assertEqual(len(edits), 1)
-        self.assertTrue(any("updateProjectV2Field" in x for x in edits[0]))
-        self.assertEqual(bootstrap(Client(fake)), [])
+        self.assertFalse(any(
+            call[1:3] == ["api", "graphql"] for call in fake.calls
+        ))
+        built_in = next(x for x in fake.fields if x["name"] == "Priority")
+        self.assertEqual(built_in["options"], [])
+        custom = next(x for x in fake.fields if x["name"] == PRIORITY_FIELD)
+        self.assertEqual({x["name"] for x in custom["options"]}, set(PRIORITIES))
 
     def test_bootstrap_is_idempotent_and_reuses_status(self):
         fake = FakeGH(all_fields=False)
