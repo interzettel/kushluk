@@ -6,7 +6,7 @@
 
 ## Delivery evidence gates
 
-**0 of 8 verified with evidence.** Unverified does not mean failed.
+**0 of 8 verified with evidence (00.00%).** Unverified does not mean failed.
 
 | Gate | State | Owner issues |
 | --- | --- | --- |
@@ -21,30 +21,30 @@
 
 ## Operational work ledger
 
-**4 of 90 task checkboxes checked.** This measures task-record state, not overall readiness.
+**4 of 90 task checkboxes checked (04.44%).** This measures task-record state, not overall readiness.
 
-| Task group | Checked | Total |
-| --- | ---: | ---: |
-| DOC | 4 | 5 |
-| FMT | 0 | 10 |
-| AUT | 0 | 13 |
-| SRC | 0 | 10 |
-| IMG | 0 | 9 |
-| LAY | 0 | 11 |
-| DES-EXT | 0 | 5 |
-| RES-NEWS | 0 | 3 |
-| RES-AUTO | 0 | 2 |
-| RES-IMG | 0 | 1 |
-| ED | 0 | 6 |
-| UX | 0 | 8 |
-| TRIAL | 0 | 7 |
-| **TOTAL** | **4** | **90** |
+| Task group | Checked | Total | Progress |
+| --- | ---: | ---: | ---: |
+| DOC | 4 | 5 | 80.00% |
+| FMT | 0 | 10 | 00.00% |
+| AUT | 0 | 13 | 00.00% |
+| SRC | 0 | 10 | 00.00% |
+| IMG | 0 | 9 | 00.00% |
+| LAY | 0 | 11 | 00.00% |
+| DES-EXT | 0 | 5 | 00.00% |
+| RES-NEWS | 0 | 3 | 00.00% |
+| RES-AUTO | 0 | 2 | 00.00% |
+| RES-IMG | 0 | 1 | 00.00% |
+| ED | 0 | 6 | 00.00% |
+| UX | 0 | 8 | 00.00% |
+| TRIAL | 0 | 7 | 00.00% |
+| **TOTAL** | **4** | **90** | **04.44%** |
 
 ## Individual tasks
 
 The lines below are generated from WORK_LEDGER.md. Each task ID has a primary owner in [ISSUE_CROSSWALK.md](ISSUE_CROSSWALK.md), not its own invented progress weight.
 
-<details><summary><strong>DOC — 4/5 checked</strong></summary>
+<details><summary><strong>DOC — 4/5 checked · 80.00%</strong></summary>
 
 | Task ID | Ledger state | Description |
 | --- | --- | --- |
@@ -56,7 +56,7 @@ The lines below are generated from WORK_LEDGER.md. Each task ID has a primary ow
 
 </details>
 
-<details><summary><strong>FMT — 0/10 checked</strong></summary>
+<details><summary><strong>FMT — 0/10 checked · 00.00%</strong></summary>
 
 | Task ID | Ledger state | Description |
 | --- | --- | --- |
@@ -73,7 +73,7 @@ The lines below are generated from WORK_LEDGER.md. Each task ID has a primary ow
 
 </details>
 
-<details><summary><strong>AUT — 0/13 checked</strong></summary>
+<details><summary><strong>AUT — 0/13 checked · 00.00%</strong></summary>
 
 | Task ID | Ledger state | Description |
 | --- | --- | --- |
@@ -93,7 +93,7 @@ The lines below are generated from WORK_LEDGER.md. Each task ID has a primary ow
 
 </details>
 
-<details><summary><strong>SRC — 0/10 checked</strong></summary>
+<details><summary><strong>SRC — 0/10 checked · 00.00%</strong></summary>
 
 | Task ID | Ledger state | Description |
 | --- | --- | --- |
@@ -110,7 +110,7 @@ The lines below are generated from WORK_LEDGER.md. Each task ID has a primary ow
 
 </details>
 
-<details><summary><strong>IMG — 0/9 checked</strong></summary>
+<details><summary><strong>IMG — 0/9 checked · 00.00%</strong></summary>
 
 | Task ID | Ledger state | Description |
 | --- | --- | --- |
@@ -126,7 +126,7 @@ The lines below are generated from WORK_LEDGER.md. Each task ID has a primary ow
 
 </details>
 
-<details><summary><strong>LAY — 0/11 checked</strong></summary>
+<details><summary><strong>LAY — 0/11 checked · 00.00%</strong></summary>
 
 | Task ID | Ledger state | Description |
 | --- | --- | --- |
@@ -144,7 +144,7 @@ The lines below are generated from WORK_LEDGER.md. Each task ID has a primary ow
 
 </details>
 
-<details><summary><strong>DES-EXT — 0/5 checked</strong></summary>
+<details><summary><strong>DES-EXT — 0/5 checked · 00.00%</strong></summary>
 
 | Task ID | Ledger state | Description |
 | --- | --- | --- |
@@ -156,7 +156,7 @@ The lines below are generated from WORK_LEDGER.md. Each task ID has a primary ow
 
 </details>
 
-<details><summary><strong>RES-NEWS — 0/3 checked</strong></summary>
+<details><summary><strong>RES-NEWS — 0/3 checked · 00.00%</strong></summary>
 
 | Task ID | Ledger state | Description |
 | --- | --- | --- |
@@ -166,7 +166,7 @@ The lines below are generated from WORK_LEDGER.md. Each task ID has a primary ow
 
 </details>
 
-<details><summary><strong>RES-AUTO — 0/2 checked</strong></summary>
+<details><summary><strong>RES-AUTO — 0/2 checked · 00.00%</strong></summary>
 
 | Task ID | Ledger state | Description |
 | --- | --- | --- |
@@ -175,7 +175,7 @@ The lines below are generated from WORK_LEDGER.md. Each task ID has a primary ow
 
 </details>
 
-<details><summary><strong>RES-IMG — 0/1 checked</strong></summary>
+<details><summary><strong>RES-IMG — 0/1 checked · 00.00%</strong></summary>
 
 | Task ID | Ledger state | Description |
 | --- | --- | --- |
@@ -183,7 +183,7 @@ The lines below are generated from WORK_LEDGER.md. Each task ID has a primary ow
 
 </details>
 
-<details><summary><strong>ED — 0/6 checked</strong></summary>
+<details><summary><strong>ED — 0/6 checked · 00.00%</strong></summary>
 
 | Task ID | Ledger state | Description |
 | --- | --- | --- |
@@ -196,7 +196,7 @@ The lines below are generated from WORK_LEDGER.md. Each task ID has a primary ow
 
 </details>
 
-<details><summary><strong>UX — 0/8 checked</strong></summary>
+<details><summary><strong>UX — 0/8 checked · 00.00%</strong></summary>
 
 | Task ID | Ledger state | Description |
 | --- | --- | --- |
@@ -211,7 +211,7 @@ The lines below are generated from WORK_LEDGER.md. Each task ID has a primary ow
 
 </details>
 
-<details><summary><strong>TRIAL — 0/7 checked</strong></summary>
+<details><summary><strong>TRIAL — 0/7 checked · 00.00%</strong></summary>
 
 | Task ID | Ledger state | Description |
 | --- | --- | --- |
