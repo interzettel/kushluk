@@ -77,6 +77,7 @@ Implemented infrastructure includes:
 - SMTP delivery and print-failure fallback;
 - archive listing;
 - runtime doctor;
+- local `kushluk run` with an at-most-once delivery receipt (not a completed unattended-host proof);
 - CI lint/tests plus an end-to-end smoke test.
 
 Do not claim Stage 1 is finished until a real local print path and repeated real-edition trial have been completed.
