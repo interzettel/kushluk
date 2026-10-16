@@ -53,7 +53,7 @@ jobs:
           fi
           if [ "${{ github.event_name }}" = "push" ]; then
             echo "Inspecting real Project schema and issue coverage before backfill."
-            gh project field-list 3 --owner interzettel --format json --jq '{fields: [.fields[] | {name, options: [.options[]?.name]}]}'
+            gh project field-list 3 --owner interzettel --format json --jq '{fields: [.fields[] | {name,type,options: [.options[]?.name]}]}'
             python tools/project_sync.py audit
           else
             python tools/project_sync.py "$MODE"
