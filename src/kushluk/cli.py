@@ -10,6 +10,10 @@ from kushluk.archive import list_editions
 from kushluk.config import Settings
 from kushluk.doctor import core_ready, run_doctor
 from kushluk.pipeline import run_pipeline
+from kushluk.opml import (
+    OPMLImportError, read_opml, read_proposal, render_opml,
+    write_private_file, write_proposal,
+)
 from kushluk.print_proof import make_print_proof
 from kushluk.recovery import deliver_archived
 from kushluk.scheduled import read_run_status, run_once
@@ -82,6 +86,19 @@ def build_parser() -> argparse.ArgumentParser:
         "--output-dir", type=Path, default=Path("output/print-proof"),
         help="Where synthetic print-verification files are written",
     )
+
+    sources_import = sub.add_parser(
+        "sources-import-opml", help="Offline OPML preview/proposal, never activates feeds"
+    )
+    sources_import.add_argument("file", type=Path, help="Existing local .opml file")
+    sources_import.add_argument(
+        "--output", type=Path, help="Create private proposed-only JSON, never overwrite"
+    )
+    sources_export = sub.add_parser(
+        "sources-export-opml", help="Export an unactivated JSON source proposal as OPML"
+    )
+    sources_export.add_argument("file", type=Path, help="Existing proposed-only JSON file")
+    sources_export.add_argument("--output", type=Path, required=True)
 
     archive = sub.add_parser("archive-list", help="List recent local Kushluk editions")
     archive.add_argument("--limit", type=int, default=20)
@@ -161,6 +178,35 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "print-proof":
         artifacts = make_print_proof(args.output_dir)
         print(json.dumps(artifacts, ensure_ascii=False))
+        return 0
+
+    if args.command == "sources-import-opml":
+        try:
+            feeds = read_opml(args.file)
+            if args.output is not None:
+                write_proposal(args.output, feeds)
+        except OPMLImportError as exc:
+            print(json.dumps({"status": "rejected", "error": str(exc)}))
+            return 2
+        print(json.dumps({
+            "status": "proposed-only", "feed_count": len(feeds),
+            "activated": 0, "network_requests": 0,
+            "output": str(args.output) if args.output else None,
+        }, ensure_ascii=False))
+        return 0
+
+    if args.command == "sources-export-opml":
+        try:
+            feeds = read_proposal(args.file)
+            write_private_file(args.output, render_opml(feeds))
+        except OPMLImportError as exc:
+            print(json.dumps({"status": "rejected", "error": str(exc)}))
+            return 2
+        print(json.dumps({
+            "status": "exported", "feed_count": len(feeds),
+            "activated": 0, "network_requests": 0,
+            "output": str(args.output),
+        }, ensure_ascii=False))
         return 0
 
     if args.command == "archive-list":
