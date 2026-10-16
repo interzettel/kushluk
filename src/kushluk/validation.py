@@ -91,7 +91,7 @@ def validate_pdf(pdf_path: Path, expected_pages: int = 4) -> ValidationResult:
             # The final page marker is embedded in each page, not just inferred
             # from PDF order. Catch swapped/missing content and blank sheets.
             content = page.extract_text() or ""
-            if not re.search(rf"\\b{number}\\s*/\\s*4\\b", content):
+            if not re.search(rf"\b{number}\s*/\s*4\b", content):
                 errors.append(f"Missing or out-of-order logical page marker on page {number}.")
     return ValidationResult(errors=errors, warnings=[], page_count=count)
 
