@@ -9,7 +9,7 @@ import re
 import sys
 import tempfile
 
-from tools.project_sync import (Client, FIELDS, REPO, STEWARD, SyncError,
+from tools.project_sync import (Client, FIELDS, PRIORITIES, REPO, STEWARD, SyncError,
                                 issue_from_cli, real_call, sync_issue)
 
 KINDS = ("bug", "feature", "task", "research", "decision")
@@ -20,7 +20,7 @@ def create(argv: list[str] | None = None) -> str:
     p.add_argument("--title", required=True)
     p.add_argument("--body-file", required=True, type=Path)
     p.add_argument("--kind", required=True, choices=KINDS)
-    p.add_argument("--priority", choices=FIELDS["Priority"], default="P2")
+    p.add_argument("--priority", choices=PRIORITIES, default="P2")
     p.add_argument("--workstream", choices=FIELDS["Workstream"], default="Untriaged")
     p.add_argument("--parent", type=int)
     p.add_argument("--blocked-by", type=int, action="append", default=[])
