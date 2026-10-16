@@ -7,7 +7,7 @@ import shutil
 from tempfile import TemporaryDirectory
 import unittest
 
-from tools.project_health import HealthError, analyze, render
+from tools.project_health import HealthError, analyze, render, render_svg
 
 
 REPO = Path(__file__).resolve().parent.parent
@@ -40,6 +40,13 @@ class ProjectHealthTests(unittest.TestCase):
             (REPO / "docs/PROGRESS.md").read_text(encoding="utf-8"),
             render(result),
         )
+        graphic = render_svg(result)
+        self.assertEqual(
+            (REPO / "docs/progress.svg").read_text(encoding="utf-8"), graphic
+        )
+        self.assertIn('#F3EFE4', graphic)
+        self.assertIn('role="img"', graphic)
+        self.assertIn("AWAITING PROOF", graphic)
 
     def test_missing_task_is_rejected(self):
         file = self.root / "docs/WORK_LEDGER.md"

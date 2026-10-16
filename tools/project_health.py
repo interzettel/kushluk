@@ -158,25 +158,130 @@ def render(s: dict) -> str:
     return "\n".join(lines)
 
 
+
+# Warm editorial Kuşluk palette. Source: docs/DESIGN_BRIEF.md and
+# src/kushluk/templates/edition.html. SVG remains useful in monochrome.
+PAPER = "#F3EFE4"
+INK = "#1A1A1A"
+MUTED = "#6D6961"
+RULE = "#BDB6A8"
+SALMON = "#E8C9B8"
+YELLOW = "#F3D77B"
+WHITE = "#FFFDF8"
+GROUP_NAMES = {
+    "DOC": "Project records",
+    "FMT": "Four-page formats",
+    "AUT": "Unattended runs",
+    "SRC": "Source connectors",
+    "IMG": "Image handling",
+    "LAY": "Editorial layouts",
+    "DES-EXT": "Design integrations",
+    "RES-NEWS": "Newspaper research",
+    "RES-AUTO": "Automation research",
+    "RES-IMG": "Image rights research",
+    "ED": "Editorial intelligence",
+    "UX": "Setup and controls",
+    "TRIAL": "Physical trials",
+}
+
+
+def render_svg(s: dict) -> str:
+    """Render the same canonical evidence snapshot as accessible, editable SVG."""
+    from html import escape
+
+    def esc(value: object) -> str:
+        return escape(str(value), quote=True)
+
+    def rect(x, y, w, h, color, *, radius=0, stroke=None) -> str:
+        border = f' stroke="{stroke}" stroke-width="1"' if stroke else ""
+        return (
+            f'<rect x="{x}" y="{y}" width="{w}" height="{h}" '
+            f'rx="{radius}" fill="{color}"{border}/>'
+        )
+
+    def txt(x, y, value, size=16, weight=400, *, color=INK, letter="0") -> str:
+        return (
+            f'<text x="{x}" y="{y}" fill="{color}" font-size="{size}" '
+            f'font-weight="{weight}" letter-spacing="{letter}" '
+            f'font-family="Georgia,Times New Roman,serif">{esc(value)}</text>'
+        )
+
+    p = [
+        '<svg xmlns="http://www.w3.org/2000/svg" role="img" '
+        'aria-labelledby="title desc" viewBox="0 0 1160 1100" '
+        'width="1160" height="1100">',
+        "<title id=\"title\">Kuşluk — development and proof of delivery</title>",
+        "<desc id=\"desc\">An evidence status map with eight delivery gates "
+        "and a separate count of checked operational tasks. The presence "
+        "of a task checkbox is not a percentage of completed product.</desc>",
+        rect(0, 0, 1160, 1100, PAPER),
+        rect(36, 35, 1088, 1030, WHITE, radius=3, stroke=RULE),
+        # Masthead: ink rules + restrained sun, no stock illustration
+        txt(68, 111, "Kuşluk", 51, 700, letter="-2"),
+        txt(71, 142, "AN OPEN PERSONAL MORNING PUBLICATION", 13, 600, color=MUTED, letter="1.25"),
+        '<circle cx="1072" cy="91" r="20" fill="' + YELLOW + '"/>',
+        rect(68, 171, 1024, 2, INK),
+        txt(68, 207, "01  /  DELIVERY EVIDENCE", 19, 700, letter="0.8"),
+        txt(888, 207, s["review_date"] + "  ·  REVIEW SNAPSHOT", 13, 400, color=MUTED),
+    ]
+    status_words = {"unverified": "AWAITING PROOF", "in_progress": "IN TEST",
+                    "blocked": "BLOCKED", "verified": "VERIFIED"}
+    for index, gate in enumerate(s["gates"]):
+        col, row = index % 2, index // 2
+        x, y = 68 + col * 518, 225 + row * 91
+        w = 500
+        p.append(rect(x, y, w, 77, PAPER, radius=5, stroke=RULE))
+        p.append(rect(x + 12, y + 14, 5, 49, INK if gate["status"] == "verified" else SALMON))
+        p.append(txt(x + 28, y + 29, gate["id"] + "  " + gate["name"], 17, 650))
+        p.append(txt(x + 28, y + 55, status_words[gate["status"]], 12, 700, color=MUTED, letter="0.65"))
+        p.append(txt(x + 336, y + 55, "ISSUE " + ", ".join(str(i) for i in gate["issues"][:4]), 11, 400, color=MUTED))
+    p.append(rect(68, 602, 1024, 1, RULE))
+    p.append(txt(68, 642, "02  /  OPERATIONAL TASKS", 19, 700, letter="0.8"))
+    task = s["task_progress"]
+    p.append(txt(839, 642, f'{task["checked"]} / {task["total"]} CHECKED', 15, 700, color=INK))
+    p.append(txt(68, 668, "Checkboxes from the work ledger, not a product-completion estimate.", 14, 400, color=MUTED))
+    rows = task["groups"]
+    for i, group in enumerate(rows):
+        col, row = i % 2, i // 2
+        x, y = 68 + col * 518, 702 + row * 44
+        p.append(txt(x, y, GROUP_NAMES.get(group["group"], group["group"]), 15, 500))
+        p.append(txt(x + 410, y, f'{group["checked"]} / {group["total"]}', 14, 600, color=MUTED))
+        p.append(rect(x, y + 9, 474, 7, "#DDD6C9", radius=3))
+        fill = 474 * group["checked"] / group["total"]
+        if fill:
+            p.append(rect(x, y + 9, round(fill, 2), 7, INK, radius=3))
+    p.append(rect(68, 1032, 1024, 1, RULE))
+    p.append(txt(68, 1054, "EVIDENCE FIRST.  •  LOCAL BY DEFAULT.  •  NO IMPLIED COMPLETION.", 12, 600, color=MUTED, letter="0.5"))
+    p.append("</svg>\n")
+    return "\n".join(p)
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("command", choices=("check", "write", "render", "json"))
+    parser.add_argument("command", choices=("check", "write", "render", "svg", "json"))
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parent.parent)
     args = parser.parse_args(argv)
     try:
         result = analyze(args.root)
         markdown = render(result)
+        graphic = render_svg(result)
         path = args.root / "docs/PROGRESS.md"
+        art = args.root / "docs/progress.svg"
         if args.command == "write":
             path.write_text(markdown, encoding="utf-8")
-            print("Updated docs/PROGRESS.md")
+            art.write_text(graphic, encoding="utf-8")
+            print("Updated docs/PROGRESS.md and docs/progress.svg")
         elif args.command == "check":
             if not path.exists() or path.read_text(encoding="utf-8") != markdown:
                 raise HealthError("Progress report stale: run python tools/project_health.py write")
+            if not art.exists() or art.read_text(encoding="utf-8") != graphic:
+                raise HealthError("Branded progress SVG stale: run python tools/project_health.py write")
             print(f"Progress validated: {result['task_progress']['total']} tasks; "
                   f"{result['verified_count']}/8 gates evidence-verified.")
         elif args.command == "render":
             sys.stdout.write(markdown)
+        elif args.command == "svg":
+            sys.stdout.write(graphic)
         elif args.command == "json":
             print(json.dumps(result, indent=2, ensure_ascii=False))
     except (OSError, json.JSONDecodeError, HealthError) as exc:

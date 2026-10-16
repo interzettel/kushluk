@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc" viewBox="0 0 1160 1100" width="1160" height="1100">
+<title id="title">Kuşluk — development and proof of delivery</title>
+<desc id="desc">An evidence status map with eight delivery gates and a separate count of checked operational tasks. The presence of a task checkbox is not a percentage of completed product.</desc>
+<rect x="0" y="0" width="1160" height="1100" rx="0" fill="#F3EFE4"/>
+<rect x="36" y="35" width="1088" height="1030" rx="3" fill="#FFFDF8" stroke="#BDB6A8" stroke-width="1"/>
+<text x="68" y="111" fill="#1A1A1A" font-size="51" font-weight="700" letter-spacing="-2" font-family="Georgia,Times New Roman,serif">Kuşluk</text>
+<text x="71" y="142" fill="#6D6961" font-size="13" font-weight="600" letter-spacing="1.25" font-family="Georgia,Times New Roman,serif">AN OPEN PERSONAL MORNING PUBLICATION</text>
+<circle cx="1072" cy="91" r="20" fill="#F3D77B"/>
+<rect x="68" y="171" width="1024" height="2" rx="0" fill="#1A1A1A"/>
+<text x="68" y="207" fill="#1A1A1A" font-size="19" font-weight="700" letter-spacing="0.8" font-family="Georgia,Times New Roman,serif">01  /  DELIVERY EVIDENCE</text>
+<text x="888" y="207" fill="#6D6961" font-size="13" font-weight="400" letter-spacing="0" font-family="Georgia,Times New Roman,serif">2026-10-16  ·  REVIEW SNAPSHOT</text>
+<rect x="68" y="225" width="500" height="77" rx="5" fill="#F3EFE4" stroke="#BDB6A8" stroke-width="1"/>
+<rect x="80" y="239" width="5" height="49" rx="0" fill="#E8C9B8"/>
+<text x="96" y="254" fill="#1A1A1A" font-size="17" font-weight="650" letter-spacing="0" font-family="Georgia,Times New Roman,serif">G1  Four-page format</text>
+<text x="96" y="280" fill="#6D6961" font-size="12" font-weight="700" letter-spacing="0.65" font-family="Georgia,Times New Roman,serif">AWAITING PROOF</text>
+<text x="404" y="280" fill="#6D6961" font-size="11" font-weight="400" letter-spacing="0" font-family="Georgia,Times New Roman,serif">ISSUE 45, 21</text>
+<rect x="586" y="225" width="500" height="77" rx="5" fill="#F3EFE4" stroke="#BDB6A8" stroke-width="1"/>
+<rect x="598" y="239" width="5" height="49" rx="0" fill="#E8C9B8"/>
+<text x="614" y="254" fill="#1A1A1A" font-size="17" font-weight="650" letter-spacing="0" font-family="Georgia,Times New Roman,serif">G2  Real A4/A3 delivery</text>
+<text x="614" y="280" fill="#6D6961" font-size="12" font-weight="700" letter-spacing="0.65" font-family="Georgia,Times New Roman,serif">AWAITING PROOF</text>
+<text x="922" y="280" fill="#6D6961" font-size="11" font-weight="400" letter-spacing="0" font-family="Georgia,Times New Roman,serif">ISSUE 46, 7, 13</text>
+<rect x="68" y="316" width="500" height="77" rx="5" fill="#F3EFE4" stroke="#BDB6A8" stroke-width="1"/>
+<rect x="80" y="330" width="5" height="49" rx="0" fill="#E8C9B8"/>
+<text x="96" y="345" fill="#1A1A1A" font-size="17" font-weight="650" letter-spacing="0" font-family="Georgia,Times New Roman,serif">G3  Unattended automation</text>
+<text x="96" y="371" fill="#6D6961" font-size="12" font-weight="700" letter-spacing="0.65" font-family="Georgia,Times New Roman,serif">AWAITING PROOF</text>
+<text x="404" y="371" fill="#6D6961" font-size="11" font-weight="400" letter-spacing="0" font-family="Georgia,Times New Roman,serif">ISSUE 47, 17, 13</text>
+<rect x="586" y="316" width="500" height="77" rx="5" fill="#F3EFE4" stroke="#BDB6A8" stroke-width="1"/>
+<rect x="598" y="330" width="5" height="49" rx="0" fill="#E8C9B8"/>
+<text x="614" y="345" fill="#1A1A1A" font-size="17" font-weight="650" letter-spacing="0" font-family="Georgia,Times New Roman,serif">G4  Sources and security</text>
+<text x="614" y="371" fill="#6D6961" font-size="12" font-weight="700" letter-spacing="0.65" font-family="Georgia,Times New Roman,serif">AWAITING PROOF</text>
+<text x="922" y="371" fill="#6D6961" font-size="11" font-weight="400" letter-spacing="0" font-family="Georgia,Times New Roman,serif">ISSUE 4, 16, 48, 49</text>
+<rect x="68" y="407" width="500" height="77" rx="5" fill="#F3EFE4" stroke="#BDB6A8" stroke-width="1"/>
+<rect x="80" y="421" width="5" height="49" rx="0" fill="#E8C9B8"/>
+<text x="96" y="436" fill="#1A1A1A" font-size="17" font-weight="650" letter-spacing="0" font-family="Georgia,Times New Roman,serif">G5  User-owned portability</text>
+<text x="96" y="462" fill="#6D6961" font-size="12" font-weight="700" letter-spacing="0.65" font-family="Georgia,Times New Roman,serif">AWAITING PROOF</text>
+<text x="404" y="462" fill="#6D6961" font-size="11" font-weight="400" letter-spacing="0" font-family="Georgia,Times New Roman,serif">ISSUE 5, 15, 37</text>
+<rect x="586" y="407" width="500" height="77" rx="5" fill="#F3EFE4" stroke="#BDB6A8" stroke-width="1"/>
+<rect x="598" y="421" width="5" height="49" rx="0" fill="#E8C9B8"/>
+<text x="614" y="436" fill="#1A1A1A" font-size="17" font-weight="650" letter-spacing="0" font-family="Georgia,Times New Roman,serif">G6  Public trust and legal copy</text>
+<text x="614" y="462" fill="#6D6961" font-size="12" font-weight="700" letter-spacing="0.65" font-family="Georgia,Times New Roman,serif">AWAITING PROOF</text>
+<text x="922" y="462" fill="#6D6961" font-size="11" font-weight="400" letter-spacing="0" font-family="Georgia,Times New Roman,serif">ISSUE 10, 34</text>
+<rect x="68" y="498" width="500" height="77" rx="5" fill="#F3EFE4" stroke="#BDB6A8" stroke-width="1"/>
+<rect x="80" y="512" width="5" height="49" rx="0" fill="#E8C9B8"/>
+<text x="96" y="527" fill="#1A1A1A" font-size="17" font-weight="650" letter-spacing="0" font-family="Georgia,Times New Roman,serif">G7  Licensing and contribution governance</text>
+<text x="96" y="553" fill="#6D6961" font-size="12" font-weight="700" letter-spacing="0.65" font-family="Georgia,Times New Roman,serif">AWAITING PROOF</text>
+<text x="404" y="553" fill="#6D6961" font-size="11" font-weight="400" letter-spacing="0" font-family="Georgia,Times New Roman,serif">ISSUE 38, 54</text>
+<rect x="586" y="498" width="500" height="77" rx="5" fill="#F3EFE4" stroke="#BDB6A8" stroke-width="1"/>
+<rect x="598" y="512" width="5" height="49" rx="0" fill="#E8C9B8"/>
+<text x="614" y="527" fill="#1A1A1A" font-size="17" font-weight="650" letter-spacing="0" font-family="Georgia,Times New Roman,serif">G8  Real reader trials</text>
+<text x="614" y="553" fill="#6D6961" font-size="12" font-weight="700" letter-spacing="0.65" font-family="Georgia,Times New Roman,serif">AWAITING PROOF</text>
+<text x="922" y="553" fill="#6D6961" font-size="11" font-weight="400" letter-spacing="0" font-family="Georgia,Times New Roman,serif">ISSUE 6, 13</text>
+<rect x="68" y="602" width="1024" height="1" rx="0" fill="#BDB6A8"/>
+<text x="68" y="642" fill="#1A1A1A" font-size="19" font-weight="700" letter-spacing="0.8" font-family="Georgia,Times New Roman,serif">02  /  OPERATIONAL TASKS</text>
+<text x="839" y="642" fill="#1A1A1A" font-size="15" font-weight="700" letter-spacing="0" font-family="Georgia,Times New Roman,serif">4 / 90 CHECKED</text>
+<text x="68" y="668" fill="#6D6961" font-size="14" font-weight="400" letter-spacing="0" font-family="Georgia,Times New Roman,serif">Checkboxes from the work ledger, not a product-completion estimate.</text>
+<text x="68" y="702" fill="#1A1A1A" font-size="15" font-weight="500" letter-spacing="0" font-family="Georgia,Times New Roman,serif">Project records</text>
+<text x="478" y="702" fill="#6D6961" font-size="14" font-weight="600" letter-spacing="0" font-family="Georgia,Times New Roman,serif">4 / 5</text>
+<rect x="68" y="711" width="474" height="7" rx="3" fill="#DDD6C9"/>
+<rect x="68" y="711" width="379.2" height="7" rx="3" fill="#1A1A1A"/>
+<text x="586" y="702" fill="#1A1A1A" font-size="15" font-weight="500" letter-spacing="0" font-family="Georgia,Times New Roman,serif">Four-page formats</text>
+<text x="996" y="702" fill="#6D6961" font-size="14" font-weight="600" letter-spacing="0" font-family="Georgia,Times New Roman,serif">0 / 10</text>
+<rect x="586" y="711" width="474" height="7" rx="3" fill="#DDD6C9"/>
+<text x="68" y="746" fill="#1A1A1A" font-size="15" font-weight="500" letter-spacing="0" font-family="Georgia,Times New Roman,serif">Unattended runs</text>
+<text x="478" y="746" fill="#6D6961" font-size="14" font-weight="600" letter-spacing="0" font-family="Georgia,Times New Roman,serif">0 / 13</text>
+<rect x="68" y="755" width="474" height="7" rx="3" fill="#DDD6C9"/>
+<text x="586" y="746" fill="#1A1A1A" font-size="15" font-weight="500" letter-spacing="0" font-family="Georgia,Times New Roman,serif">Source connectors</text>
+<text x="996" y="746" fill="#6D6961" font-size="14" font-weight="600" letter-spacing="0" font-family="Georgia,Times New Roman,serif">0 / 10</text>
+<rect x="586" y="755" width="474" height="7" rx="3" fill="#DDD6C9"/>
+<text x="68" y="790" fill="#1A1A1A" font-size="15" font-weight="500" letter-spacing="0" font-family="Georgia,Times New Roman,serif">Image handling</text>
+<text x="478" y="790" fill="#6D6961" font-size="14" font-weight="600" letter-spacing="0" font-family="Georgia,Times New Roman,serif">0 / 9</text>
+<rect x="68" y="799" width="474" height="7" rx="3" fill="#DDD6C9"/>
+<text x="586" y="790" fill="#1A1A1A" font-size="15" font-weight="500" letter-spacing="0" font-family="Georgia,Times New Roman,serif">Editorial layouts</text>
+<text x="996" y="790" fill="#6D6961" font-size="14" font-weight="600" letter-spacing="0" font-family="Georgia,Times New Roman,serif">0 / 11</text>
+<rect x="586" y="799" width="474" height="7" rx="3" fill="#DDD6C9"/>
+<text x="68" y="834" fill="#1A1A1A" font-size="15" font-weight="500" letter-spacing="0" font-family="Georgia,Times New Roman,serif">Design integrations</text>
+<text x="478" y="834" fill="#6D6961" font-size="14" font-weight="600" letter-spacing="0" font-family="Georgia,Times New Roman,serif">0 / 5</text>
+<rect x="68" y="843" width="474" height="7" rx="3" fill="#DDD6C9"/>
+<text x="586" y="834" fill="#1A1A1A" font-size="15" font-weight="500" letter-spacing="0" font-family="Georgia,Times New Roman,serif">Newspaper research</text>
+<text x="996" y="834" fill="#6D6961" font-size="14" font-weight="600" letter-spacing="0" font-family="Georgia,Times New Roman,serif">0 / 3</text>
+<rect x="586" y="843" width="474" height="7" rx="3" fill="#DDD6C9"/>
+<text x="68" y="878" fill="#1A1A1A" font-size="15" font-weight="500" letter-spacing="0" font-family="Georgia,Times New Roman,serif">Automation research</text>
+<text x="478" y="878" fill="#6D6961" font-size="14" font-weight="600" letter-spacing="0" font-family="Georgia,Times New Roman,serif">0 / 2</text>
+<rect x="68" y="887" width="474" height="7" rx="3" fill="#DDD6C9"/>
+<text x="586" y="878" fill="#1A1A1A" font-size="15" font-weight="500" letter-spacing="0" font-family="Georgia,Times New Roman,serif">Image rights research</text>
+<text x="996" y="878" fill="#6D6961" font-size="14" font-weight="600" letter-spacing="0" font-family="Georgia,Times New Roman,serif">0 / 1</text>
+<rect x="586" y="887" width="474" height="7" rx="3" fill="#DDD6C9"/>
+<text x="68" y="922" fill="#1A1A1A" font-size="15" font-weight="500" letter-spacing="0" font-family="Georgia,Times New Roman,serif">Editorial intelligence</text>
+<text x="478" y="922" fill="#6D6961" font-size="14" font-weight="600" letter-spacing="0" font-family="Georgia,Times New Roman,serif">0 / 6</text>
+<rect x="68" y="931" width="474" height="7" rx="3" fill="#DDD6C9"/>
+<text x="586" y="922" fill="#1A1A1A" font-size="15" font-weight="500" letter-spacing="0" font-family="Georgia,Times New Roman,serif">Setup and controls</text>
+<text x="996" y="922" fill="#6D6961" font-size="14" font-weight="600" letter-spacing="0" font-family="Georgia,Times New Roman,serif">0 / 8</text>
+<rect x="586" y="931" width="474" height="7" rx="3" fill="#DDD6C9"/>
+<text x="68" y="966" fill="#1A1A1A" font-size="15" font-weight="500" letter-spacing="0" font-family="Georgia,Times New Roman,serif">Physical trials</text>
+<text x="478" y="966" fill="#6D6961" font-size="14" font-weight="600" letter-spacing="0" font-family="Georgia,Times New Roman,serif">0 / 7</text>
+<rect x="68" y="975" width="474" height="7" rx="3" fill="#DDD6C9"/>
+<rect x="68" y="1032" width="1024" height="1" rx="0" fill="#BDB6A8"/>
+<text x="68" y="1054" fill="#6D6961" font-size="12" font-weight="600" letter-spacing="0.5" font-family="Georgia,Times New Roman,serif">EVIDENCE FIRST.  •  LOCAL BY DEFAULT.  •  NO IMPLIED COMPLETION.</text>
+</svg>
