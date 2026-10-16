@@ -84,7 +84,9 @@ def run_pipeline(
 
     candidates = []
     try:
-        candidates.extend(RSSConnector(settings.rss_urls).fetch())
+        candidates.extend(RSSConnector(
+            settings.rss_urls, reference_only_urls=settings.reference_only_rss_urls,
+        ).fetch())
     except Exception as exc:
         failures.append(_failure("rss_unavailable", "degraded", exc, "rss"))
 
