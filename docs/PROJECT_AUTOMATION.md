@@ -2,7 +2,7 @@
 
 **Project:** [Kushluk #3](https://github.com/orgs/interzettel/projects/3) · **Implementation:** [#65](https://github.com/interzettel/kushluk/issues/65).
 
-**Agent workflow:** [tools/issue-intake/SKILL.md](../tools/issue-intake/SKILL.md) and `python -m tools.create_issue`. The one-time `push` bootstrap/backfill trigger is temporary and must be removed after the first verified live run.
+**Agent workflow:** [tools/issue-intake/SKILL.md](../tools/issue-intake/SKILL.md) and `python -m tools.create_issue`. The one-time push attempt has been removed following its real permission check. The [workflow run](https://github.com/interzettel/kushluk/actions/runs/38965440211) reached the masked secret but failed on `organization.projectV2`: the token lacked Project access. No fields were changed. Configure the token with **Resource owner: interzettel** and **Organization permissions → Projects: Read and write** (plus **Repository permissions → Issues: Read and write**); if required, approve organization access. Then use manual workflow dispatch for bootstrap, backfill and audit. Never paste credentials into issues.
 
 ## What the fields do
 
