@@ -73,6 +73,7 @@ Available commands:
 - overflow PDF kept as debug output rather than printed.
 
 ### Delivery
+- native A4-home and A3-folded software print profiles; A3 4|1 / 2|3 imposition with validated A3 landscape geometry;
 - CUPS printer discovery/capabilities;
 - duplex-aware print submission;
 - generic SMTP delivery;
@@ -87,8 +88,7 @@ Available commands:
 
 ## Decided but not yet implemented
 
-- A4 Home Printer profile: two A4 sheets, duplex where supported, optional staple marks;
-- A3 Folded Newspaper profile: duplex A3 booklet imposition `4 | 1` / `2 | 3`;
+- optional staple marks and real-device calibration for A4/A3;
 - optional edition-scoped morning intent;
 - layout-manifest/archetype layer;
 - automated media acquisition, crop, caption/credit, placement and fallback;
