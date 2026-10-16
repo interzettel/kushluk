@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, replace
 from pathlib import Path
+import re
 from urllib.parse import urlparse
 
 from kushluk.models import PracticalItem, Publication, Story
@@ -84,7 +85,14 @@ def validate_pdf(pdf_path: Path, expected_pages: int = 4) -> ValidationResult:
             width, height = float(box.width), float(box.height)
             # A4 portrait in PDF points = 595.28 x 841.89; allow renderer rounding.
             if abs(width - 595.28) > 2 or abs(height - 841.89) > 2:
-                errors.append(f"Logical page {number} is not portrait A4 ({width:.1f} x {height:.1f}pt).")
+                errors.append(
+                    f"Logical page {number} is not portrait A4 ({width:.1f} x {height:.1f}pt)."
+                )
+            # The final page marker is embedded in each page, not just inferred
+            # from PDF order. Catch swapped/missing content and blank sheets.
+            content = page.extract_text() or ""
+            if not re.search(rf"\\b{number}\\s*/\\s*4\\b", content):
+                errors.append(f"Missing or out-of-order logical page marker on page {number}.")
     return ValidationResult(errors=errors, warnings=[], page_count=count)
 
 
