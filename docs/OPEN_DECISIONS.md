@@ -15,6 +15,19 @@ The final production typefaces should be chosen after:
 
 This does not block the four-page renderer or automation work.
 
+## Open proposals tracked on GitHub (not accepted architecture decisions)
+
+These issues currently require evidence, maintainer review and/or founder decisions. Their existence **does not override accepted ADRs** or authorize new hosting, advertising, publisher content sharing, or license changes:
+
+- [#38](https://github.com/interzettel/kushluk/issues/38) — licensing: MIT (currently shipped) vs MPL core / Apache interoperability boundaries and contributor IP/DCO/governance; hold changes pending ownership and dependency audit.
+- [#37](https://github.com/interzettel/kushluk/issues/37) — local vault format and whether/when optional E2EE sync/browser access should be offered.
+- [#35](https://github.com/interzettel/kushluk/issues/35), [#36](https://github.com/interzettel/kushluk/issues/36), [#39](https://github.com/interzettel/kushluk/issues/39) — Studio economics, optional creative merchandise and reader-invited sponsorships; experimental, not current business commitments.
+- [#40](https://github.com/interzettel/kushluk/issues/40), [#41](https://github.com/interzettel/kushluk/issues/41) — personal magazines vs public editorial products and separate printing/storage service feasibility; copyright/privacy review required before any commercial rights claim.
+- [#26](https://github.com/interzettel/kushluk/issues/26), [#30](https://github.com/interzettel/kushluk/issues/30), [#31](https://github.com/interzettel/kushluk/issues/31), [#52](https://github.com/interzettel/kushluk/issues/52) — optional implementation research, **not** reasons to block the deterministic native renderer.
+- [#44](https://github.com/interzettel/kushluk/issues/44) — resolve the two accepted ADR 0012 files' identifier/wording conflict and maintain accepted ADR 0015 index.
+
+Track portfolio state in [master ledger #43](https://github.com/interzettel/kushluk/issues/43) and implementable tasks in [ISSUE_CROSSWALK.md](ISSUE_CROSSWALK.md) / [WORK_LEDGER.md](WORK_LEDGER.md).
+
 ## Resolved since the previous register
 
 The canonical physical-format decision is no longer open. ADR 0013 supersedes ADR 0002: Kuşluk uses four logical A4 pages with A4 Home Printer and A3 Folded Newspaper print profiles.

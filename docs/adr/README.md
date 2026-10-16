@@ -30,6 +30,11 @@ Each ADR contains:
 - 0012 Newsletter discovery is explicit and source-specific
 - 0013 Four logical A4 pages with multiple print profiles
 - 0014 Morning intent is ephemeral editorial input
+- 0015 Orchestration and agent runtime are replaceable
+
+## ADR identifier conflict requiring maintainer resolution
+
+**Two files currently carry accepted ADR number 0012:** `0012-newsletter-discovery-and-source-modes.md` and `0012-newsletter-discovery-and-ingestion-modes.md`. Both have overlapping but not identical source-mode wording. This is a documentation integrity issue tracked in [GitHub #44](https://github.com/interzettel/kushluk/issues/44). Neither file is silently treated as superseded solely by this README update. Resolve via an explicit recorded decision, preserve history and then update this index and all references.
 
 ## Superseded
 

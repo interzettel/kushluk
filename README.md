@@ -71,11 +71,11 @@ See [docs/STATUS.md](docs/STATUS.md) for the live implementation boundary, [docs
 Requires Python 3.11+.
 
 ```bash
-git clone https://github.com/yigit-denktas/kushluk.git
+git clone https://github.com/interzettel/kushluk.git
 cd kushluk
 
 python -m venv .venv
-source .venv/bin/activate
+source .venv/bin/activate  # macOS/Linux; Windows PowerShell: .venv\Scripts\Activate.ps1
 pip install -e ".[dev]"
 
 kushluk doctor
@@ -123,7 +123,9 @@ Start with:
 
 - [AGENTS.md](AGENTS.md)
 - [docs/STATUS.md](docs/STATUS.md)
-- [docs/WORK_LEDGER.md](docs/WORK_LEDGER.md)
+- [docs/WORK_LEDGER.md](docs/WORK_LEDGER.md) — operational tasks and evidence
+- [docs/ISSUE_CROSSWALK.md](docs/ISSUE_CROSSWALK.md) — all numbered tasks mapped to GitHub issues
+- [GitHub issue #43 — master issue ledger](https://github.com/interzettel/kushluk/issues/43) — portfolio-wide issue states, dependencies and decisions
 - [docs/FULL_AUTOMATION.md](docs/FULL_AUTOMATION.md)
 - [docs/CHAT_RECONCILIATION.md](docs/CHAT_RECONCILIATION.md)
 - [docs/PRODUCT.md](docs/PRODUCT.md)

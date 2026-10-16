@@ -1,8 +1,13 @@
 # Kuşluk Work Ledger
 
-Last updated: 2026-10-07.
+Last implementation-status review: 2026-10-07.
+Issue/task reconciliation reviewed: 2026-10-16 (no new implementation completion implied).
 
 This is the cross-stage execution ledger for Kuşluk. It records work that is decided, open, blocked, or research-only. It complements `ROADMAP.md`; the roadmap explains sequencing, while this file is the operational source of truth for unfinished work.
+
+**Traceability:** every numbered task in this file is mapped to its primary GitHub implementation/discussion owner in [ISSUE_CROSSWALK.md](ISSUE_CROSSWALK.md) (90 tasks in the 2026-10-16 snapshot). [GitHub master issue #43](https://github.com/interzettel/kushluk/issues/43) is the issue portfolio index; issue creation/closure alone does **not** change the task checkboxes. The first explicitly scoped implementation packages are #45–#52 and document reconciliation is #44. See [STATUS.md](STATUS.md) for independently verified implementation status.
+
+**Known ADR reconciliation issue:** accepted ADR 0015 (replaceable orchestration and agent runtime) must be indexed; two files currently claim accepted ADR 0012. Resolve the duplicate under #44 before treating either variant as a uniquely canonical decision. Do not silently change accepted-ADR text.
 
 ## North star
 
@@ -43,6 +48,7 @@ Workflow tools such as n8n, Apple Shortcuts, systemd/cron, launchd, or a future 
 | ADR-0012 | DONE | Newsletter discovery uses explicit per-source modes: ignore, reference, derivative, private direct inclusion. |
 | ADR-0013 | DONE | Canonical edition geometry is four logical A4 pages. A4 and A3 are print/imposition profiles, not separate editorial layouts. |
 | ADR-0014 | DONE | Optional spoken/typed morning intent is edition-scoped and does not silently become durable profile data. |
+| ADR-0015 | DONE | The core edition engine owns publication state; orchestration, agents and design adapters are replaceable via stable Kuşluk contracts. |
 | D-RENDER | DONE | Approved production layouts are deterministic; generative models do not redesign the edition at print time. |
 | D-AUTO | DONE | Full automation is the product target; humans may configure/review, but daily layout assembly must not require manual InDesign/Canva work. |
 
