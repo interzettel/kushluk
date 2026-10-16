@@ -14,6 +14,7 @@ class Settings:
     longitude: float = 6.9603
     timezone: str = "Europe/Berlin"
     rss_urls: tuple[str, ...] = ("https://hnrss.org/frontpage",)
+    reference_only_rss_urls: tuple[str, ...] = ()
     archive_dir: Path = Path("archive")
     output_dir: Path = Path("output")
     calendar_ics: str | None = None
@@ -50,6 +51,7 @@ class Settings:
             longitude=float(os.getenv("KUSHLUK_LONGITUDE", "6.9603")),
             timezone=os.getenv("KUSHLUK_TIMEZONE", "Europe/Berlin"),
             rss_urls=rss,
+            reference_only_rss_urls=registry,
             archive_dir=Path(os.getenv("KUSHLUK_ARCHIVE_DIR", "archive")),
             output_dir=Path(os.getenv("KUSHLUK_OUTPUT_DIR", "output")),
             calendar_ics=os.getenv("KUSHLUK_CALENDAR_ICS") or None,
