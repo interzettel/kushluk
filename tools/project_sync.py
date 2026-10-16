@@ -80,9 +80,47 @@ def project_fields(client: Client) -> set[str]:
 
 
 def bootstrap(client: Client) -> list[str]:
-    existing = project_fields(client)
+    field_data = client.json(
+        "project", "field-list", PROJECT, "--owner", OWNER, "--format", "json"
+    )
+    fields = {
+        entry["name"]: entry for entry in field_data.get("fields", [])
+        if isinstance(entry, dict) and entry.get("name")
+    }
+    existing = set(fields)
     if "Status" not in existing:
         raise SyncError("Missing native Status; do not create a duplicate Stage")
+
+    # The owner-created Priority is an EMPTY single-select field. Preserve the
+    # existing field ID and populate options; refuse conflicting configurations.
+    priority = fields.get("Priority")
+    if priority is not None:
+        if priority.get("type") != "ProjectV2SingleSelectField":
+            raise SyncError("Existing Priority field is not single-select")
+        current = [
+            item["name"] for item in priority.get("options", [])
+            if isinstance(item, dict) and item.get("name")
+        ]
+        if not current:
+            mutation = (
+                "mutation($fieldId: ID!) { updateProjectV2Field(input: "
+                "{fieldId: $fieldId, singleSelectOptions: ["
+                '{name:"P0", color:RED, description:"Critical"},'
+                '{name:"P1", color:ORANGE, description:"High"},'
+                '{name:"P2", color:YELLOW, description:"Normal"},'
+                '{name:"P3", color:GRAY, description:"Low"}'
+                "]}) { projectV2Field { ... on ProjectV2SingleSelectField "
+                "{ id options { name } } } } }"
+            )
+            client.json(
+                "api", "graphql", "-f", f"query={mutation}",
+                "-F", f"fieldId={priority['id']}"
+            )
+        elif not set(FIELDS["Priority"]).issubset(current):
+            raise SyncError(
+                "Priority has custom options: refusing to replace them. "
+                "Review field configuration manually."
+            )
     created: list[str] = []
     for name, options in FIELDS.items():
         if name not in existing:
