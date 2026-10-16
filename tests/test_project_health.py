@@ -7,7 +7,7 @@ import shutil
 from tempfile import TemporaryDirectory
 import unittest
 
-from tools.project_health import HealthError, analyze, render, render_svg
+from tools.project_health import (HealthError, analyze, format_percent, render, render_svg)
 
 
 REPO = Path(__file__).resolve().parent.parent
@@ -36,6 +36,10 @@ class ProjectHealthTests(unittest.TestCase):
         self.assertEqual(len(result["task_progress"]["groups"]), 13)
         self.assertEqual(len(result["gates"]), 8)
         self.assertEqual(result["verified_count"], 0)
+        self.assertEqual(result["verified_percentage"], "00.00%")
+        self.assertEqual(result["task_progress"]["percentage"], "04.44%")
+        self.assertEqual(result["task_progress"]["groups"][0]["percentage"], "80.00%")
+        self.assertEqual(result["task_progress"]["groups"][1]["percentage"], "00.00%")
         self.assertEqual(
             (REPO / "docs/PROGRESS.md").read_text(encoding="utf-8"),
             render(result),
@@ -47,6 +51,21 @@ class ProjectHealthTests(unittest.TestCase):
         self.assertIn('#F3EFE4', graphic)
         self.assertIn('role="img"', graphic)
         self.assertIn("AWAITING PROOF", graphic)
+        self.assertIn("04.44%", graphic)
+        self.assertIn("00.00%", graphic)
+        self.assertIn("80.00%", graphic)
+        self.assertIn("04.44%", render(result))
+
+    def test_percentage_formatting_boundaries(self):
+        self.assertEqual(format_percent(0, 8), "00.00%")
+        self.assertEqual(format_percent(1, 90), "01.11%")
+        self.assertEqual(format_percent(4, 90), "04.44%")
+        self.assertEqual(format_percent(4, 5), "80.00%")
+        self.assertEqual(format_percent(8, 8), "100.00%")
+        with self.assertRaises(HealthError):
+            format_percent(2, 1)
+        with self.assertRaises(HealthError):
+            format_percent(0, 0)
 
     def test_missing_task_is_rejected(self):
         file = self.root / "docs/WORK_LEDGER.md"
@@ -86,6 +105,8 @@ class ProjectHealthTests(unittest.TestCase):
         self.store_manifest(data)
         result = analyze(self.root)
         self.assertEqual(result["verified_count"], 1)
+        self.assertEqual(result["verified_percentage"], "12.50%")
+        self.assertIn("12.50%", render(result))
         self.assertIn("Proof (2026-10-16)", render(result))
 
     def test_invalid_or_duplicate_gate_is_rejected(self):
