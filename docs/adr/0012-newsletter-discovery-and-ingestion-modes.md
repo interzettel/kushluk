@@ -4,13 +4,13 @@
 
 ## Context
 
-Many users already receive high-value editorial material by email but do not consistently open or read it. Asking users to manually recreate this source list inside Kuşluk would create unnecessary onboarding work.
+Many users already receive high-value editorial material by email but do not consistently open or read it. Asking users to manually recreate this source list inside Kushluk would create unnecessary onboarding work.
 
-Email is also private personal data, so Kuşluk must distinguish source discovery, editorial transformation, and direct personal reuse.
+Email is also private personal data, so Kushluk must distinguish source discovery, editorial transformation, and direct personal reuse.
 
 ## Decision
 
-When the user explicitly connects an email account, Kuşluk may perform a local-first discovery pass to identify likely newsletters and recurring editorial mail.
+When the user explicitly connects an email account, Kushluk may perform a local-first discovery pass to identify likely newsletters and recurring editorial mail.
 
 The user must be shown the discovered sources and choose how each may be used.
 
@@ -50,6 +50,6 @@ Those roles should not be conflated.
 
 Revisit if:
 - managed cloud becomes a primary deployment mode;
-- Kuşluk introduces public/shared editions;
+- Kushluk introduces public/shared editions;
 - publisher-specific licensing integrations become available;
 - legal/compliance requirements materially change the allowed processing model.

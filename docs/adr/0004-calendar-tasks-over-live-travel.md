@@ -10,7 +10,7 @@ Calendar and task commitments are comparatively stable. Rail/air operational det
 
 Printed space prioritises calendar and tasks over detailed live travel status.
 
-Kuşluk may print stable travel context and pointers to live apps, but should not pretend the morning sheet is authoritative for delays, gates, platforms, cancellations, or similar volatile data.
+Kushluk may print stable travel context and pointers to live apps, but should not pretend the morning sheet is authoritative for delays, gates, platforms, cancellations, or similar volatile data.
 
 ## Rationale
 

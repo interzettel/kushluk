@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This document defines the production architecture Kuşluk is aiming for. The goal is not “AI generates a pretty PDF.” The goal is a repeatable editorial production line that can run every morning with newsroom-like discipline and without manual page assembly.
+This document defines the production architecture Kushluk is aiming for. The goal is not “AI generates a pretty PDF.” The goal is a repeatable editorial production line that can run every morning with newsroom-like discipline and without manual page assembly.
 
 ## Core principle
 
@@ -92,7 +92,7 @@ This keeps the project replaceable and local-first.
 
 ## Newspaper-production analogy
 
-Kuşluk should model the useful parts of a newsroom:
+Kushluk should model the useful parts of a newsroom:
 
 - **news desk** -> candidate acquisition;
 - **editorial meeting/budget** -> decide what deserves space today;
@@ -203,7 +203,7 @@ Wake/device/printer triggers are **capability-dependent experiments**, not requi
 ## Apple integration
 
 Apple Shortcuts is best treated first as a control/trigger surface:
-- “Generate Kuşluk now.”
+- “Generate Kushluk now.”
 - “Use this voice note as morning intent.”
 - “Pause today.”
 - “Digital only today.”

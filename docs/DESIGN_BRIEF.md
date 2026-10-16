@@ -2,7 +2,7 @@
 
 ## Working direction: Warm Editorial Computing
 
-Kuşluk should feel like a small publication made by a thoughtful editor, not a SaaS dashboard printed on paper.
+Kushluk should feel like a small publication made by a thoughtful editor, not a SaaS dashboard printed on paper.
 
 The central tension is:
 
@@ -20,9 +20,9 @@ Treat it as conceptual brand language rather than compulsory masthead copy.
 
 The primary identity is the exact wordmark:
 
-**Kuşluk**
+**Kushluk**
 
-Use capital **K** followed by lowercase **uşluk**. Preserve the Turkish **ş**. Do not make all-caps `KUŞLUK` the primary masthead.
+Use capital **K** followed by lowercase **uşluk**. Preserve the Turkish **ş**. Do not make all-caps `KUSHLUK` the primary masthead.
 
 The name comes from **kuşluk vakti**, the late-morning period after sunrise and before noon; the intended association is roughly the 09:00–11:00 part of the day rather than a fixed clock time. This reinforces the product as a morning ritual, not a generic news app.
 

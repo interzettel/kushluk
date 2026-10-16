@@ -8,9 +8,9 @@ Several open-source briefing/printing projects already solve parts of ingestion,
 
 ## Decision
 
-Kuşluk should reuse permissively licensed upstream infrastructure when it clearly saves effort, but should not wholesale fork another product architecture unless there is a compelling reason.
+Kushluk should reuse permissively licensed upstream infrastructure when it clearly saves effort, but should not wholesale fork another product architecture unless there is a compelling reason.
 
-The Kuşluk product model, privacy boundary, editorial system, canonical archive, and design direction remain its own.
+The Kushluk product model, privacy boundary, editorial system, canonical archive, and design direction remain its own.
 
 ## Rationale
 

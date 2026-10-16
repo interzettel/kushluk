@@ -1,4 +1,4 @@
-# Kuşluk security reporting and boundaries
+# Kushluk security reporting and boundaries
 
 **Status:** early-stage, locally run prototype; no published security-response SLA. See [engineering foundation #54](https://github.com/interzettel/kushluk/issues/54) and [provenance/security #16](https://github.com/interzettel/kushluk/issues/16).
 

@@ -39,7 +39,7 @@ def publication_markdown(publication: Publication) -> str:
         f"generated_at: {publication.generated_at}",
         "---",
         "",
-        "# Kuşluk",
+        "# Kushluk",
         "",
         f"**{publication.location_name} · {publication.target_date} · {publication.edition_id}**",
         "",

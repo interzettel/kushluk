@@ -1,9 +1,9 @@
-# Kuşluk Work Ledger
+# Kushluk Work Ledger
 
 Last implementation-status review: 2026-10-07.
 Issue/task reconciliation reviewed: 2026-10-16 (no new implementation completion implied).
 
-This is the cross-stage execution ledger for Kuşluk. It records work that is decided, open, blocked, or research-only. It complements `ROADMAP.md`; the roadmap explains sequencing, while this file is the operational source of truth for unfinished work.
+This is the cross-stage execution ledger for Kushluk. It records work that is decided, open, blocked, or research-only. It complements `ROADMAP.md`; the roadmap explains sequencing, while this file is the operational source of truth for unfinished work.
 
 **Traceability:** every numbered task in this file is mapped to its primary GitHub implementation/discussion owner in [ISSUE_CROSSWALK.md](ISSUE_CROSSWALK.md) (90 tasks in the 2026-10-16 snapshot). [GitHub master issue #43](https://github.com/interzettel/kushluk/issues/43) is the issue portfolio index; issue creation/closure alone does **not** change the task checkboxes. The first explicitly scoped implementation packages are #45–#52 and document reconciliation is #44. See [STATUS.md](STATUS.md) for independently verified implementation status.
 
@@ -11,7 +11,7 @@ This is the cross-stage execution ledger for Kuşluk. It records work that is de
 
 ## North star
 
-**Kuşluk should be capable of producing and delivering the morning edition without manual editorial layout work.**
+**Kushluk should be capable of producing and delivering the morning edition without manual editorial layout work.**
 
 The intended unattended path is:
 
@@ -30,7 +30,7 @@ scheduled trigger / user trigger
   -> archive + run ledger
 ```
 
-Workflow tools such as n8n, Apple Shortcuts, systemd/cron, launchd, or a future hosted scheduler may trigger and coordinate the run, but Kuşluk's canonical data model, editorial rules, renderer, validation, archive, and failure semantics remain in the core application.
+Workflow tools such as n8n, Apple Shortcuts, systemd/cron, launchd, or a future hosted scheduler may trigger and coordinate the run, but Kushluk's canonical data model, editorial rules, renderer, validation, archive, and failure semantics remain in the core application.
 
 ## Status vocabulary
 
@@ -48,7 +48,7 @@ Workflow tools such as n8n, Apple Shortcuts, systemd/cron, launchd, or a future 
 | ADR-0012 | DONE | Newsletter discovery uses explicit per-source modes: ignore, reference, derivative, private direct inclusion. |
 | ADR-0013 | DONE | Canonical edition geometry is four logical A4 pages. A4 and A3 are print/imposition profiles, not separate editorial layouts. |
 | ADR-0014 | DONE | Optional spoken/typed morning intent is edition-scoped and does not silently become durable profile data. |
-| ADR-0015 | DONE | The core edition engine owns publication state; orchestration, agents and design adapters are replaceable via stable Kuşluk contracts. |
+| ADR-0015 | DONE | The core edition engine owns publication state; orchestration, agents and design adapters are replaceable via stable Kushluk contracts. |
 | D-RENDER | DONE | Approved production layouts are deterministic; generative models do not redesign the edition at print time. |
 | D-AUTO | DONE | Full automation is the product target; humans may configure/review, but daily layout assembly must not require manual InDesign/Canva work. |
 
@@ -79,12 +79,12 @@ Workflow tools such as n8n, Apple Shortcuts, systemd/cron, launchd, or a future 
 
 ### P1 — Daily full automation
 
-- [ ] **AUT-01** Define a stable run request/response contract so external orchestrators can trigger Kuşluk without knowing internal implementation details.
+- [ ] **AUT-01** Define a stable run request/response contract so external orchestrators can trigger Kushluk without knowing internal implementation details.
 - [ ] **AUT-02** Add a scheduler-safe CLI/API entrypoint that is idempotent for a date/edition.
 - [ ] **AUT-03** Add deadline and “already generated/printed” guards to prevent accidental duplicate morning prints.
 - [ ] **AUT-04** Add optional `morning_intent` input to the run model and ranking trace.
 - [ ] **AUT-05** Provide an unattended local-host recipe (systemd/cron/launchd) as the baseline.
-- [ ] **AUT-06** Prototype an n8n orchestration that calls the same stable Kuşluk run boundary rather than reimplementing editorial logic inside n8n.
+- [ ] **AUT-06** Prototype an n8n orchestration that calls the same stable Kushluk run boundary rather than reimplementing editorial logic inside n8n.
 - [ ] **AUT-07** Prototype Apple Shortcuts as a trigger/control surface: generate now, pause today, digital-only, reprint, and optional voice morning intent.
 - [ ] **AUT-08** Investigate the practical Apple printing path: what can be automated through macOS printing/CUPS versus what AirPrint/iOS requires interactively.
 - [ ] **AUT-09** Add run-state observability: started, sources complete, editorial complete, rendered, validated, submitted to printer, printed/failed, digitally delivered.
@@ -138,14 +138,14 @@ Workflow tools such as n8n, Apple Shortcuts, systemd/cron, launchd, or a future 
 - [ ] **DES-EXT-02 (RESEARCH)** Test Adobe/Creative Cloud automation paths, including whether an approved InDesign-like template can be populated/exported unattended through available APIs/connectors.
 - [ ] **DES-EXT-03** Treat Canva/Adobe as optional authoring/import/export tooling unless the spike proves they can meet unattended deterministic production requirements.
 - [ ] **DES-EXT-04** If external templates are used, define a template contract: named text slots, image slots, max copy lengths, style IDs, page IDs, and export profile.
-- [ ] **DES-EXT-05** Preserve a renderer-native fallback so Kuşluk is not locked to a design SaaS.
+- [ ] **DES-EXT-05** Preserve a renderer-native fallback so Kushluk is not locked to a design SaaS.
 
 ### P2 — Production research
 
 - [ ] **RES-NEWS-01 (RESEARCH)** Document how daily newspapers actually close an edition: editorial budget meeting, page plan/dummy, section deadlines, copy desk, photo desk, page design, late-news replacement, preflight, plate/print deadlines.
-- [ ] **RES-NEWS-02 (RESEARCH)** Identify which newsroom practices transfer to Kuşluk: fixed grids, page budgets, story length classes, edition deadlines, late-breaking replacement slots, and preflight.
+- [ ] **RES-NEWS-02 (RESEARCH)** Identify which newsroom practices transfer to Kushluk: fixed grids, page budgets, story length classes, edition deadlines, late-breaking replacement slots, and preflight.
 - [ ] **RES-NEWS-03 (RESEARCH)** Quantify what is automated versus manually paginated in modern newspaper production systems.
-- [ ] **RES-AUTO-01 (RESEARCH)** Compare n8n, native OS schedulers, Apple Shortcuts, and a lightweight Kuşluk scheduler for local-first reliability.
+- [ ] **RES-AUTO-01 (RESEARCH)** Compare n8n, native OS schedulers, Apple Shortcuts, and a lightweight Kushluk scheduler for local-first reliability.
 - [ ] **RES-AUTO-02 (RESEARCH)** Determine whether the project needs a workflow engine at all, or only a stable trigger/API plus native scheduler.
 - [ ] **RES-IMG-01 (RESEARCH)** Define a safe image-rights policy for private personal editions versus any future shared/public edition.
 
@@ -181,7 +181,7 @@ Workflow tools such as n8n, Apple Shortcuts, systemd/cron, launchd, or a future 
 
 ## Completion boundary for “full automation v1”
 
-Kuşluk reaches full-automation v1 when all of the following are true:
+Kushluk reaches full-automation v1 when all of the following are true:
 
 1. A scheduler or external trigger can start an edition without opening an editor.
 2. Personal context and configured sources are acquired without manual exports.

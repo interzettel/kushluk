@@ -4,7 +4,7 @@
 
 ## Decision
 
-Kuşluk does not force one story to become a lead every day.
+Kushluk does not force one story to become a lead every day.
 
 ## Rationale
 

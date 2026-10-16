@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Kuşluk is not a feed aggregator. Its editorial system exists to **select, compress, connect, and omit**.
+Kushluk is not a feed aggregator. Its editorial system exists to **select, compress, connect, and omit**.
 
 Core rule:
 
@@ -49,7 +49,7 @@ On the printed page:
 
 Calendar and task commitments are relatively stable during the morning. Travel operations are volatile and live apps such as rail/airline tools provide fresher operational updates.
 
-Therefore Kuşluk should print the stable part of travel:
+Therefore Kushluk should print the stable part of travel:
 - departure reminder;
 - trip identity;
 - station/airport;

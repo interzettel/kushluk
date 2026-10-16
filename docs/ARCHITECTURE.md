@@ -2,7 +2,7 @@
 
 ## Architectural intent
 
-Kuşluk separates **personal context**, **research/editorial intelligence**, and **publication/printing** so that privacy, reliability, and provider independence survive changes in vendors.
+Kushluk separates **personal context**, **research/editorial intelligence**, and **publication/printing** so that privacy, reliability, and provider independence survive changes in vendors.
 
 ## High-level pipeline
 
@@ -24,7 +24,7 @@ Trigger / Orchestrator
 
 ## Orchestration boundary
 
-Kuşluk exposes a stable run boundary that may be triggered by the CLI, an OS scheduler, n8n, Apple Shortcuts, or a future service. Orchestrators may schedule, pass edition-scoped intent, pause/reprint, and observe status; they must not own ranking rules, canonical schemas, layout geometry, or archive state.
+Kushluk exposes a stable run boundary that may be triggered by the CLI, an OS scheduler, n8n, Apple Shortcuts, or a future service. Orchestrators may schedule, pass edition-scoped intent, pause/reprint, and observe status; they must not own ranking rules, canonical schemas, layout geometry, or archive state.
 
 The core run should be idempotent for a date/edition so retries do not silently generate duplicate print jobs.
 
@@ -47,7 +47,7 @@ It stores or mediates:
 - secrets/connector tokens through an appropriate secrets mechanism;
 - local feedback signals.
 
-By default, this state does not live on Kuşluk-operated infrastructure.
+By default, this state does not live on Kushluk-operated infrastructure.
 
 ## Public research plane
 
@@ -195,10 +195,10 @@ Use:
 Personal plane and publication pipeline run on the user's machine/home server.
 
 ### Self-hosted cloud
-The user runs Kuşluk in their own infrastructure.
+The user runs Kushluk in their own infrastructure.
 
 ### Managed cloud (future)
-Kuşluk operates infrastructure that processes user data. This is explicitly not equivalent to local-first mode and requires separate privacy, security, retention, and regulatory design.
+Kushluk operates infrastructure that processes user data. This is explicitly not equivalent to local-first mode and requires separate privacy, security, retention, and regulatory design.
 
 ## Observability
 

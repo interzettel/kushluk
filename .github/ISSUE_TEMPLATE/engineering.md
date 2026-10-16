@@ -2,11 +2,23 @@
 name: Engineering work
 about: An implementation package with scope, acceptance tests and an owner
 title: "[Engineering] "
+assignees: "yigit-denktas"
 ---
 
 ## Outcome
 
 Describe the observable user/developer result, not only the implementation idea.
+
+## Issue metadata (required for triage)
+
+- Kind / native GitHub issue type: Task (verify native setting)
+- Labels: workstream / priority / maturity (apply existing approved labels)
+- Assignee: @yigit-denktas
+- GitHub Project: Kushluk (pending creation/configuration: #62)
+- Project fields: Stage / Priority / Workstream / Maturity / Evidence
+- Milestone: existing outcome milestone or TBD (do not invent)
+- Relationships: parent / children / blocks / blocked by
+- Development branch / linked PR: pending until work begins
 
 ## Linked planning
 

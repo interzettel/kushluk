@@ -1,4 +1,4 @@
-# Kuşluk Status
+# Kushluk Status
 
 Last implementation verification snapshot: 2026-10-07.
 Documentation and issue inventory reviewed: 2026-10-16.

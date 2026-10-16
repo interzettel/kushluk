@@ -17,11 +17,11 @@ def build_email_message(
     pdf_path: Path | None = None,
 ) -> EmailMessage:
     message = EmailMessage()
-    message["Subject"] = f"Kuşluk · {publication.target_date} · {publication.edition_id}"
+    message["Subject"] = f"Kushluk · {publication.target_date} · {publication.edition_id}"
     message["From"] = sender
     message["To"] = recipient
     message.set_content(
-        f"Kuşluk {publication.target_date}\n"
+        f"Kushluk {publication.target_date}\n"
         f"Edition {publication.edition_id}\n\n"
         "This edition is attached/rendered as HTML."
     )

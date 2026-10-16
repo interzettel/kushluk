@@ -4,7 +4,7 @@
 
 ## Context
 
-Kuşluk may process calendars, tasks, email signals, interests, travel context, and behavioural preferences. Centralising this data creates unnecessary privacy, security, and compliance exposure.
+Kushluk may process calendars, tasks, email signals, interests, travel context, and behavioural preferences. Centralising this data creates unnecessary privacy, security, and compliance exposure.
 
 ## Decision
 
@@ -12,7 +12,7 @@ Personal data remains on infrastructure controlled by the user by default.
 
 Supported deployment may include local machines, home servers, or the user's own cloud/VPS.
 
-A future Kuşluk-managed cloud mode is allowed only as a clearly separate operating mode with explicit privacy, security, retention, and compliance design.
+A future Kushluk-managed cloud mode is allowed only as a clearly separate operating mode with explicit privacy, security, retention, and compliance design.
 
 ## Rationale
 

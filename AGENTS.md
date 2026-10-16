@@ -4,7 +4,7 @@ This file is durable project memory for human maintainers and orchestrator agent
 
 ## Mission
 
-Build **Kuşluk**, a local-first, print-first personal daily newspaper that turns a user's day, interests, and trusted information sources into a concise morning edition.
+Build **Kushluk**, a local-first, print-first personal daily newspaper that turns a user's day, interests, and trusted information sources into a concise morning edition.
 
 The project must remain useful when the original user, original conversation, original LLM provider, or original integration disappears.
 
@@ -23,7 +23,7 @@ The project must remain useful when the original user, original conversation, or
 11. **Serendipity is intentional.** Protect space for material outside the user's existing interest bubble.
 12. **Archive is first-class.** Editions and stories need stable identifiers and durable references.
 13. **Full automation is the target.** A normal morning run must not require opening a visual editor or manually placing text/images.
-14. **Orchestrators are replaceable.** n8n, Apple Shortcuts, OS schedulers, and future services may trigger/control Kuşluk but must not own canonical editorial/layout state.
+14. **Orchestrators are replaceable.** n8n, Apple Shortcuts, OS schedulers, and future services may trigger/control Kushluk but must not own canonical editorial/layout state.
 
 ## Documentation precedence
 
@@ -104,7 +104,7 @@ SMTP credentials belong in environment/runtime secret storage, never Git.
 ## Upstream reuse
 
 Reuse permissively licensed upstream components when they save time, but:
-- preserve Kuşluk's product and editorial layer;
+- preserve Kushluk's product and editorial layer;
 - record reused code or substantial adapted material in `THIRD_PARTY_NOTICES.md`;
 - preserve required copyright/license notices;
 - do not make an upstream project a hard product dependency without an ADR.
@@ -119,10 +119,30 @@ Do not make choices recorded in `docs/OPEN_DECISIONS.md` on the user's behalf.
 
 External credentials, a local deployment host, and physical printer access are setup prerequisites rather than reasons to redesign the architecture.
 
-## Naming
+## Naming and etymology
 
-Repository: `kushluk`
+- Official public-facing name: **Kushluk** (ASCII). This overrides earlier branding references throughout historical records and templates.
+- Repository, Python package and CLI: `kushluk`.
+- Explain the Turkish source **kuşluk** only when discussing etymology, not as the product's display name.
+- Never silently revert to the old special-character masthead.
 
-Product working name: **Kuşluk**
+## GitHub issue, Project and development traceability (mandatory for maintainers and agents)
 
-The name may change later. Do not block implementation on branding.
+Every substantive idea, bug, decision or implementation has an auditable record. **Check for an existing issue before creating another.** Use one solo-steward workflow, not Scrum sprint theater.
+
+For **every new issue**:
+
+1. **Type** — choose a native GitHub Issue Type where supported (Bug, Feature, Task / Research); otherwise encode the category in its title and issue-body `Kind` field. Do not claim a native type was set unless it really was.
+2. **Labels** — choose existing workstream, priority and maturity/status labels from the approved taxonomy; if a label does not exist, record the intended label in the issue and in #62 rather than silently omitting it or inventing one.
+3. **Assignee** — set `@yigit-denktas` as accountable human steward when creating the issue (unless expressly delegated to a different real account). AI executors belong in the issue description/PR; do not pretend an agent is a GitHub account.
+4. **Project and fields** — add the issue to the owner's **Kushluk** GitHub Project once its URL/ID and fields are confirmed. Intended fields: Stage, Priority, Workstream, Maturity, Evidence. Until it exists, mark **Project: pending #62**, not a fictional board link.
+5. **Milestone** — use an existing verified outcome milestone with exit criteria, or explicitly mark `TBD`; never fabricate a number.
+6. **Relationships** — identify `Parent`, `Sub-issues`, `Blocks` and `Blocked by`. Use native GitHub relationships if the integration supports them; always cross-reference issues in Markdown as a fallback.
+7. **Development** — once code starts, create a dedicated issue-scoped branch and a PR referencing the issue with `Refs #N` or `Closes #N`; attach PR, CI, review, commit, test or print evidence in both directions. Research-only issues may legitimately have no development branch.
+8. **Ledger** — index each new issue exactly once in [master ledger #43](https://github.com/interzettel/kushluk/issues/43), map actionable WORK_LEDGER IDs using `docs/ISSUE_CROSSWALK.md`, and align stage/priority/owner/evidence. No progress without verification.
+
+Use the issue templates, [working method](docs/WORKING_METHOD.md), and [project setup issue #62](https://github.com/interzettel/kushluk/issues/62). Minimal lifecycle: **Inbox → Exploring → Ready → Building → Verifying → Completed / Parked**. The distinctions `proposed`, `accepted`, `implemented`, and `verified` are not interchangeable.
+
+Before **closing or merging**: link the real outcome; confirm actual tests/hardware evidence and issue-to-PR references; use `completed`, `duplicate`, or `not planned` honestly; redirect duplicate issues to one canonical successor and preserve unique findings. After closure update #43, the work ledger / evidence gates only where warranted, and the dated work journal for meaningful events. GitHub Projects fields are not assumed to synchronize with the offline progress report automatically.
+
+A weekly maintenance sweep may reconcile stale metadata, orphaned PRs, duplicate issues and unclear blockers; no recurring automation or bot is implied by this policy. Do not merge security/licensing/privacy-changing PRs merely because automated tests pass.

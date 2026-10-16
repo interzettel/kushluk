@@ -1,7 +1,7 @@
 # Upstream Review
 
-This document records public projects reviewed as references before Kuşluk implementation.
-No upstream code is copied into Kuşluk by this review.
+This document records public projects reviewed as references before Kushluk implementation.
+No upstream code is copied into Kushluk by this review.
 
 ## Firstlight — cruftbox/firstlight
 
@@ -14,8 +14,8 @@ Useful patterns:
 - A4/single-page printing;
 - archive and print controls.
 
-Kuşluk decision:
-Use the same general class of boring, replaceable infrastructure, but keep Kuşluk's canonical publication model and editorial layer independent.
+Kushluk decision:
+Use the same general class of boring, replaceable infrastructure, but keep Kushluk's canonical publication model and editorial layer independent.
 
 ## Morning Paper — dmthepm/morning-paper
 
@@ -27,7 +27,7 @@ Useful patterns:
 - finite anti-feed framing;
 - durable editorial/preferences files.
 
-Kuşluk decision:
+Kushluk decision:
 Reuse the separation of owned editorial state from rendering as a design reference, not as a hard dependency.
 
 ## OpenPaper — falense/openpaper
@@ -40,7 +40,7 @@ Useful patterns:
 - local source/cache/archive directories;
 - explicit seen/deduplication state.
 
-Kuşluk decision:
+Kushluk decision:
 Adopt the connector boundary and deterministic fetch-before-curation principle. Do not copy its broadsheet product assumptions.
 
 ## Hermes Paper Agent — vaelkeep/hermes-paper-agent
@@ -53,7 +53,7 @@ Useful patterns:
 - provenance recorded per edition;
 - fixtures that allow the pipeline to run before personal connectors are ready.
 
-Kuşluk decision:
+Kushluk decision:
 Adopt the publication-contract and validation-loop concepts. No code is incorporated by this review.
 
 ## Earlier chat references needing rediscovery

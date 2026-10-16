@@ -4,7 +4,7 @@ Last updated: 2026-10-07.
 
 ## Purpose
 
-This document reconciles substantive product ideas and decisions recovered from prior Kuşluk / Morning Paper project conversations with the repository.
+This document reconciles substantive product ideas and decisions recovered from prior Kushluk / Morning Paper project conversations with the repository.
 
 It exists for two reasons:
 
@@ -26,14 +26,14 @@ Accepted ADRs and normative requirements still outrank this file.
 
 ## 1. Name, identity, and product language
 
-### CURRENT — Product name: Kuşluk
+### CURRENT — Product name: Kushluk (ASCII display decision, 16 Oct 2026)
 
-The current project/product name is **Kuşluk**.
+The current project/product name is **Kushluk**.
 
 Brand rationale recovered from the conversations:
 - "kuşluk vakti" refers to the late-morning period after sunrise and before noon, commonly associated roughly with 09:00–11:00 and especially around 10:00;
 - the name connects naturally to morning, observation, a domestic ritual, and the existing bird motif;
-- preserve the exact casing **Kuşluk** and Turkish **ş**.
+- official product uses **Kushluk** with ASCII letters; the Turkish spelling **kuşluk** belongs in etymology only.
 
 ### REJECTED — Morning Paper as the final product name
 
@@ -217,7 +217,7 @@ Previously proposed/accepted examples remain useful:
 
 ### CURRENT — Editorial principle
 
-Kuşluk is an editor, not a feed:
+Kushluk is an editor, not a feed:
 - select;
 - compress;
 - connect;
@@ -317,7 +317,7 @@ On explicit email connection:
 - scan a bounded recent mailbox window;
 - identify likely recurring newsletters;
 - show them to the user;
-- do not silently trust/subscribe them as Kuşluk sources;
+- do not silently trust/subscribe them as Kushluk sources;
 - support per-source modes:
   - Ignore
   - Reference only
@@ -457,7 +457,7 @@ The printer must not be assumed to correctly infer:
 
 ### CANDIDATE — Declared/detected paper mismatch
 
-If the active paper/media configuration is detectably incompatible with the requested profile, Kuşluk should:
+If the active paper/media configuration is detectably incompatible with the requested profile, Kushluk should:
 - avoid knowingly submitting a bad job;
 - preserve the edition;
 - use the configured digital fallback;
@@ -548,7 +548,7 @@ Same standard:
 
 ### CURRENT — Renderer-native fallback
 
-Kuşluk must keep a deterministic renderer-native path so the product does not become hostage to a design SaaS or desktop application.
+Kushluk must keep a deterministic renderer-native path so the product does not become hostage to a design SaaS or desktop application.
 
 ---
 
@@ -567,7 +567,7 @@ Useful newspaper-production ideas discussed:
 - preflight before print;
 - edition archive.
 
-Kuşluk should encode these as software contracts rather than recreate a large newsroom process.
+Kushluk should encode these as software contracts rather than recreate a large newsroom process.
 
 ### CANDIDATE — Late-news slot
 
@@ -615,7 +615,7 @@ The exact repositories/sources were not preserved in current project memory. Do 
 
 A previous printer discussion mentioned larger-format devices such as Canon imagePROGRAF TC-series and an Epson SureColor alternative for easier A3/roll workflows.
 
-These are not Kuşluk architecture decisions.
+These are not Kushluk architecture decisions.
 
 The product requirement remains:
 - ordinary A4 home printing must remain a first-class path;
@@ -641,7 +641,7 @@ Before greenfield implementation of generic infrastructure, check the reviewed u
 
 ### Current decisions that must survive future refactors
 
-- Kuşluk name and exact casing.
+- Kushluk name and exact casing.
 - Local-first, print-first.
 - Four logical A4 pages.
 - A4 Home Printer + A3 Folded Newspaper profiles.

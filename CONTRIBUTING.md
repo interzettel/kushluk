@@ -1,12 +1,12 @@
-# Contributing to Kuşluk
+# Contributing to Kushluk
 
-Kuşluk aims to be a genuinely useful local-first personal publishing tool. Contributions, independent integrations, accessible design work and critical reviews are welcome.
+Kushluk aims to be a genuinely useful local-first personal publishing tool. Contributions, independent integrations, accessible design work and critical reviews are welcome.
 
 ## Before starting
 
 1. Read [AGENTS.md](AGENTS.md) for product principles and authority of accepted architecture decisions.
 2. Find work in [master issue #43](https://github.com/interzettel/kushluk/issues/43), then follow the owning issue rather than creating a duplicate implementation.
-3. Use [docs/WORK_LEDGER.md](docs/WORK_LEDGER.md) for operational tasks. The proposed task-to-issue reconciliation lives in [PR #53](https://github.com/interzettel/kushluk/pull/53) until merged.
+3. Use [docs/WORK_LEDGER.md](docs/WORK_LEDGER.md) for operational tasks. The task-to-issue crosswalk is merged into [docs/ISSUE_CROSSWALK.md](docs/ISSUE_CROSSWALK.md).
 4. Read [docs/PROGRESS.md](docs/PROGRESS.md) before marking milestones. Its numbers count checked tasks or verified gates, **not overall product completeness**.
 5. For consequential changes, propose an ADR or RFC before restructuring source, privacy defaults, licensing, or edition geometry.
 
@@ -15,7 +15,7 @@ Kuşluk aims to be a genuinely useful local-first personal publishing tool. Cont
 Use Python 3.11 or newer. Start with a small PR and a reproducible test or fixture.
 
     python -m pip install -e ".[dev]"
-    ruff check src tests
+    ruff check src tests tools
     pytest -q
     python tools/project_health.py check
 
@@ -34,6 +34,6 @@ Treat external articles, newsletters, images, fonts and templates as separately 
 
 ## Respectful collaboration
 
-Critique technical choices and evidence, not people. Keep reviews precise, constructive and welcoming to first-time contributors. Commercial extensions and independent themes are welcome within applicable code/asset licenses; official Kuşluk branding has separate considerations.
+Critique technical choices and evidence, not people. Keep reviews precise, constructive and welcoming to first-time contributors. Commercial extensions and independent themes are welcome within applicable code/asset licenses; official Kushluk branding has separate considerations.
 
 For nonpublic security concerns, consult [SECURITY.md](SECURITY.md), and never paste exploits, credentials or reader content into public issues.

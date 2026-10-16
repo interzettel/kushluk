@@ -1,148 +1,194 @@
-# Kuşluk
+<div align="center">
 
-**Kuşluk** is a local-first, print-first personal daily newspaper.
+![Kushluk masthead — your own morning edition](docs/kushluk-masthead.svg)
 
-The project turns a user's day, interests, selected information sources, and public signals into a concise morning edition designed to be read away from a screen. The canonical edition is now **four logical DIN A4 pages**. Those same logical pages can be delivered as two duplex A4 sheets for ordinary home printers or imposed onto one duplex A3 sheet and half-folded to A4. The target remains a ready-to-read edition by 08:00 local time.
+### Welcome to Kushluk
 
-> Working principle: **selection over collection; reliability before cleverness.**
+**A small newspaper, assembled from the sources you choose, ready for your morning.**
 
-## Product direction
+[![CI](https://github.com/interzettel/kushluk/actions/workflows/ci.yml/badge.svg)](https://github.com/interzettel/kushluk/actions/workflows/ci.yml)
+[![Project health](https://github.com/interzettel/kushluk/actions/workflows/project-health.yml/badge.svg)](https://github.com/interzettel/kushluk/actions/workflows/project-health.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-F3D77B?labelColor=1A1A1A)](LICENSE)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-E8C9B8?labelColor=1A1A1A)](pyproject.toml)
+[![Stage 1 prototype](https://img.shields.io/badge/product-Stage%201%20prototype-f3efe4?labelColor=1a1a1a)](docs/STATUS.md)
 
-Kuşluk is being developed as an open, provider-independent system rather than a single AI-agent demo.
+[What works](#what-works-today) · [Make an edition](#make-an-edition) · [Progress](#development-and-progress) · [Contribute](#contributing) · [Project decisions](#decisions-and-trust)
 
-- **Local-first personal data plane.** Personal context stays on the user's device or infrastructure by default.
-- **Print-first.** The primary surface is a compact physical edition; HTML, email, e-readers, and richer digital surfaces are secondary.
-- **One editorial geometry, multiple print profiles.** Four logical A4 pages are canonical. A4 home printing and A3 folded-newspaper output are imposition profiles, not separate editorial designs.
-- **Adaptive editorial system.** A lead story is optional. Calendar and tasks outrank volatile travel details. Space is protected for serendipity.
-- **Multilingual by design.** Editions may use English, German, Turkish, other user-selected languages, or intentional language mixing.
-- **Provider-independent user model.** The project must survive changes in LLM, search, social, mail, calendar, or printing providers.
-- **Deterministic publication pipeline.** AI can research, rank, write, fit copy, and help resolve assets; rendering, geometry, validation, imposition, and print remain deterministic.
-- **Full automation is the target.** The daily run must not require opening Canva, InDesign, or manually placing stories and images.
-- **Graceful degradation.** Missing integrations remove/degrade blocks rather than silently corrupting the edition.
-- **Source discovery.** Connected accounts can help Kuşluk discover sources the user already chose, such as newsletters, while keeping final source selection explicit.
+</div>
 
-## Current status
+Kushluk is **local-first, print-first personal publishing software**. It gathers useful signals from your day and information sources you are entitled to access, selects what matters, and assembles a finite edition that you can read away from the screen. It is **not** a news subscription, a hosted library of other publishers' articles, or an AI-generated feed to scroll forever.
 
-**Stage 1 is active and executable.**
+The intended object is **four logical DIN A4 pages**, composed once and delivered through different physical profiles:
 
-The current walking skeleton is:
+| At home | With an A3-capable printer | When printing is unavailable |
+| --- | --- | --- |
+| Two A4 sheets, duplex where supported, optionally bound | One A3 duplex sheet, imposed and folded to A4 | Saved local HTML/PDF and optional configured email |
 
-`weather + calendar + RSS -> candidates -> clustering/ranking -> publication -> HTML -> validated PDF -> print/email -> archive`
+**Important:** that four-page architecture is an **accepted design decision**, not a claim about the code shipped today. The working Stage 1 prototype still renders and validates **one A4 page**. Four-page migration, unattended production and physical acceptance are tracked separately.
 
-Implemented:
-- Python package and CLI;
-- environment-based configuration;
-- Open-Meteo weather;
-- configurable RSS/Atom ingestion;
-- generic ICS calendar connector with fixture fallback;
-- canonical candidate/story/publication models;
-- deterministic clustering, ranking and deduplication;
-- optional-lead layout support without forcing a lead;
-- typed failure records and run summaries;
-- Markdown-first canonical edition;
-- deterministic A4 HTML renderer for the current walking skeleton;
-- optional WeasyPrint PDF output;
-- one-page PDF validation with editorial cut/retry passes (legacy Stage 1 implementation; migration to four logical pages is now queued under ADR 0013);
-- CUPS printer capability detection and duplex-aware printing;
-- optional SMTP delivery and email-on-print-failure;
-- local edition archive and archive listing;
-- runtime `doctor` command;
-- tests and GitHub Actions CI;
-- CI walking-skeleton smoke test;
-- manually dispatchable sample-edition workflow.
+## Where the name comes from
 
-Not complete yet:
-- migration of the current one-page renderer/validator to the four-page canonical model;
-- A4 two-sheet and A3 folded print profiles;
-- unattended orchestration and optional Apple Shortcuts/n8n trigger surfaces;
-- automated image acquisition/cropping/placement pipeline;
-- a real local printer trial;
-- a real personal calendar/task connection beyond generic ICS;
-- configured SMTP credentials if email delivery is wanted;
-- multiple real morning editions and reading-feedback trials;
-- newsletter discovery connector implementation;
-- X/social inputs;
-- final production visual system.
+**Kushluk** is our internationally readable spelling of the Turkish word *kuşluk*, meaning **mid-morning**, the time between morning and noon. Older Oghuz Turkish sources already record the term. It is commonly associated with *kuş* (“bird”) and the hour when birds become active, although its precise linguistic derivation has been debated. The name suggests a quiet, observational moment of the day—not a technology or news-company brand.
 
-See [docs/STATUS.md](docs/STATUS.md) for the live implementation boundary, [docs/WORK_LEDGER.md](docs/WORK_LEDGER.md) for the complete execution queue, [docs/FULL_AUTOMATION.md](docs/FULL_AUTOMATION.md) for the target press-line architecture, [docs/CHAT_RECONCILIATION.md](docs/CHAT_RECONCILIATION.md) for ideas/decisions recovered from prior project chats, and [docs/OPEN_DECISIONS.md](docs/OPEN_DECISIONS.md) for decisions that remain intentionally open.
+Etymological background: [Turkish Language Association research on *kuşluk*](https://tdk.gov.tr/wp-content/uploads/2019/01/01.D%C4%B0VAN%C3%9C-LUGAT%C4%B0%E2%80%99T-T%C3%9CRK%E2%80%99TE-ANLAMI-PROBLEML%C4%B0-BAZI-C%C3%9CMLELER-VE-S%C3%96ZC%C3%9CKLER-%C3%9CZER%C4%B0NE-son-bi%C3%A7im-.pdf). The Turkish spelling appears here only to explain the word's origin; **the product name is always Kushluk**.
 
-## Quick start
+## The idea
 
-Requires Python 3.11+.
+A newspaper is useful partly because it **ends**. Kushluk applies that editorial discipline to your own calendar, RSS feeds, newsletters and other eligible sources.
+
+- **Today first.** Useful commitments and practical orientation take priority over noisy breaking-news widgets.
+- **For you, with room for surprise.** Editorial relevance and serendipity matter more than maximizing engagement.
+- **Your sources, your edition.** Personal source selections, archive and preferences live with you by default.
+- **AI is optional infrastructure.** Providers and agents can assist research and editorial decisions; approved templates and print geometry remain deterministic.
+- **The paper is real.** Duplex settings, folds, margins, reading comfort, ink use and offline recovery matter.
+
+No proprietary model subscription or Kushluk-operated account should be required for the basic engine. Optional model API calls, external connectors, printers and email services can have their own costs or terms. Rights to subscribed material are **not** transferred by using this software.
+
+## What works today
+
+<details open>
+<summary><strong>In the executable Stage 1 prototype</strong></summary>
+
+- Python package, `kushluk` CLI and runtime health check.
+- Weather via Open-Meteo, RSS/Atom stories and a generic ICS calendar (with local fixture fallback).
+- Canonical candidates, source-aware story clustering, ranking and an optional lead story.
+- One-page deterministic A4 HTML; optional WeasyPrint PDF with page-count validation and editorial cut/retry.
+- Local Markdown/JSON/HTML archive, with PDF when validated.
+- CUPS printer discovery/submission, SMTP delivery and configured email-on-print-failure.
+- Existing pytest/Ruff and GitHub Actions smoke checks.
+
+</details>
+
+| Accepted, **not yet shipped** | Still exploratory / open |
+| --- | --- |
+| Four logical A4 pages with A4-home and A3-folded print profiles | Advanced physical interlocks, origami and paper-afterlife designs |
+| Unattended, idempotent morning run and stable agent operations | Fluid animated digital edition, specialist design-tool adapters |
+| Media rights/asset manifest and deterministic multi-page layout archetypes | Optional hosted print/storage businesses and original public magazine series |
+| Explicit newsletter discovery and private source modes | License changes, foundation governance and optional sponsorships |
+
+This is an early open-source prototype. Check the [status report](docs/STATUS.md) for implementation detail before depending on a feature.
+
+## Make an edition
+
+Requires **Python 3.11+**. Clone the actual public repository:
 
 ```bash
 git clone https://github.com/interzettel/kushluk.git
 cd kushluk
-
 python -m venv .venv
-source .venv/bin/activate  # macOS/Linux; Windows PowerShell: .venv\Scripts\Activate.ps1
-pip install -e ".[dev]"
-
+source .venv/bin/activate     # Windows PowerShell: .venv\Scripts\Activate.ps1
+python -m pip install -e ".[dev]"
 kushluk doctor
 kushluk generate --no-pdf
 ```
 
-For validated PDF output:
+The last command generates an HTML edition and archives it locally. Live weather and RSS depend on network availability; missing sources are reported and safely degraded rather than silently fabricated. The sample calendar fixture supports initial exploration.
+
+For optional validated PDF rendering:
 
 ```bash
-pip install -e ".[pdf]"
+python -m pip install -e ".[pdf]"
 kushluk generate
 ```
 
-For local CUPS printing:
+Printing and email are **separately configured**. If a compatible local CUPS printer is available, use `kushluk generate --print`; for SMTP delivery use `kushluk generate --email`. Neither command makes a printer or mail account appear automatically. Read [onboarding](docs/ONBOARDING.md) and [.env.example](.env.example).
+
+**Configuration detail:** `.env.example` documents environment variable names; the Python application does **not** automatically load a `.env` file. Set/export the values in your shell or use a local secret manager. Never commit credentials or private editions.
+
+Run checks before contributing:
 
 ```bash
-kushluk generate --print
+ruff check src tests tools
+pytest -q
+python tools/project_health.py check
 ```
 
-For configured SMTP delivery:
+The progress command and its CI gate are part of the merged [engineering foundation PR #55](https://github.com/interzettel/kushluk/pull/55).
+
+## Development and progress
+
+[![Kushluk progress — proof gates and operational checklist](docs/progress.svg)](docs/PROGRESS.md)
+
+**[Explore all 90 individual tasks and their current states](docs/PROGRESS.md#individual-tasks)** · [Master issue ledger #43](https://github.com/interzettel/kushluk/issues/43) · [Task-to-issue map](docs/ISSUE_CROSSWALK.md) · [Project board setup #62](https://github.com/interzettel/kushluk/issues/62)
+
+<details>
+<summary><strong>Granular task ledger by work area</strong></summary>
+
+| Work area | Tracked tasks | Checked at this snapshot |
+| --- | ---: | ---: |
+| Project records | 5 | 4 |
+| Four-page formats | 10 | 0 |
+| Unattended runs | 13 | 0 |
+| Source connectors | 10 | 0 |
+| Image handling | 9 | 0 |
+| Editorial layouts | 11 | 0 |
+| Design integration research | 5 | 0 |
+| Newspaper research | 3 | 0 |
+| Automation research | 2 | 0 |
+| Image rights research | 1 | 0 |
+| Editorial intelligence | 6 | 0 |
+| Setup and controls | 8 | 0 |
+| Physical trials | 7 | 0 |
+| **Total checked work-ledger items** | **90** | **4** |
+
+This table is a **dated ledger snapshot, not a product readiness score**. Every task ID, description and checked/unchecked state is in the [generated itemized report](docs/PROGRESS.md#individual-tasks), with its issue owner in the [crosswalk](docs/ISSUE_CROSSWALK.md). Product delivery is measured separately against eight evidence gates.
+
+</details>
+
+We use a **solo-maintainer + assisted development** workflow, not recurring Scrum ceremonies. The natural hierarchy is **direction → milestone → work package → task → proof**. A new idea may stay under investigation; a bug fix needs a regression test; a shipped feature requires implementation and evidence. Completing research can mean rejecting an idea with reasons.
+
+The graphic shows **two different things**: evidence gates G1–G8 and checked operational tasks. Neither is an overall product-completion percentage. No gate can be marked verified just because an issue is closed or a PR is opened.
+
+| Record | Why it exists |
+| --- | --- |
+| [Master issue ledger #43](https://github.com/interzettel/kushluk/issues/43) | All issues, open and closed, with one primary workstream each |
+| [WORK_LEDGER.md](docs/WORK_LEDGER.md) | Canonical existing implementation task IDs |
+| [ISSUE_CROSSWALK.md](docs/ISSUE_CROSSWALK.md) | Canonical mapping for all 90 task IDs, merged through PR #53 |
+| [PROGRESS.md](docs/PROGRESS.md) + [manifest](docs/progress-manifest.json) | Reproducible checklist counts and evidence gates |
+| [Working method](docs/WORKING_METHOD.md) + [work journal](docs/WORK_JOURNAL.md) | New ideas, bugs, decisions, dated changes and reviewer handoffs |
+| [ROADMAP.md](docs/ROADMAP.md) + [STATUS.md](docs/STATUS.md) | Product sequence versus demonstrated code |
+| [ADRs](docs/adr/README.md) | Accepted, superseded and still-disputed architectural decisions |
+
+To regenerate the SVG and Markdown on the progress-enabled branch:
 
 ```bash
-kushluk generate --email
+python tools/project_health.py write
+python tools/project_health.py check
 ```
 
-For print with email fallback:
+The board uses Kushluk's paper-led palette, stays readable without color, and is checked in CI for deterministic output.
 
-```bash
-kushluk generate --print --email-on-print-failure
+## How it works
+
+```mermaid
+flowchart LR
+    A["Your authorized sources<br/>calendar / RSS / newsletters"] --> B["Local editorial model<br/>select / verify / rank"]
+    B --> C["Canonical edition<br/>archive + provenance"]
+    C --> D["Deterministic layout<br/>render + preflight"]
+    D --> E["Your printer<br/>or digital output"]
+    F["Optional models & agents"] -. "replaceable, consented" .-> B
 ```
 
-To inspect recent local editions:
+The canonical edition is separate from the printer profile. Agents—including the proposed Grok, Hermes and Claude integrations—should call the **same stable interfaces**, not replace the publication model or acquire automatic access to private source data. Those interfaces are currently planned work, not certified bot integrations.
 
-```bash
-kushluk archive-list
-```
+For deeper details see [architecture](docs/ARCHITECTURE.md), [editorial system](docs/EDITORIAL_SYSTEM.md), [data map](docs/DATA_MAP.md), [failure policy](docs/FAILURE_MATRIX.md) and [automation design](docs/FULL_AUTOMATION.md).
 
-Copy the relevant values from `.env.example` into the runtime environment to configure location, RSS sources, ICS calendar, printer, archive/output paths, or SMTP delivery.
+## Decisions and trust
 
-## Project memory
+**Source rights.** You control your generated files, local archive and your own original contributions. That does **not** transfer copyrights in third-party articles, newsletter text, photographs or fonts. Private copying, reassembly, printing and sharing depend on applicable rights, contracts and jurisdictions. Kushluk does not offer subscription circumvention or a central licensed-news catalog.
 
-Repository documentation is durable project memory for future maintainers and orchestrator agents.
+**Privacy.** The intended default is a reader-controlled personal data plane, not telemetry or centralized reading profiles. External weather/RSS/services still make their own network requests when enabled. Optional future cloud storage or printing requires its own disclosed consent, data flow and legal analysis.
 
-Start with:
+**License.** The source code currently ships under **[MIT](LICENSE)**. A future MPL-2.0 core / Apache-2.0 interoperability split remains under [discussion #38](https://github.com/interzettel/kushluk/issues/38), not adopted. Separate artwork, subscription materials and official branding may have different rights; inspect [third-party notices](THIRD_PARTY_NOTICES.md).
 
-- [AGENTS.md](AGENTS.md)
-- [docs/STATUS.md](docs/STATUS.md)
-- [docs/WORK_LEDGER.md](docs/WORK_LEDGER.md) — operational tasks and evidence
-- [docs/ISSUE_CROSSWALK.md](docs/ISSUE_CROSSWALK.md) — all numbered tasks mapped to GitHub issues
-- [GitHub issue #43 — master issue ledger](https://github.com/interzettel/kushluk/issues/43) — portfolio-wide issue states, dependencies and decisions
-- [docs/FULL_AUTOMATION.md](docs/FULL_AUTOMATION.md)
-- [docs/CHAT_RECONCILIATION.md](docs/CHAT_RECONCILIATION.md)
-- [docs/PRODUCT.md](docs/PRODUCT.md)
-- [docs/REQUIREMENTS.md](docs/REQUIREMENTS.md)
-- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
-- [docs/EDITORIAL_SYSTEM.md](docs/EDITORIAL_SYSTEM.md)
-- [docs/DESIGN_BRIEF.md](docs/DESIGN_BRIEF.md)
-- [docs/DATA_MAP.md](docs/DATA_MAP.md)
-- [docs/ONBOARDING.md](docs/ONBOARDING.md)
-- [docs/OPEN_DECISIONS.md](docs/OPEN_DECISIONS.md)
-- [docs/UPSTREAM_REVIEW.md](docs/UPSTREAM_REVIEW.md)
-- [docs/ROADMAP.md](docs/ROADMAP.md)
-- [docs/STAGE_1_BACKLOG.md](docs/STAGE_1_BACKLOG.md)
-- [docs/adr/](docs/adr/)
+**Name.** Write **Kushluk** using ASCII letters throughout the software, documentation and public product identity. Keep lowercase `kushluk` for the repository, package, CLI and environment variables. The original Turkish spelling appears only when explaining its etymology.
 
-## License
+## Contributing
 
-MIT. See [LICENSE](LICENSE).
+This project welcomes fixes, carefully scoped ideas, independent plugins, thoughtful editorial design and evidence-backed criticism. A contributor should be able to find one issue, make one small PR, run tests and understand what counts as complete.
 
-Third-party code, layouts, or ideas reused during implementation must be recorded in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+Read [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md) and [AGENTS.md](AGENTS.md). The maintainers' current focus is making the existing engine robust: [four-page format #45](https://github.com/interzettel/kushluk/issues/45), [print profiles #46](https://github.com/interzettel/kushluk/issues/46), and [unattended local runs #47](https://github.com/interzettel/kushluk/issues/47), followed by [real morning-print trials #13](https://github.com/interzettel/kushluk/issues/13).
+
+**Every new issue** follows the traceability contract in [AGENTS.md](AGENTS.md): issue type, labels, human assignee, project, milestone, relationships, development branch/PR and verified resolution. The planned **Kushluk GitHub Project** will be connected after creation ([setup #62](https://github.com/interzettel/kushluk/issues/62)); no project fields are claimed configured yet.
+
+Kushluk is built to give the morning back to its reader.

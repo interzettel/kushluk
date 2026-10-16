@@ -1,6 +1,6 @@
 # Failure Matrix
 
-Kuşluk must fail visibly and usefully.
+Kushluk must fail visibly and usefully.
 
 ## Severity
 
@@ -50,7 +50,7 @@ Action: preserve generated artefacts, notify explicitly, attempt configured fall
 
 Messages must state:
 1. what failed;
-2. what Kuşluk did instead;
+2. what Kushluk did instead;
 3. whether the edition is still usable;
 4. what the user can do, if action is required.
 

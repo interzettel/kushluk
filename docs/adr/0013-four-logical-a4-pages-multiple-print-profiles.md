@@ -6,7 +6,7 @@
 
 ## Context
 
-Kuşluk must remain printable on ordinary home and office hardware while still being able to feel like a small folded newspaper when larger paper is available.
+Kushluk must remain printable on ordinary home and office hardware while still being able to feel like a small folded newspaper when larger paper is available.
 
 Treating A4 and A3 as separate editorial/layout systems would duplicate templates, complicate validation, and make daily generation less reliable.
 

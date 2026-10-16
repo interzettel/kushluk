@@ -6,7 +6,7 @@
 
 | Question | Authoritative record |
 | --- | --- |
-| Why Kuşluk exists, non-negotiable behavior | AGENTS.md, PRODUCT/REQUIREMENTS, accepted ADRs |
+| Why Kushluk exists, non-negotiable behavior | AGENTS.md, PRODUCT/REQUIREMENTS, accepted ADRs |
 | What code actually does | tests, source, CI evidence and STATUS.md |
 | Which operational tasks still need work | WORK_LEDGER.md (task IDs, not GitHub issue count) |
 | Which GitHub discussions/issues exist | [Master ledger #43](https://github.com/interzettel/kushluk/issues/43), with dated manual snapshots |
