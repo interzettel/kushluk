@@ -99,6 +99,8 @@ Printing and email are **separately configured**. If a compatible local CUPS pri
 
 **Configuration detail:** `.env.example` documents environment variable names; the Python application does **not** automatically load a `.env` file. Set/export the values in your shell or use a local secret manager. Never commit credentials or private editions.
 
+To schedule local editions safely, use `kushluk run` and inspect `kushluk run-status`. The daily receipt prevents automatic duplicate printing or email submissions, including after interrupted delivery. See [native scheduling and launchd](docs/SCHEDULING.md). Full unattended-host acceptance is not yet complete.
+
 Run checks before contributing:
 
 ```bash
