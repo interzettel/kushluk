@@ -8,7 +8,7 @@ on:
   schedule:
     - cron: "37 */2 * * *"
   issues:
-    types: [opened, reopened, edited, labeled, closed]
+    types: [opened, reopened, closed]
   workflow_dispatch:
     inputs:
       mode:
@@ -39,7 +39,14 @@ jobs:
       - name: Synchronize metadata in Project #3
         env:
           GH_TOKEN: ${{ secrets.KUSHLUK_PROJECT_TOKEN }}
-        run: python tools/project_sync.py sync --event-file "$GITHUB_EVENT_PATH"
+        shell: bash
+        run: |
+          remaining=$(gh api rate_limit --jq '.resources.graphql.remaining')
+          if ! [[ "$remaining" =~ ^[0-9]+$ ]] || [ "$remaining" -lt 75 ]; then
+            echo "::warning::Project GraphQL budget low; deferring this issue to the scheduled reconciliation."
+            exit 0
+          fi
+          python tools/project_sync.py sync --event-file "$GITHUB_EVENT_PATH"
 
   maintenance:
     name: Project field setup or coverage audit

@@ -176,6 +176,11 @@ def field_value(item: dict, name: str) -> object | None:
 
 
 def needs_sync(issue: dict, record: dict | None) -> bool:
+    if (
+        record and str(issue.get("state", "")).lower() == "closed"
+        and field_value(record, "Status") != "Done"
+    ):
+        return True
     if not record or any(
         field_value(record, name) in (None, "")
         for name in ("Status", *FIELDS)
@@ -320,10 +325,16 @@ def sync_issue(
                 "--type", candidate
             )
 
-    # Defaults only fill missing values. Manual triage remains authoritative.
+    # Preserve manually curated values, except closure must move Status to
+    # Done, without ever implying that an outcome is evidence-verified.
     for field in ("Status", *FIELDS):
         existing = field_value(record, field)
-        if existing is None or existing == "":
+        closed_needs_done = (
+            field == "Status"
+            and str(issue.get("state", "")).lower() == "closed"
+            and existing != "Done"
+        )
+        if existing is None or existing == "" or closed_needs_done:
             client.run(
                 "project", "item-edit", PROJECT, "--owner", OWNER,
                 "--url", url, "--field", field, "--value", wanted[field]
