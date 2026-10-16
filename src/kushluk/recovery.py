@@ -119,8 +119,9 @@ def deliver_archived(
             if validate_a3_booklet(pdf):
                 raise ValueError("Archived A3 booklet failed validation.")
         pdf_hash = sha256(pdf.read_bytes()).hexdigest()
-    except (OSError, ValueError, KeyError, TypeError, ImportError) as exc:
-        # Avoid exposing paths, URLs, document contents or provider exceptions.
+    except Exception as exc:
+        # PDF parsers may raise custom exceptions; always fail closed and redact.
+        # Never expose paths, URLs, document contents or provider exception text.
         return ArchiveDeliveryOutcome(
             edition_id, channel, request_id, "blocked",
             f"archive_preflight_{type(exc).__name__}",
