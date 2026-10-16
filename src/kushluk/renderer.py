@@ -18,7 +18,7 @@ def render_html(publication: Publication, output_path: Path) -> Path:
     )
     template = env.get_template("edition.html")
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(template.render(publication=publication), encoding="utf-8")
+    output_path.write_text(template.render(publication=publication, stories_by_id={s.id: s for s in publication.stories}), encoding="utf-8")
     return output_path
 
 
