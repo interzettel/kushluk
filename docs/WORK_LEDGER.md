@@ -1,8 +1,8 @@
 # Kuşluk Work Ledger
 
-Last updated: 2026-10-07.
+Last implementation-status review: 2026-10-07.\nIssue/task reconciliation reviewed: 2026-10-16 (no new implementation completion implied).
 
-This is the cross-stage execution ledger for Kuşluk. It records work that is decided, open, blocked, or research-only. It complements `ROADMAP.md`; the roadmap explains sequencing, while this file is the operational source of truth for unfinished work.
+This is the cross-stage execution ledger for Kuşluk. It records work that is decided, open, blocked, or research-only. It complements `ROADMAP.md`; the roadmap explains sequencing, while this file is the operational source of truth for unfinished work.\n\n**Traceability:** every numbered task in this file is mapped to its primary GitHub implementation/discussion owner in [ISSUE_CROSSWALK.md](ISSUE_CROSSWALK.md) (90 tasks in the 2026-10-16 snapshot). [GitHub master issue #43](https://github.com/interzettel/kushluk/issues/43) is the issue portfolio index; issue creation/closure alone does **not** change the task checkboxes. The first explicitly scoped implementation packages are #45–#52 and document reconciliation is #44. See [STATUS.md](STATUS.md) for independently verified implementation status.\n\n**Known ADR reconciliation issue:** accepted ADR 0015 (replaceable orchestration and agent runtime) must be indexed; two files currently claim accepted ADR 0012. Resolve the duplicate under #44 before treating either variant as a uniquely canonical decision. Do not silently change accepted-ADR text.
 
 ## North star
 
