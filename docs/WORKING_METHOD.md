@@ -53,7 +53,7 @@ Issues also have a **kind**: **idea**, **bug**, **research**, **decision**, **en
 | Question | Use |
 | --- | --- |
 | What exists in the portfolio? | [Issue #43](https://github.com/interzettel/kushluk/issues/43) (every GitHub issue once; snapshot manually reconciled) |
-| Which executable task is checked? | [WORK_LEDGER.md](WORK_LEDGER.md) and draft [crosswalk PR #53](https://github.com/interzettel/kushluk/pull/53) |
+| Which executable task is checked? | [WORK_LEDGER.md](WORK_LEDGER.md) and [ISSUE_CROSSWALK.md](ISSUE_CROSSWALK.md) (merged via [PR #53](https://github.com/interzettel/kushluk/pull/53)) |
 | What was actually built? | Source/tests, [STATUS.md](STATUS.md), CI and physical evidence |
 | Has a higher-level reader outcome been proven? | [PROGRESS.md](PROGRESS.md) plus [progress-manifest.json](progress-manifest.json) G1–G8 |
 | Why this constraint? | Accepted [ADRs](adr/README.md) and normative requirements |
@@ -81,4 +81,4 @@ Agent capability and future autonomy changes belong to [#56](https://github.com/
 6. Reconcile live open/closed states back to #43 after an issue change; stage counts may lag but must be timestamped.
 7. For a sensitive decision, leave the question open and include Claude or relevant reviewer rather than guessing a consensus.
 
-**First practical development sequence:** format #45 → imposition #46 and local automation #47 → real device test #13. Foundation and docs #53/#55/#59/#60 move in parallel when their reviews are healthy.
+**First practical development sequence:** format #45 → imposition #46 and local automation #47 → real device test #13. Foundation/docs #53 and #55 and README #61 are merged; future development proceeds from the accepted plan and live GitHub issues #54/#59/#62.
