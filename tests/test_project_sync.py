@@ -90,7 +90,7 @@ class ProjectMetadataTests(unittest.TestCase):
             "body": "Priority: P0\nWorkstream: A\nEvidence: Verified",
         }
         data = desired_metadata(issue)
-        self.assertEqual(data["Priority"], "P2")
+        self.assertEqual(data[PRIORITY_FIELD], "P2")
         self.assertEqual(data["Workstream"], "Untriaged")
         self.assertEqual(data["Evidence"], "Missing")
 
