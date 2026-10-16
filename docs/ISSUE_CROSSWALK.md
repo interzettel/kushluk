@@ -1,6 +1,6 @@
 # Kushluk work-to-issue crosswalk
 
-**Audit date:** 2026-10-16 · **Status:** proposed documentation reconciliation; not a statement that implementations are complete.
+**Audit date:** 2026-10-16 · **Status:** merged documentation map ([PR #53](https://github.com/interzettel/kushluk/pull/53)); still not evidence that implementation tasks are complete.
 
 This table maps every task identifier in [WORK_LEDGER.md](WORK_LEDGER.md) to a **single primary GitHub issue**. GitHub [master ledger #43](https://github.com/interzettel/kushluk/issues/43) indexes issue scope, state and dependencies. `WORK_LEDGER.md` remains the operational list of executable tasks and their checked/unchecked state. `STATUS.md` distinguishes implementation from plan. Accepted architecture decisions in `adr/` take precedence.
 
