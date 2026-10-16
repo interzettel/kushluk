@@ -1,5 +1,7 @@
 # Third-Party Notices
 
+**This file already exists at the repository root.** It is the durable legal notice register for material **actually incorporated** into Kushluk, not a list of votes approving reuse. [Research citations](docs/research/newspaper-ecosystem-2026-10-17.md) and independently documented [ChatGPT/Claude reuse ballots](docs/REUSE_REVIEWS.md) are recorded elsewhere. A source may be studied, without its code/assets ever being used.
+
 Kushluk is MIT licensed. This file records third-party code, templates, layouts, and other material incorporated into the repository.
 
 ## Policy
@@ -30,6 +32,17 @@ The following projects were reviewed as architecture/product references. No sour
 For all reviewed sources including **AGPL-3.0-or-later Newsprint** and unlicensed candidates, see [25-project research + rights caveats](docs/research/newspaper-ecosystem-2026-10-17.md) and [the CSV matrix](docs/research/newspaper-project-matrix-2026-10-17.csv). This references their ideas only: **no third-party source code, fonts, article text or images are incorporated by the survey**.
 
 See `docs/UPSTREAM_REVIEW.md` for the current reuse assessment.
+
+## Declared external package dependencies vs copied code
+
+At the current source tree, `pyproject.toml` declares the following **installed, not vendored** packages:
+- Runtime: `httpx`, `jinja2`.
+- Optional PDF: `weasyprint`, `pypdf` (plus their system/native and transitive dependencies).
+- Development/testing: `pytest`, `ruff`.
+
+They are normal Python dependencies subject to their own licenses. Their *exact resolved versions, transitive licenses and any copied fonts/assets* require a package lock/SBOM/license check before a distribution release; declaring them here does not assert that check is complete.
+
+The new OPML parser is **original standard-library Python implementation informed by published feed/OPML interoperability concepts**, not a copy of OffScroll, Goosepaper, RSSPub or other reviewed source. No external license notice is required for original independent implementation.
 
 ## Incorporated third-party code
 
