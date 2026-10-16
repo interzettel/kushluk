@@ -1,7 +1,6 @@
 """OPML intake is offline, bounded and never silently activates a source."""
 import json
 import os
-from pathlib import Path
 
 import pytest
 
