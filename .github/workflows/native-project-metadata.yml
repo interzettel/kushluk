@@ -3,6 +3,9 @@ name: Native Project metadata
 # Runs for every new issue. Manual dispatch handles first-time field creation
 # and the one-time existing-issue backfill. Requires a scoped org Project token.
 on:
+  push:
+    branches: [main]
+    paths: [.github/workflows/native-project-metadata.yml]
   issues:
     types: [opened, reopened, edited, labeled, closed]
   workflow_dispatch:
@@ -35,7 +38,7 @@ jobs:
 
   maintenance:
     name: Project field setup or coverage audit
-    if: github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -48,4 +51,11 @@ jobs:
             echo "::error::Project token secret KUSHLUK_PROJECT_TOKEN is not configured."
             exit 1
           fi
-          python tools/project_sync.py "$MODE"
+          if [ "${{ github.event_name }}" = "push" ]; then
+            echo "Running one-time Project #3 bootstrap, backfill and audit."
+            python tools/project_sync.py bootstrap
+            python tools/project_sync.py backfill
+            python tools/project_sync.py audit
+          else
+            python tools/project_sync.py "$MODE"
+          fi
