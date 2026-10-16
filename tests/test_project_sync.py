@@ -19,11 +19,17 @@ ISSUE = {
 
 
 class FakeGH:
-    def __init__(self, *, existing_item=False, all_fields=True):
+    def __init__(self, *, existing_item=False, all_fields=True, empty_priority=False):
         self.calls = []
         self.fields = [{"name": "Status"}]
         if all_fields:
-            self.fields += [{"name": key} for key in FIELDS]
+            self.fields += [
+                {"name": key, "id": "field-" + key,
+                 "type": "ProjectV2SingleSelectField",
+                 "options": ([] if key == "Priority" and empty_priority else
+                             [{"name": option} for option in options])}
+                for key, options in FIELDS.items()
+            ]
         self.items = (
             [{
                 "content": {"url": URL},
@@ -50,7 +56,18 @@ class FakeGH:
         if cmd[:2] == ["project", "item-add"]:
             self.items.append({"content": {"url": URL}})
         if cmd[:2] == ["project", "field-create"]:
-            self.fields.append({"name": cmd[cmd.index("--name") + 1]})
+            name = cmd[cmd.index("--name") + 1]
+            self.fields.append({
+                "name": name, "id": "field-" + name,
+                "type": "ProjectV2SingleSelectField",
+                "options": [{"name": option} for option in
+                            cmd[cmd.index("--single-select-options") + 1].split(",")],
+            })
+        if cmd[:2] == ["api", "graphql"]:
+            for field in self.fields:
+                if field["name"] == "Priority":
+                    field["options"] = [{"name": p} for p in FIELDS["Priority"]]
+            return json.dumps({"data": {"updateProjectV2Field": {}}})
         return "{}"
 
 
@@ -110,6 +127,14 @@ class ProjectMetadataTests(unittest.TestCase):
     def test_requires_actual_project_fields(self):
         with self.assertRaisesRegex(SyncError, "bootstrap"):
             sync_issue(Client(FakeGH(all_fields=False)), ISSUE)
+
+    def test_adds_options_to_existing_empty_priority_without_replacing_field(self):
+        fake = FakeGH(empty_priority=True)
+        self.assertEqual(bootstrap(Client(fake)), [])
+        edits = [args for args in fake.calls if args[1:3] == ["api", "graphql"]]
+        self.assertEqual(len(edits), 1)
+        self.assertTrue(any("updateProjectV2Field" in x for x in edits[0]))
+        self.assertEqual(bootstrap(Client(fake)), [])
 
     def test_bootstrap_is_idempotent_and_reuses_status(self):
         fake = FakeGH(all_fields=False)
