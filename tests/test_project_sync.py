@@ -118,6 +118,30 @@ class ProjectMetadataTests(unittest.TestCase):
         self.assertIn("--format", command)
         self.assertNotIn("--field", command)
 
+    def test_json_field_key_normalization_and_resume(self):
+        from tools.project_sync import field_value, needs_sync
+        item = {
+            "content": {"url": URL},
+            "status": "Backlog",
+            "triagePriority": "P1",
+            "workstream": "A",
+            "maturity": "Idea",
+            "evidence": "Partial",
+        }
+        self.assertEqual(field_value(item, "Triage Priority"), "P1")
+        ready = {
+            **ISSUE,
+            "assignees": [{"login": "yigit-denktas"}],
+            "labels": [
+                {"name": "kind:task"},
+                {"name": "priority:P1"},
+                {"name": "workstream:a"},
+            ],
+        }
+        self.assertFalse(needs_sync(ready, item))
+        self.assertTrue(needs_sync(ISSUE, item))
+        self.assertTrue(needs_sync(ready, None))
+
     def test_preserves_human_curated_values(self):
         fake = FakeGH(existing_item=True)
         sync_issue(Client(fake), ISSUE)
