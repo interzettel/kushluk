@@ -123,3 +123,51 @@ def test_pipeline_never_attempts_delivery_without_validated_pdf(tmp_path, monkey
     assert (folder / "edition.html").exists()
     assert (folder / "metadata.json").exists()
     assert not (folder / "edition.pdf").exists()
+
+
+def test_end_to_end_crash_then_explicit_archive_only_recovery(tmp_path, monkeypatch):
+    pytest.importorskip("weasyprint")
+    pytest.importorskip("pypdf")
+    from kushluk import recovery, scheduled
+
+    offline_sources(monkeypatch)
+    cfg = config(tmp_path)
+    first_calls = []
+
+    def timeout_after_submission(*args, **kwargs):
+        first_calls.append(True)
+        raise TimeoutError("Uncertain CUPS submission")
+
+    monkeypatch.setattr(pipeline, "print_pdf", timeout_after_submission)
+    result = scheduled.run_once(cfg, target_date=DATE, send_to_printer=True)
+    assert result.status == "needs_review"
+    assert len(first_calls) == 1
+    archived = cfg.archive_dir / "20260923-001" / "edition.pdf"
+    assert validate_pdf(archived).ok
+    original = archived.read_bytes()
+
+    # Deliberately break all sources: recovery MUST NEVER fetch/rebuild.
+    def fail_fetch(*args, **kwargs):
+        raise AssertionError("Recovery must never call the publication pipeline")
+
+    monkeypatch.setattr(pipeline.OpenMeteoWeatherConnector, "fetch", fail_fetch)
+    monkeypatch.setattr(pipeline.CalendarFixtureConnector, "fetch", fail_fetch)
+    monkeypatch.setattr(pipeline.RSSConnector, "fetch", fail_fetch)
+    submitted = []
+    def approve_print(pdf, printer, **kwargs):
+        submitted.append(pdf)
+        return PrintResult(True, True, "Accepted locally")
+
+    monkeypatch.setattr(recovery, "print_pdf", approve_print)
+    retry = recovery.deliver_archived(
+        cfg, target_date=DATE, channel="print", request_id="owner-review-001",
+        acknowledge_possible_duplicate=True,
+    )
+    repeated = recovery.deliver_archived(
+        cfg, target_date=DATE, channel="print", request_id="owner-review-001",
+        acknowledge_possible_duplicate=True,
+    )
+    assert retry.status == "submitted"
+    assert repeated.status == "already_attempted"
+    assert submitted == [archived]
+    assert archived.read_bytes() == original
