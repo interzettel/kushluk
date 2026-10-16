@@ -65,13 +65,13 @@ kushluk generate --print-profile a3-folded
 
 This creates an additional landscape A3 PDF with booklet order `4|1` and `2|3`. The original four logical A4 pages are preserved. `kushluk generate --print-profile a3-folded --print` submits only when CUPS explicitly advertises A3 and duplex support; otherwise it refuses. Short-edge duplex is the initial output setting, **not a claim** that every Mac/printer feeds it correctly. Verify on paper before enabling regular print jobs.
 
-Each explicit `kushluk generate --print` call can submit another job. **Do not install a repeating scheduler yet**; idempotent unattended execution and duplicate-print guards are still tracked in [#47](https://github.com/interzettel/kushluk/issues/47).
+Each explicit `kushluk generate --print` call can submit another job. A scheduler-safe `kushluk run` entrypoint now prevents duplicate delivery through a local receipt. Follow [the launchd guide](SCHEDULING.md) to configure a trigger. Do not schedule physical printing before real-device trials; fuller unattended reliability remains under #47.
 
 ## Scheduling and Apple controls — not shipped yet
 
 A future native **launchd** agent and optional **Apple Shortcuts** trigger should invoke the same Kushluk CLI/run contract without placing editorial/layout logic into Shortcuts. launchd does not automatically inherit environment variables exported by your interactive zsh session. It needs explicit paths to the venv executable, a defined working directory, timezone/location and only the necessary credentials/variables. Do not place private ICS URLs or SMTP passwords in a committed plist or public issue.
 
-The current prototype does **not** yet provide the stable, idempotent daily-run command, pause/reprint state, or a verified unattended AirPrint route. These belong to AUT-02/03/05/07/08 under [#47](https://github.com/interzettel/kushluk/issues/47); real hardware acceptance is separate.
+The `kushluk run` command now provides conservative at-most-once delivery, but pause/reprint controls, comprehensive recovery and a verified unattended AirPrint route are still unimplemented. These belong to AUT-02/03/05/07/08 under [#47](https://github.com/interzettel/kushluk/issues/47); real hardware acceptance is separate.
 
 ## What automated testing covers
 
