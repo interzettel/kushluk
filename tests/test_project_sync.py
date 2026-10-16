@@ -89,6 +89,18 @@ class ProjectMetadataTests(unittest.TestCase):
         self.assertTrue(any("--add-assignee" in call for call in fake.calls))
         self.assertTrue(any("--type" in call for call in fake.calls))
 
+    def test_item_inventory_does_not_mix_json_and_field_flags(self):
+        from tools.project_sync import project_items
+        fake = FakeGH(existing_item=True)
+        result = project_items(Client(fake))
+        self.assertIn(URL, result)
+        command = next(
+            args for args in fake.calls
+            if args[1:3] == ["project", "item-list"]
+        )
+        self.assertIn("--format", command)
+        self.assertNotIn("--field", command)
+
     def test_preserves_human_curated_values(self):
         fake = FakeGH(existing_item=True)
         sync_issue(Client(fake), ISSUE)
