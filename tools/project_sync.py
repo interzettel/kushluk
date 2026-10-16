@@ -22,7 +22,7 @@ REPO = "interzettel/kushluk"
 PROJECT = "3"
 STEWARD = "yigit-denktas"
 FIELDS = {
-    "Priority": ["P0", "P1", "P2", "P3"],
+    "Triage Priority": ["P0", "P1", "P2", "P3"],
     "Workstream": [*list("ABCDEFGH"), "Untriaged"],
     "Maturity": ["Idea", "Research", "Accepted", "Implemented", "Verified"],
     "Evidence": ["Missing", "Partial", "Verified"],
@@ -91,39 +91,22 @@ def bootstrap(client: Client) -> list[str]:
     if "Status" not in existing:
         raise SyncError("Missing native Status; do not create a duplicate Stage")
 
-    # The owner-created Priority is an EMPTY single-select field. Preserve the
-    # existing field ID and populate options; refuse conflicting configurations.
-    priority = fields.get("Priority")
-    if priority is not None:
-        if priority.get("type") != "ProjectV2SingleSelectField":
-            raise SyncError("Existing Priority field is not single-select")
-        current = [
-            item["name"] for item in priority.get("options", [])
-            if isinstance(item, dict) and item.get("name")
-        ]
-        if not current:
-            mutation = (
-                "mutation($fieldId: ID!) { updateProjectV2Field(input: "
-                "{fieldId: $fieldId, singleSelectOptions: ["
-                '{name:"P0", color:RED, description:"Critical"},'
-                '{name:"P1", color:ORANGE, description:"High"},'
-                '{name:"P2", color:YELLOW, description:"Normal"},'
-                '{name:"P3", color:GRAY, description:"Low"}'
-                "]}) { projectV2Field { ... on ProjectV2SingleSelectField "
-                "{ id options { name } } } } }"
-            )
-            client.json(
-                "api", "graphql", "-f", f"query={mutation}",
-                "-F", f"fieldId={priority['id']}"
-            )
-        elif not set(FIELDS["Priority"]).issubset(current):
-            raise SyncError(
-                "Priority has custom options: refusing to replace them. "
-                "Review field configuration manually."
-            )
     created: list[str] = []
     for name, options in FIELDS.items():
-        if name not in existing:
+        if name in existing:
+            config = fields[name]
+            found = {
+                choice["name"] for choice in config.get("options", [])
+                if isinstance(choice, dict) and choice.get("name")
+            }
+            if config.get("type") != "ProjectV2SingleSelectField":
+                raise SyncError(f"{name} exists but is not a single-select field")
+            if not set(options).issubset(found):
+                raise SyncError(
+                    f"{name} has incompatible custom options; "
+                    "review field settings before backfill"
+                )
+        else:
             client.run(
                 "project", "field-create", PROJECT, "--owner", OWNER,
                 "--name", name, "--data-type", "SINGLE_SELECT",
@@ -140,7 +123,7 @@ def bootstrap(client: Client) -> list[str]:
     definitions = {
         **{
             f"priority:{p}": ("F3D77B", "Triage priority, not delivery evidence")
-            for p in FIELDS["Priority"]
+            for p in FIELDS["Triage Priority"]
         },
         **{
             f"workstream:{w.lower()}": ("E8C9B8", "Primary project workstream")
@@ -228,6 +211,15 @@ def desired_metadata(issue: dict) -> dict[str, str]:
     }
 
 
+def project_item_value(record: dict, field: str) -> object:
+    """Find a named Project field across CLI JSON case/spacing conventions."""
+    target = re.sub(r"[^a-z0-9]", "", field.lower())
+    for key, value in record.items():
+        if re.sub(r"[^a-z0-9]", "", key.lower()) == target:
+            return value
+    return None
+
+
 def sync_issue(
     client: Client, issue: dict, known_items: dict[str, dict] | None = None
 ) -> dict:
@@ -302,18 +294,20 @@ def sync_issue(
 
     # Defaults only fill missing values. Manual triage remains authoritative.
     for field in ("Status", *FIELDS):
-        existing = record.get(field.lower(), record.get(field))
+        existing = project_item_value(record, field)
         if existing is None or existing == "":
             client.run(
                 "project", "item-edit", PROJECT, "--owner", OWNER,
-                "--url", url, "--field", field, "--value", wanted[field]
+                "--url", url, "--field", field, "--value",
+                wanted["Priority"] if field == "Triage Priority" else wanted[field]
             )
     return {
         "issue": number,
         "url": url,
         "kind": wanted["kind"],
         "proposed_defaults": {
-            x: wanted[x] for x in ("Status", *FIELDS)
+            x: (wanted["Priority"] if x == "Triage Priority" else wanted[x])
+            for x in ("Status", *FIELDS)
         },
     }
 
@@ -372,8 +366,7 @@ def main(argv: list[str] | None = None) -> int:
                 members = project_items(client)
             current_missing = {
                 field: sum(
-                    not members.get(issue["url"], {}).get(field.lower(),
-                        members.get(issue["url"], {}).get(field))
+                    not project_item_value(members.get(issue["url"], {}), field)
                     for issue in all_issues
                 )
                 for field in ("Status", *FIELDS)
