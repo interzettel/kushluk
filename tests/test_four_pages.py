@@ -87,3 +87,37 @@ def test_weasyprint_pdf_is_exactly_four_portrait_a4_pages(tmp_path, with_stories
     result = validate_pdf(pdf_path)
     assert result.ok, result.errors
     assert result.page_count == 4
+
+
+def test_pdf_validator_rejects_swapped_pages(tmp_path):
+    pytest.importorskip("weasyprint")
+    pypdf = pytest.importorskip("pypdf")
+    html_path = render_html(edition(), tmp_path / "edition.html")
+    original = render_pdf(html_path, tmp_path / "edition.pdf")
+    reader = pypdf.PdfReader(str(original))
+    writer = pypdf.PdfWriter()
+    for index in [1, 0, 2, 3]:
+        writer.add_page(reader.pages[index])
+    swapped = tmp_path / "swapped.pdf"
+    with swapped.open("wb") as stream:
+        writer.write(stream)
+    result = validate_pdf(swapped)
+    assert not result.ok
+    assert any("out-of-order" in error for error in result.errors)
+
+
+def test_multilingual_long_headlines_render_on_four_pages(tmp_path):
+    pytest.importorskip("weasyprint")
+    pytest.importorskip("pypdf")
+    stories = [
+        Story("de", "Stadtentwicklung und die Zukunft unserer gemeinsamen Räume",
+              "Eine aktuelle Meldung aus dem Bereich Planung und Gesellschaft.", "Quelle"),
+        Story("tr", "Kent yaşamında kamusal alanların dönüşümü ve yeni yaklaşımlar",
+              "Kısa bir özet, kaynağı belirtilen bir haberden derlenmiştir.", "Kaynak"),
+        Story("mix", "Today's overlooked developments across the city",
+              "A short summary with the original source retained.", "Publisher"),
+    ]
+    pub = edition(stories=stories)
+    html = render_html(pub, tmp_path / "multi.html")
+    result = validate_pdf(render_pdf(html, tmp_path / "multi.pdf"))
+    assert result.ok, result.errors
