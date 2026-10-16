@@ -1,6 +1,6 @@
 # Run Kushluk on macOS
 
-Kushluk's local Python engine is intended to run on a Mac without Docker or a hosted service. The executable **Stage 1 prototype** currently produces one logical A4 page, not the accepted four-page production format.
+Kushluk's local Python engine is intended to run on a Mac without Docker or a hosted service. The executable **Stage 1 software** produces four ordered logical A4 pages. Native A4/A3 physical imposition and real-printer testing are separate delivery work.
 
 This guide covers **native Apple Silicon and Intel Macs**. macOS software compatibility is checked in CI. Successful printer submission does **not** establish that a physical sheet emerged correctly.
 
@@ -67,6 +67,6 @@ The current prototype does **not** yet provide the stable, idempotent daily-run 
 
 ## What automated testing covers
 
-[CI](https://github.com/interzettel/kushluk/actions/workflows/ci.yml) runs the Python unit suite on Linux and macOS (Apple Silicon and Intel); the macOS jobs install native Pango, load WeasyPrint, run the CLI and validate the current one-page PDF. Printer command behavior is covered by mocked CUPS tests. GitHub-hosted CI has **no real printer**, so it cannot prove printed sheets, waking a sleeping Mac, printer reachability, launchd reliability, or hardware duplex handling.
+[CI](https://github.com/interzettel/kushluk/actions/workflows/ci.yml) runs the Python unit suite on Linux and macOS (Apple Silicon and Intel); the macOS jobs install native Pango, load WeasyPrint, run the CLI and validate the current four-page A4 PDF. Printer command behavior is covered by mocked CUPS tests. GitHub-hosted CI has **no real printer**, so it cannot prove printed sheets, waking a sleeping Mac, printer reachability, launchd reliability, or hardware duplex handling.
 
 References: [WeasyPrint native library setup](https://doc.courtbouillon.org/weasyprint/stable/first_steps.html) and [CUPS command-line print options](https://apple.github.io/cups/doc/options.html).
