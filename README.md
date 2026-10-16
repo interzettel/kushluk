@@ -158,6 +158,7 @@ The graphic shows **two different things**: evidence gates G1–G8 and checked o
 | [Working method](docs/WORKING_METHOD.md) + [work journal](docs/WORK_JOURNAL.md) | New ideas, bugs, decisions, dated changes and reviewer handoffs |
 | [ROADMAP.md](docs/ROADMAP.md) + [STATUS.md](docs/STATUS.md) | Product sequence versus demonstrated code |
 | [ADRs](docs/adr/README.md) | Accepted, superseded and still-disputed architectural decisions |
+| [Competitor and inspiration transfer map](docs/UPSTREAM_REVIEW.md) | Which patterns to adopt/adapt/reimplement/reject, source and task owners; active review [#84](https://github.com/interzettel/kushluk/issues/84) |
 
 To regenerate the SVG and Markdown on the progress-enabled branch:
 
