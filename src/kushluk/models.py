@@ -89,6 +89,15 @@ class DeliveryResult:
 
 
 @dataclass(slots=True)
+class EditionPage:
+    """Logical A4 page; content references canonical item IDs/indices, never copies."""
+    number: int
+    kind: Literal["front", "day", "stories", "sources"]
+    practical_indices: list[int] = field(default_factory=list)
+    story_ids: list[str] = field(default_factory=list)
+
+
+@dataclass(slots=True)
 class Publication:
     edition_id: str
     target_date: str
@@ -99,6 +108,8 @@ class Publication:
     stories: list[Story]
     lead_story_id: str | None = None
     notes: list[str] = field(default_factory=list)
+    schema_version: int = 2
+    pages: list[EditionPage] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
