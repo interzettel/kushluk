@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass, replace
 from datetime import date
 from pathlib import Path
+from typing import Callable
 
 from kushluk.archive import archive_publication
 from kushluk.config import Settings
@@ -46,6 +47,7 @@ def run_pipeline(
     send_email: bool = False,
     email_on_print_failure: bool = False,
     print_profile: str = "a4-home",
+    before_delivery: Callable[[str], None] | None = None,
 ) -> PipelineResult:
     if print_profile not in {"a4-home", "a3-folded"}:
         raise ValueError(f"Unknown print profile: {print_profile}")
@@ -188,6 +190,8 @@ def run_pipeline(
     print_result: PrintResult | None = None
     if send_to_printer:
         if printable_pdf:
+            if before_delivery is not None:
+                before_delivery("print")
             print_result = print_pdf(
                 printable_pdf, settings.printer, execute=True,
                 media="A3" if print_profile == "a3-folded" else "A4",
@@ -221,6 +225,8 @@ def run_pipeline(
     )
     email_result: DeliveryResult | None = None
     if should_email:
+        if before_delivery is not None:
+            before_delivery("email")
         email_result = send_email_edition(
             publication,
             host=settings.smtp_host,

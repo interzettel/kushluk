@@ -35,6 +35,7 @@ Current executable implementation:
 
 Available commands:
 
+- `kushluk run` / `kushluk run-status` — local receipt and at-most-once delivery boundary (not yet real unattended host proof)
 - `kushluk doctor`
 - `kushluk generate --no-pdf`
 - `kushluk generate`
@@ -84,7 +85,8 @@ Available commands:
 - run/failure/delivery summary;
 - archive listing;
 - runtime doctor;
-- CI tests, linting and walking-skeleton smoke test.
+- CI tests, linting and walking-skeleton smoke test;
+- local run-state receipts blocking repeated/uncertain delivery (full unattended system is unverified).
 
 ## Decided but not yet implemented
 
