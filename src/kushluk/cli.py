@@ -20,7 +20,7 @@ from kushluk.print_inspection import PrintInspectionError, inspect_print_pdf
 from kushluk.recovery import deliver_archived
 from kushluk.scheduled import read_run_status, run_once
 from kushluk.source_registry import (
-    SourceApprovalError, approve_source, read_registry, revoke_source,
+    SourceApprovalError, approve_source, read_registry, revoke_source, set_source_mode,
 )
 
 
@@ -117,6 +117,13 @@ def build_parser() -> argparse.ArgumentParser:
     revoke = sub.add_parser("sources-revoke", help="Disable a previously approved feed")
     revoke.add_argument("--id", dest="source_id", required=True)
     revoke.add_argument("--registry", type=Path)
+
+    mode = sub.add_parser("sources-set-mode", help="Record a feed's rights mode (unsupported modes disabled)")
+    mode.add_argument("--id", dest="source_id", required=True)
+    mode.add_argument("--mode", required=True,
+                      choices=("ignore", "reference-only", "derivative", "private-direct"))
+    mode.add_argument("--acknowledge-rights-boundary", action="store_true")
+    mode.add_argument("--registry", type=Path)
 
     listed = sub.add_parser("sources-list", help="Show approved RSS source IDs, no URLs")
     listed.add_argument("--registry", type=Path)
@@ -245,7 +252,7 @@ def main(argv: list[str] | None = None) -> int:
         }, ensure_ascii=False))
         return 0
 
-    if args.command in {"sources-approve", "sources-revoke", "sources-list"}:
+    if args.command in {"sources-approve", "sources-revoke", "sources-list", "sources-set-mode"}:
         try:
             if args.command == "sources-approve":
                 identifier, total, new = approve_source(
@@ -256,6 +263,16 @@ def main(argv: list[str] | None = None) -> int:
                     "status": "approved" if new else "already-approved",
                     "id": identifier, "approved_count": total,
                     "mode": "reference-only", "article_copying_permitted": False,
+                }
+            elif args.command == "sources-set-mode":
+                chosen, enabled = set_source_mode(
+                    args.source_id, args.mode, acknowledge=args.acknowledge_rights_boundary,
+                    path=args.registry,
+                )
+                payload = {
+                    "status": "active" if enabled else "disabled",
+                    "mode": chosen, "enabled": enabled,
+                    "body_copying_enabled": False,
                 }
             elif args.command == "sources-revoke":
                 total, changed = revoke_source(args.source_id, path=args.registry)
@@ -268,6 +285,10 @@ def main(argv: list[str] | None = None) -> int:
                 payload = {
                     "status": "ok", "approved_count": len(rows),
                     "ids": [row["id"] for row in rows],
+                    "sources": [
+                        {"id": row["id"], "mode": row["mode"], "enabled": row["enabled"]}
+                        for row in rows
+                    ],
                 }
         except SourceApprovalError as exc:
             print(json.dumps({"status": "rejected", "error": str(exc)}))
