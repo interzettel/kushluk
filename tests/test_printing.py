@@ -1,4 +1,7 @@
-from kushluk.printing import parse_lpoptions
+import subprocess
+
+from kushluk import printing
+from kushluk.printing import detect_printer_capabilities, parse_lpoptions, print_pdf
 
 
 def test_parse_lpoptions_detects_duplex_and_media():
@@ -16,3 +19,99 @@ def test_parse_lpoptions_handles_simplex_printer():
     duplex, media = parse_lpoptions(sample)
     assert duplex is False
     assert media == ("A4", "Letter")
+
+
+def test_parse_lpoptions_supports_ipp_driverless_sides():
+    # macOS AirPrint/IPP printers often expose 'sides' instead of legacy 'Duplex'.
+    sample = (
+        "sides/2-Sided Printing: *one-sided two-sided-long-edge two-sided-short-edge\n"
+        "media/Media Size: *iso_a4_210x297mm na_letter_8.5x11in\n"
+    )
+    duplex, media = parse_lpoptions(sample)
+    assert duplex is True
+    assert "iso_a4_210x297mm" in media
+
+
+def test_mac_cups_default_printer_and_duplex_job(tmp_path, monkeypatch):
+    monkeypatch.delenv("LPDEST", raising=False)
+    monkeypatch.delenv("PRINTER", raising=False)
+    monkeypatch.setattr(printing.shutil, "which", lambda name: f"/usr/bin/{name}")
+    calls = []
+
+    def fake_run(args, **kwargs):
+        calls.append(args)
+        if args[0].endswith("lpstat") and args[1:] == ["-d"]:
+            return subprocess.CompletedProcess(args, 0, "system default destination: Office_Printer\n", "")
+        if args[0].endswith("lpoptions"):
+            return subprocess.CompletedProcess(
+                args, 0, "sides/2-Sided Printing: *one-sided two-sided-long-edge\n", ""
+            )
+        if args[0].endswith("lpstat") and args[1:3] == ["-p", "Office_Printer"]:
+            return subprocess.CompletedProcess(
+                args, 0, "printer Office_Printer is idle. enabled since Friday\n", ""
+            )
+        if args[0].endswith("lp"):
+            return subprocess.CompletedProcess(args, 0, "request id is Office_Printer-27", "")
+        raise AssertionError(f"Unexpected command: {args}")
+
+    monkeypatch.setattr(printing.subprocess, "run", fake_run)
+    pdf = tmp_path / "morning edition.pdf"
+    pdf.write_bytes(b"%PDF-1.4\n")
+    capabilities = detect_printer_capabilities()
+    assert capabilities.printer == "Office_Printer"
+    assert capabilities.available and capabilities.duplex_supported
+
+    result = print_pdf(pdf, execute=True)
+    assert result.success and result.attempted and result.duplex_used
+    assert result.printer == "Office_Printer"
+    lp_command = next(args for args in calls if args[0] == "/usr/bin/lp")
+    assert lp_command[1:3] == ["-d", "Office_Printer"]
+    assert "sides=two-sided-long-edge" in lp_command
+    assert str(pdf) == lp_command[-1]
+
+
+def test_mac_cups_lp_dest_priority_and_simplex(tmp_path, monkeypatch):
+    monkeypatch.setenv("LPDEST", "Personal_Printer")
+    monkeypatch.setenv("PRINTER", "Ignored_Printer")
+    monkeypatch.setattr(printing.shutil, "which", lambda name: f"/usr/bin/{name}")
+    calls = []
+
+    def fake_run(args, **kwargs):
+        calls.append(args)
+        if args[0].endswith("lpoptions"):
+            return subprocess.CompletedProcess(
+                args, 0, "Duplex/2-Sided Printing: *None DuplexNoTumble\n", ""
+            )
+        if args[0].endswith("lpstat"):
+            return subprocess.CompletedProcess(
+                args, 0, "printer Personal_Printer is idle. enabled since Friday\n", ""
+            )
+        return subprocess.CompletedProcess(args, 0, "request id is Personal_Printer-42", "")
+
+    monkeypatch.setattr(printing.subprocess, "run", fake_run)
+    pdf = tmp_path / "edition.pdf"
+    pdf.write_bytes(b"%PDF-1.4\n")
+    result = print_pdf(pdf, execute=True, duplex=False)
+    assert result.success and not result.duplex_used
+    lp_command = next(args for args in calls if args[0] == "/usr/bin/lp")
+    assert lp_command[1:3] == ["-d", "Personal_Printer"]
+    assert "sides=one-sided" in lp_command
+    assert all(not (args[0].endswith("lpstat") and "-d" in args) for args in calls)
+
+
+def test_printer_submission_timeout_becomes_failure(tmp_path, monkeypatch):
+    monkeypatch.setattr(printing.shutil, "which", lambda name: f"/usr/bin/{name}")
+
+    def fake_run(args, **kwargs):
+        if args[0].endswith("lp"):
+            raise subprocess.TimeoutExpired(cmd=args, timeout=30)
+        if args[0].endswith("lpoptions"):
+            return subprocess.CompletedProcess(args, 0, "PageSize/Media: *A4 Letter", "")
+        return subprocess.CompletedProcess(args, 0, "printer Test is idle. enabled", "")
+
+    monkeypatch.setattr(printing.subprocess, "run", fake_run)
+    pdf = tmp_path / "edition.pdf"
+    pdf.write_bytes(b"%PDF-1.4\n")
+    result = print_pdf(pdf, printer="Test", execute=True)
+    assert not result.success and result.attempted
+    assert "TimeoutExpired" in result.detail
