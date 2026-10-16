@@ -599,13 +599,13 @@ Previously discussed references include:
 
 These are already represented in the upstream/third-party review.
 
-### HISTORICAL / NEEDS REDISCOVERY — Other reference names
+### HISTORICAL / RESEARCH UPDATE (17 Oct 2026) — Earlier reference names
 
 Earlier chat also mentioned:
-- RSSPub — for EPUB/e-ink/OPDS ideas;
-- Atlas — for research/scoring ideas.
+- **RSSPub** — now matched to [harshit181/RSSPub](https://github.com/harshit181/RSSPub), a Rust EPUB/OPDS and read-later tool with an MIT LICENSE verified in our [source-backed 2026 ecosystem review](research/newspaper-ecosystem-2026-10-17.md). This does not approve a new dependency or full-article copying.
+- **Atlas** — the original research/scoring project is **still unidentified**; its exact URL and license remain unknown.
 
-The exact repositories/sources were not preserved in current project memory. Do not copy or depend on them until the precise source and licence are rediscovered and verified.
+Do not depend on or copy unverified source code. The independent current survey and matrix are recorded under [#84](https://github.com/interzettel/kushluk/issues/84).
 
 ---
 
