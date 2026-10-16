@@ -17,6 +17,9 @@ from kushluk.opml import (
 from kushluk.print_proof import make_print_proof
 from kushluk.recovery import deliver_archived
 from kushluk.scheduled import read_run_status, run_once
+from kushluk.source_registry import (
+    SourceApprovalError, approve_source, read_registry, revoke_source,
+)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -99,6 +102,22 @@ def build_parser() -> argparse.ArgumentParser:
     )
     sources_export.add_argument("file", type=Path, help="Existing proposed-only JSON file")
     sources_export.add_argument("--output", type=Path, required=True)
+
+    approval = sub.add_parser(
+        "sources-approve", help="Approve one disabled OPML proposal feed for reference-only use"
+    )
+    approval.add_argument("proposal", type=Path)
+    approval.add_argument("--index", type=int, required=True, help="1-based feed position")
+    approval.add_argument("--acknowledge-feed-access", action="store_true",
+                          help="I have permission to retrieve this specific feed")
+    approval.add_argument("--registry", type=Path, help="Private local source registry path")
+
+    revoke = sub.add_parser("sources-revoke", help="Disable a previously approved feed")
+    revoke.add_argument("--id", dest="source_id", required=True)
+    revoke.add_argument("--registry", type=Path)
+
+    listed = sub.add_parser("sources-list", help="Show approved RSS source IDs, no URLs")
+    listed.add_argument("--registry", type=Path)
 
     archive = sub.add_parser("archive-list", help="List recent local Kushluk editions")
     archive.add_argument("--limit", type=int, default=20)
@@ -207,6 +226,36 @@ def main(argv: list[str] | None = None) -> int:
             "activated": 0, "network_requests": 0,
             "output": str(args.output),
         }, ensure_ascii=False))
+        return 0
+
+    if args.command in {"sources-approve", "sources-revoke", "sources-list"}:
+        try:
+            if args.command == "sources-approve":
+                identifier, total, new = approve_source(
+                    args.proposal, args.index,
+                    acknowledge=args.acknowledge_feed_access, path=args.registry,
+                )
+                payload = {
+                    "status": "approved" if new else "already-approved",
+                    "id": identifier, "approved_count": total,
+                    "mode": "reference-only", "article_copying_permitted": False,
+                }
+            elif args.command == "sources-revoke":
+                total, changed = revoke_source(args.source_id, path=args.registry)
+                payload = {
+                    "status": "revoked" if changed else "not-found",
+                    "approved_count": total,
+                }
+            else:
+                rows = read_registry(args.registry)
+                payload = {
+                    "status": "ok", "approved_count": len(rows),
+                    "ids": [row["id"] for row in rows],
+                }
+        except SourceApprovalError as exc:
+            print(json.dumps({"status": "rejected", "error": str(exc)}))
+            return 2
+        print(json.dumps(payload, ensure_ascii=False))
         return 0
 
     if args.command == "archive-list":
