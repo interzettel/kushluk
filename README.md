@@ -162,6 +162,7 @@ The graphic shows **two different things**: evidence gates G1–G8 and checked o
 | [ADRs](docs/adr/README.md) | Accepted, superseded and still-disputed architectural decisions |
 | [Feature catalog](docs/FEATURE_CATALOG.md) + [release milestones](docs/RELEASE_PLAN.md) | 32 stable feature IDs mapped to epics, owner issues, evidence and proposed v0.2 preview / v1.0 stable release gates; planning [#87](https://github.com/interzettel/kushluk/issues/87) |
 | [Upstream dual-review ballots](docs/REUSE_REVIEWS.md) | ChatGPT provisional positions, independently pending Claude review, explicit founder adoption decisions [#88](https://github.com/interzettel/kushluk/issues/88) |
+| [Print inspection evidence](docs/PRINT_INSPECTION.md) | PDF text-anchor/structural checks with optional private PNG previews, still requiring human visual and physical review |
 | [Offline EPUB3 experiment](docs/EPUB.md) | Export archived semantic editions as four reflowable chapters; private, offline, reader-hardware validation remains open |
 | [Newspaper ecosystem research](docs/research/newspaper-ecosystem-2026-10-17.md) + [25-project CSV matrix](docs/research/newspaper-project-matrix-2026-10-17.csv) | Categorized current source/code/license review, Goosepaper and RSSPub investigations, priority comparisons and evidence gaps under [#84](https://github.com/interzettel/kushluk/issues/84) |
 | [Competitor/inspiration transfer policy](docs/UPSTREAM_REVIEW.md) | Durable decisions about adapting, rejecting or independently reimplementing ideas without copying upstream code |
