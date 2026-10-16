@@ -12,7 +12,7 @@ import json
 import os
 from pathlib import Path
 from urllib.parse import urlsplit
-from zipfile import ZipFile, ZIP_DEFLATED, ZIP_STORED, ZipInfo
+from zipfile import ZipFile, ZIP_DEFLATED, ZIP_STORED
 import xml.etree.ElementTree as ET
 
 
@@ -143,9 +143,10 @@ def _package(payload: dict) -> str:
     date_text = _e(payload["target_date"])
     raw = payload.get("generated_at")
     try:
-        modified = datetime.fromisoformat(str(raw)).astimezone(timezone.utc)
-        if modified.utcoffset() is None:
+        source_time = datetime.fromisoformat(str(raw))
+        if source_time.tzinfo is None:
             raise ValueError("Timestamp missing offset")
+        modified = source_time.astimezone(timezone.utc)
         modified_text = modified.strftime("%Y-%m-%dT%H:%M:%SZ")
     except (ValueError, TypeError):
         modified_text = date_text + "T00:00:00Z"
