@@ -1,12 +1,15 @@
 from __future__ import annotations
 
 import argparse
-from datetime import date
+from datetime import date, datetime
+import json
+from zoneinfo import ZoneInfo
 
 from kushluk.archive import list_editions
 from kushluk.config import Settings
 from kushluk.doctor import core_ready, run_doctor
 from kushluk.pipeline import run_pipeline
+from kushluk.scheduled import read_run_status, run_once
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -39,6 +42,18 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Send email only if requested printing fails",
     )
+
+    run = sub.add_parser("run", help="Idempotent local scheduled edition run (at most once)")
+    run.add_argument("--date", dest="target_date", help="YYYY-MM-DD; defaults to today locally")
+    run.add_argument("--print", dest="send_to_printer", action="store_true")
+    run.add_argument("--email", dest="send_email", action="store_true")
+    run.add_argument("--email-on-print-failure", action="store_true")
+    run.add_argument(
+        "--print-profile", choices=("a4-home", "a3-folded"), default="a4-home"
+    )
+
+    run_status = sub.add_parser("run-status", help="Read durable local edition run state")
+    run_status.add_argument("--date", dest="target_date", help="YYYY-MM-DD")
 
     archive = sub.add_parser("archive-list", help="List recent local Kushluk editions")
     archive.add_argument("--limit", type=int, default=20)
@@ -85,6 +100,23 @@ def main(argv: list[str] | None = None) -> int:
             or (result.email_result is not None and result.email_result.status == "failed")
         )
         return 2 if failed_delivery else 0
+
+    if args.command in {"run", "run-status"}:
+        local_today = datetime.now(ZoneInfo(settings.timezone)).date()
+        target = date.fromisoformat(args.target_date) if args.target_date else local_today
+        if args.command == "run-status":
+            outcome = read_run_status(settings, target_date=target)
+        else:
+            outcome = run_once(
+                settings,
+                target_date=target,
+                send_to_printer=args.send_to_printer,
+                send_email=args.send_email,
+                email_on_print_failure=args.email_on_print_failure,
+                print_profile=args.print_profile,
+            )
+        print(json.dumps(outcome.as_dict(), ensure_ascii=False))
+        return 0 if outcome.status in {"completed", "already_completed", "not_run"} else 2
 
     if args.command == "archive-list":
         for item in list_editions(settings.archive_dir, limit=max(1, args.limit)):
