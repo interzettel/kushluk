@@ -2,7 +2,19 @@
 name: Research or decision (RFC)
 about: Investigate an uncertain direction without treating it as approved implementation
 title: "[RFC] "
+assignees: "yigit-denktas"
 ---
+
+## Issue metadata (triage)
+
+- Kind / issue type: Research or Decision (use native if available)
+- Labels: workstream / priority / maturity (existing labels only)
+- Assignee: @yigit-denktas
+- GitHub Project: Kushluk (pending #62)
+- Project fields: Stage / Priority / Workstream / Maturity / Evidence
+- Milestone: TBD until a concrete outcome gate exists
+- Parent / blocks / blocked by:
+- Development branch / PR: none unless a prototype or ADR is drafted
 
 ## Question and why now
 
