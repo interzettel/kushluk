@@ -3,12 +3,14 @@ from __future__ import annotations
 import argparse
 from datetime import date, datetime
 import json
+from pathlib import Path
 from zoneinfo import ZoneInfo
 
 from kushluk.archive import list_editions
 from kushluk.config import Settings
 from kushluk.doctor import core_ready, run_doctor
 from kushluk.pipeline import run_pipeline
+from kushluk.print_proof import make_print_proof
 from kushluk.recovery import deliver_archived
 from kushluk.scheduled import read_run_status, run_once
 
@@ -71,6 +73,14 @@ def build_parser() -> argparse.ArgumentParser:
     )
     deliver.add_argument(
         "--print-profile", choices=("a4-home", "a3-folded"), default="a4-home"
+    )
+
+    proof = sub.add_parser(
+        "print-proof", help="Generate offline A4/A3 sample PDFs (never prints)"
+    )
+    proof.add_argument(
+        "--output-dir", type=Path, default=Path("output/print-proof"),
+        help="Where synthetic print-verification files are written",
     )
 
     archive = sub.add_parser("archive-list", help="List recent local Kushluk editions")
@@ -147,6 +157,11 @@ def main(argv: list[str] | None = None) -> int:
         )
         print(json.dumps(outcome.as_dict(), ensure_ascii=False))
         return 0 if outcome.status == "submitted" else 2
+
+    if args.command == "print-proof":
+        artifacts = make_print_proof(args.output_dir)
+        print(json.dumps(artifacts, ensure_ascii=False))
+        return 0
 
     if args.command == "archive-list":
         for item in list_editions(settings.archive_dir, limit=max(1, args.limit)):
