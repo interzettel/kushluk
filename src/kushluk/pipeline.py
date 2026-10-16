@@ -120,7 +120,7 @@ def run_pipeline(
             render_html(working, html_path)
             try:
                 candidate_pdf = render_pdf(html_path, pdf_path)
-                pdf_validation = validate_pdf(candidate_pdf, expected_pages=1)
+                pdf_validation = validate_pdf(candidate_pdf, expected_pages=4)
             except Exception as exc:
                 failures.append(_failure("pdf_unavailable", "degraded", exc, "renderer"))
                 break
@@ -185,7 +185,7 @@ def run_pipeline(
                 )
         else:
             print_result = PrintResult(
-                True, False, "Print skipped because a validated one-page PDF is unavailable."
+                True, False, "Print skipped because a validated four-page A4 PDF is unavailable."
             )
             failures.append(
                 Failure(
