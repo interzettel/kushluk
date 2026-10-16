@@ -2,9 +2,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass, replace
 from pathlib import Path
+import re
 from urllib.parse import urlparse
 
 from kushluk.models import PracticalItem, Publication, Story
+from kushluk.publication import plan_pages
 
 
 @dataclass(slots=True)
@@ -26,6 +28,14 @@ def validate_publication(publication: Publication) -> ValidationResult:
         errors.append("Edition ID is required.")
     if not publication.target_date.strip():
         errors.append("Target date is required.")
+    if publication.schema_version != 2:
+        errors.append("Publication schema must be version 2.")
+    if len(publication.pages) != 4 or publication.pages != plan_pages(
+        publication.practical, publication.stories
+    ):
+        errors.append("Edition must contain four canonical, correctly ordered logical A4 pages.")
+    if len({story.id for story in publication.stories}) != len(publication.stories):
+        errors.append("Story IDs must be unique across the edition.")
     if not publication.location_name.strip():
         warnings.append("Location name is empty.")
     if len(publication.practical) > 6:
@@ -52,7 +62,7 @@ def compact_for_layout(publication: Publication, pass_number: int) -> Publicatio
     if pass_number >= 3 and len(stories) > 1:
         stories = stories[:1]
 
-    return replace(publication, practical=practical, stories=stories)
+    return replace(publication, practical=practical, stories=stories, pages=plan_pages(practical, stories))
 
 
 def pdf_page_count(pdf_path: Path) -> int:
@@ -61,11 +71,28 @@ def pdf_page_count(pdf_path: Path) -> int:
     return len(PdfReader(str(pdf_path)).pages)
 
 
-def validate_pdf(pdf_path: Path, expected_pages: int = 1) -> ValidationResult:
+def validate_pdf(pdf_path: Path, expected_pages: int = 4) -> ValidationResult:
     count = pdf_page_count(pdf_path)
     errors = [] if count == expected_pages else [
         f"Expected {expected_pages} PDF page(s), got {count}."
     ]
+    if not errors:
+        from pypdf import PdfReader
+
+        reader = PdfReader(str(pdf_path))
+        for number, page in enumerate(reader.pages, start=1):
+            box = page.mediabox
+            width, height = float(box.width), float(box.height)
+            # A4 portrait in PDF points = 595.28 x 841.89; allow renderer rounding.
+            if abs(width - 595.28) > 2 or abs(height - 841.89) > 2:
+                errors.append(
+                    f"Logical page {number} is not portrait A4 ({width:.1f} x {height:.1f}pt)."
+                )
+            # The final page marker is embedded in each page, not just inferred
+            # from PDF order. Catch swapped/missing content and blank sheets.
+            content = page.extract_text() or ""
+            if not re.search(rf"\b{number}\s*/\s*4\b", content):
+                errors.append(f"Missing or out-of-order logical page marker on page {number}.")
     return ValidationResult(errors=errors, warnings=[], page_count=count)
 
 

@@ -1,11 +1,11 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Kushluk · {{ publication.target_date }}</title>
   <style>
-    @page { size: A4; margin: 11mm 12mm 12mm; }
+    @page { size: A4 portrait; margin: 11mm 12mm 12mm; }
     :root {
       --paper: #f3efe4;
       --ink: #1a1a1a;
@@ -14,145 +14,142 @@
       --accent: #f3d77b;
     }
     * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
     body {
-      margin: 0;
       background: var(--paper);
       color: var(--ink);
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: 9.4pt;
-      line-height: 1.25;
+      font: 10pt/1.35 Georgia, "Times New Roman", serif;
+      overflow-wrap: break-word;
     }
-    main { min-height: 273mm; display: flex; flex-direction: column; }
-    header { border-bottom: 0.35mm solid var(--ink); padding-bottom: 3mm; }
-    .masthead {
+    .sheet {
       display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 8mm;
+      flex-direction: column;
+      min-height: 270mm;
+      break-after: page;
+      page-break-after: always;
     }
-    h1 { font-size: 34pt; line-height: 0.9; margin: 0; letter-spacing: -0.04em; }
-    .meta {
-      font: 6.6pt/1.2 Arial, Helvetica, sans-serif;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-      text-align: right;
+    .sheet:last-child { break-after: auto; page-break-after: auto; }
+    header {
+      border-bottom: .35mm solid var(--ink);
+      padding-bottom: 3mm;
+      margin-bottom: 7mm;
     }
-    .today {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 3mm;
-      padding: 4mm 0;
-      border-bottom: 0.2mm solid var(--rule);
+    .masthead { display: flex; align-items: baseline; justify-content: space-between; gap: 8mm; }
+    h1 { font-size: 32pt; line-height: .95; margin: 0; letter-spacing: -.04em; }
+    .meta, .kicker, .source, footer, .label {
+      font-family: Arial, Helvetica, sans-serif;
     }
-    .practical {
-      min-height: 18mm;
-      padding-right: 2mm;
-      border-right: 0.2mm solid var(--rule);
-    }
-    .practical:last-child { border-right: 0; }
-    .label {
-      font: 6.4pt Arial, Helvetica, sans-serif;
-      text-transform: uppercase;
-      letter-spacing: .11em;
-      color: var(--muted);
-    }
-    .value { font-size: 13pt; font-weight: 700; margin-top: 1mm; }
-    .detail { color: var(--muted); margin-top: 0.8mm; }
-    .section-label {
-      font: 6.5pt Arial, Helvetica, sans-serif;
-      text-transform: uppercase;
-      letter-spacing: .14em;
-      margin: 4mm 0 2mm;
-    }
-    .stories {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 4mm;
-      flex: 1;
-    }
-    article { border-top: 0.3mm solid var(--ink); padding-top: 2mm; }
-    article.lead { grid-column: span 2; }
-    article.lead h2 { font-size: 22pt; line-height: .95; }
-    h2 { font-size: 15pt; line-height: 1.05; margin: 0 0 2mm; }
-    .deck { margin: 0 0 2mm; }
-    .source { font: 6.4pt Arial, Helvetica, sans-serif; color: var(--muted); }
+    .meta { font-size: 7pt; letter-spacing: .07em; text-align: right; color: var(--muted); }
+    .kicker { margin: 0 0 3mm; font-size: 7pt; letter-spacing: .15em; text-transform: uppercase; }
+    h2 { margin: 0 0 5mm; font-size: 24pt; line-height: 1.05; }
+    h3 { margin: 0 0 2mm; font-size: 16pt; line-height: 1.1; }
+    p { margin: 0 0 3mm; }
+    .practical-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4mm; }
+    .practical { padding: 3mm 3mm 4mm 0; border-top: .2mm solid var(--rule); }
+    .label { text-transform: uppercase; font-size: 7pt; letter-spacing: .08em; color: var(--muted); }
+    .value { margin-top: 1mm; font-weight: bold; font-size: 14pt; }
+    .detail { margin-top: 1mm; color: var(--muted); }
+    article { border-top: .3mm solid var(--ink); padding-top: 3mm; margin-top: 5mm; break-inside: avoid; }
+    .deck { font-size: 10pt; max-width: 160mm; white-space: pre-wrap; }
+    .source { font-size: 7pt; color: var(--muted); overflow-wrap: anywhere; }
+    .empty { border-top: .2mm solid var(--rule); padding-top: 3mm; color: var(--muted); }
+    .source-list { list-style: none; margin: 0; padding: 0; }
+    .source-list li { border-top: .2mm solid var(--rule); padding: 3mm 0; }
+    .source-list a { color: var(--ink); text-decoration: underline; }
+    .notes { padding: 4mm 0; margin-top: 5mm; border-top: .2mm solid var(--rule); }
+    .notes li { margin: 1mm 0; }
     footer {
-      border-top: 0.2mm solid var(--rule);
-      margin-top: 4mm;
+      margin-top: auto;
+      border-top: .2mm solid var(--rule);
       padding-top: 2mm;
-      display: flex;
-      justify-content: space-between;
-      font: 6pt Arial, Helvetica, sans-serif;
-      color: var(--muted);
+      display: flex; justify-content: space-between;
+      gap: 4mm; color: var(--muted); font-size: 7pt;
     }
-    .sun {
-      width: 3mm;
-      height: 3mm;
-      border-radius: 50%;
-      background: var(--accent);
-      display: inline-block;
-      vertical-align: -0.4mm;
-      margin-right: 1mm;
+    .sun { display: inline-block; width: 3mm; height: 3mm; border-radius: 50%;
+      background: var(--accent); vertical-align: -0.3mm; margin-right: 1mm; }
+    @media screen {
+      body { background: #ded8cc; padding: 12px; }
+      .sheet { width: 210mm; min-height: 297mm; padding: 11mm 12mm 12mm;
+        margin: 0 auto 12px; background: var(--paper); box-shadow: 0 2px 18px #0002;
+        break-after: auto; page-break-after: auto; }
     }
-    .warning { font: 6.5pt Arial, Helvetica, sans-serif; color: var(--muted); }
-    @media print {
-      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    }
+    @media print { body { print-color-adjust: exact; -webkit-print-color-adjust: exact; } }
   </style>
 </head>
 <body>
-<main>
+{% for page in publication.pages %}
+<section class="sheet {{ page.kind }}" data-page="{{ page.number }}" aria-label="Page {{ page.number }} of 4">
   <header>
     <div class="masthead">
       <h1>Kushluk</h1>
-      <div class="meta">
-        {{ publication.location_name }}<br>
-        {{ publication.target_date }}<br>
-        {{ publication.edition_id }}
-      </div>
+      <div class="meta">{{ publication.location_name }}<br>{{ publication.target_date }}<br>{{ publication.edition_id }}</div>
     </div>
   </header>
-
-  <div class="section-label">Today</div>
-  <section class="today">
-    {% for item in publication.practical[:6] %}
-    <div class="practical">
-      <div class="label">{{ item.label }}</div>
-      <div class="value">{{ item.value }}</div>
-      {% if item.detail %}<div class="detail">{{ item.detail }}</div>{% endif %}
-    </div>
-    {% else %}
-    <div class="practical"><div class="value">No practical items available.</div></div>
-    {% endfor %}
-  </section>
-
-  <div class="section-label"><span class="sun"></span>For You</div>
-  <section class="stories">
-    {% for story in publication.stories %}
-    <article class="{% if publication.lead_story_id == story.id %}lead{% endif %}">
-      <h2>{{ story.headline }}</h2>
-      <p class="deck">{{ story.deck }}</p>
-      <div class="source">
-        {{ story.source_name }}
-        {% if story.cluster_size > 1 %} · {{ story.cluster_size }} reports{% endif %}
-        {% if story.source_url %} · {{ story.source_url }}{% endif %}
+  {% if page.kind == "front" %}
+    <p class="kicker"><span class="sun"></span>Edition / {{ publication.target_date }}</p>
+    <h2>Your morning, in four pages.</h2>
+    <p class="kicker">Today</p>
+    <div class="practical-grid">
+      {% for index in page.practical_indices %}
+      {% set item = publication.practical[index] %}
+      <div class="practical">
+        <div class="label">{{ item.label }}</div>
+        <div class="value">{{ item.value }}</div>
+        {% if item.detail %}<p class="detail">{{ item.detail }}</p>{% endif %}
       </div>
-    </article>
-    {% else %}
+      {% else %}<p class="empty">No practical items were available from your configured sources.</p>{% endfor %}
+    </div>
+    {% for story_id in page.story_ids %}
+    {% set story = stories_by_id[story_id] %}
     <article>
-      <h2>Quiet edition</h2>
-      <p class="deck">No editorial stories were available from the configured sources.</p>
+      <p class="kicker">For you</p><h3>{{ story.headline }}</h3>
+      <p class="deck">{{ story.deck }}</p>
+      <p class="source">{{ story.source_name }}{% if story.cluster_size > 1 %} · {{ story.cluster_size }} reports{% endif %}</p>
     </article>
-    {% endfor %}
-  </section>
-
-  {% if publication.notes %}
-  <div class="warning">Degraded: {{ publication.notes | join(' · ') }}</div>
+    {% else %}<p class="empty">No editorial lead was selected today.</p>{% endfor %}
+  {% elif page.kind == "day" %}
+    <p class="kicker">02 / The day ahead</p>
+    <h2>What else is on your calendar?</h2>
+    <div class="practical-grid">
+      {% for index in page.practical_indices %}
+      {% set item = publication.practical[index] %}
+      <div class="practical">
+        <div class="label">{{ item.label }}</div>
+        <div class="value">{{ item.value }}</div>
+        {% if item.detail %}<p class="detail">{{ item.detail }}</p>{% endif %}
+      </div>
+      {% else %}<p class="empty">No other practical items were available from your connected sources.</p>{% endfor %}
+    </div>
+  {% elif page.kind == "stories" %}
+    <p class="kicker">03 / Across the desk</p>
+    <h2>Worth your attention</h2>
+    {% for story_id in page.story_ids %}
+    {% set story = stories_by_id[story_id] %}
+    <article>
+      <h3>{{ story.headline }}</h3>
+      <p class="deck">{{ story.deck }}</p>
+      <p class="source">{{ story.source_name }}{% if story.cluster_size > 1 %} · {{ story.cluster_size }} reports{% endif %}</p>
+    </article>
+    {% else %}<p class="empty">No further stories passed editorial selection today.</p>{% endfor %}
+  {% elif page.kind == "sources" %}
+    <p class="kicker">04 / Colophon & source index</p>
+    <h2>Where this edition came from</h2>
+    <p>Stories are selected from your configured sources. Follow the original publication for the full report.</p>
+    <ul class="source-list">
+      {% for story in publication.stories %}
+      <li><strong>{{ story.headline }}</strong><br>
+        <span class="source">{{ story.source_name }}{% if story.source_url %} · <a href="{{ story.source_url }}">Original source</a>{% endif %}</span>
+      </li>
+      {% else %}<li class="empty">No editorial source references in this edition.</li>{% endfor %}
+    </ul>
+    {% if publication.notes %}
+    <div class="notes"><p class="kicker">Availability notices</p>
+      <ul>{% for note in publication.notes %}<li>{{ note }}</li>{% endfor %}</ul>
+    </div>
+    {% endif %}
   {% endif %}
-  <footer>
-    <span>Selection over collection.</span>
-    <span>{{ publication.edition_id }}</span>
-  </footer>
-</main>
+  <footer><span>Selection over collection.</span><span>{{ publication.edition_id }} · {{ page.number }} / 4</span></footer>
+</section>
+{% endfor %}
 </body>
 </html>

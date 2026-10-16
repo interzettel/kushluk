@@ -24,7 +24,7 @@ The intended object is **four logical DIN A4 pages**, composed once and delivere
 | --- | --- | --- |
 | Two A4 sheets, duplex where supported, optionally bound | One A3 duplex sheet, imposed and folded to A4 | Saved local HTML/PDF and optional configured email |
 
-**Important:** that four-page architecture is an **accepted design decision**, not a claim about the code shipped today. The working Stage 1 prototype still renders and validates **one A4 page**. Four-page migration, unattended production and physical acceptance are tracked separately.
+**Important:** that four-page architecture is an **accepted design decision**, not a claim about the code shipped today. The Stage 1 software now renders **four logical A4 pages** and validates their page count, order, and A4 dimensions. Physical A4/A3 imposition, unattended delivery, and real printing trials remain separately tracked.
 
 ## Where the name comes from
 
@@ -52,7 +52,7 @@ No proprietary model subscription or Kushluk-operated account should be required
 - Python package, `kushluk` CLI and runtime health check.
 - Weather via Open-Meteo, RSS/Atom stories and a generic ICS calendar (with local fixture fallback).
 - Canonical candidates, source-aware story clustering, ranking and an optional lead story.
-- One-page deterministic A4 HTML; optional WeasyPrint PDF with page-count validation and editorial cut/retry.
+- Four logical A4 HTML pages with ordered page IDs; optional WeasyPrint PDF with page-count, geometry, page-order validation and editorial cut/retry.
 - Local Markdown/JSON/HTML archive, with PDF when validated.
 - CUPS printer discovery/submission, SMTP delivery and configured email-on-print-failure.
 - Existing pytest/Ruff and GitHub Actions smoke checks.
@@ -61,7 +61,7 @@ No proprietary model subscription or Kushluk-operated account should be required
 
 | Accepted, **not yet shipped** | Still exploratory / open |
 | --- | --- |
-| Four logical A4 pages with A4-home and A3-folded print profiles | Advanced physical interlocks, origami and paper-afterlife designs |
+| A4-home and A3-folded physical print profiles | Advanced physical interlocks, origami and paper-afterlife designs |
 | Unattended, idempotent morning run and stable agent operations | Fluid animated digital edition, specialist design-tool adapters |
 | Media rights/asset manifest and deterministic multi-page layout archetypes | Optional hosted print/storage businesses and original public magazine series |
 | Explicit newsletter discovery and private source modes | License changes, foundation governance and optional sponsorships |

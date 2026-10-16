@@ -1,6 +1,6 @@
 # Kushluk Status
 
-Last implementation verification snapshot: 2026-10-07.
+Last implementation verification snapshot: 2026-10-17 (four-page software CI; physical trials outstanding).
 Documentation and issue inventory reviewed: 2026-10-16.
 
 **Status caveat:** the 2026-10-16 inventory did **not** independently rerun CI or physical print tests. Do not infer four-page migration, unattended execution, or real-reader trials are done from the new planning issues. [#43](https://github.com/interzettel/kushluk/issues/43) indexes all issues, and [ISSUE_CROSSWALK.md](ISSUE_CROSSWALK.md) maps the 90 existing work-ledger tasks to accountable issues. Execution blockers have dedicated issues: [#45](https://github.com/interzettel/kushluk/issues/45) format, [#46](https://github.com/interzettel/kushluk/issues/46) print profiles, [#47](https://github.com/interzettel/kushluk/issues/47) local scheduler/retries. Docs/ADR ambiguities: [#44](https://github.com/interzettel/kushluk/issues/44).
@@ -27,11 +27,11 @@ Two consequential decisions were added after the original Stage 0 pass:
 
 ### Stage 1 — Walking skeleton
 
-**Active. Existing software path works; canonical-format migration and real-world proof are pending.**
+**Active. Four-page software path implemented; print-profile imposition and real-world proof are pending.**
 
 Current executable implementation:
 
-`weather + calendar + RSS -> candidates -> clustering/ranking -> publication -> one-page A4 HTML -> validated PDF -> print/email -> archive`
+`weather + calendar + RSS -> candidates -> clustering/ranking -> publication -> four-page A4 HTML -> validated PDF -> print/email -> archive`
 
 Available commands:
 
@@ -61,14 +61,14 @@ Available commands:
 ### Publication
 - stable edition ID;
 - Markdown canonical edition;
-- deterministic A4 HTML;
+- deterministic four-page A4 HTML and versioned logical page IDs;
 - warm editorial v0 CSS;
 - optional PDF rendering.
 
 ### Reliability
 - typed failures;
 - graceful source degradation;
-- one-page PDF validation in the current implementation;
+- four-page PDF count, geometry and content-order validation;
 - editorial cut/retry rather than typography shrinking;
 - overflow PDF kept as debug output rather than printed.
 
@@ -87,7 +87,6 @@ Available commands:
 
 ## Decided but not yet implemented
 
-- migrate publication schema/rendering/validation from one page to **four logical A4 pages**;
 - A4 Home Printer profile: two A4 sheets, duplex where supported, optional staple marks;
 - A3 Folded Newspaper profile: duplex A3 booklet imposition `4 | 1` / `2 | 3`;
 - optional edition-scoped morning intent;
@@ -118,8 +117,8 @@ The work ledger tracks dedicated spikes for:
 
 The next implementation slice is not another format decision. It is:
 
-1. migrate the canonical publication/rendering/validation path to four logical A4 pages;
-2. implement the A4 and A3 print profiles;
+1. implement and test A4 and A3 physical print profiles against the four-page source;
+2. establish real print profile preflight;
 3. establish the stable unattended-run boundary;
 4. add asset/media handling;
 5. run real physical editions.
