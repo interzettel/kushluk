@@ -71,11 +71,11 @@ See [docs/STATUS.md](docs/STATUS.md) for the live implementation boundary, [docs
 Requires Python 3.11+.
 
 ```bash
-git clone https://github.com/yigit-denktas/kushluk.git
+git clone https://github.com/interzettel/kushluk.git
 cd kushluk
 
 python -m venv .venv
-source .venv/bin/activate
+source .venv/bin/activate  # macOS/Linux; Windows PowerShell: .venv\Scripts\Activate.ps1
 pip install -e ".[dev]"
 
 kushluk doctor
