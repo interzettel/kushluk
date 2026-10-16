@@ -2,6 +2,8 @@
 
 **Project:** [Kushluk #3](https://github.com/orgs/interzettel/projects/3) · **Implementation:** [#65](https://github.com/interzettel/kushluk/issues/65).
 
+**Agent workflow:** [tools/issue-intake/SKILL.md](../tools/issue-intake/SKILL.md) and `python -m tools.create_issue`. The one-time `push` bootstrap/backfill trigger is temporary and must be removed after the first verified live run.
+
 ## What the fields do
 
 | Native Project field | Values | Practical purpose |

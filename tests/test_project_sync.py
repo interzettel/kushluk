@@ -45,7 +45,7 @@ class FakeGH:
             return json.dumps({"items": self.items})
         if cmd[:2] == ["label", "list"]:
             return "[]"
-        if cmd[:2] == ["api", "repos/interzettel/kushluk/issue-types"]:
+        if cmd[:2] == ["api", "orgs/interzettel/issue-types"]:
             return '[{"name":"Task"},{"name":"Bug"}]'
         if cmd[:2] == ["project", "item-add"]:
             self.items.append({"content": {"url": URL}})
