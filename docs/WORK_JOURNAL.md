@@ -29,6 +29,12 @@ A concise, dated evidence/history record for one maintainer with AI helpers. **T
 - GitHub Project native fields, labels, milestone assignments and relationship backfill remain **unconfigured/unverified** until the owner creates the Kushluk Project: [#62](https://github.com/interzettel/kushluk/issues/62). No false linkage claimed; native issue metadata and future automation require a separate verification.
 - Unresolved accepted-ADR 0012 conflict remains in #44. No OSS relicensing, hosted product or autonomous merging approved.
 
+## 2026-10-16 — Owner-created GitHub Project linked
+
+**Kind:** project management integration · **Status:** Project verified, native field configuration in progress.
+
+The owner shared [Kushluk Project #3](https://github.com/orgs/interzettel/projects/3). Its inspected Backlog view contained **56 items**, with Ready, In progress, In review and Done empty. Other available views are Priority board, Team items, Roadmap and My items; the UI reports seven enabled workflows. This is an observation, **not** a proof that every issue has every required custom field or that automations have been inspected. [#62](https://github.com/interzettel/kushluk/issues/62) now tracks remaining metadata, native relationship and workflow verification, while [#43](https://github.com/interzettel/kushluk/issues/43) records the Project URL.
+
 ## Journal entry template
 
 ```md

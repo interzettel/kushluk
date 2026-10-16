@@ -12,7 +12,7 @@
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-E8C9B8?labelColor=1A1A1A)](pyproject.toml)
 [![Stage 1 prototype](https://img.shields.io/badge/product-Stage%201%20prototype-f3efe4?labelColor=1a1a1a)](docs/STATUS.md)
 
-[What works](#what-works-today) · [Make an edition](#make-an-edition) · [Progress](#development-and-progress) · [Contribute](#contributing) · [Project decisions](#decisions-and-trust)
+[What works](#what-works-today) · [Make an edition](#make-an-edition) · [Progress](#development-and-progress) · [GitHub Project](https://github.com/orgs/interzettel/projects/3) · [Contribute](#contributing) · [Project decisions](#decisions-and-trust)
 
 </div>
 
@@ -109,7 +109,7 @@ The progress command and its CI gate are part of the merged [engineering foundat
 
 [![Kushluk progress — proof gates and operational checklist](docs/progress.svg)](docs/PROGRESS.md)
 
-**[Explore all 90 individual tasks and their current states](docs/PROGRESS.md#individual-tasks)** · [Master issue ledger #43](https://github.com/interzettel/kushluk/issues/43) · [Task-to-issue map](docs/ISSUE_CROSSWALK.md) · [Project board setup #62](https://github.com/interzettel/kushluk/issues/62)
+**[Explore all 90 individual tasks and their current states](docs/PROGRESS.md#individual-tasks)** · [Master issue ledger #43](https://github.com/interzettel/kushluk/issues/43) · [Task-to-issue map](docs/ISSUE_CROSSWALK.md) · [Kushluk Project board](https://github.com/orgs/interzettel/projects/3) · [Board configuration #62](https://github.com/interzettel/kushluk/issues/62)
 
 <details>
 <summary><strong>Granular task ledger by work area</strong></summary>
@@ -189,6 +189,6 @@ This project welcomes fixes, carefully scoped ideas, independent plugins, though
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md) and [AGENTS.md](AGENTS.md). The maintainers' current focus is making the existing engine robust: [four-page format #45](https://github.com/interzettel/kushluk/issues/45), [print profiles #46](https://github.com/interzettel/kushluk/issues/46), and [unattended local runs #47](https://github.com/interzettel/kushluk/issues/47), followed by [real morning-print trials #13](https://github.com/interzettel/kushluk/issues/13).
 
-**Every new issue** follows the traceability contract in [AGENTS.md](AGENTS.md): issue type, labels, human assignee, project, milestone, relationships, development branch/PR and verified resolution. The planned **Kushluk GitHub Project** will be connected after creation ([setup #62](https://github.com/interzettel/kushluk/issues/62)); no project fields are claimed configured yet.
+**Every new issue** follows the traceability contract in [AGENTS.md](AGENTS.md): issue type, labels, human assignee, project, milestone, relationships, development branch/PR and verified resolution. The [**Kushluk GitHub Project #3**](https://github.com/orgs/interzettel/projects/3) exists and already displays repository issues. Its status columns are Backlog, Ready, In progress, In review and Done. Additional fields, milestones, relationships and full coverage are being verified in [#62](https://github.com/interzettel/kushluk/issues/62); no unverified native fields are claimed configured.
 
 Kushluk is built to give the morning back to its reader.

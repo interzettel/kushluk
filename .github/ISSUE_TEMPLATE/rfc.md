@@ -10,8 +10,8 @@ assignees: "yigit-denktas"
 - Kind / issue type: Research or Decision (use native if available)
 - Labels: workstream / priority / maturity (existing labels only)
 - Assignee: @yigit-denktas
-- GitHub Project: Kushluk (pending #62)
-- Project fields: Stage / Priority / Workstream / Maturity / Evidence
+- GitHub Project: [Kushluk Project #3](https://github.com/orgs/interzettel/projects/3) — verify fields in #62
+- Project fields: existing Status + proposed Priority / Workstream / Maturity / Evidence (native options pending #62)
 - Milestone: TBD until a concrete outcome gate exists
 - Parent / blocks / blocked by:
 - Development branch / PR: none unless a prototype or ADR is drafted

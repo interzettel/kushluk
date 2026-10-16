@@ -14,8 +14,8 @@ Describe the observable user/developer result, not only the implementation idea.
 - Kind / native GitHub issue type: Task (verify native setting)
 - Labels: workstream / priority / maturity (apply existing approved labels)
 - Assignee: @yigit-denktas
-- GitHub Project: Kushluk (pending creation/configuration: #62)
-- Project fields: Stage / Priority / Workstream / Maturity / Evidence
+- GitHub Project: [Kushluk Project #3](https://github.com/orgs/interzettel/projects/3) — confirm membership; metadata setup #62
+- Project fields: existing Status + proposed Priority / Workstream / Maturity / Evidence (native options pending #62)
 - Milestone: existing outcome milestone or TBD (do not invent)
 - Relationships: parent / children / blocks / blocked by
 - Development branch / linked PR: pending until work begins

@@ -5,7 +5,7 @@ Kushluk aims to be a genuinely useful local-first personal publishing tool. Cont
 ## Before starting
 
 1. Read [AGENTS.md](AGENTS.md) for product principles and authority of accepted architecture decisions.
-2. Find work in [master issue #43](https://github.com/interzettel/kushluk/issues/43), then follow the owning issue rather than creating a duplicate implementation.
+2. Find work in the [Kushluk GitHub Project #3](https://github.com/orgs/interzettel/projects/3) and [master issue #43](https://github.com/interzettel/kushluk/issues/43), then follow the owning issue rather than creating a duplicate implementation.
 3. Use [docs/WORK_LEDGER.md](docs/WORK_LEDGER.md) for operational tasks. The task-to-issue crosswalk is merged into [docs/ISSUE_CROSSWALK.md](docs/ISSUE_CROSSWALK.md).
 4. Read [docs/PROGRESS.md](docs/PROGRESS.md) before marking milestones. Its numbers count checked tasks or verified gates, **not overall product completeness**.
 5. For consequential changes, propose an ADR or RFC before restructuring source, privacy defaults, licensing, or edition geometry.

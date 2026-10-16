@@ -20,6 +20,8 @@ These words are intentionally different:
 - **Task** is a small, stable work-ledger unit when work is actionable; ideas need not have a task ID immediately.
 - **Proof** is a traceable result: merged commit, tests, generated artifact, documented physical print, or an explicit recorded rejection.
 
+**Live [Kushluk GitHub Project #3](https://github.com/orgs/interzettel/projects/3):** its actual Status values are **Backlog → Ready → In progress → In review → Done**. The *Inbox* and *Exploring* concepts both live in **Backlog**, distinguished by type/maturity; *Building* maps to **In progress**, *Verifying* to **In review**, and *Completed* to **Done**. Parked/rejected are recorded as dispositions with explanations, not confused with delivered work. Proposed additional Project fields remain pending [#62](https://github.com/interzettel/kushluk/issues/62).
+
 No sprint velocity, burndown games, story points, mandatory standups, or invented all-project percentages. The **single project coordinator** (human steward or delegated AI with limited permissions) maintains coherence and issue links; specialist agents make bounded branches/PRs and cannot independently claim completion or change their authorization.
 
 ## One intake → delivery path

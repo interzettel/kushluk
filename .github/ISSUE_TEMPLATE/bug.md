@@ -9,8 +9,8 @@ assignees: "yigit-denktas"
 - Type: Bug (set native Issue Type if available)
 - Labels: workstream / priority / maturity, from approved repository taxonomy
 - Assignee: @yigit-denktas
-- Project: Kushluk (after setup issue #62; otherwise pending)
-- Project fields: Stage / Priority / Workstream / Maturity / Evidence
+- Project: [Kushluk Project #3](https://github.com/orgs/interzettel/projects/3) — verify native field options in #62
+- Project fields: existing Status + proposed Priority / Workstream / Maturity / Evidence (native options pending #62)
 - Milestone: verified outcome milestone or TBD
 - Parent / related / blocks / blocked by:
 - Development branch / pull request: pending until the fix is started
