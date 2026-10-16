@@ -12,7 +12,7 @@
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-E8C9B8?labelColor=1A1A1A)](pyproject.toml)
 [![Stage 1 prototype](https://img.shields.io/badge/product-Stage%201%20prototype-f3efe4?labelColor=1a1a1a)](docs/STATUS.md)
 
-[What works](#what-works-today) · [Make an edition](#make-an-edition) · [Progress](#development-and-progress) · [GitHub Project](https://github.com/orgs/interzettel/projects/3) · [Contribute](#contributing) · [Project decisions](#decisions-and-trust)
+[What works](#what-works-today) · [Make an edition](#make-an-edition) · [Research](docs/research/newspaper-ecosystem-2026-10-17.md) · [Progress](#development-and-progress) · [GitHub Project](https://github.com/orgs/interzettel/projects/3) · [Contribute](#contributing) · [Project decisions](#decisions-and-trust)
 
 </div>
 
@@ -158,7 +158,8 @@ The graphic shows **two different things**: evidence gates G1–G8 and checked o
 | [Working method](docs/WORKING_METHOD.md) + [work journal](docs/WORK_JOURNAL.md) | New ideas, bugs, decisions, dated changes and reviewer handoffs |
 | [ROADMAP.md](docs/ROADMAP.md) + [STATUS.md](docs/STATUS.md) | Product sequence versus demonstrated code |
 | [ADRs](docs/adr/README.md) | Accepted, superseded and still-disputed architectural decisions |
-| [Competitor and inspiration transfer map](docs/UPSTREAM_REVIEW.md) | Which patterns to adopt/adapt/reimplement/reject, source and task owners; active review [#84](https://github.com/interzettel/kushluk/issues/84) |
+| [Newspaper ecosystem research](docs/research/newspaper-ecosystem-2026-10-17.md) + [25-project CSV matrix](docs/research/newspaper-project-matrix-2026-10-17.csv) | Categorized current source/code/license review, Goosepaper and RSSPub investigations, priority comparisons and evidence gaps under [#84](https://github.com/interzettel/kushluk/issues/84) |
+| [Competitor/inspiration transfer policy](docs/UPSTREAM_REVIEW.md) | Durable decisions about adapting, rejecting or independently reimplementing ideas without copying upstream code |
 
 To regenerate the SVG and Markdown on the progress-enabled branch:
 

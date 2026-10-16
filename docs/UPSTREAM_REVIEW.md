@@ -1,7 +1,6 @@
 # Upstream Review
 
-This document records public projects reviewed as references before Kushluk implementation.
-No upstream code is copied into Kushluk by this review.
+This document records the durable transfer-policy summary. For the source-checked **17 October 2026** GitHub newspaper ecosystem survey, consult [25-project comparison matrix](research/newspaper-project-matrix-2026-10-17.csv) and [deep research and prioritized experiments](research/newspaper-ecosystem-2026-10-17.md). No upstream code is copied into Kushluk by this review.
 
 ## Where did the "borrow what from whom" plan go?
 
@@ -23,10 +22,14 @@ research/design inspiration, not an approved implementation requirement.
 
 | Source or reference | Specific inspiration / problem it solves | Transfer stance | Kushluk state and owner |
 | --- | --- | --- | --- |
+| [Goosepaper](https://github.com/j6k4m8/goosepaper) | Versioned v2 paper/user settings, RSS/Readwise/Reddit/Bluesky providers, reMarkable delivery and per-device page profiles | **ADAPT provider, settings and delivery contracts**; no copying or imposing reMarkable geometry on the four-page paper | **Apache-2.0 LICENSE verified 17 Oct 2026**, source files and tests reviewed. Optional output/source experiments [#48](https://github.com/interzettel/kushluk/issues/48), [#49](https://github.com/interzettel/kushluk/issues/49), [#33](https://github.com/interzettel/kushluk/issues/33); full [case study](research/newspaper-ecosystem-2026-10-17.md#1-goosepaper--credible-direct-comparator-not-a-candidate-for-a-wholesale-port) |
+| [OffScroll](https://github.com/offscroll/offscroll) | OPML import, semantic clustering, WeasyPrint/Typst dual renderers, local-model curator | **BENCHMARK separate seams**, not hard-depend on large Ollama weights | **Apache-2.0 LICENSE verified**. [#49](https://github.com/interzettel/kushluk/issues/49), [#26](https://github.com/interzettel/kushluk/issues/26) |
+| [Vael Paper](https://github.com/vaelkeep/vael-paper) | Standalone read/press engine, dynamic pagination and continuation markers | **ADAPT publication/reader contract**, not an unverified print format replacement | **MIT LICENSE verified**, [#33](https://github.com/interzettel/kushluk/issues/33), [#21](https://github.com/interzettel/kushluk/issues/21) |
+| [Newsprint theme](https://github.com/brennanbrown/newsprint) | Accessible newsprint/print CSS and typographic composition | **CONCEPTUAL ONLY — no source CSS/assets copied** | [LICENSE](https://github.com/brennanbrown/newsprint/blob/main/LICENSE) is **AGPL-3.0-or-later**, contradicting its README's MIT badge; follow [#38](https://github.com/interzettel/kushluk/issues/38) before any incorporation |
 | [Firstlight](https://github.com/cruftbox/firstlight) | Simple weather + RSS acquisition, private/home deployment, printer controls | **ADAPT concepts / REIMPLEMENT adapters**; do not fork the application | Comparable weather/RSS/CUPS stack implemented independently; [#3](https://github.com/interzettel/kushluk/issues/3), [#7](https://github.com/interzettel/kushluk/issues/7), [#12](https://github.com/interzettel/kushluk/issues/12) · historic review |
 | [dmthepm Morning Paper](https://github.com/dmthepm/morning-paper) | Reader-owned newsroom files, finite edition, CLI-to-PDF, preferences | **ADAPT editorial state boundary**; never copy user/private data | Canonical files/archive and bounded four-page edition exist; richer durable preferences [#14](https://github.com/interzettel/kushluk/issues/14) · historic review |
 | [OpenPaper](https://github.com/falense/openpaper) | Fetch → cache/deduplicate → curate as distinct stages | **ADAPT concepts / REIMPLEMENT independently** | Source connectors and clustering exist; improved cross-provider dedup [#49](https://github.com/interzettel/kushluk/issues/49) · historic review |
-| [Hermes Paper Agent](https://github.com/vaelkeep/hermes-paper-agent) | Markdown handoff, generator ↔ press/validator, inspect → repair, provenance and test fixtures | **ADAPT contracts**, **NO CODE COPY** without checking exact license | Four-page renderer/validator/archive in software; fuller repair loop [#21](https://github.com/interzettel/kushluk/issues/21), agent contract [#20](https://github.com/interzettel/kushluk/issues/20) · historic reference, license unverified |
+| [Hermes Paper Agent](https://github.com/vaelkeep/hermes-paper-agent) | Markdown handoff, generator ↔ press/validator, inspect → repair, provenance and test fixtures | **ADAPT contracts**, **NO CODE COPY** without checking exact license | Four-page renderer/validator/archive in software; fuller repair loop [#21](https://github.com/interzettel/kushluk/issues/21), agent contract [#20](https://github.com/interzettel/kushluk/issues/20) · historic reference; **MIT LICENSE verified 17 Oct 2026** |
 | [drkpxl skills](https://github.com/drkpxl/drkpxl-skills) | Render → inspect → trim → rerender → print; operational proof first | **ADAPT test strategy**, not another program's code | Copy-fit and print proof work underway [#45](https://github.com/interzettel/kushluk/issues/45), [#13](https://github.com/interzettel/kushluk/issues/13) · exact files/license not reverified |
 | Karen X. Cheng personal newspaper reference | Newspaper as a cherished personal object rather than a feed | **ADAPT experiential principle**; **DO NOT COPY** creative layouts | Physical morning ritual [#2](https://github.com/interzettel/kushluk/issues/2), [#13](https://github.com/interzettel/kushluk/issues/13) · historical visual reference; original source URL needs verification |
 | **Financial Times** / **Le Monde** / **The Guardian** | Paper-led material feel; rigorous hierarchy/grids; restrained editorial energy | **ADAPT principles only**; **IGNORE** brand identity, proprietary copy, assets/fonts | Warm Editorial Computing direction [#9](https://github.com/interzettel/kushluk/issues/9), page archetypes [#51](https://github.com/interzettel/kushluk/issues/51) · candidate inspiration |
@@ -37,7 +40,8 @@ research/design inspiration, not an approved implementation requirement.
 | **p5.riso / Risograph print aesthetics** | Optional limited ink/halftone treatments on accessible home printers | **ADAPT aesthetic**, not a requirement for a real Riso press | [#21](https://github.com/interzettel/kushluk/issues/21), [#30](https://github.com/interzettel/kushluk/issues/30); production-proof controls still needed |
 | **Anthropic launch communication** | Human-first launch narrative and controlled editorial motion | **ADAPT creative discipline**; **IGNORE** copied brand, motion sequences, original assets | [#11](https://github.com/interzettel/kushluk/issues/11), [#9](https://github.com/interzettel/kushluk/issues/9) · conceptual reference |
 | **n8n / native launchd / systemd / Apple Shortcuts** | Replaceable triggers and simple unattended local operation | **ADAPT orchestration boundary**, **IGNORE** hosted workflow dependency | Local CLI + launchd/systemd recipes exist; device acceptance/Shortcuts still [#47](https://github.com/interzettel/kushluk/issues/47) |
-| **RSSPub / Atlas** | Earlier EPUB/OPDS and research/scoring leads, respectively | **RESEARCH only** | Actual identity, URLs and licenses missing. Do not adopt or make capability claims until [#84](https://github.com/interzettel/kushluk/issues/84) verifies them |
+| [RSSPub](https://github.com/harshit181/RSSPub) | EPUB, OPDS, Read Later, image processing, optional SMTP and Shortcuts intake | **EVALUATE independent EPUB/OPDS adapter**; do not couple to Rust runtime | Original historical identity rediscovered; **MIT LICENSE verified 17 Oct 2026**. [#33](https://github.com/interzettel/kushluk/issues/33), [#7](https://github.com/interzettel/kushluk/issues/7), [#84](https://github.com/interzettel/kushluk/issues/84) |
+| **Atlas (historical)** | Research/scoring lead discussed earlier | **RESEARCH only** | Exact original URL and license still missing; no assumptions or copying |
 
 ### Decision vocabulary and non-negotiables
 
@@ -110,7 +114,7 @@ Adopt the connector boundary and deterministic fetch-before-curation principle. 
 
 ## Hermes Paper Agent — vaelkeep/hermes-paper-agent
 
-License: verify exact repository license before copying any code.
+License: **MIT** (verified from [repository LICENSE](https://github.com/vaelkeep/hermes-paper-agent/blob/main/LICENSE) on 17 October 2026); copying any code still requires attribution, provenance and current-file review.
 
 Useful patterns:
 - generator and print engine separated by a markdown publication contract;
@@ -123,11 +127,7 @@ Adopt the publication-contract and validation-loop concepts. No code is incorpor
 
 ## Earlier chat references needing rediscovery
 
-Two additional names appeared in earlier project research but the exact repositories/URLs and licences were not preserved in the durable project record:
-- **RSSPub** — discussed around EPUB/e-ink/OPDS-style delivery ideas;
-- **Atlas** — discussed around research/scoring ideas.
-
-Treat these as historical leads only. Rediscover and verify the exact source/licence before copying code, adopting architecture, or adding them to third-party notices as concrete projects.
+The historical **RSSPub** lead is now positively matched to [harshit181/RSSPub](https://github.com/harshit181/RSSPub) (Rust, EPUB, OPDS, Read Later, MIT LICENSE checked on 17 October 2026). This is source research, **not** proof of a completed Kuşluk e-reader adapter. The other historical lead **Atlas** is still unidentified: its original repository/URL and license were not preserved. Do not claim capabilities or reuse code until [#84](https://github.com/interzettel/kushluk/issues/84) identifies the exact source.
 
 ## Review result
 
