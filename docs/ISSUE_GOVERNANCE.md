@@ -1,6 +1,6 @@
 # Kushluk GitHub governance and reverse traceability
 
-**Approved intent:** sole accountable maintainer with replaceable AI implementers; no compulsory Scrum rituals. **Configuration status:** the owner created the [**Kushluk GitHub Project #3**](https://github.com/orgs/interzettel/projects/3). The Project currently shows **56 Backlog items**, which numerically matches the open-issue count but has not been audited item by item. Native field definitions, Project write permissions and milestones still require verification. [Setup and backfill #62](https://github.com/interzettel/kushluk/issues/62).
+**Approved intent:** sole accountable maintainer with replaceable AI implementers; no compulsory Scrum rituals. **Configuration status:** the owner created the [**Kushluk GitHub Project #3**](https://github.com/orgs/interzettel/projects/3). The Project currently shows **56 Backlog items**, which numerically matches the open-issue count but has not been audited item by item. Native field definitions, Project write permissions and milestones still require verification. An idempotent [GitHub CLI automation](PROJECT_AUTOMATION.md) is proposed in #65 to create native fields once and populate them on new issues, **subject to an Actions secret and real run proof**. [Setup and backfill #62](https://github.com/interzettel/kushluk/issues/62).
 
 ## Record model
 
@@ -24,7 +24,7 @@ flowchart TB
 | **Assignee** | `@yigit-denktas` by default; agent executor listed in description, never as fictional GH login | Issue templates set the maintainer account |
 | **Labels** | Workstream, priority, maturity; only approved existing labels | Tooling can add existing labels; label creation/taxonomy remains #62 |
 | **GitHub Project** | [Kushluk / interzettel Project #3](https://github.com/orgs/interzettel/projects/3); verify each issue's membership | Actual board observed; full per-issue backfill audit pending #62 |
-| **Project fields** | Existing **Status** is the canonical stage: Backlog / Ready / In progress / In review / Done. No extra Stage field. Proposed: Priority, Workstream, Maturity and Evidence; use real field and option IDs only | Native field inventory, edit permissions and values pending #62 |
+| **Project fields** | Existing **Status** is the canonical stage: Backlog / Ready / In progress / In review / Done. No extra Stage field. Native Priority, Workstream, Maturity and Evidence are provisioned by the opt-in automation in [PROJECT_AUTOMATION.md](PROJECT_AUTOMATION.md) | Pending setup/proof in #65; not marked active solely by merge |
 | **Milestone** | Attach to a specific approved outcome/release when defined; otherwise mark `TBD` | No milestone objects were verified during this pass |
 | **Relationships** | Parent, child, blocks and blocked-by on both sides | Markdown links always; native sub-issue/dependency API where available |
 | **Development** | An implementation issue acquires an issue-linked branch and PR with `Refs #N` or `Closes #N` | Template + manual/agent check; research-only issues need not have a branch |
@@ -64,3 +64,7 @@ Evidence: URL / pending
 The real board already provides **Backlog**, **Ready**, **In progress**, **In review**, **Done**, with Backlog, Priority board, Team items, Roadmap and My items views. Reuse these defaults. Consider a saved *Blocked* filter, not an unnecessary extra workflow stage. Avoid sprint velocity, story points and daily meetings. Review Priority, Workstream, Maturity and Evidence as additional fields only where they reduce ambiguity. Prefer one named human steward and bounded coding-agent tasks to a fictitious team.
 
 The canonical [GitHub Project #3](https://github.com/orgs/interzettel/projects/3) is linked in #62 and #43. The Project exists; its full native field configuration, automatic workflows, issue types, approved labels, milestones and item coverage have **not** been verified by the currently connected issue/PR tools.
+
+## Automated native metadata integration
+
+[Issue #65](https://github.com/interzettel/kushluk/issues/65) and [PROJECT_AUTOMATION.md](PROJECT_AUTOMATION.md) contain the real executable provisioning/backfill route. The automation is activated only after the Project-write Actions secret is installed and the owner runs **bootstrap**. Then every new issue receives actual native fields with safe defaults, type and labels where supported, and a real assignee. Only completed evidence reviews—not issue creation or body text—can justify changing Evidence to Verified. The existing #62 remains closed as the user chose; new scoped implementation work belongs to #65.

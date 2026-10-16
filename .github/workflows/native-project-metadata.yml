@@ -1,0 +1,46 @@
+name: Native Project metadata
+
+# Runs for every new issue. Manual dispatch handles first-time field creation
+# and the one-time existing-issue backfill. Requires a scoped org Project token.
+on:
+  issues:
+    types: [opened, reopened, edited, labeled, closed]
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Bootstrap fields/labels, audit coverage, or backfill all issues
+        type: choice
+        required: true
+        options: [bootstrap, audit, backfill]
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: kushluk-project-metadata
+  cancel-in-progress: false
+
+jobs:
+  issue-sync:
+    name: Populate native fields for issue
+    if: github.event_name == 'issues'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Synchronize metadata in Project #3
+        env:
+          GH_TOKEN: ${{ secrets.KUSHLUK_PROJECT_TOKEN }}
+        run: python tools/project_sync.py sync --event-file "$GITHUB_EVENT_PATH"
+
+  maintenance:
+    name: Project field setup or coverage audit
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Bootstrap or inspect Project #3
+        env:
+          GH_TOKEN: ${{ secrets.KUSHLUK_PROJECT_TOKEN }}
+          MODE: ${{ inputs.mode }}
+        run: python tools/project_sync.py "$MODE"
