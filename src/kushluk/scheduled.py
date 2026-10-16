@@ -147,6 +147,8 @@ def run_once(
             on_stage=on_stage,
         )
         errors = tuple(f.code for f in result.failures if f.severity == "failed")
+        if getattr(result, "pdf_path", True) is None:
+            errors += ("validated_pdf_missing",)
         submitted = bool(result.print_result and result.print_result.success)
         mailed = bool(result.email_result and result.email_result.status == "sent")
         status = "needs_review" if errors else "completed"
