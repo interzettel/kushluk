@@ -14,6 +14,11 @@ def test_publication_has_stable_machine_id_and_markdown():
         serial=42,
     )
     assert publication.edition_id == "20260923-042"
+    assert publication.schema_version == 2
+    assert [page.number for page in publication.pages] == [1, 2, 3, 4]
+    assert [page.kind for page in publication.pages] == ["front", "day", "stories", "sources"]
+    assert publication.pages[0].story_ids == ["s1"]
+    assert publication.to_dict()["pages"][0]["number"] == 1
     markdown = publication_markdown(publication)
     assert "# Kushluk" in markdown
     assert "## Today" in markdown
