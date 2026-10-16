@@ -2,7 +2,15 @@
 
 ![Kushluk masthead — your own morning edition](docs/kushluk-masthead.svg)
 
+### Welcome to Kushluk
+
 **A small newspaper, assembled from the sources you choose, ready for your morning.**
+
+[![CI](https://github.com/interzettel/kushluk/actions/workflows/ci.yml/badge.svg)](https://github.com/interzettel/kushluk/actions/workflows/ci.yml)
+[![Project health](https://github.com/interzettel/kushluk/actions/workflows/project-health.yml/badge.svg)](https://github.com/interzettel/kushluk/actions/workflows/project-health.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-F3D77B?labelColor=1A1A1A)](LICENSE)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-E8C9B8?labelColor=1A1A1A)](pyproject.toml)
+[![Stage 1 prototype](https://img.shields.io/badge/product-Stage%201%20prototype-f3efe4?labelColor=1a1a1a)](docs/STATUS.md)
 
 [What works](#what-works-today) · [Make an edition](#make-an-edition) · [Progress](#development-and-progress) · [Contribute](#contributing) · [Project decisions](#decisions-and-trust)
 
@@ -17,6 +25,12 @@ The intended object is **four logical DIN A4 pages**, composed once and delivere
 | Two A4 sheets, duplex where supported, optionally bound | One A3 duplex sheet, imposed and folded to A4 | Saved local HTML/PDF and optional configured email |
 
 **Important:** that four-page architecture is an **accepted design decision**, not a claim about the code shipped today. The working Stage 1 prototype still renders and validates **one A4 page**. Four-page migration, unattended production and physical acceptance are tracked separately.
+
+## Where the name comes from
+
+**Kushluk** is our internationally readable spelling of the Turkish word *kuşluk*, meaning **mid-morning**, the time between morning and noon. Older Oghuz Turkish sources already record the term. It is commonly associated with *kuş* (“bird”) and the hour when birds become active, although its precise linguistic derivation has been debated. The name suggests a quiet, observational moment of the day—not a technology or news-company brand.
+
+Etymological background: [Turkish Language Association research on *kuşluk*](https://tdk.gov.tr/wp-content/uploads/2019/01/01.D%C4%B0VAN%C3%9C-LUGAT%C4%B0%E2%80%99T-T%C3%9CRK%E2%80%99TE-ANLAMI-PROBLEML%C4%B0-BAZI-C%C3%9CMLELER-VE-S%C3%96ZC%C3%9CKLER-%C3%9CZER%C4%B0NE-son-bi%C3%A7im-.pdf). The Turkish spelling appears here only to explain the word's origin; **the product name is always Kushluk**.
 
 ## The idea
 
@@ -89,13 +103,37 @@ pytest -q
 python tools/project_health.py check
 ```
 
-The progress command is available on the [foundation review branch (PR #55)](https://github.com/interzettel/kushluk/pull/55) until merged into `main`.
+The progress command and its CI gate are part of the merged [engineering foundation PR #55](https://github.com/interzettel/kushluk/pull/55).
 
 ## Development and progress
 
 [![Kushluk progress — proof gates and operational checklist](docs/progress.svg)](docs/PROGRESS.md)
 
-**[Open the evidence report](docs/PROGRESS.md)** · [Master issue ledger #43](https://github.com/interzettel/kushluk/issues/43) · [Engineering foundation #54](https://github.com/interzettel/kushluk/issues/54)
+**[Explore all 90 individual tasks and their current states](docs/PROGRESS.md#individual-tasks)** · [Master issue ledger #43](https://github.com/interzettel/kushluk/issues/43) · [Task-to-issue map](docs/ISSUE_CROSSWALK.md) · [Project board setup #62](https://github.com/interzettel/kushluk/issues/62)
+
+<details>
+<summary><strong>Granular task ledger by work area</strong></summary>
+
+| Work area | Tracked tasks | Checked at this snapshot |
+| --- | ---: | ---: |
+| Project records | 5 | 4 |
+| Four-page formats | 10 | 0 |
+| Unattended runs | 13 | 0 |
+| Source connectors | 10 | 0 |
+| Image handling | 9 | 0 |
+| Editorial layouts | 11 | 0 |
+| Design integration research | 5 | 0 |
+| Newspaper research | 3 | 0 |
+| Automation research | 2 | 0 |
+| Image rights research | 1 | 0 |
+| Editorial intelligence | 6 | 0 |
+| Setup and controls | 8 | 0 |
+| Physical trials | 7 | 0 |
+| **Total checked work-ledger items** | **90** | **4** |
+
+This table is a **dated ledger snapshot, not a product readiness score**. Every task ID, description and checked/unchecked state is in the [generated itemized report](docs/PROGRESS.md#individual-tasks), with its issue owner in the [crosswalk](docs/ISSUE_CROSSWALK.md). Product delivery is measured separately against eight evidence gates.
+
+</details>
 
 We use a **solo-maintainer + assisted development** workflow, not recurring Scrum ceremonies. The natural hierarchy is **direction → milestone → work package → task → proof**. A new idea may stay under investigation; a bug fix needs a regression test; a shipped feature requires implementation and evidence. Completing research can mean rejecting an idea with reasons.
 
@@ -105,7 +143,7 @@ The graphic shows **two different things**: evidence gates G1–G8 and checked o
 | --- | --- |
 | [Master issue ledger #43](https://github.com/interzettel/kushluk/issues/43) | All issues, open and closed, with one primary workstream each |
 | [WORK_LEDGER.md](docs/WORK_LEDGER.md) | Canonical existing implementation task IDs |
-| [Task-to-issue crosswalk — draft PR #53](https://github.com/interzettel/kushluk/pull/53) | Full 90-task mapping awaiting review before landing in `main` |
+| [ISSUE_CROSSWALK.md](docs/ISSUE_CROSSWALK.md) | Canonical mapping for all 90 task IDs, merged through PR #53 |
 | [PROGRESS.md](docs/PROGRESS.md) + [manifest](docs/progress-manifest.json) | Reproducible checklist counts and evidence gates |
 | [Working method](docs/WORKING_METHOD.md) + [work journal](docs/WORK_JOURNAL.md) | New ideas, bugs, decisions, dated changes and reviewer handoffs |
 | [ROADMAP.md](docs/ROADMAP.md) + [STATUS.md](docs/STATUS.md) | Product sequence versus demonstrated code |
@@ -143,12 +181,14 @@ For deeper details see [architecture](docs/ARCHITECTURE.md), [editorial system](
 
 **License.** The source code currently ships under **[MIT](LICENSE)**. A future MPL-2.0 core / Apache-2.0 interoperability split remains under [discussion #38](https://github.com/interzettel/kushluk/issues/38), not adopted. Separate artwork, subscription materials and official branding may have different rights; inspect [third-party notices](THIRD_PARTY_NOTICES.md).
 
-**Name.** Write **Kushluk**, preserving its Turkish **ş** in all user-facing prose. Keep `kushluk` for ASCII technical identifiers (GitHub, Python package, CLI and environment configuration).
+**Name.** Write **Kushluk** using ASCII letters throughout the software, documentation and public product identity. Keep lowercase `kushluk` for the repository, package, CLI and environment variables. The original Turkish spelling appears only when explaining its etymology.
 
 ## Contributing
 
 This project welcomes fixes, carefully scoped ideas, independent plugins, thoughtful editorial design and evidence-backed criticism. A contributor should be able to find one issue, make one small PR, run tests and understand what counts as complete.
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md), [SECURITY.md](SECURITY.md) and [AGENTS.md](AGENTS.md). The maintainers' current focus is making the existing engine robust: [four-page format #45](https://github.com/interzettel/kushluk/issues/45), [print profiles #46](https://github.com/interzettel/kushluk/issues/46), and [unattended local runs #47](https://github.com/interzettel/kushluk/issues/47), followed by [real morning-print trials #13](https://github.com/interzettel/kushluk/issues/13).
+
+**Every new issue** follows the traceability contract in [AGENTS.md](AGENTS.md): issue type, labels, human assignee, project, milestone, relationships, development branch/PR and verified resolution. The planned **Kushluk GitHub Project** will be connected after creation ([setup #62](https://github.com/interzettel/kushluk/issues/62)); no project fields are claimed configured yet.
 
 Kushluk is built to give the morning back to its reader.
