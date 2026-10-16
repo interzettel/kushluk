@@ -52,7 +52,7 @@ jobs:
             exit 1
           fi
           if [ "${{ github.event_name }}" = "push" ]; then
-            echo "Completing Project Priority options, issue backfill and verification."
+            echo "Provisioning editable Triage Priority, then backfilling Project metadata."
             python tools/project_sync.py bootstrap
             python tools/project_sync.py backfill
             python tools/project_sync.py audit
