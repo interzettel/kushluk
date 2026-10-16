@@ -2,21 +2,21 @@
 
 **Project:** [Kushluk #3](https://github.com/orgs/interzettel/projects/3) · **Implementation:** [#65](https://github.com/interzettel/kushluk/issues/65).
 
-**Agent workflow:** [tools/issue-intake/SKILL.md](../tools/issue-intake/SKILL.md) and `python -m tools.create_issue`. The one-time push attempt has been removed following its real permission check. The [workflow run](https://github.com/interzettel/kushluk/actions/runs/38965440211) reached the masked secret but failed on `organization.projectV2`: the token lacked Project access. No fields were changed. Configure the token with **Resource owner: interzettel** and **Organization permissions → Projects: Read and write** (plus **Repository permissions → Issues: Read and write**); if required, approve organization access. Then use manual workflow dispatch for bootstrap, backfill and audit. Never paste credentials into issues.
+**Agent workflow:** [tools/issue-intake/SKILL.md](../tools/issue-intake/SKILL.md) and `python -m tools.create_issue`. The owner's Actions secret is now authorized for organization Project #3. The first successful run created **Workstream, Maturity, and Evidence**. GitHub's existing reserved **Priority** field had no options and rejected API mutation ([attempt](https://github.com/interzettel/kushluk/actions/runs/38967689905)). This integration therefore provisions a distinct editable **Triage Priority** field; it does **not** delete, modify, or claim to populate the reserved Priority field. Run bootstrap/backfill/audit and verify issue values before declaring completion.
 
 ## What the fields do
 
 | Native Project field | Values | Practical purpose |
 | --- | --- | --- |
 | **Status** (already exists) | Backlog, Ready, In progress, In review, Done | Who should work next; do **not** create duplicate Stage |
-| **Priority** | P0, P1, P2, P3 | What the one human maintainer should spend effort on |
+| **Triage Priority** (custom) | P0, P1, P2, P3 | Maintainer order of work; separate from GitHub's reserved, unconfigurable Priority |
 | **Workstream** | A–H, Untriaged | Group backlog into the eight master-ledger areas |
 | **Maturity** | Idea, Research, Accepted, Implemented, Verified | Separate unapproved thoughts from accepted or coded work |
 | **Evidence** | Missing, Partial, Verified | Identify what is still unproven, independent of GitHub issue closure |
 
 **Labels** (`kind:*`, `priority:*`, `workstream:*`) support repository issue search and filtering. **Native issue type** (Bug/Feature/Task) is set where the organization enables it. **Assignee** is the real maintainer, `@yigit-denktas`. Project fields are actual GitHub native values, **not text in the issue body**.
 
-Defaults for newly opened issues: **Backlog, P2, Untriaged, Idea, Missing**, adjusted to Research for RFCs. If a maintainer has already assigned a field, the bot preserves it. A new issue's body can suggest Priority/Workstream only when its author is the designated steward. **No issue author can claim Verified automatically.**
+Defaults for newly opened issues: **Backlog, Triage Priority P2, Untriaged, Idea, Missing**, adjusted to Research for RFCs. If a maintainer has already assigned a field, the bot preserves it. A new issue's body can suggest Priority/Workstream only when its author is the designated steward. **No issue author can claim Verified automatically.**
 
 ## One-time setup by the Project owner
 
