@@ -1,6 +1,7 @@
 from datetime import date
 
 from kushluk.models import Publication, Story
+from kushluk.publication import plan_pages
 from kushluk.validation import compact_for_layout, validate_publication
 
 
@@ -13,6 +14,7 @@ def publication(stories):
         location_name="Cologne",
         practical=[],
         stories=stories,
+        pages=plan_pages([], stories),
     )
 
 
