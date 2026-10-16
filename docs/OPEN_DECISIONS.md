@@ -30,4 +30,4 @@ Track portfolio state in [master ledger #43](https://github.com/interzettel/kush
 
 ## Resolved since the previous register
 
-The canonical physical-format decision is no longer open. ADR 0013 supersedes ADR 0002: Kuşluk uses four logical A4 pages with A4 Home Printer and A3 Folded Newspaper print profiles.
+The canonical physical-format decision is no longer open. ADR 0013 supersedes ADR 0002: Kushluk uses four logical A4 pages with A4 Home Printer and A3 Folded Newspaper print profiles.

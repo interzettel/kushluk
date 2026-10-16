@@ -2,9 +2,9 @@
 
 ## Purpose
 
-Kuşluk onboarding should convert existing user context into a useful first edition with as little manual configuration as possible.
+Kushluk onboarding should convert existing user context into a useful first edition with as little manual configuration as possible.
 
-The user should not have to remember every newsletter, feed, or recurring source they already receive. Where the user explicitly connects an account, Kuşluk should help discover useful sources and ask how each source should participate in the publication.
+The user should not have to remember every newsletter, feed, or recurring source they already receive. Where the user explicitly connects an account, Kushluk should help discover useful sources and ask how each source should participate in the publication.
 
 Onboarding also needs to establish the physical/delivery environment without turning setup into printer administration.
 
@@ -25,7 +25,7 @@ The normal daily experience should not require reopening onboarding.
 
 ## Newsletter discovery
 
-If the user connects an email account, Kuşluk should be able to identify likely newsletters and recurring editorial mail.
+If the user connects an email account, Kushluk should be able to identify likely newsletters and recurring editorial mail.
 
 The discovery pass should prefer low-risk signals such as:
 - sender identity and sending domain;
@@ -39,7 +39,7 @@ The goal is source discovery, not indexing the entire mailbox.
 
 The onboarding UI should present a concise list such as:
 
-> We found 18 recurring newsletters. Which ones should Kuşluk use?
+> We found 18 recurring newsletters. Which ones should Kushluk use?
 
 For each discovered source, show enough context to make a decision:
 - sender/newsletter name;
@@ -57,11 +57,11 @@ The user should choose how each newsletter may be used.
 
 ### Ignore
 
-Do not use this source for Kuşluk.
+Do not use this source for Kushluk.
 
 ### Reference only
 
-Kuşluk may notice that a new issue arrived and use its title/metadata as a candidate signal, but should not ingest the body for editorial synthesis.
+Kushluk may notice that a new issue arrived and use its title/metadata as a candidate signal, but should not ingest the body for editorial synthesis.
 
 Example:
 
@@ -69,7 +69,7 @@ Example:
 
 ### Derivative / editorial synthesis
 
-Kuşluk may read the delivered newsletter locally, extract the useful ideas, and create a shorter Kuşluk-native derivative such as:
+Kushluk may read the delivered newsletter locally, extract the useful ideas, and create a shorter Kushluk-native derivative such as:
 - a summary;
 - key takeaways;
 - a “why this matters” note;
@@ -81,7 +81,7 @@ The generated item should preserve source attribution and a path back to the ori
 
 ### Personal-copy / direct inclusion
 
-For a private/local edition, the user may choose to include material from a newsletter they personally received more directly in their own Kuşluk output.
+For a private/local edition, the user may choose to include material from a newsletter they personally received more directly in their own Kushluk output.
 
 Examples:
 - reproduce a user-selected section for personal reading;
@@ -90,15 +90,15 @@ Examples:
 
 This mode is for the user's private copy of material already delivered to their account. It must not be treated as a blanket right to publicly republish or redistribute the publisher's content.
 
-If Kuşluk later offers shared, public, or managed publication features, direct inclusion must be re-evaluated against the source's terms and applicable copyright/licensing rules.
+If Kushluk later offers shared, public, or managed publication features, direct inclusion must be re-evaluated against the source's terms and applicable copyright/licensing rules.
 
 ## Recommended onboarding interaction
 
 A possible flow:
 
 1. User connects email.
-2. Kuşluk performs a local-first newsletter discovery pass.
-3. Kuşluk shows likely newsletters with confidence and recent examples.
+2. Kushluk performs a local-first newsletter discovery pass.
+3. Kushluk shows likely newsletters with confidence and recent examples.
 4. User selects newsletters individually or in bulk.
 5. For each selected newsletter, the user chooses:
    - Ignore
@@ -109,7 +109,7 @@ A possible flow:
    - Core
    - Normal
    - Low
-7. Kuşluk creates source rules and previews how they will appear in an edition.
+7. Kushluk creates source rules and previews how they will appear in an edition.
 8. User confirms.
 
 The onboarding should support a simple bulk default, for example:
@@ -122,7 +122,7 @@ This prevents onboarding from becoming administrative work.
 
 Newsletter ingestion should be incremental.
 
-Kuşluk should:
+Kushluk should:
 - process only new or recently relevant issues;
 - avoid repeatedly re-reading the full mailbox;
 - deduplicate newsletter stories against public-web and social candidates;
@@ -134,7 +134,7 @@ A newsletter subscription is a source signal, not a guaranteed print slot.
 
 ## Attribution
 
-Every newsletter-derived Kuşluk item should retain:
+Every newsletter-derived Kushluk item should retain:
 - newsletter/publication name;
 - issue/message identity;
 - original sender;
@@ -148,7 +148,7 @@ Newsletter discovery and parsing belong to the personal data plane.
 
 By default:
 - mailbox contents stay local or on user-controlled infrastructure;
-- Kuşluk should not mirror the entire mailbox into its own database;
+- Kushluk should not mirror the entire mailbox into its own database;
 - only the minimum needed message metadata/content should be retained;
 - remote LLM services should receive only the minimum required content when the user has enabled such processing.
 
@@ -156,7 +156,7 @@ A local model or deterministic parser may be used for discovery/classification w
 
 ## Travel-source discovery
 
-Where the user enables relevant connectors, Kuşluk may use reliable travel signals from calendar events, train/flight tickets or confirmations in connected mail, and provider/app data exposed through a connector. These signals are used to decide print-vs-digital behaviour and destination context; they are not a reason to build a permanent travel-history database.
+Where the user enables relevant connectors, Kushluk may use reliable travel signals from calendar events, train/flight tickets or confirmations in connected mail, and provider/app data exposed through a connector. These signals are used to decide print-vs-digital behaviour and destination context; they are not a reason to build a permanent travel-history database.
 
 ## Reconfiguration
 
@@ -166,7 +166,7 @@ The user should be able to:
 - change a source mode;
 - mute a newsletter;
 - promote/demote priority;
-- remove it from Kuşluk;
+- remove it from Kushluk;
 - rescan for newly subscribed newsletters;
 - review sources that have gone inactive;
 - change printer/print profile;

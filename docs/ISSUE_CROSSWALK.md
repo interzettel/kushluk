@@ -1,4 +1,4 @@
-# Kuşluk work-to-issue crosswalk
+# Kushluk work-to-issue crosswalk
 
 **Audit date:** 2026-10-16 · **Status:** proposed documentation reconciliation; not a statement that implementations are complete.
 

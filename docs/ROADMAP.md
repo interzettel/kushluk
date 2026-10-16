@@ -1,6 +1,6 @@
 # Roadmap
 
-Kuşluk uses iterative vertical slices rather than a long waterfall build.
+Kushluk uses iterative vertical slices rather than a long waterfall build.
 
 The operational task source is `WORK_LEDGER.md`; this roadmap describes stage-level sequencing.
 
@@ -25,7 +25,7 @@ Deliverables:
 - Open-decisions register
 
 Definition of Done:
-A future maintainer/orchestrator can explain what Kuşluk is, what it is not, the non-negotiable decisions, and the next executable slice without relying on the founding conversation.
+A future maintainer/orchestrator can explain what Kushluk is, what it is not, the non-negotiable decisions, and the next executable slice without relying on the founding conversation.
 
 ## Stage 1 — Walking skeleton
 
@@ -143,13 +143,13 @@ Add:
 Managed cloud, if pursued, receives its own privacy/security/product track.
 
 Definition of Done:
-A new user can install Kuşluk, connect supported services, review discovered sources, and produce an edition without editing source code.
+A new user can install Kushluk, connect supported services, review discovered sources, and produce an edition without editing source code.
 
 ## Open investigations
 
 Detailed investigation tasks are tracked in `WORK_LEDGER.md`. Current themes include:
 
-- modern newspaper closing/page-production practices and what transfers to Kuşluk;
+- modern newspaper closing/page-production practices and what transfers to Kushluk;
 - n8n vs native scheduling vs Apple Shortcuts as orchestration/control surfaces;
 - Canva and Adobe structured template population/export reliability;
 - image acquisition, placement, rights, and attribution automation;

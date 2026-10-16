@@ -2,7 +2,7 @@
 
 ## Product statement
 
-Kuşluk is a local-first, print-first daily briefing system that creates a small personal newspaper rather than another dashboard.
+Kushluk is a local-first, print-first daily briefing system that creates a small personal newspaper rather than another dashboard.
 
 Its job is to answer:
 
@@ -12,7 +12,7 @@ The canonical edition is **four logical DIN A4 pages**, designed as one bounded 
 
 ## Primary experience
 
-The intended experience is a **morning ritual, not a dashboard session**. When the configured environment allows it, Kuşluk should already be generated and physically available around wake-up/breakfast time, with minimal screen interaction.
+The intended experience is a **morning ritual, not a dashboard session**. When the configured environment allows it, Kushluk should already be generated and physically available around wake-up/breakfast time, with minimal screen interaction.
 
 By the configured morning deadline, default 08:00 local time:
 
@@ -37,7 +37,7 @@ The product deliberately creates a bounded physical object:
 - easy to finish;
 - physically memorable and archivable.
 
-Digital surfaces exist to complement print, not to turn Kuşluk into another scrolling application.
+Digital surfaces exist to complement print, not to turn Kushluk into another scrolling application.
 
 ## Personalisation
 
@@ -55,14 +55,14 @@ An optional spoken or typed **morning intent** may influence only the current ed
 
 ### Recovering value from existing subscriptions
 
-A user's inbox already contains editorial choices they made outside Kuşluk.
+A user's inbox already contains editorial choices they made outside Kushluk.
 
-When email is explicitly connected, onboarding should help discover likely newsletters and recurring editorial mail, then ask the user how each source should participate in Kuşluk.
+When email is explicitly connected, onboarding should help discover likely newsletters and recurring editorial mail, then ask the user how each source should participate in Kushluk.
 
 A newsletter may be:
 - ignored;
 - used only as a source/candidate signal;
-- transformed into Kuşluk-native summaries or derivatives;
+- transformed into Kushluk-native summaries or derivatives;
 - included more directly in the user's private personal edition.
 
 The purpose is not generic email summarisation. It is to recover value from newsletters the user already chose to receive but may not have time to read.
@@ -101,7 +101,7 @@ Planned beyond the current physical-production migration:
 
 ## Non-goals
 
-Kuşluk is not:
+Kushluk is not:
 - a generic autonomous-agent framework;
 - a replacement for live travel apps;
 - a social network;
@@ -112,7 +112,7 @@ Kuşluk is not:
 
 ## Product Definition of Done
 
-A mature Kuşluk installation should reliably:
+A mature Kushluk installation should reliably:
 1. understand the day's stable commitments;
 2. gather a broad but controlled candidate pool;
 3. select rather than merely aggregate;

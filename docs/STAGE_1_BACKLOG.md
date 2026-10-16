@@ -2,7 +2,7 @@
 
 ## Stage outcome
 
-Produce a real Kuşluk edition end to end with no hand-edited HTML or manual design-tool assembly. The accepted target is four logical DIN A4 pages with profile-specific physical output.
+Produce a real Kushluk edition end to end with no hand-edited HTML or manual design-tool assembly. The accepted target is four logical DIN A4 pages with profile-specific physical output.
 
 Status: **ACTIVE — software walking skeleton implemented; real-world proof pending**
 
