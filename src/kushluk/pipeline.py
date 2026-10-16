@@ -14,6 +14,7 @@ from kushluk.delivery import send_email_edition
 from kushluk.editor import select_stories
 from kushluk.models import DeliveryResult, Failure, FailureSeverity, Publication
 from kushluk.printing import PrintResult, print_pdf
+from kushluk.print_profiles import impose_a3_folded
 from kushluk.publication import build_publication, publication_markdown
 from kushluk.renderer import render_html, render_pdf
 from kushluk.validation import compact_for_layout, validate_pdf, validate_publication
@@ -25,6 +26,7 @@ class PipelineResult:
     markdown_path: Path
     html_path: Path
     pdf_path: Path | None
+    printable_pdf_path: Path | None
     archive_dir: Path
     print_result: PrintResult | None
     email_result: DeliveryResult | None
@@ -43,7 +45,10 @@ def run_pipeline(
     send_to_printer: bool = False,
     send_email: bool = False,
     email_on_print_failure: bool = False,
+    print_profile: str = "a4-home",
 ) -> PipelineResult:
+    if print_profile not in {"a4-home", "a3-folded"}:
+        raise ValueError(f"Unknown print profile: {print_profile}")
     failures: list[Failure] = []
     practical = []
 
@@ -170,10 +175,25 @@ def run_pipeline(
     if rendered_pdf is None:
         render_html(publication, html_path)
 
+    printable_pdf: Path | None = rendered_pdf
+    if print_profile == "a3-folded" and rendered_pdf:
+        try:
+            printable_pdf = impose_a3_folded(
+                rendered_pdf, settings.output_dir / f"{publication.edition_id}.a3-folded.pdf"
+            )
+        except (ValueError, OSError, ImportError) as exc:
+            printable_pdf = None
+            failures.append(_failure("imposition_failed", "failed", exc, "imposition"))
+
     print_result: PrintResult | None = None
     if send_to_printer:
-        if rendered_pdf:
-            print_result = print_pdf(rendered_pdf, settings.printer, execute=True)
+        if printable_pdf:
+            print_result = print_pdf(
+                printable_pdf, settings.printer, execute=True,
+                media="A3" if print_profile == "a3-folded" else "A4",
+                duplex_edge="short" if print_profile == "a3-folded" else "long",
+                require_duplex=print_profile == "a3-folded",
+            )
             if not print_result.success:
                 failures.append(
                     Failure(
@@ -185,7 +205,7 @@ def run_pipeline(
                 )
         else:
             print_result = PrintResult(
-                True, False, "Print skipped because a validated four-page A4 PDF is unavailable."
+                True, False, "Print skipped: validated PDF or requested imposed print profile is unavailable."
             )
             failures.append(
                 Failure(
@@ -228,12 +248,15 @@ def run_pipeline(
         "print": asdict(print_result) if print_result else None,
         "email": asdict(email_result) if email_result else None,
         "validated_pdf": bool(rendered_pdf),
+        "print_profile": print_profile,
+        "printable_pdf": printable_pdf.name if printable_pdf else None,
     }
     archive_dir = archive_publication(
         publication,
         settings.archive_dir,
         html_path=html_path,
         pdf_path=rendered_pdf,
+        imposed_pdf_path=printable_pdf if print_profile == "a3-folded" else None,
         run_summary=run_summary,
     )
     return PipelineResult(
@@ -241,6 +264,7 @@ def run_pipeline(
         markdown_path=markdown_path,
         html_path=html_path,
         pdf_path=rendered_pdf,
+        printable_pdf_path=printable_pdf,
         archive_dir=archive_dir,
         print_result=print_result,
         email_result=email_result,
