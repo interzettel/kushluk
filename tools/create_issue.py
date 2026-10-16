@@ -62,7 +62,7 @@ def create(argv: list[str] | None = None) -> str:
         f"Workstream: {args.workstream}\n"
         f"Assignee: @{STEWARD}\n"
         "Project: https://github.com/orgs/interzettel/projects/3\n"
-        f"Parent: #{args.parent if args.parent else 43}\n"
+        f"Parent: {'#' + str(args.parent) if args.parent else 'TBD'}\n"
         f"Blocked by: {', '.join('#'+str(n) for n in args.blocked_by) or 'none'}\n"
         f"Milestone: {args.milestone or 'TBD'}\n"
         "Development: not started\nEvidence: pending\n"
