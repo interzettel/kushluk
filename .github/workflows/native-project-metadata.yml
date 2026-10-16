@@ -3,9 +3,6 @@ name: Native Project metadata
 # Runs for every new issue. Manual dispatch handles first-time field creation
 # and the one-time existing-issue backfill. Requires a scoped org Project token.
 on:
-  push:
-    branches: [main]
-    paths: [.github/workflows/native-project-metadata.yml]
   issues:
     types: [opened, reopened, edited, labeled, closed]
   workflow_dispatch:
@@ -38,30 +35,17 @@ jobs:
 
   maintenance:
     name: Project field setup or coverage audit
-    if: github.event_name == 'workflow_dispatch' || github.event_name == 'push'
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Run native Project schema and issue synchronization
+      - name: Bootstrap or inspect Project #3
         env:
-          # Transitional use of the owner's repository variable. Migrate to
-          # KUSHLUK_PROJECT_TOKEN secret promptly; variables are not masked.
-          GH_TOKEN: ${{ secrets.KUSHLUK_PROJECT_TOKEN || vars.PERSONAL_TOKEN }}
+          GH_TOKEN: ${{ secrets.KUSHLUK_PROJECT_TOKEN }}
           MODE: ${{ inputs.mode }}
-          EVENT_NAME: ${{ github.event_name }}
-        shell: bash
         run: |
           if [ -z "$GH_TOKEN" ]; then
-            echo "::error::Neither KUSHLUK_PROJECT_TOKEN secret nor PERSONAL_TOKEN variable is configured."
+            echo "::error::Project token secret KUSHLUK_PROJECT_TOKEN is not configured."
             exit 1
           fi
-          echo "Project credential is present (value withheld)."
-          if [ "$EVENT_NAME" = "push" ]; then
-            # Run once on this workflow's merge into main; future pushes to
-            # other files will not rerun this maintenance job.
-            python tools/project_sync.py bootstrap
-            python tools/project_sync.py backfill
-            python tools/project_sync.py audit
-          else
-            python tools/project_sync.py "$MODE"
-          fi
+          python tools/project_sync.py "$MODE"
