@@ -48,6 +48,7 @@ def run_pipeline(
     email_on_print_failure: bool = False,
     print_profile: str = "a4-home",
     before_delivery: Callable[[str], None] | None = None,
+    on_stage: Callable[[str], None] | None = None,
 ) -> PipelineResult:
     if print_profile not in {"a4-home", "a3-folded"}:
         raise ValueError(f"Unknown print profile: {print_profile}")
@@ -87,6 +88,9 @@ def run_pipeline(
     except Exception as exc:
         failures.append(_failure("rss_unavailable", "degraded", exc, "rss"))
 
+    if on_stage is not None:
+        on_stage("sources_complete")
+
     stories = select_stories(candidates, limit=3)
     if not stories:
         failures.append(
@@ -106,6 +110,9 @@ def run_pipeline(
         stories=stories,
         notes=[failure.message for failure in failures if failure.severity != "info"],
     )
+
+    if on_stage is not None:
+        on_stage("editorial_complete")
 
     preflight = validate_publication(publication)
     for message in preflight.errors:
@@ -135,6 +142,8 @@ def run_pipeline(
             if pdf_validation.ok:
                 publication = working
                 rendered_pdf = candidate_pdf
+                if on_stage is not None:
+                    on_stage("validated")
                 break
 
             if attempt == 3:
@@ -187,6 +196,24 @@ def run_pipeline(
             printable_pdf = None
             failures.append(_failure("imposition_failed", "failed", exc, "imposition"))
 
+    # Persist the validated editorial snapshot BEFORE any external side effect.
+    # A process may die inside CUPS/SMTP; the original edition must survive.
+    archive_publication(
+        publication,
+        settings.archive_dir,
+        html_path=html_path,
+        pdf_path=rendered_pdf,
+        imposed_pdf_path=printable_pdf if print_profile == "a3-folded" else None,
+        run_summary={
+            "stage": "prepared",
+            "validated_pdf": bool(rendered_pdf),
+            "print_profile": print_profile,
+            "printable_pdf": printable_pdf.name if printable_pdf else None,
+        },
+    )
+    if on_stage is not None:
+        on_stage("archive_ready")
+
     print_result: PrintResult | None = None
     if send_to_printer:
         if printable_pdf:
@@ -198,6 +225,8 @@ def run_pipeline(
                 duplex_edge="short" if print_profile == "a3-folded" else "long",
                 require_duplex=print_profile == "a3-folded",
             )
+            if on_stage is not None:
+                on_stage("print_submitted" if print_result.success else "print_failed")
             if not print_result.success:
                 failures.append(
                     Failure(
@@ -239,6 +268,8 @@ def run_pipeline(
             html_path=html_path,
             pdf_path=rendered_pdf,
         )
+        if on_stage is not None:
+            on_stage("email_sent" if email_result.status == "sent" else "email_failed")
         if email_result.status == "failed":
             failures.append(
                 Failure(
@@ -265,6 +296,8 @@ def run_pipeline(
         imposed_pdf_path=printable_pdf if print_profile == "a3-folded" else None,
         run_summary=run_summary,
     )
+    if on_stage is not None:
+        on_stage("complete")
     return PipelineResult(
         publication=publication,
         markdown_path=markdown_path,

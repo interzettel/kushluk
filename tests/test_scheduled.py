@@ -104,3 +104,63 @@ def test_run_status_unstarted_and_receipt_without_private_sources(tmp_path, monk
     receipt = (cfg.archive_dir / "20260923-001" / "scheduled.json").read_text()
     assert "calendar" not in receipt
     assert "smtp" not in receipt
+
+
+def test_request_change_does_not_claim_queued_print_is_complete(tmp_path, monkeypatch):
+    calls = []
+
+    def pipeline(*args, **kwargs):
+        calls.append(kwargs)
+        kwargs["on_stage"]("archive_ready")
+        return outcome(print_success=False)
+
+    monkeypatch.setattr(scheduled, "run_pipeline", pipeline)
+    cfg = settings(tmp_path)
+    first = scheduled.run_once(cfg, target_date=TARGET)
+    assert first.status == "completed"
+    assert first.stage == "complete"
+    changed = scheduled.run_once(cfg, target_date=TARGET, send_to_printer=True)
+    assert changed.status == "needs_review"
+    assert changed.failure_codes == ("request_mismatch",)
+    assert len(calls) == 1
+
+
+def test_stages_are_recorded_and_unknown_submission_survives_crash(tmp_path, monkeypatch):
+    cfg = settings(tmp_path)
+
+    def interrupted(*args, **kwargs):
+        kwargs["on_stage"]("sources_complete")
+        kwargs["on_stage"]("editorial_complete")
+        kwargs["on_stage"]("archive_ready")
+        path = cfg.archive_dir / "20260923-001" / "scheduled.json"
+        record = json.loads(path.read_text())
+        assert record["stage"] == "archive_ready"
+        kwargs["before_delivery"]("print")
+        raise ConnectionError("the printer might have accepted our request")
+
+    monkeypatch.setattr(scheduled, "run_pipeline", interrupted)
+    outcome1 = scheduled.run_once(cfg, target_date=TARGET, send_to_printer=True)
+    outcome2 = scheduled.run_once(cfg, target_date=TARGET, send_to_printer=True)
+    assert outcome1.status == "needs_review"
+    assert outcome2.status == "needs_review"
+    record = json.loads(
+        (cfg.archive_dir / "20260923-001" / "scheduled.json").read_text()
+    )
+    assert record["delivery_attempts"] == ["print"]
+    assert record["stage"] == "interrupted"
+    assert record["request"]["send_to_printer"] is True
+    assert record["updated_at"]
+
+
+def test_failures_keep_machine_readable_stage_not_raw_provider_errors(tmp_path, monkeypatch):
+    cfg = settings(tmp_path)
+    def failed(*args, **kwargs):
+        kwargs["on_stage"]("sources_complete")
+        raise OSError("private-key-id=12345")
+
+    monkeypatch.setattr(scheduled, "run_pipeline", failed)
+    result = scheduled.run_once(cfg, target_date=TARGET)
+    assert result.status == "needs_review"
+    record = (cfg.archive_dir / "20260923-001" / "scheduled.json").read_text()
+    assert "private-key-id" not in record
+    assert "unexpected_OSError" in record

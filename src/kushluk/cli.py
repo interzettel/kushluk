@@ -3,12 +3,15 @@ from __future__ import annotations
 import argparse
 from datetime import date, datetime
 import json
+from pathlib import Path
 from zoneinfo import ZoneInfo
 
 from kushluk.archive import list_editions
 from kushluk.config import Settings
 from kushluk.doctor import core_ready, run_doctor
 from kushluk.pipeline import run_pipeline
+from kushluk.print_proof import make_print_proof
+from kushluk.recovery import deliver_archived
 from kushluk.scheduled import read_run_status, run_once
 
 
@@ -54,6 +57,31 @@ def build_parser() -> argparse.ArgumentParser:
 
     run_status = sub.add_parser("run-status", help="Read durable local edition run state")
     run_status.add_argument("--date", dest="target_date", help="YYYY-MM-DD")
+
+    deliver = sub.add_parser(
+        "deliver-archived", help="Explicit print/email resend from archive (never regenerate)"
+    )
+    deliver.add_argument("--date", dest="target_date", required=True, help="YYYY-MM-DD")
+    deliver.add_argument("--channel", choices=("print", "email"), required=True)
+    deliver.add_argument(
+        "--request-id", required=True,
+        help="Operator-chosen identifier, stable across repeated invocations",
+    )
+    deliver.add_argument(
+        "--acknowledge-possible-duplicate", action="store_true",
+        help="I inspected prior delivery status and accept the risk of another submission",
+    )
+    deliver.add_argument(
+        "--print-profile", choices=("a4-home", "a3-folded"), default="a4-home"
+    )
+
+    proof = sub.add_parser(
+        "print-proof", help="Generate offline A4/A3 sample PDFs (never prints)"
+    )
+    proof.add_argument(
+        "--output-dir", type=Path, default=Path("output/print-proof"),
+        help="Where synthetic print-verification files are written",
+    )
 
     archive = sub.add_parser("archive-list", help="List recent local Kushluk editions")
     archive.add_argument("--limit", type=int, default=20)
@@ -117,6 +145,23 @@ def main(argv: list[str] | None = None) -> int:
             )
         print(json.dumps(outcome.as_dict(), ensure_ascii=False))
         return 0 if outcome.status in {"completed", "already_completed", "not_run"} else 2
+
+    if args.command == "deliver-archived":
+        outcome = deliver_archived(
+            settings,
+            target_date=date.fromisoformat(args.target_date),
+            channel=args.channel,
+            request_id=args.request_id,
+            acknowledge_possible_duplicate=args.acknowledge_possible_duplicate,
+            print_profile=args.print_profile,
+        )
+        print(json.dumps(outcome.as_dict(), ensure_ascii=False))
+        return 0 if outcome.status == "submitted" else 2
+
+    if args.command == "print-proof":
+        artifacts = make_print_proof(args.output_dir)
+        print(json.dumps(artifacts, ensure_ascii=False))
+        return 0
 
     if args.command == "archive-list":
         for item in list_editions(settings.archive_dir, limit=max(1, args.limit)):
