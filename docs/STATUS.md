@@ -13,6 +13,10 @@ The source package currently says `0.1.0`; it is **not** a demonstrated tagged p
 
 The offline `kushluk export-epub --date YYYY-MM-DD` command builds an EPUB3 ZIP with four reflowable chapters from the archived semantic metadata. It never fetches sources or sends email/print jobs. EPUB XML/ZIP checks and unit tests exist; physical e-reader compatibility/epubcheck/accessibility remain unverified, so this is **not a shipped v1.1 feature**. See [EPUB.md](EPUB.md) and [#33](https://github.com/interzettel/kushluk/issues/33).
 
+### Visual print inspection (F-023 — partial)
+
+`kushluk inspect-print --pdf FILE --output-dir NEW_DIR [--rasterize]` produces private per-page geometry/text anchor reports and optional Poppler PNG snapshots from existing A4 or imposed A3 PDFs. It flags structural problems but **never** claims automatic glyph-accurate clipping or real physical paper approval. See [PRINT_INSPECTION.md](PRINT_INSPECTION.md); source printer reliability and print quality still require #13 hardware evidence.
+
 ## Repository hygiene
 
 - Default branch: `main`.
