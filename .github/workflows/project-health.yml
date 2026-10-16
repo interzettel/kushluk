@@ -1,0 +1,27 @@
+name: Project health
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  tracker-integrity:
+    name: Project health / tracker integrity
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Validate deterministic progress report
+        run: python tools/project_health.py check
+      - name: Test inventory and evidence safeguards
+        run: python -m unittest discover -s tests -p 'test_project_health.py' -v
