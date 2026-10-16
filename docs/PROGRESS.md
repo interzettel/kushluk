@@ -224,6 +224,7 @@ The lines below are generated from WORK_LEDGER.md. Each task ID has a primary ow
 | `TRIAL-07` | OPEN | Use the trial evidence to set final reading-time and density targets. |
 
 </details>
+
 ## Update protocol
 
 1. Complete an owning issue's acceptance tests and attach reproducible evidence.
