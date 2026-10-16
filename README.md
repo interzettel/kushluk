@@ -12,7 +12,7 @@
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-E8C9B8?labelColor=1A1A1A)](pyproject.toml)
 [![Stage 1 prototype](https://img.shields.io/badge/product-Stage%201%20prototype-f3efe4?labelColor=1a1a1a)](docs/STATUS.md)
 
-[What works](#what-works-today) · [Make an edition](#make-an-edition) · [Research](docs/research/newspaper-ecosystem-2026-10-17.md) · [Progress](#development-and-progress) · [GitHub Project](https://github.com/orgs/interzettel/projects/3) · [Contribute](#contributing) · [Project decisions](#decisions-and-trust)
+[What works](#what-works-today) · [Make an edition](#make-an-edition) · [Feature & releases](docs/FEATURE_CATALOG.md) · [Research](docs/research/newspaper-ecosystem-2026-10-17.md) · [Progress](#development-and-progress) · [GitHub Project](https://github.com/orgs/interzettel/projects/3) · [Contribute](#contributing) · [Project decisions](#decisions-and-trust)
 
 </div>
 
@@ -99,6 +99,8 @@ Printing and email are **separately configured**. If a compatible local CUPS pri
 
 **Configuration detail:** `.env.example` documents environment variable names; the Python application does **not** automatically load a `.env` file. Set/export the values in your shell or use a local secret manager. Never commit credentials or private editions.
 
+For **local-only RSS subscription preview**, use `kushluk sources-import-opml subscriptions.opml --output private-sources.json`. It creates an unactivated, user-reviewable draft and **does not contact providers**; see [OPML guide](docs/OPML.md). Export using `kushluk sources-export-opml private-sources.json --output subscriptions-export.opml`.
+
 For local crash recovery, `kushluk deliver-archived` resends **only the validated archived edition** with explicit acknowledgment and a unique request ID. It never fetches new sources or regenerates a page. Generate a hardware-test kit without printing via `kushluk print-proof --output-dir output/print-proof`; see [physical-print verification](docs/PRINT_PROOF.md).
 
 To schedule local editions safely, use `kushluk run` and inspect `kushluk run-status`. The daily receipt prevents automatic duplicate printing or email submissions, including after interrupted delivery. See [native scheduling and launchd](docs/SCHEDULING.md). Full unattended-host acceptance is not yet complete.
@@ -158,6 +160,8 @@ The graphic shows **two different things**: evidence gates G1–G8 and checked o
 | [Working method](docs/WORKING_METHOD.md) + [work journal](docs/WORK_JOURNAL.md) | New ideas, bugs, decisions, dated changes and reviewer handoffs |
 | [ROADMAP.md](docs/ROADMAP.md) + [STATUS.md](docs/STATUS.md) | Product sequence versus demonstrated code |
 | [ADRs](docs/adr/README.md) | Accepted, superseded and still-disputed architectural decisions |
+| [Feature catalog](docs/FEATURE_CATALOG.md) + [release milestones](docs/RELEASE_PLAN.md) | 32 stable feature IDs mapped to epics, owner issues, evidence and proposed v0.2 preview / v1.0 stable release gates; planning [#87](https://github.com/interzettel/kushluk/issues/87) |
+| [Upstream dual-review ballots](docs/REUSE_REVIEWS.md) | ChatGPT provisional positions, independently pending Claude review, explicit founder adoption decisions [#88](https://github.com/interzettel/kushluk/issues/88) |
 | [Newspaper ecosystem research](docs/research/newspaper-ecosystem-2026-10-17.md) + [25-project CSV matrix](docs/research/newspaper-project-matrix-2026-10-17.csv) | Categorized current source/code/license review, Goosepaper and RSSPub investigations, priority comparisons and evidence gaps under [#84](https://github.com/interzettel/kushluk/issues/84) |
 | [Competitor/inspiration transfer policy](docs/UPSTREAM_REVIEW.md) | Durable decisions about adapting, rejecting or independently reimplementing ideas without copying upstream code |
 
