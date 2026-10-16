@@ -6,10 +6,9 @@ import json
 import os
 from pathlib import Path
 import re
-import tempfile
 from urllib.parse import urlsplit, urlunsplit
 import xml.etree.ElementTree as ET
-from xml.sax.saxutils import escape, quoteattr
+from xml.sax.saxutils import quoteattr
 
 
 _MAX_XML_BYTES = 1_048_576
