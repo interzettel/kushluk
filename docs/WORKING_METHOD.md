@@ -14,6 +14,8 @@ flowchart TD
 ```
 
 These words are intentionally different:
+- **Feature** is a stable `F-###` reader-visible outcome in [FEATURE_CATALOG.md](FEATURE_CATALOG.md), grouped into a named epic and milestone with a release target and issue owner. It is **not** a new ticket backlog.
+- **Release** is a packaged, tagged version with evidence and change notes, governed by [RELEASE_PLAN.md](RELEASE_PLAN.md). A target version is only a forecast until tagged.
 - **Direction** is enduring intent (issue #2 and the product documents).
 - **Milestone** is an actual demonstrable reader/developer outcome (e.g., a validated four-page printed morning).
 - **Work package** is an issue with one owner and acceptance criteria. Broad epics coordinate multiple packages; they are not a new approval layer.
@@ -55,6 +57,8 @@ Issues also have a **kind**: **idea**, **bug**, **research**, **decision**, **en
 | Question | Use |
 | --- | --- |
 | What exists in the portfolio? | [Issue #43](https://github.com/interzettel/kushluk/issues/43) (every GitHub issue once; snapshot manually reconciled) |
+| Which features and release milestones are promised or only proposed? | [FEATURE_CATALOG.md](FEATURE_CATALOG.md) and [RELEASE_PLAN.md](RELEASE_PLAN.md), under #87 |
+| Which independent upstream approaches are approved? | [REUSE_REVIEWS.md](REUSE_REVIEWS.md), under #88; Claude votes pending until real review |
 | Which executable task is checked? | [WORK_LEDGER.md](WORK_LEDGER.md) and [ISSUE_CROSSWALK.md](ISSUE_CROSSWALK.md) (merged via [PR #53](https://github.com/interzettel/kushluk/pull/53)) |
 | What was actually built? | Source/tests, [STATUS.md](STATUS.md), CI and physical evidence |
 | Has a higher-level reader outcome been proven? | [PROGRESS.md](PROGRESS.md) plus [progress-manifest.json](progress-manifest.json) G1–G8 |

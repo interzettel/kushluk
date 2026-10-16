@@ -2,7 +2,7 @@
 
 Kushluk uses iterative vertical slices rather than a long waterfall build.
 
-The operational task source is `WORK_LEDGER.md`; this roadmap describes stage-level sequencing.
+The operational task source is `WORK_LEDGER.md`; this roadmap describes stage-level sequencing. The **cross-stage 32-feature registry** and proposed semantic-version milestones now live in [FEATURE_CATALOG.md](FEATURE_CATALOG.md) and [RELEASE_PLAN.md](RELEASE_PLAN.md). Neither changes the existing 90 task IDs or evidence gates. The first formal *proposed* prerelease is `v0.2.0-alpha.1` after M1 package/source-preview checks; stable `v1.0.0` is gated by real unattended/paper proof, not a date or a closed-issue count.
 
 ## Stage 0 — Define the product
 
