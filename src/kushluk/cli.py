@@ -28,6 +28,7 @@ from kushluk.opml import (
     write_private_file, write_proposal,
 )
 from kushluk.print_proof import make_print_proof
+from kushluk.preview import PreviewError, make_preview
 from kushluk.print_inspection import PrintInspectionError, inspect_print_pdf
 from kushluk.recovery import deliver_archived
 from kushluk.run_metrics import run_report, timing_plan
@@ -51,6 +52,15 @@ def _clock_time(value: str) -> time:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="kushluk")
     sub = parser.add_subparsers(dest="command", required=True)
+
+    preview = sub.add_parser(
+        "preview", help="Create a fixed synthetic four-page edition; no sources or delivery"
+    )
+    preview.add_argument("--output-dir", type=Path, required=True)
+    preview.add_argument(
+        "--pdf", action="store_true",
+        help="Validate four-page A4 PDF (requires optional PDF dependencies)",
+    )
 
     generate = sub.add_parser("generate", help="Generate one Kushluk edition")
     generate.add_argument("--date", dest="target_date", help="YYYY-MM-DD; defaults to today")
@@ -376,6 +386,23 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
+    if args.command == "preview":
+        try:
+            manifest = make_preview(args.output_dir, pdf=args.pdf)
+        except (PreviewError, OSError) as exc:
+            reason = str(exc) if isinstance(exc, PreviewError) else "preview_write_failed"
+            print(json.dumps({"status": "rejected", "error": reason}))
+            return 2
+        print(json.dumps({
+            "status": "synthetic_preview_created",
+            "logical_pages": 4,
+            "pdf_validated": manifest["pdf_validated"],
+            "synthetic_only": True,
+            "physical_verified": False,
+            "network_requests": 0, "delivery_submissions": 0,
+        }))
+        return 0
+
     if args.command == "setup-web":
         run_setup_web(path=args.output, open_browser=not args.no_open)
         return 0
