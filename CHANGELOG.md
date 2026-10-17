@@ -35,6 +35,8 @@ separately under [the release plan](docs/RELEASE_PLAN.md).
 
 - Add versioned, read-only `incident-report` diagnostics for local agents (#20): fixed action identifiers, explicit severity, allowlisted failure codes, create-only private export, and no implicit remote transmission or automatic retries. Native notifications and physical proof remain open.
 
+- Add opt-in native desktop failure notifications (`notify-local --send` / `run --notify-local`) with fixed privacy-safe messages and crash-safe once-per-incident submission claims. No push service or verified display/read receipt; local-only (#17/#20).
+
 **No prerelease has been published.** `pyproject.toml` remains `0.1.0`;
 the future version `v0.2.0-alpha.1` requires an explicit owner decision,
 review of dependencies/licenses and controlled tag/release creation.
