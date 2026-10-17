@@ -54,3 +54,5 @@ With the same local `kushluk setup-web` process running, follow **Review your so
 The browser applies loopback-only Host and Origin checks, CSRF validation, bounded form bodies, XML DTD/ENTITY rejection, and escaped user-supplied titles. There is **no background feed fetching**: use `kushluk sources-preflight --network` later if you deliberately want to test connectivity. A site that grants RSS access still might prohibit copying its full articles. This UI does not make that determination.
 
 **Still outstanding:** assistive-technology/novice usability testing, a real print-driver wizard, source/provider-specific rights evidence, and observed hardware/reliability acceptance. Do not enable a new source without access authorization.
+
+For a reproducible independent novice trial, use [FIRST_READER_PILOT.md](FIRST_READER_PILOT.md) and the blank [FIRST_READER_TEMPLATE.json](FIRST_READER_TEMPLATE.json). Do not count authored instructions or simulated CI as an observed participant.
