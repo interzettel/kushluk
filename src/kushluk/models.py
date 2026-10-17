@@ -64,6 +64,20 @@ class PracticalItem:
 
 
 @dataclass(slots=True)
+class StoryProvenance:
+    """Bounded, source-pointer-only evidence; never a verified factual claim."""
+    candidate_id: str
+    origin_ref: str | None
+    source_name: str
+    source_kind: SourceKind
+    url: str | None
+    published_at: str | None
+    retrieved_at: str | None
+    transform_mode: str = "source-pointer"
+    rights_mode: str = "reference-only"
+
+
+@dataclass(slots=True)
 class Story:
     id: str
     headline: str
@@ -74,6 +88,8 @@ class Story:
     cluster_size: int = 1
     image_asset_id: str | None = None
     image_caption: str | None = None
+    provenance: list[StoryProvenance] = field(default_factory=list)
+    verification_state: str = "unverified-source-pointer"
 
 
 @dataclass(slots=True)
