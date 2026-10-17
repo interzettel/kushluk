@@ -41,6 +41,10 @@ A failed RSS source (unsafe destination, timeout, invalid XML or rejected DTD) n
 
 RSS item links are now checked as references (without network access) before becoming `Story.source_url`: only public HTTP(S) locations, no embedded credentials, private IPs, unsafe schemes, or known token/session query parameters; fragments are removed. Offline EPUB export **rechecks old archived links** under the same policy before embedding hyperlinks. Unsafe links retain the headline/source attribution but have no clickable URL. Some legitimate personalized paywall links may be omitted rather than risk publishing private tokens; this is deliberate. F-011 remains partial; legal authorization and full provider rights checks remain open.
 
+### Local first-run profile (F-008 — partial)
+
+`kushluk setup` creates a private offline local profile for a reader-selected display name, latitude/longitude, timezone, and optional printer queue. Environment overrides and installations without profiles keep working; no credentials or source permissions enter the profile. Guided printer/canonical source onboarding and physical hardware acceptance remain open. See [LOCAL_SETUP.md](LOCAL_SETUP.md) and #5.
+
 ## Repository hygiene
 
 - Default branch: `main`.
