@@ -21,6 +21,8 @@ class Settings:
     media_dir: Path | None = None  # No media loaded without deliberate local opt-in.
     calendar_ics: str | None = None
     calendar_fixture: Path = Path("fixtures/calendar.json")
+    tasks_file: Path | None = None
+    research_query: str | None = None
     printer: str | None = None
     smtp_host: str | None = None
     smtp_port: int = 587
@@ -68,6 +70,8 @@ class Settings:
             calendar_fixture=Path(
                 os.getenv("KUSHLUK_CALENDAR_FIXTURE", "fixtures/calendar.json")
             ),
+            tasks_file=Path(os.environ["KUSHLUK_TASKS_FILE"]) if os.getenv("KUSHLUK_TASKS_FILE") else None,
+            research_query=os.getenv("KUSHLUK_RESEARCH_QUERY") or None,
             printer=(
                 (os.environ["KUSHLUK_PRINTER"] or None)
                 if "KUSHLUK_PRINTER" in os.environ
