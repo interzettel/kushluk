@@ -86,6 +86,7 @@ def render_printer_review(
     inventory: PrinterInventory | None, readiness: PrinterReadiness | None,
     *, csrf: str, notice: str | None = None,
     saved_queue: str | None = None, profile_exists: bool = False,
+    paper_size: str = "a4",
 ) -> str:
     banner = f'<p role="status">{escape(notice)}</p>' if notice else ""
     if inventory is None:
@@ -130,6 +131,24 @@ def render_printer_review(
             )
         else:
             result += '<p>Create your home profile first to save this queue.</p>'
+    chosen = paper_size if paper_size in {"a4", "letter"} else "a4"
+    paper_review = (
+        '<section class="queue"><h2>Home paper size</h2>'
+        '<p>Recommended formats: DIN A4 (210 × 297 mm) and '
+        'US Letter (8.5 × 11 in). Choosing a paper format never prints.</p>'
+        + ('<form method="post" action="/paper/save">'
+           f'<input type="hidden" name="csrf" value="{escape(csrf, quote=True)}">'
+           '<label for="paper_size">Preferred paper</label>'
+           '<select id="paper_size" name="paper_size" required>'
+           '<option value="a4"' + (' selected' if chosen == "a4" else '')
+           + '>DIN A4 — 210 × 297 mm</option>'
+           '<option value="letter"' + (' selected' if chosen == "letter" else '')
+           + '>US Letter — 8.5 × 11 in</option></select>'
+           '<button type="submit">Save paper preference</button></form>'
+           if profile_exists
+           else '<p>Create a local home profile to save this choice.</p>')
+        + '</section>'
+    )
     return (
         '<!doctype html><html lang="en"><head><meta charset="utf-8">'
         '<meta name="viewport" content="width=device-width, initial-scale=1">'
@@ -140,6 +159,7 @@ def render_printer_review(
         'h2{font:normal 26px Georgia,serif}'
         '.queue,.status{padding:18px;border:1px solid #ccd3c8;background:#fffefa;margin:10px 0}'
         'button{background:#24513a;color:#fff;border:0;padding:12px 16px;cursor:pointer}'
+        'select{display:block;margin:8px 0 12px;padding:10px;max-width:100%}'
         'button:focus-visible,a:focus-visible{outline:3px solid #427c56;outline-offset:3px}'
         'a{color:#24513a}</style></head><body>'
         '<p>kushluk. · 03 / 03 · Local only</p>'
@@ -147,7 +167,7 @@ def render_printer_review(
         '<p>Printer discovery is optional. This step asks your local CUPS system '
         'about installed queues and capabilities. It will never submit a print job, '
         'install a driver, modify a queue, or authorize unattended printing.</p>'
-        + banner
+        + banner + paper_review
         + '<form method="post" action="/printer/scan">'
         f'<input type="hidden" name="csrf" value="{csrf}">'
         '<button type="submit">Discover local printer queues</button></form>'
