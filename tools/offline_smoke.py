@@ -7,7 +7,6 @@ from __future__ import annotations
 
 import argparse
 from contextlib import ExitStack
-from datetime import date
 import json
 import os
 from pathlib import Path
