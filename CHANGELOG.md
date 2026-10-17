@@ -31,6 +31,8 @@ separately under [the release plan](docs/RELEASE_PLAN.md).
 - Improve local setup keyboard skip navigation and screen-reader descriptions, and add content-free recovery guidance in run reports (not an automatic notification service).
 - Document a conservative legacy archive migration hold, platform/device compatibility matrix and explicit human alpha release approval checklist.
 
+- Add user-selectable DIN A4 or US Letter home paper preference in first-run CLI/browser setup with legacy A4 compatibility, plus an independently validated Letter PDF variant, driverless CUPS Letter preflight and explicit archived Letter recovery (#129). A3 remains optional, and no physical device proof is claimed.
+
 **No prerelease has been published.** `pyproject.toml` remains `0.1.0`;
 the future version `v0.2.0-alpha.1` requires an explicit owner decision,
 review of dependencies/licenses and controlled tag/release creation.
