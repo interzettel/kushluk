@@ -175,3 +175,19 @@ def test_real_malformed_receipt_only_returns_fixed_failure_codes(tmp_path):
     assert "token_PRIVATE_PASSWORD" not in json.dumps(report)
     assert "unclassified_failure" in report["failure_codes"]
     assert report["user_notification_required"] is True
+
+
+def test_export_refuses_symlinked_or_public_parent(tmp_path):
+    cfg = settings(tmp_path)
+    report = incident.build_incident_report(cfg, target_date=DAY)
+    private = tmp_path / "private"
+    private.mkdir(mode=0o700)
+    shortcut = tmp_path / "shortcut"
+    shortcut.symlink_to(private, target_is_directory=True)
+    with pytest.raises(ValueError, match="unsafe_directory"):
+        incident.save_private_incident_report(shortcut / "incident.json", report)
+    assert not (private / "incident.json").exists()
+    private.chmod(0o755)
+    with pytest.raises(ValueError, match="unsafe_directory"):
+        incident.save_private_incident_report(private / "incident.json", report)
+    assert not (private / "incident.json").exists()
