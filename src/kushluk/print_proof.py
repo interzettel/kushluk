@@ -54,7 +54,18 @@ def make_print_proof(output_dir: Path) -> dict[str, str]:
     a4 = render_pdf(html, output_dir / "kushluk-proof-a4.pdf")
     checked = validate_pdf(a4)
     if not checked.ok:
-        raise ValueError("Invalid synthetic A4 proof: " + "; ".join(checked.errors))
+        # Print only known synthetic page identities, never user article text.
+        from pypdf import PdfReader
+        import re
+
+        identities = []
+        for page in PdfReader(str(a4)).pages:
+            text = page.extract_text() or ""
+            identities.append(re.findall(r"\\b[1-4]\\s*/\\s*4\\b", text))
+        raise ValueError(
+            "Invalid synthetic A4 proof: " + "; ".join(checked.errors)
+            + f"; page identities={identities}"
+        )
     a3 = impose_a3_folded(a4, output_dir / "kushluk-proof-a3.pdf")
     report = {
         "format": "kushluk-physical-proof-v1",
