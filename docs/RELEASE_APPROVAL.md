@@ -4,6 +4,8 @@
 
 ## Engineering evidence to review
 
+The current [M1 alpha evidence handoff](M1_ALPHA_CANDIDATE.md) records a green historical `main` SHA and the GitHub ZIP artifact hashes, and documents the new independent `m1_bundle_preflight` receipt. These CI records are a starting point for inspection, not an approval of actual legal terms or distribution. The final release SHA/version must be rebuilt and reviewed separately.
+
 - [ ] Record the exact current `main` commit SHA and the full five-job green CI run on that SHA (Linux unit, clean installs Python 3.11/3.12, macOS Apple Silicon and Intel PDF).
 - [ ] Retrieve and checksum the built wheel and sdist; verify both use installed entry points outside source checkout, contain notices and templates, produce matching deterministic synthetic HTML/Markdown/JSON, and generate four logical A4 PDF pages where native dependencies exist.
 - [ ] Review the **live** public-PyPI dependency advisory audit for the resolved runtime including PDF and Google extras. A scanner network error is *not* a pass. Review unresolved package findings and their fixed versions; do not infer safety for native packages.
