@@ -122,6 +122,7 @@ def run_pipeline(
         location_name=settings.home_name,
         practical=practical,
         stories=stories,
+        archetype="auto",
         notes=[failure.message for failure in failures if failure.severity != "info"],
     )
 
