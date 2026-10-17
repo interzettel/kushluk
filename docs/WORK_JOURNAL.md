@@ -2,6 +2,17 @@
 
 A concise, dated evidence/history record for one maintainer with AI helpers. **This is not an activity-time tracker or a substitute for GitHub commits and discussions.**
 
+## 2026-10-17 — M1 build/install smoke and frozen source-free sample
+
+**Issues:** #54 package hardening and #87 release milestone; [PR #120](https://github.com/interzettel/kushluk/pull/120). **No version bump or prerelease publication authorized.**
+
+- Remove Hatch's restrictive global source include and preserve Python modules plus print HTML template in wheel and sdist.
+- Expose the installed `kushluk preview` CLI to create deterministic, fully synthetic HTML/Markdown/schema-v2 JSON (and optional validated four-page A4 PDF) without source credentials, network, SMTP or CUPS.
+- Add byte-for-byte reproducible double-build checks for wheel/sdist, isolated venv installs and installed CLI/resource/digest validation on Linux Python 3.11/3.12 and native macOS arm64/x86_64.
+- Retain candidate artifacts and release evidence in CI for developer review; publish no tag, release, PyPI package or physical acceptance claim. Document installation and limitations.
+
+**Operational ledger 26/90 unchanged, independent release-evidence gates 0/8**. Approval of actual `v0.2.0-alpha.1` tag remains a separate owner decision.
+
 ## 2026-10-17 — User-owned Google grants and narrow DOI evidence checks
 
 **PR #119** adds a desktop local OAuth flow with separate least-privilege `gmail.metadata`/`tasks.readonly` grants; limited Gmail header-only source review, optional real Google Tasks candidate generation, token-mode validation and explicit local disconnect. No remote credential or mail contents are stored in the repo.
