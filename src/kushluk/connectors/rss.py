@@ -26,11 +26,12 @@ class RSSConnector:
             if re.search(rb"<!\s*(?:DOCTYPE|ENTITY)\b", xml_bytes, re.IGNORECASE):
                 raise ValueError("Feed XML contains disallowed declarations")
             root = ET.fromstring(xml_bytes)
-            source_name = _feed_title(root) or url
+            source_name = _feed_title(root) or "RSS feed"
             source = SourceRef(
                 kind="rss",
                 name=source_name,
-                url=url,
+                # Feed endpoints may embed subscription tokens; do not archive them.
+                url=None,
                 retrieved_at=datetime.now(timezone.utc).isoformat(timespec="seconds"),
             )
             for raw in _entries(root)[: self.per_feed]:
