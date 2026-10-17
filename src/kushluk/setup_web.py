@@ -152,6 +152,7 @@ class SetupHandler(BaseHTTPRequestHandler):
             and self.path in {
                 "/", "/sources", "/sources/import", "/sources/approve", "/sources/mode",
                 "/printer", "/printer/scan", "/printer/check", "/printer/save",
+                "/paper/save",
             }
         )
 
