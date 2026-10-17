@@ -46,11 +46,12 @@ def detect_printer_capabilities(printer: str | None = None) -> PrinterCapabiliti
         )
     except (OSError, subprocess.TimeoutExpired) as exc:
         return PrinterCapabilities(
-            resolved, False, False, (), f"CUPS query failed: {type(exc).__name__}: {exc}"
+            resolved, False, False, (), f"CUPS capability query failed ({type(exc).__name__})."
         )
     if completed.returncode != 0:
-        detail = completed.stderr.strip() or "Unable to query printer capabilities."
-        return PrinterCapabilities(resolved, False, False, (), detail)
+        return PrinterCapabilities(
+            resolved, False, False, (), "Unable to query printer capabilities (CUPS error)."
+        )
 
     duplex, media = parse_lpoptions(completed.stdout)
     available = _printer_available(lpstat, resolved)
@@ -95,7 +96,7 @@ def print_pdf(
     if not execute:
         return PrintResult(False, True, "Print skipped (dry-run). Use --print to submit the job.")
     if not pdf_path.exists():
-        return PrintResult(True, False, f"PDF not found: {pdf_path}", printer=printer)
+        return PrintResult(True, False, "Validated PDF is unavailable at the configured path.", printer=printer)
 
     lp = shutil.which("lp")
     if not lp:
@@ -137,7 +138,7 @@ def print_pdf(
         return PrintResult(
             True,
             False,
-            f"CUPS print submission failed: {type(exc).__name__}: {exc}",
+            f"CUPS print submission failed ({type(exc).__name__}); outcome may be uncertain.",
             printer=resolved,
             duplex_used=duplex_used,
         )
@@ -145,14 +146,14 @@ def print_pdf(
         return PrintResult(
             True,
             True,
-            completed.stdout.strip() or "Print job submitted.",
+            "Print job submitted to CUPS; physical completion has not been confirmed.",
             printer=resolved,
             duplex_used=duplex_used,
         )
     return PrintResult(
         True,
         False,
-        completed.stderr.strip() or "Print submission failed.",
+        "CUPS rejected the print submission; inspect printer status locally.",
         printer=resolved,
         duplex_used=duplex_used,
     )
