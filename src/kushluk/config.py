@@ -18,6 +18,7 @@ class Settings:
     reference_only_rss_urls: tuple[str, ...] = ()
     archive_dir: Path = Path("archive")
     output_dir: Path = Path("output")
+    media_dir: Path | None = None  # No media loaded without deliberate local opt-in.
     calendar_ics: str | None = None
     calendar_fixture: Path = Path("fixtures/calendar.json")
     printer: str | None = None
@@ -62,6 +63,7 @@ class Settings:
             reference_only_rss_urls=rss,
             archive_dir=Path(os.getenv("KUSHLUK_ARCHIVE_DIR", "archive")),
             output_dir=Path(os.getenv("KUSHLUK_OUTPUT_DIR", "output")),
+            media_dir=Path(os.environ["KUSHLUK_MEDIA_DIR"]) if os.getenv("KUSHLUK_MEDIA_DIR") else None,
             calendar_ics=os.getenv("KUSHLUK_CALENDAR_ICS") or None,
             calendar_fixture=Path(
                 os.getenv("KUSHLUK_CALENDAR_FIXTURE", "fixtures/calendar.json")
