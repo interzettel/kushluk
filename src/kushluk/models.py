@@ -114,7 +114,7 @@ class CompositionBlock:
 
 @dataclass(slots=True)
 class CompositionDecision:
-    action: Literal["shorten", "move", "demote", "replace", "omit", "remove_image"]
+    action: Literal["select_archetype", "shorten", "move", "demote", "replace", "omit", "remove_image"]
     ref: str
     reason: str
     from_page: int | None = None
