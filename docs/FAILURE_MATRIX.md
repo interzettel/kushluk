@@ -82,6 +82,8 @@ alert, push message, SMTP delivery or cloud-monitoring service.
 - `archive_complete_delivery_not_implied`: archived output exists, but no
   physical or human delivery is independently verified.
 
+Read [local desktop notification contract](LOCAL_NOTIFICATIONS.md) for explicitly requested on-device Linux/macOS alerts and once-per-incident deduplication; these do **not** imply a real reader received a message.
+
 ## Agent incident-report contract (issue #20)
 
 The explicit `kushluk incident-report --date YYYY-MM-DD [--output PRIVATE_FILE]`
