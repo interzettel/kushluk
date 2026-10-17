@@ -66,6 +66,8 @@ Remaining real-world proof:
 Definition of Done:
 One unattended trigger produces a real four-page morning edition with no manual HTML/design editing, the selected A4/A3 print or digital path works in the actual environment, and multiple real editions have been completed.
 
+Local scheduler operations v1 is implemented in `docs/OPERATIONS_V1.md` (not real-host/physical acceptance). Native OS timer wiring and full deadline reliability remain #47.
+
 ## Stage 2 — Understand the day
 
 Add:
