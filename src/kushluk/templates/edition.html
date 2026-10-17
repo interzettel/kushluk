@@ -124,6 +124,7 @@
   {% elif page.kind == "day" %}
     <p class="kicker">02 / The day ahead</p>
     <h2>What else is on your calendar?</h2>
+    {% if page.practical_indices %}
     <div class="practical-grid">
       {% for index in page.practical_indices %}
       {% set item = publication.practical[index] %}
@@ -132,8 +133,11 @@
         <div class="value">{{ item.value }}</div>
         {% if item.detail %}<p class="detail">{{ item.detail }}</p>{% endif %}
       </div>
-      {% else %}<p class="empty">No other practical items were available from your connected sources.</p>{% endfor %}
+      {% endfor %}
     </div>
+    {% else %}
+    <p class="empty">No other practical items were available from your connected sources.</p>
+    {% endif %}
     {% if page.story_ids %}
     <div class="story-grid">
       {% for story_id in page.story_ids %}
