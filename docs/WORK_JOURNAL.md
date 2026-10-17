@@ -2,6 +2,15 @@
 
 A concise, dated evidence/history record for one maintainer with AI helpers. **This is not an activity-time tracker or a substitute for GitHub commits and discussions.**
 
+## 2026-10-17 — Native host recipes and safe recovery-status test slice
+
+**Scope:** #47 AUT-05 software slice; AUT-09/12 follow-up. **State:** implementation in review until CI is green; no physical deployment.
+
+- Generate disabled, create-only, private systemd user timer/service and macOS LaunchAgent from explicit local binary/workdir and configurable schedule times; no paid/orchestrator dependency, no service install or print autoactivation.
+- Add source/render/PDF lifecycle milestones to typed `scheduled.json` stage history; Linux/macOS file-lock distinguishes a live run from a stale after-crash receipt, with continued at-most-once semantics.
+- Test synthetic repeated/abandoned/in-progress runs, tampered diagnostic fields and scheduler file safety; preserve separate human host/reboot/08:00-ready proof.
+- Add execution acceptance matrix to #47, WORK_LEDGER.md and NATIVE_SCHEDULERS.md. Software task reconciliation: AUT-05 checked, **13/90 = 14.44%**; G1–G8 unchanged (0/8).
+
 ## 2026-10-17 — Versioned local run controls, deadline and pause contract
 
 **Issue:** #47. **Scope:** first stable local JSON operations boundary, consent safety and local-date controls. **State:** implementation in PR under CI review, no host acceptance.
