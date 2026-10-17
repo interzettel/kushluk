@@ -133,7 +133,7 @@ def render_printer_review(
     return (
         '<!doctype html><html lang="en"><head><meta charset="utf-8">'
         '<meta name="viewport" content="width=device-width, initial-scale=1">'
-        '<title>Kuşluk · Printer check</title><style>'
+        '<title>Kushluk · Printer check</title><style>'
         ':root{font:17px/1.55 system-ui;color:#26382d;background:#f4f0e8}'
         'body{max-width:850px;margin:5vh auto;padding:20px}'
         'h1{font:normal clamp(35px,6vw,58px) Georgia,serif}'
@@ -142,7 +142,7 @@ def render_printer_review(
         'button{background:#24513a;color:#fff;border:0;padding:12px 16px;cursor:pointer}'
         'button:focus-visible,a:focus-visible{outline:3px solid #427c56;outline-offset:3px}'
         'a{color:#24513a}</style></head><body>'
-        '<p>kuşluk. · 03 / 03 · Local only</p>'
+        '<p>kushluk. · 03 / 03 · Local only</p>'
         '<h1>Meet your printer.</h1>'
         '<p>Printer discovery is optional. This step asks your local CUPS system '
         'about installed queues and capabilities. It will never submit a print job, '
