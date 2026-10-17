@@ -26,9 +26,20 @@ kushluk = "kushluk.cli:main"
 [tool.hatch.build.targets.wheel]
 packages = ["src/kushluk"]
 
-[tool.hatch.build]
+# Package Python modules and template resources together. The previous
+# global include restricted the source list to templates and could produce
+# an unusable distribution despite a working editable checkout.
+[tool.hatch.build.targets.sdist]
 include = [
-  "src/kushluk/templates/*.html",
+  "/src/kushluk/**",
+  "/README.md",
+  "/LICENSE",
+  "/THIRD_PARTY_NOTICES.md",
+  "/SECURITY.md",
+  "/CHANGELOG.md",
+  "/docs/PREVIEW_INSTALL.md",
+  "/docs/RELEASE_PLAN.md",
+  "/pyproject.toml",
 ]
 
 [tool.pytest.ini_options]
