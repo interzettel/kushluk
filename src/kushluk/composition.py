@@ -70,7 +70,9 @@ def plan_composition_pages(
         for story_id in page.story_ids:
             role = "brief" if page.kind == "stories" else "lead"
             budget = (BRIEF if role == "brief" else SlotBudget(
-                headline_chars=96, deck_chars=rule["lead_deck"], image_slots=0,
+                headline_chars=96, deck_chars=rule["lead_deck"],
+                image_slots=1 if archetype != "news-heavy" else 0,
+                caption_chars=105 if archetype != "news-heavy" else 0,
             ))
             page.blocks.append(CompositionBlock(role, story_id, budget))
     pages[-1].blocks = [
@@ -103,6 +105,7 @@ def _practical_rank(item: PracticalItem) -> int:
 def compose(
     practical: list[PracticalItem], stories: list[Story], *,
     archetype: LayoutArchetype | Literal["auto"] = "auto",
+    approved_media_ids: set[str] | None = None,
 ) -> tuple[list[PracticalItem], list[Story], list[EditionPage],
            LayoutArchetype, list[CompositionDecision]]:
     """Fit within slot budgets, preserve included source IDs and explain cuts."""
@@ -169,15 +172,21 @@ def compose(
             actions.append(CompositionDecision(
                 "shorten", candidate.id, "headline, source or deck slot capacity",
                 to_page=page))
-        if candidate.image_asset_id:
+        image_allowed = bool(
+            candidate.image_asset_id and approved_media_ids
+            and candidate.image_asset_id in approved_media_ids
+            and lead and selected != "news-heavy"
+        )
+        if candidate.image_asset_id and not image_allowed:
             actions.append(CompositionDecision(
-                "remove_image", candidate.id, "no print-cleared local image slot", to_page=page))
+                "remove_image", candidate.id, "no approved media/print slot", to_page=page))
         if page == 3:
             actions.append(CompositionDecision(
                 "demote", candidate.id, "secondary story assigned to briefs", 1, 3))
         fitted_stories.append(replace(
             candidate, headline=headline, deck=deck, source_name=source_name,
-            image_asset_id=None, image_caption=None,
+            image_asset_id=candidate.image_asset_id if image_allowed else None,
+            image_caption=candidate.image_caption if image_allowed else None,
         ))
     pages = plan_composition_pages(fitted_practical, fitted_stories, selected)
     return fitted_practical, fitted_stories, pages, selected, actions
