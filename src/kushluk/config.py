@@ -51,7 +51,7 @@ class Settings:
             longitude=float(os.getenv("KUSHLUK_LONGITUDE", "6.9603")),
             timezone=os.getenv("KUSHLUK_TIMEZONE", "Europe/Berlin"),
             rss_urls=rss,
-            reference_only_rss_urls=registry,
+            reference_only_rss_urls=rss,
             archive_dir=Path(os.getenv("KUSHLUK_ARCHIVE_DIR", "archive")),
             output_dir=Path(os.getenv("KUSHLUK_OUTPUT_DIR", "output")),
             calendar_ics=os.getenv("KUSHLUK_CALENDAR_ICS") or None,
