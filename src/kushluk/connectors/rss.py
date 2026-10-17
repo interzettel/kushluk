@@ -65,9 +65,13 @@ def _local(tag: str) -> str:
 
 
 def _feed_title(root: ET.Element) -> str | None:
-    for child in root.iter():
-        if _local(child.tag) == "title" and child.text:
-            return child.text.strip()
+    # Never use an article item's title as the publication's source name.
+    parents = [root]
+    parents.extend(child for child in root if _local(child.tag) == "channel")
+    for parent in parents:
+        for child in parent:
+            if _local(child.tag) == "title" and child.text:
+                return child.text.strip()
     return None
 
 
