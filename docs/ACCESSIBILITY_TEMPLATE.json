@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "status": "template-not-observation",
+  "source_commit": "REPLACE_WITH_TESTED_MAIN_COMMIT",
+  "participant_code": "ANONYMOUS_CODE",
+  "observer_code": "REPLACE",
+  "local_date": "YYYY-MM-DD",
+  "os_and_screen_reader": "REPLACE",
+  "consent_to_observation": false,
+  "consent_to_share_redacted_notes": false,
+  "tasks": {
+    "A1": {
+      "result": "not_attempted",
+      "elapsed_seconds": null,
+      "hints": 0,
+      "observed_issue": ""
+    },
+    "A2": {
+      "result": "not_attempted",
+      "elapsed_seconds": null,
+      "hints": 0,
+      "observed_issue": ""
+    },
+    "A3": {
+      "result": "not_attempted",
+      "elapsed_seconds": null,
+      "hints": 0,
+      "observed_issue": ""
+    },
+    "A4": {
+      "result": "not_attempted",
+      "elapsed_seconds": null,
+      "hints": 0,
+      "observed_issue": ""
+    },
+    "A5": {
+      "result": "not_attempted",
+      "elapsed_seconds": null,
+      "hints": 0,
+      "observed_issue": ""
+    }
+  },
+  "comprehension": {
+    "focus_navigation": "",
+    "form_labels": "",
+    "source_consent": "",
+    "status_meaning": "",
+    "zoom_or_contrast": ""
+  },
+  "independently_verified": false,
+  "reviewer_signoff": "not_reviewed",
+  "release_gate_accepted": false
+}
