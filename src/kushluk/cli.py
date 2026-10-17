@@ -17,6 +17,7 @@ from kushluk.newsletter_discovery import NewsletterError, discover, save_proposa
 from kushluk.connectors.google_local import (
     GoogleProviderError, authorize, discover_gmail, fetch_google_tasks,
 )
+from kushluk.claims import ClaimCheckError, check_crossref_claim
 from kushluk.media import (
     MediaError, assign_media, import_local_media, read_asset, remove_local_media,
 )
@@ -111,6 +112,14 @@ def build_parser() -> argparse.ArgumentParser:
     )
     media_remove.add_argument("--store", type=Path, required=True)
     media_remove.add_argument("--asset-id", required=True)
+
+    check = sub.add_parser(
+        "crossref-check",
+        help="Verify ONLY DOI bibliographic title/year; not article findings",
+    )
+    check.add_argument("--doi", required=True)
+    check.add_argument("--title", required=True)
+    check.add_argument("--year", type=int)
 
     google_connect = sub.add_parser(
         "google-connect",
@@ -398,6 +407,17 @@ def main(argv: list[str] | None = None) -> int:
             "source_permissions_modified": False,
         }))
         return 0
+
+    if args.command == "crossref-check":
+        try:
+            result = check_crossref_claim(
+                args.doi, asserted_title=args.title, asserted_year=args.year,
+            )
+        except ClaimCheckError as exc:
+            print(json.dumps({"status": "rejected", "error": str(exc)}))
+            return 2
+        print(json.dumps(result.as_dict()))
+        return 0 if result.state == "bibliographic-match-claims-unverified" else 1
 
     if args.command in ("google-connect", "gmail-discover", "google-tasks-preview"):
         try:
