@@ -6,7 +6,7 @@ import re
 import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
-from urllib.request import Request, urlopen
+from kushluk.feed_network import fetch_public_xml
 
 from kushluk.models import Candidate, SourceRef
 
@@ -21,15 +21,10 @@ class RSSConnector:
     def fetch(self) -> list[Candidate]:
         candidates: list[Candidate] = []
         for url in self.urls:
-            request = Request(
-                url,
-                headers={
-                    "User-Agent": "Kushluk/0.1 (+https://github.com/yigit-denktas/kushluk)"
-                },
-            )
-            # The URL comes from explicit Kushluk configuration.
-            with urlopen(request, timeout=12) as response:
-                xml_bytes = response.read()
+            xml_bytes = fetch_public_xml(url)
+            # Do not accept entity amplification or DTDs from feed publishers.
+            if re.search(rb"<!\s*(?:DOCTYPE|ENTITY)\b", xml_bytes, re.IGNORECASE):
+                raise ValueError("Feed XML contains disallowed declarations")
             root = ET.fromstring(xml_bytes)
             source_name = _feed_title(root) or url
             source = SourceRef(
@@ -41,10 +36,9 @@ class RSSConnector:
             for raw in _entries(root)[: self.per_feed]:
                 title = _clean(raw.get("title") or "Untitled")
                 link = raw.get("link") or ""
-                # Reference-only feeds must not ingest, summarize or embed
-                # publisher-provided article body/description in a newspaper.
-                summary = ("" if url in self.reference_only_urls
-                           else _clean(raw.get("summary") or ""))
+                # All RSS is reference-only, including legacy env-configured
+                # endpoints and direct connector calls. No feed article body.
+                summary = ""
                 published_iso = _parse_time(raw.get("published"))
                 identity = link or f"{source_name}:{title}"
                 candidate_id = hashlib.sha256(identity.encode("utf-8")).hexdigest()[:16]
@@ -83,11 +77,13 @@ def _entries(root: ET.Element) -> list[dict[str, str]]:
         item: dict[str, str] = {}
         for child in node:
             name = _local(child.tag)
+            if name not in {"title", "pubdate", "published", "updated", "link"}:
+                continue
             text = "".join(child.itertext()).strip()
             if name == "title":
                 item["title"] = text
-            elif name in {"description", "summary", "content"}:
-                item.setdefault("summary", text)
+            # RSS/Atom item descriptions and content are not reader-owned.
+            # Do not even extract their text into a candidate dictionary.
             elif name in {"pubdate", "published", "updated"}:
                 item.setdefault("published", text)
             elif name == "link":
