@@ -79,7 +79,7 @@ def test_redirect_to_private_ip_fails_before_next_connection(monkeypatch):
 
     monkeypatch.setattr(network, "_PublicHTTPS", Connection)
     monkeypatch.setattr(network, "_public_ip", lambda *_a: "93.184.216.34")
-    with pytest.raises(network.FeedNetworkError, match="non-public"):
+    with pytest.raises(network.FeedNetworkError, match="Non-public"):
         network.fetch_public_xml("https://example.org/feed")
     assert len(calls) == 1
 
