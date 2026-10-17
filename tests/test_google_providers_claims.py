@@ -1,7 +1,6 @@
 """Hermetic provider and bibliographic checking tests; never use a real inbox."""
 from datetime import date, datetime, timezone
 import json
-from pathlib import Path
 
 import pytest
 
@@ -10,7 +9,6 @@ from kushluk.connectors.google_local import (
     GoogleProviderError, _get, _read_private, _session, _write_private,
     discover_gmail, fetch_google_tasks,
 )
-from kushluk.newsletter_discovery import NewsletterError
 
 
 NOW = datetime(2026, 10, 17, 12, tzinfo=timezone.utc)
