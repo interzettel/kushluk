@@ -41,3 +41,16 @@ This starts a **temporary local HTTP page**, accessible at a randomly selected `
 Safety properties: exact loopback Host and form Origin checks, a random per-server CSRF token, strict accepted form fields and 4-KiB POST limit, explicit no-cache/CSP/referrer headers, no remote JavaScript/fonts/images, no cookies or third-party analytics, sanitized error messages, and no profile overwrite. Its threat boundary is a trusted personal computer; this is not a remote multi-user administration server. **Do not port-forward or reverse-proxy it.** The form does not edit previously saved settings; if a profile already exists, the page instructs you to manage the local file rather than silently overwrite it.
 
 Browser setup is one improved step, not complete F-008 acceptance. It still needs installation packaging, an accessible/source consent walkthrough, actual printer hardware detection/driver setup and observed nontechnical first-run usability testing.
+
+## Next step — review source feeds in the browser
+
+With the same local `kushluk setup-web` process running, follow **Review your sources** or open the browser's `/sources` page. This is **not** a public website.
+
+1. Paste a small OPML reading list (up to **50 feeds** per review). Kuşluk validates it **entirely offline** and holds it as a temporary, unapproved browser-session proposal. It does not save the pasted OPML or contact the feeds.
+2. Review the proposed feed titles and hosts. Kuşluk intentionally hides private feed URLs/query tokens from the browser preview. Explicitly tick the per-feed acknowledgement, then press **Approve this feed only**. A new approval is stored in the existing local, private source registry as **reference-only**. No article text copying, synthesis or public distribution right is inferred.
+3. Under **Your approved feeds**, you can **Pause** any approved feed immediately. **Resume** requires a fresh explicit permission acknowledgement. `derivative` and `private-direct` remain disabled, not selectable through this browser.
+4. Your review list lasts only as long as the local setup process; closing/restarting it clears unapproved proposals. Previously approved registry entries persist. Refreshing does not start requests. CLI import/approval workflows remain supported.
+
+The browser applies loopback-only Host and Origin checks, CSRF validation, bounded form bodies, XML DTD/ENTITY rejection, and escaped user-supplied titles. There is **no background feed fetching**: use `kushluk sources-preflight --network` later if you deliberately want to test connectivity. A site that grants RSS access still might prohibit copying its full articles. This UI does not make that determination.
+
+**Still outstanding:** assistive-technology/novice usability testing, a real print-driver wizard, source/provider-specific rights evidence, and observed hardware/reliability acceptance. Do not enable a new source without access authorization.
