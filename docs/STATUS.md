@@ -19,7 +19,7 @@ The offline `kushluk export-epub --date YYYY-MM-DD` command builds an EPUB3 ZIP 
 
 ### Source-rights guardrail (F-007 / F-011 partial)
 
-The private source registry now stores four reader intent choices: ignore, reference-only, derivative, and private-direct. **Only reference-only is executable**; the other modes stay disabled until provider-specific rights and implementation checks exist. Reference-only RSS feeds discard feed-provided description/content from the candidate passed into editorial/archives; headline, link and generic "Open the source" pointer remain. The legacy explicitly configured RSS path is separate and has not been rights-audited. See [OPML.md](OPML.md), [#4](https://github.com/interzettel/kushluk/issues/4) and [#49](https://github.com/interzettel/kushluk/issues/49).
+The private source registry now stores four reader intent choices: ignore, reference-only, derivative, and private-direct. **Only reference-only is executable**; the other modes stay disabled until provider-specific rights and implementation checks exist. Reference-only RSS feeds discard feed-provided description/content from the candidate passed into editorial/archives; headline, link and generic "Open the source" pointer remain. The legacy explicitly configured RSS path now uses the same reference-only content and public-only network fetch protections as approved RSS sources. Publisher-specific source permission checks beyond reference-only and other connectors remain open. See [OPML.md](OPML.md), [#4](https://github.com/interzettel/kushluk/issues/4) and [#49](https://github.com/interzettel/kushluk/issues/49).
 
 ### Real-device evidence handoff (not certification)
 
