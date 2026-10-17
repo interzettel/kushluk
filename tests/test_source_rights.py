@@ -82,21 +82,13 @@ def test_cli_mode_is_explicit_and_reports_no_copying(tmp_path, monkeypatch, caps
 def test_reference_feed_excludes_feed_description_from_archived_story(monkeypatch):
     import kushluk.connectors.rss as rss
 
-    class Stream:
-        def __enter__(self):
-            return self
-        def __exit__(self, *_):
-            return False
-        def read(self):
-            return (
-                b'<rss version="2.0"><channel><title>Example News</title>'
-                b'<item><title>Public headline</title>'
-                b'<description>PRIVATE_FULL_TEXT_NEVER_ARCHIVE</description>'
-                b'<link>https://example.org/story</link></item>'
-                b'</channel></rss>'
-            )
-
-    monkeypatch.setattr(rss, "urlopen", lambda *_a, **_k: Stream())
+    monkeypatch.setattr(rss, "fetch_public_xml", lambda _url: (
+        b'<rss version="2.0"><channel><title>Example News</title>'
+        b'<item><title>Public headline</title>'
+        b'<description>PRIVATE_FULL_TEXT_NEVER_ARCHIVE</description>'
+        b'<link>https://example.org/story</link></item>'
+        b'</channel></rss>'
+    ))
     candidates = RSSConnector(
         ("https://example.org/feed",),
         reference_only_urls=("https://example.org/feed",),
@@ -118,4 +110,4 @@ def test_unapproved_legacy_env_does_not_inherit_registry_reference_mode(tmp_path
     monkeypatch.setenv("KUSHLUK_RSS_URLS", "https://other.example.net/feed")
     settings = Settings.from_env()
     assert settings.rss_urls == ("https://other.example.net/feed",)
-    assert settings.reference_only_rss_urls == ()
+    assert settings.reference_only_rss_urls == ("https://other.example.net/feed",)
