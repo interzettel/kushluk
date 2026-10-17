@@ -2,7 +2,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import date, datetime, timezone
+from datetime import date, datetime, time, timezone
+import stat
+from zoneinfo import ZoneInfo
 import json
 import os
 from pathlib import Path
@@ -76,6 +78,83 @@ def _existing_outcome(path: Path, edition_id: str, request: dict[str, Any]) -> S
     return ScheduledOutcome("needs_review", edition_id, failure_codes=("run_not_safe_to_retry",))
 
 
+def _pause_marker(settings: Settings, target_date: date) -> Path:
+    return settings.archive_dir / f"{target_date:%Y%m%d}-001" / ".kushluk-paused.json"
+
+
+def _pause_state(path: Path, edition_id: str) -> str:
+    """Fail closed if marker exists but isn't a private, valid pause record."""
+    if not path.is_symlink() and not path.exists():
+        return "active"
+    try:
+        metadata = path.lstat()
+        if not stat.S_ISREG(metadata.st_mode) or metadata.st_mode & 0o077:
+            return "invalid"
+        record = json.loads(path.read_text(encoding="utf-8"))
+        if (not isinstance(record, dict) or record.get("schema_version") != 1
+                or record.get("edition_id") != edition_id or record.get("paused") is not True):
+            return "invalid"
+        return "paused"
+    except (OSError, UnicodeError, ValueError, TypeError):
+        return "invalid"
+
+
+def pause_day(settings: Settings, *, target_date: date) -> ScheduledOutcome:
+    """Block future starts for this edition date; never cancel a running job."""
+    edition_id = f"{target_date:%Y%m%d}-001"
+    marker = _pause_marker(settings, target_date)
+    marker.parent.mkdir(parents=True, exist_ok=True)
+    existing = _pause_state(marker, edition_id)
+    if existing != "active":
+        return ScheduledOutcome(
+            "already_paused" if existing == "paused" else "needs_review",
+            edition_id, failure_codes=() if existing == "paused" else ("invalid_pause_marker",),
+            stage="paused" if existing == "paused" else "not_started",
+        )
+    try:
+        fd = os.open(marker, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        with os.fdopen(fd, "w", encoding="utf-8") as stream:
+            json.dump({"schema_version": 1, "edition_id": edition_id, "paused": True},
+                      stream, sort_keys=True)
+            stream.write("\n")
+            stream.flush()
+            os.fsync(stream.fileno())
+    except FileExistsError:
+        return ScheduledOutcome("needs_review", edition_id,
+                                failure_codes=("pause_state_changed",))
+    return ScheduledOutcome("paused", edition_id, stage="paused")
+
+
+def resume_day(settings: Settings, *, target_date: date) -> ScheduledOutcome:
+    """Remove only a well-formed pause marker; does not start or resend anything."""
+    edition_id = f"{target_date:%Y%m%d}-001"
+    marker = _pause_marker(settings, target_date)
+    state = _pause_state(marker, edition_id)
+    if state == "active":
+        return ScheduledOutcome("not_paused", edition_id)
+    if state == "invalid":
+        return ScheduledOutcome("needs_review", edition_id,
+                                failure_codes=("invalid_pause_marker",))
+    try:
+        marker.unlink()
+    except OSError:
+        return ScheduledOutcome("needs_review", edition_id,
+                                failure_codes=("pause_marker_unavailable",))
+    return ScheduledOutcome("resumed", edition_id)
+
+
+def _latest_start_missed(
+    target_date: date, latest_start: time, timezone_name: str, *, now: datetime | None,
+) -> bool:
+    """This is a last *start* cutoff, never a guarantee of delivery by that time."""
+    tz = ZoneInfo(timezone_name)
+    current = now or datetime.now(tz)
+    if current.tzinfo is None:
+        raise ValueError("now must be timezone-aware")
+    deadline = datetime.combine(target_date, latest_start, tzinfo=tz)
+    return current.astimezone(timezone.utc) >= deadline.astimezone(timezone.utc)
+
+
 def run_once(
     settings: Settings,
     *,
@@ -84,6 +163,8 @@ def run_once(
     send_email: bool = False,
     email_on_print_failure: bool = False,
     print_profile: str = "a4-home",
+    latest_start: time | None = None,
+    now: datetime | None = None,
 ) -> ScheduledOutcome:
     """At-most-once delivery attempt per local edition; uncertain states block replay."""
     if print_profile not in {"a4-home", "a3-folded"}:
@@ -99,8 +180,29 @@ def run_once(
     }
     edition_id = f"{target_date:%Y%m%d}-001"
     folder = settings.archive_dir / edition_id
-    folder.mkdir(parents=True, exist_ok=True)
     receipt = folder / "scheduled.json"
+    if receipt.exists() or receipt.is_symlink():
+        return _existing_outcome(receipt, edition_id, request)
+    state = _pause_state(_pause_marker(settings, target_date), edition_id)
+    if state == "paused":
+        return ScheduledOutcome("paused", edition_id, stage="paused")
+    if state == "invalid":
+        return ScheduledOutcome("needs_review", edition_id,
+                                failure_codes=("invalid_pause_marker",))
+    if latest_start is not None and _latest_start_missed(
+        target_date, latest_start, settings.timezone, now=now,
+    ):
+        return ScheduledOutcome("deadline_missed", edition_id,
+                                failure_codes=("latest_start_missed",))
+    folder.mkdir(parents=True, exist_ok=True)
+    # Recheck after mkdir for a pause written by another process.
+    state = _pause_state(_pause_marker(settings, target_date), edition_id)
+    if state != "active":
+        return ScheduledOutcome(
+            "paused" if state == "paused" else "needs_review", edition_id,
+            failure_codes=() if state == "paused" else ("invalid_pause_marker",),
+            stage="paused" if state == "paused" else "not_started",
+        )
     initial = {
         "schema_version": 1,
         "edition_id": edition_id,
@@ -172,7 +274,13 @@ def run_once(
 def read_run_status(settings: Settings, *, target_date: date) -> ScheduledOutcome:
     edition_id = f"{target_date:%Y%m%d}-001"
     path = settings.archive_dir / edition_id / "scheduled.json"
-    if not path.exists():
+    if not path.exists() and not path.is_symlink():
+        paused = _pause_state(_pause_marker(settings, target_date), edition_id)
+        if paused == "paused":
+            return ScheduledOutcome("paused", edition_id, stage="paused")
+        if paused == "invalid":
+            return ScheduledOutcome("needs_review", edition_id,
+                                    failure_codes=("invalid_pause_marker",))
         return ScheduledOutcome("not_run", edition_id)
     try:
         saved = json.loads(path.read_text(encoding="utf-8"))
