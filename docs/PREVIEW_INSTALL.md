@@ -57,6 +57,12 @@ With `pip install -e '.[pdf]'` and the native PDF libraries present, use `--pdf`
 
 The [CI workflow](../.github/workflows/ci.yml) checks Linux 3.11/3.12 (portable HTML) plus macOS Apple Silicon/Intel (PDF + native Pango) and uploads the evidence artifacts. It also preserves the existing network-blocked smoke and source-code tests. Windows is **not** part of the validated M1 support matrix.
 
+## Installed dependency inventory and local archive inspection
+
+Every clean installed wheel and source preview includes a machine-readable `installed-environment.json` and a SHA-256 digest linked from `release-evidence.json`. The inventory lists actual installed Python package versions and self-declared license metadata for review. Missing metadata is **not** equivalent to a prohibited license, and a license field does **not** constitute independent permission verification. `pip check` confirms the installed Python dependency graph is not internally inconsistent. No vulnerability advisories or native Pango/Fontconfig/font licenses are independently evaluated. See [DEPENDENCY_AUDIT.md](DEPENDENCY_AUDIT.md).
+
+For an existing private archive, the new **non-mutating** `kushluk archive-check --archive-root /private/archive` reports only version/structure counts. Valid schema-v2 metadata is classed structurally readable; legacy schema-v1 or future unknown archives remain untouched and require a separately specified migration. An archive check never authorizes printing or a repeated delivery. See [ARCHIVE_COMPATIBILITY.md](ARCHIVE_COMPATIBILITY.md).
+
 ## Known limitations and release decision
 
 - **No device proof:** four PDF pages in CI do not prove A4/A3 duplex, print-stock behavior, CUPS compatibility, folding/binding, or correct user-visible paper.
