@@ -172,7 +172,7 @@ class SetupHandler(BaseHTTPRequestHandler):
         if set(fields) != expected or any(len(vals) != 1 for vals in fields.values()):
             self._reply(400, "<h1>Form fields do not match</h1>")
             return
-        if not compare_digest(fields["csrf"][0], self.server.csrf):
+        if (not fields["csrf"][0].isascii()\n                or not compare_digest(fields["csrf"][0], self.server.csrf)):
             self._reply(403, "<h1>Expired or invalid form</h1>")
             return
         try:
