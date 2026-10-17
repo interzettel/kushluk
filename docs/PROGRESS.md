@@ -21,13 +21,13 @@
 
 ## Operational work ledger
 
-**12 of 90 task checkboxes checked (13.33%).** This measures task-record state, not overall readiness.
+**13 of 90 task checkboxes checked (14.44%).** This measures task-record state, not overall readiness.
 
 | Task group | Checked | Total | Progress |
 | --- | ---: | ---: | ---: |
 | DOC | 4 | 5 | 80.00% |
 | FMT | 4 | 10 | 40.00% |
-| AUT | 4 | 13 | 30.77% |
+| AUT | 5 | 13 | 38.46% |
 | SRC | 0 | 10 | 00.00% |
 | IMG | 0 | 9 | 00.00% |
 | LAY | 0 | 11 | 00.00% |
@@ -38,7 +38,7 @@
 | ED | 0 | 6 | 00.00% |
 | UX | 0 | 8 | 00.00% |
 | TRIAL | 0 | 7 | 00.00% |
-| **TOTAL** | **12** | **90** | **13.33%** |
+| **TOTAL** | **13** | **90** | **14.44%** |
 
 ## Individual tasks
 
@@ -73,7 +73,7 @@ The lines below are generated from WORK_LEDGER.md. Each task ID has a primary ow
 
 </details>
 
-<details><summary><strong>AUT — 4/13 checked · 30.77%</strong></summary>
+<details><summary><strong>AUT — 5/13 checked · 38.46%</strong></summary>
 
 | Task ID | Ledger state | Description |
 | --- | --- | --- |
@@ -81,7 +81,7 @@ The lines below are generated from WORK_LEDGER.md. Each task ID has a primary ow
 | `AUT-02` | CHECKED | Add a scheduler-safe CLI/API entrypoint that is idempotent for a date/edition. |
 | `AUT-03` | CHECKED | Add deadline and “already generated/printed” guards to prevent accidental duplicate morning prints. |
 | `AUT-04` | OPEN | Add optional `morning_intent` input to the run model and ranking trace. |
-| `AUT-05` | OPEN | Provide an unattended local-host recipe (systemd/cron/launchd) as the baseline. |
+| `AUT-05` | CHECKED | Provide an unattended local-host recipe (systemd/cron/launchd) as the baseline. |
 | `AUT-06` | OPEN | Prototype an n8n orchestration that calls the same stable Kushluk run boundary rather than reimplementing editorial logic inside n8n. |
 | `AUT-07` | OPEN | Prototype Apple Shortcuts as a trigger/control surface: generate now, pause today, digital-only, reprint, and optional voice morning intent. |
 | `AUT-08` | OPEN | Investigate the practical Apple printing path: what can be automated through macOS printing/CUPS versus what AirPrint/iOS requires interactively. |
