@@ -171,3 +171,72 @@ def test_recursive_same_request_is_rejected_before_side_effect(tmp_path, monkeyp
     monkeypatch.setattr(recovery, "print_pdf", print_stub)
     assert resend(cfg).status == "submitted"
     assert nested[0].status == "already_attempted"
+
+
+@pytest.mark.parametrize("name,channel,profile", [
+    ("metadata.json", "print", "a4-home"),
+    ("edition.pdf", "print", "a4-home"),
+    ("edition.a3-folded.pdf", "print", "a3-folded"),
+    ("edition.html", "email", "a4-home"),
+])
+def test_recovery_refuses_symlink_archive_components_before_delivery(
+    tmp_path, monkeypatch, name, channel, profile,
+):
+    cfg, folder = archive_fixture(tmp_path, monkeypatch)
+    original = folder / name
+    external = tmp_path / f"private-{name}"
+    external.write_bytes(original.read_bytes())
+    original.unlink()
+    original.symlink_to(external)
+    monkeypatch.setattr(recovery, "print_pdf",
+                        lambda *a, **kw: pytest.fail("No print on unsafe archive"))
+    monkeypatch.setattr(recovery, "send_email_edition",
+                        lambda *a, **kw: pytest.fail("No email on unsafe archive"))
+    result = recovery.deliver_archived(
+        cfg, target_date=TARGET, channel=channel, request_id="symlink-trial",
+        acknowledge_possible_duplicate=True, print_profile=profile,
+    )
+    assert result.status == "blocked"
+    assert result.failure_code.startswith("archive_preflight_")
+    assert not (folder / f"manual-{channel}-symlink-trial.json").exists()
+
+
+def test_recovery_refuses_symlinked_edition_directory(tmp_path, monkeypatch):
+    cfg, folder = archive_fixture(tmp_path, monkeypatch)
+    original_location = folder.with_name("real-edition")
+    folder.rename(original_location)
+    folder.symlink_to(original_location, target_is_directory=True)
+    monkeypatch.setattr(recovery, "print_pdf",
+                        lambda *a, **kw: pytest.fail("No symlink print"))
+    result = resend(cfg)
+    assert result.status == "blocked"
+    assert not (original_location / "manual-print-inspection-001.json").exists()
+
+
+@pytest.mark.parametrize("name,channel", [
+    ("metadata.json", "print"),
+    ("edition.pdf", "print"),
+    ("edition.html", "email"),
+])
+def test_recovery_rejects_oversized_inputs_without_sending(
+    tmp_path, monkeypatch, name, channel,
+):
+    cfg, folder = archive_fixture(tmp_path, monkeypatch)
+    limit = {
+        "metadata.json": 2 * 1024 * 1024,
+        "edition.pdf": 30 * 1024 * 1024,
+        "edition.html": 5 * 1024 * 1024,
+    }[name]
+    # Sparse file: avoid storing 30 MiB of fixture data.
+    with (folder / name).open("wb") as stream:
+        stream.truncate(limit + 1)
+    monkeypatch.setattr(recovery, "print_pdf",
+                        lambda *a, **kw: pytest.fail("No print of oversized input"))
+    monkeypatch.setattr(recovery, "send_email_edition",
+                        lambda *a, **kw: pytest.fail("No email of oversized input"))
+    result = recovery.deliver_archived(
+        cfg, target_date=TARGET, channel=channel, request_id="oversize",
+        acknowledge_possible_duplicate=True,
+    )
+    assert result.status == "blocked"
+    assert not (folder / f"manual-{channel}-oversize.json").exists()
