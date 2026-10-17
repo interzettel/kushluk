@@ -19,6 +19,8 @@ An existing agent can make an explicit **read-only** invocation using the local 
 
 The operation schema rejects additional destination/recipient keys; this action **cannot** print, email, re-run an edition or make remote diagnostics requests. There is no automatic agent invocation or outgoing telemetry.
 
+The [local morning status page](MORNING_STATUS_WEB.md) presents the same bounded, read-only incident facts to ordinary readers through `setup-web` (GET `/status`); it does not perform agent actions or send any information to a remote server.
+
 ## Machine-readable contract, v1
 
 `kind=local_run_incident`, `schema_version=1` and `report_template_version=1` identify the format. Fields include:
