@@ -1,4 +1,4 @@
-# A4/A3 physical print verification
+# A4/US Letter/A3 physical print verification
 
 Kushluk can verify print geometry and imposition in software. **Physical
 paper handling has not been verified by CI.** A CUPS job marked "submitted"
