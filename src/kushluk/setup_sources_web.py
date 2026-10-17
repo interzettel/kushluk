@@ -162,7 +162,9 @@ def render_source_review(
         + ("".join(active) if active else '<p>No feeds approved yet.</p>')
         + '<p class="meta">Status is local. No full-text permission is inferred '
         'from your approval.</p></section></main>'
-        '<footer><a href="/">Home setup</a> · Local-only source management · '
+        '<footer><a href="/">Home setup</a> · '
+        '<a href="/printer">Next: check your printer</a> · '
+        'Local-only source management · '
         'No network requests during import, review, approval or pause</footer></div>'
         '</body></html>'
     )
