@@ -409,6 +409,8 @@ def read_run_status(settings: Settings, *, target_date: date) -> ScheduledOutcom
                                     failure_codes=("invalid_pause_marker",))
         return ScheduledOutcome("not_run", edition_id)
     try:
+        if path.is_symlink():
+            raise ValueError("Symlinked run receipt")
         saved = json.loads(path.read_text(encoding="utf-8"))
         if saved.get("edition_id") != edition_id or saved.get("schema_version") != 1:
             raise ValueError("Invalid receipt")
