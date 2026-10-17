@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "status": "template-not-observation",
+  "source_commit": "REPLACE_WITH_TESTED_MAIN_COMMIT",
+  "observer_code": "REPLACE",
+  "participant_code": "ANONYMOUS_CODE",
+  "local_date": "YYYY-MM-DD",
+  "os_and_version": "REPLACE",
+  "device_context": "OWN_OR_BORROWED_COMPUTER",
+  "consent_to_observation": false,
+  "consent_to_share_redacted_notes": false,
+  "tasks": {
+    "U1": {
+      "result": "not_attempted",
+      "elapsed_seconds": null,
+      "hints": 0,
+      "observed_issue": "",
+      "evidence_reference": ""
+    },
+    "U2": {
+      "result": "not_attempted",
+      "elapsed_seconds": null,
+      "hints": 0,
+      "observed_issue": "",
+      "evidence_reference": ""
+    },
+    "U3": {
+      "result": "not_attempted",
+      "elapsed_seconds": null,
+      "hints": 0,
+      "observed_issue": "",
+      "evidence_reference": ""
+    },
+    "U4": {
+      "result": "not_attempted",
+      "elapsed_seconds": null,
+      "hints": 0,
+      "observed_issue": "",
+      "evidence_reference": ""
+    },
+    "U5": {
+      "result": "not_attempted",
+      "elapsed_seconds": null,
+      "hints": 0,
+      "observed_issue": "",
+      "evidence_reference": ""
+    },
+    "U6": {
+      "result": "not_attempted",
+      "elapsed_seconds": null,
+      "hints": 0,
+      "observed_issue": "",
+      "evidence_reference": ""
+    }
+  },
+  "comprehension": {
+    "external_data_expectation": "",
+    "rss_approval_meaning": "",
+    "print_or_schedule_expectation": "",
+    "hardest_step": "",
+    "repeat_setup_intent": ""
+  },
+  "reviewer_signoff": "not_reviewed",
+  "independently_verified": false,
+  "release_gate_accepted": false
+}
