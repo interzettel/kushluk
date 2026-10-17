@@ -10,6 +10,7 @@ from datetime import date, datetime, timezone
 import json
 import os
 from pathlib import Path
+import re
 import stat
 import tempfile
 
@@ -174,7 +175,9 @@ def discover_gmail(vault: Path, *, days: int = 30, now: datetime | None = None,
             if not isinstance(row, dict) or not isinstance(row.get("id"), str):
                 raise GoogleProviderError("invalid_gmail_message_list")
             message_id = row["id"]
-            if not 1 <= len(message_id) <= 100 or message_id in seen:
+            if not re.fullmatch(r"[A-Za-z0-9]{1,100}", message_id):
+                raise GoogleProviderError("invalid_gmail_message_id")
+            if message_id in seen:
                 continue
             seen.add(message_id)
             scanned += 1
