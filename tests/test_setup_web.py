@@ -13,7 +13,10 @@ from kushluk.setup_web import SetupHTTPServer
 
 @pytest.fixture
 def setup_server(tmp_path):
-    server = SetupHTTPServer(tmp_path / "private" / "profile.json")
+    server = SetupHTTPServer(
+        tmp_path / "private" / "profile.json",
+        registry=tmp_path / "private" / "approved-sources.json",
+    )
     worker = Thread(target=server.serve_forever, kwargs={"poll_interval": 0.01},
                     daemon=True)
     worker.start()
@@ -50,12 +53,12 @@ def _form(token, **changes):
     return urlencode(values).encode("utf-8")
 
 
-def _post(server, body, headers=None):
+def _post(server, body, headers=None, *, path="/"):
     base = {"Origin": server.origin,
             "Content-Type": "application/x-www-form-urlencoded",
             "Content-Length": str(len(body))}
     base.update(headers or {})
-    return _request(server, "POST", headers=base, body=body)
+    return _request(server, "POST", path, headers=base, body=body)
 
 
 def test_only_loopback_listener_and_private_creation(setup_server):
@@ -188,3 +191,156 @@ def test_non_ascii_csrf_is_rejected_without_server_error(setup_server):
     status, _, _ = _post(setup_server, _form(_token(html) + "★"))
     assert status == 403
     assert not setup_server.profile_file.exists()
+
+
+# SOURCE REVIEW: all of these operations must be offline and individually consented.
+def _opml_sample():
+    return (
+        '<opml version="2.0"><body>'
+        '<outline text="Public &amp; useful" xmlUrl="https://news.example.org/rss"/>'
+        '<outline xmlUrl="https://feed.example.org/private?token=DO_NOT_ECHO"/>'
+        '</body></opml>'
+    )
+
+
+def _source_form(server, path, values, *, token=None, headers=None):
+    if token is None:
+        _, _, page = _request(server, path="/sources")
+        token = _token(page)
+    payload = urlencode({"csrf": token, **values}).encode("utf-8")
+    return _post(server, payload, headers=headers, path=path)
+
+
+def test_source_review_import_is_inert_private_and_html_escaped(setup_server):
+    server = setup_server
+    status, head, page = _request(server, path="/sources")
+    assert status == 200
+    assert "Choose what belongs in your paper" in page
+    assert "name=\"opml\"" in page
+    assert head["Cache-Control"].startswith("no-store")
+    assert not server.registry_file.exists()
+
+    status, _, page = _source_form(server, "/sources/import", {"opml": _opml_sample()})
+    assert status == 200
+    assert "2 feeds proposed for review" in page
+    assert "Public &amp; useful" in page
+    assert "DO_NOT_ECHO" not in page
+    assert "Feed from feed.example.org" in page
+    assert not server.registry_file.exists()
+    assert len(server.pending_feeds) == 2
+    assert not server.profile_file.exists()
+
+    # No consent supplied: browser's required checkbox is backed by a server check.
+    status, _, _ = _source_form(server, "/sources/approve", {"index": "1"})
+    assert status == 400
+    assert not server.registry_file.exists()
+    status, _, page = _source_form(
+        server, "/sources/approve", {"index": "1", "consent": "no"}
+    )
+    assert status == 422
+    assert not server.registry_file.exists()
+
+    status, _, page = _source_form(
+        server, "/sources/approve", {"index": "2", "consent": "yes"}
+    )
+    assert status == 200
+    assert "One source approved" in page
+    from kushluk.source_registry import read_registry
+    rows = read_registry(server.registry_file)
+    assert len(rows) == 1
+    assert rows[0]["mode"] == "reference-only"
+    assert rows[0]["enabled"] is True
+    assert rows[0]["url"].endswith("DO_NOT_ECHO")
+    assert "DO_NOT_ECHO" not in page
+    assert "article bodies" in page
+    assert not server.profile_file.exists()
+
+
+def test_browser_mode_pause_resume_requires_new_permission(setup_server):
+    server = setup_server
+    assert _source_form(server, "/sources/import", {"opml": _opml_sample()})[0] == 200
+    assert _source_form(
+        server, "/sources/approve", {"index": "1", "consent": "yes"}
+    )[0] == 200
+    from kushluk.source_registry import read_registry
+    identifier = read_registry(server.registry_file)[0]["id"]
+    assert _source_form(
+        server, "/sources/mode", {"id": identifier, "mode": "ignore"}
+    )[0] == 200
+    assert read_registry(server.registry_file)[0]["enabled"] is False
+
+    assert _source_form(
+        server, "/sources/mode", {"id": identifier, "mode": "reference-only"}
+    )[0] == 422
+    assert read_registry(server.registry_file)[0]["enabled"] is False
+    assert _source_form(
+        server, "/sources/mode",
+        {"id": identifier, "mode": "private-direct", "consent": "yes"}
+    )[0] == 422
+    assert read_registry(server.registry_file)[0]["enabled"] is False
+    assert _source_form(
+        server, "/sources/mode",
+        {"id": identifier, "mode": "reference-only", "consent": "yes"}
+    )[0] == 200
+    assert read_registry(server.registry_file)[0]["enabled"] is True
+
+
+def test_browser_source_csrf_origin_exact_fields_and_no_hidden_activation(setup_server):
+    server = setup_server
+    assert _source_form(server, "/sources/import", {"opml": _opml_sample()})[0] == 200
+    for path, values in [
+        ("/sources/approve", {"index": "1", "consent": "yes"}),
+        ("/sources/import", {"opml": _opml_sample()}),
+    ]:
+        status, _, _ = _source_form(server, path, values, token="bad-csrf")
+        assert status == 403
+        status, _, _ = _source_form(
+            server, path, values, headers={"Origin": "https://attacker.test"}
+        )
+        assert status == 403
+        status, _, _ = _source_form(
+            server, path, values, headers={"Host": "attacker.test"}
+        )
+        assert status == 404
+    status, _, _ = _source_form(
+        server, "/sources/approve",
+        {"index": "1", "consent": "yes", "mode": "private-direct"}
+    )
+    assert status == 400
+    assert not server.registry_file.exists()
+
+
+def test_browser_rejects_oversized_or_entity_OPML_without_activation(setup_server):
+    server = setup_server
+    bad = '<!DOCTYPE opml [<!ENTITY x SYSTEM "file:///etc/passwd">]>' + _opml_sample()
+    assert _source_form(server, "/sources/import", {"opml": bad})[0] == 422
+    assert len(server.pending_feeds) == 0
+    assert not server.registry_file.exists()
+    long_opml = _opml_sample() + (" " * 150_000)
+    assert _source_form(server, "/sources/import", {"opml": long_opml})[0] == 413
+    assert not server.registry_file.exists()
+
+
+def test_source_review_cannot_use_unapproved_proposal_after_restart(setup_server):
+    server = setup_server
+    assert _source_form(server, "/sources/import", {"opml": _opml_sample()})[0] == 200
+    server.pending_feeds = ()
+    assert _source_form(
+        server, "/sources/approve", {"index": "1", "consent": "yes"}
+    )[0] == 422
+    assert not server.registry_file.exists()
+
+
+def test_source_review_does_not_fetch_or_publish(setup_server, monkeypatch, tmp_path):
+    import kushluk.feed_network as network
+    import kushluk.setup_web as setup_module
+
+    monkeypatch.setattr(network, "fetch_public_xml", lambda *_: pytest.fail("network"))
+    monkeypatch.setattr(setup_module.webbrowser, "open", lambda *_: pytest.fail("browser"))
+    server = setup_server
+    assert _source_form(server, "/sources/import", {"opml": _opml_sample()})[0] == 200
+    assert _source_form(
+        server, "/sources/approve", {"index": "1", "consent": "yes"}
+    )[0] == 200
+    assert not server.profile_file.exists()
+    assert not (tmp_path / "archive").exists()
