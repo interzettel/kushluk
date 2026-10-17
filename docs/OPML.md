@@ -60,3 +60,20 @@ Do not confuse saved `derivative` or `private-direct` preferences with actual su
 ### Per-source degradation
 
 A blocked, offline or malformed feed reports `rss_feed_unavailable` with only its 1-based position and a safe category. The connector preserves candidates from the other healthy RSS feeds and never logs feed URL tokens. If no source provides a valid article headline, the existing `no_editorial_stories` degradation remains visible. No article is invented to cover missing data.
+
+## Reader-approved feed preflight (F-007 / F-008 slice)
+
+Inspect which local RSS sources are enabled **without contacting any website** by default:
+
+```bash
+kushluk sources-preflight
+# Optional private create-only diagnostics (no URL or feed articles in output)
+kushluk sources-preflight --output ~/kushluk-private/audit-001.json
+
+# Explicit network check, bounded to five active approved feeds by default:
+kushluk sources-preflight --network --limit 5
+```
+
+An opt-in network preflight uses the same guarded public-only RSS transport as publication. It only fetches the approved reference-only feed metadata required to tell whether headlines are available; it **does not approve new sources, create a four-page edition, write to the archive, contact disabled sources, or store article bodies**. Each result refers to a stable hashed source ID and one of `reachable`, `empty`, `unsafe_or_unavailable`, `invalid_feed_xml`, `not_checked`, or `disabled`, never its private subscription URL, raw HTTP errors or headline text.
+
+The CLI exits 2 when any **checked** source fails, useful for optional manual troubleshooting. It does not call the network unless you pass `--network`; you can check at most ten approved feeds in one invocation to avoid surprise provider traffic. A good result verifies **reachability**, not source licensing, content accuracy, PDF print quality, or unattended scheduling. No remote telemetry is sent by the diagnostic beyond each explicitly requested feed access.
