@@ -5,13 +5,17 @@ Source rights, paid accounts, print jobs and scheduler controls are out of scope
 """
 from __future__ import annotations
 
+from datetime import datetime
 from hmac import compare_digest
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import secrets
 from pathlib import Path
 from urllib.parse import parse_qs
+from zoneinfo import ZoneInfo
 import webbrowser
 
+from kushluk.config import Settings
+from kushluk.morning_status_web import morning_status, render_morning_status
 from kushluk.local_profile import (
     LocalProfileError, profile_path, read_local_profile,
     update_local_printer, update_local_paper_size, write_local_profile,
@@ -104,8 +108,10 @@ or use <code>kushluk doctor</code> to inspect runtime readiness.</p>
 class SetupHTTPServer(HTTPServer):
     """Always loopback, with a per-instance CSRF token and no external routes."""
 
-    def __init__(self, path: Path, port: int = 0, *, registry: Path | None = None):
+    def __init__(self, path: Path, port: int = 0, *, registry: Path | None = None,
+                 status_settings: Settings | None = None):
         self.profile_file = path
+        self.status_settings = status_settings
         self.registry_file = registry if registry is not None else registry_path()
         self.pending_feeds = ()  # Ephemeral, unapproved, never written to disk.
         self.printer_inventory = None
@@ -152,13 +158,25 @@ class SetupHandler(BaseHTTPRequestHandler):
             and self.path in {
                 "/", "/sources", "/sources/import", "/sources/approve", "/sources/mode",
                 "/printer", "/printer/scan", "/printer/check", "/printer/save",
-                "/paper/save",
+                "/paper/save", "/status",
             }
         )
 
     def do_GET(self) -> None:
-        if not self._valid_request() or self.path not in {"/", "/sources", "/printer"}:
+        if not self._valid_request() or self.path not in {"/", "/sources", "/printer", "/status"}:
             self._reply(404, "<h1>Not found</h1>")
+            return
+        if self.path == "/status":
+            try:
+                settings = self.server.status_settings or Settings.from_env()
+                local_today = datetime.now(ZoneInfo(settings.timezone)).date()
+                summary = morning_status(settings, target_date=local_today)
+                page = render_morning_status(summary)
+            except (ValueError, OSError):
+                self._reply(422, "<h1>Local status is unavailable</h1>"
+                            "<p>Check the private configuration and local archive.</p>")
+                return
+            self._reply(200, page)
             return
         if self.path == "/printer":
             try:
@@ -185,7 +203,7 @@ class SetupHandler(BaseHTTPRequestHandler):
             return
         if self.server.profile_file.exists() or self.server.profile_file.is_symlink():
             self._reply(409, "<h1>Profile already exists</h1>"
-                        "<p>This setup page never overwrites your local preferences. <a href=\'/sources\'>Continue to source review</a>.</p>")
+                        "<p>This setup page never overwrites your local preferences. <a href=\'/sources\'>Continue to source review</a> or <a href=\'/status\'>view morning status</a>.</p>")
             return
         self._reply(200, _FORM.replace("__TOKEN__", self.server.csrf))
 
@@ -368,6 +386,7 @@ def run_setup_web(*, path: Path | None = None, open_browser: bool = True) -> Non
     server = SetupHTTPServer(path or profile_path())
     try:
         print(f"Local setup: {server.origin}/", flush=True)
+        print(f"Local read-only morning status: {server.origin}/status", flush=True)
         print("No cloud service. Close with Ctrl+C.", flush=True)
         if open_browser:
             webbrowser.open(f"{server.origin}/")
