@@ -123,6 +123,7 @@ def run_pipeline(
         practical=practical,
         stories=stories,
         archetype="auto",
+        media_store=settings.media_dir,
         notes=[failure.message for failure in failures if failure.severity != "info"],
     )
 
@@ -148,7 +149,7 @@ def run_pipeline(
         for attempt in range(4):
             if on_stage is not None:
                 on_stage("rendering")
-            render_html(working, html_path)
+            render_html(working, html_path, media_store=settings.media_dir)
             try:
                 candidate_pdf = render_pdf(html_path, pdf_path)
                 if on_stage is not None:
@@ -196,7 +197,7 @@ def run_pipeline(
     else:
         if on_stage is not None:
             on_stage("rendering")
-        render_html(publication, html_path)
+        render_html(publication, html_path, media_store=settings.media_dir)
         if on_stage is not None:
             on_stage("rendered")
 
@@ -207,7 +208,7 @@ def run_pipeline(
     markdown_path.write_text(publication_markdown(publication), encoding="utf-8")
 
     if rendered_pdf is None:
-        render_html(publication, html_path)
+        render_html(publication, html_path, media_store=settings.media_dir)
 
     printable_pdf: Path | None = rendered_pdf
     if print_profile == "a3-folded" and rendered_pdf:
@@ -227,6 +228,7 @@ def run_pipeline(
         html_path=html_path,
         pdf_path=rendered_pdf,
         imposed_pdf_path=printable_pdf if print_profile == "a3-folded" else None,
+        media_store=settings.media_dir,
         run_summary={
             "stage": "prepared",
             "validated_pdf": bool(rendered_pdf),
