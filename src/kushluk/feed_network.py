@@ -84,11 +84,12 @@ def _public_ip(host: str, port: int) -> str:
     if not addresses:
         raise FeedNetworkError("Feed host has no address records")
     try:
-        # Fail the *whole* resolution if even one returned address is private.
-        if not all(ip_address(address).is_global for address in addresses):
-            raise FeedNetworkError("Feed resolved to a non-public IP address")
+        parsed = [ip_address(address) for address in addresses]
     except ValueError as exc:
         raise FeedNetworkError("Invalid resolved IP address") from exc
+    # Fail the entire answer set, never silently choose only a public result.
+    if not all(ip.is_global for ip in parsed):
+        raise FeedNetworkError("Feed resolved to a non-public IP address")
     return addresses[0]
 
 
