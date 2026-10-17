@@ -2,6 +2,15 @@
 
 A concise, dated evidence/history record for one maintainer with AI helpers. **This is not an activity-time tracker or a substitute for GitHub commits and discussions.**
 
+## 2026-10-17 — Observed stage metrics and readiness-planning software
+
+**Issue:** #47 · AUT-09/AUT-12 partial work · **Status:** implementation in review pending CI, not a real-host trial.
+
+- Add bounded timestamped stage events and UTC/local cutoff comparison for validated-and-archived PDF readiness; CUPS/SMTP submission remains distinct from physical/recipient delivery.
+- Add read-only `run-report`, `timing-plan` and matching v1 `report`/`timing_plan` operations. Require >=3 valid historical completed, archived receipts for p90 latency + explicit margin; insufficient history returns no proposed start. No native scheduler is changed or enabled.
+- Synthetic multi-date fixture tests for interrupted/paused/deadline/replay behavior; prevent stale/unvalidated/tampered receipt data from contributing to schedule advice.
+- AUT-09/AUT-12 and real five-morning G3 acceptance remain open; **13/90 = 14.44%** ledger, 0/8 evidence gates and 0.1.0 unchanged.
+
 ## 2026-10-17 — Native host recipes and safe recovery-status test slice
 
 **Scope:** #47 AUT-05 software slice; AUT-09/12 follow-up. **State:** implementation in review until CI is green; no physical deployment.

@@ -265,6 +265,8 @@ def run_once(
     email_on_print_failure: bool = False,
     print_profile: str = "a4-home",
     latest_start: time | None = None,
+    ready_by: time | None = None,
+    expected_start: time | None = None,
     now: datetime | None = None,
 ) -> ScheduledOutcome:
     """At-most-once delivery attempt per local edition; uncertain states block replay."""
@@ -304,13 +306,18 @@ def run_once(
             failure_codes=() if state == "paused" else ("invalid_pause_marker",),
             stage="paused" if state == "paused" else "not_started",
         )
+    started_at = datetime.now(timezone.utc).isoformat()
     initial = {
         "schema_version": 1,
         "edition_id": edition_id,
         "status": "started",
         "stage": "started",
         "request": request,
-        "started_at": datetime.now(timezone.utc).isoformat(),
+        "started_at": started_at,
+        "stage_events": [{"stage": "started", "at": started_at}],
+        "ready_by_local": ready_by.strftime("%H:%M") if ready_by else None,
+        "expected_start_local": expected_start.strftime("%H:%M") if expected_start else None,
+        "timezone": settings.timezone,
         "print_submitted": False,
         "email_sent": False,
         "failure_codes": [],
@@ -344,11 +351,13 @@ def run_once(
     record = initial
 
     def on_stage(stage: str) -> None:
-        if stage not in STAGES:
-            raise ValueError("Unrecognized pipeline stage")
+        if stage not in STAGES or len(record["stage_events"]) >= 40:
+            raise ValueError("Invalid or overflowing pipeline stage")
+        recorded_at = datetime.now(timezone.utc).isoformat()
         record["stage"] = stage
         record["stages"].append(stage)
-        record["updated_at"] = datetime.now(timezone.utc).isoformat()
+        record["stage_events"].append({"stage": stage, "at": recorded_at})
+        record["updated_at"] = recorded_at
         _atomic_write(receipt, record)
 
     def before_delivery(channel: str) -> None:
@@ -358,6 +367,9 @@ def run_once(
         record["status"] = f"{channel}_submission_unknown"
         record["stage"] = f"{channel}_submission_unknown"
         record["stages"].append(record["stage"])
+        recorded_at = datetime.now(timezone.utc).isoformat()
+        record["stage_events"].append({"stage": record["stage"], "at": recorded_at})
+        record["updated_at"] = recorded_at
         _atomic_write(receipt, record)
 
     try:
@@ -378,6 +390,7 @@ def run_once(
             tuple(record["stages"]),
         )
         record.update(outcome.as_dict())
+        record["finished_at"] = datetime.now(timezone.utc).isoformat()
         _atomic_write(receipt, record)
         return outcome
     except Exception as exc:
@@ -385,6 +398,10 @@ def run_once(
         record["status"] = "needs_review"
         record["stage"] = "interrupted"
         record["stages"].append("interrupted")
+        record["stage_events"].append({
+            "stage": "interrupted", "at": datetime.now(timezone.utc).isoformat(),
+        })
+        record["finished_at"] = datetime.now(timezone.utc).isoformat()
         record["failure_codes"] = [f"unexpected_{type(exc).__name__}"]
         _atomic_write(receipt, record)
         return ScheduledOutcome(

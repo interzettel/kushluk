@@ -55,6 +55,10 @@ launchctl print "gui/$(id -u)/org.interzettel.kushluk.morning"
 
 To disable: `launchctl bootout "gui/$(id -u)/org.interzettel.kushluk.morning"`. This is a **logged-in-user LaunchAgent**, **not a headless LaunchDaemon**; do not assume it survives logout, a sleeping Mac or a reboot without user login. If the PDF renderer requires an inherited environment/loaded Pango libraries, resolve those in the host session before enabling. No shell, secret, provider URL or printer flag is inserted into the generated plist.
 
+## Timing and evidence reports (read-only)
+
+Generated Linux/macOS templates now pass `--expected-start HH:MM` alongside `--latest-start`, allowing the report to separate a delayed OS scheduler launch from Kushluk's own time-to-archive. After a locally initiated run, inspect `kushluk run-report --date YYYY-MM-DD`. To measure the software deadline, use `kushluk run --ready-by 08:00`. Once **three or more** valid completed local edition receipts exist, `kushluk timing-plan --date YYYY-MM-DD --ready-by 08:00 --margin-minutes 10` suggests a start clock from a conservative p90 software archive latency. This is only a suggestion for manual review; **it does not modify the exported unit files**. An OS's trigger/wake/login delay and actual CUPS/SMTP delivery are **not** included. Full semantics: [TIMING_REPORTS.md](TIMING_REPORTS.md).
+
 ## 3. Run-state semantics after restart
 
 - `kushluk run-status --date YYYY-MM-DD` uses the same persisted `scheduled.json` receipt as `operate` `status`.

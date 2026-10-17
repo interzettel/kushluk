@@ -52,6 +52,15 @@ Workflow tools such as n8n, Apple Shortcuts, systemd/cron, launchd, or a future 
 | D-RENDER | DONE | Approved production layouts are deterministic; generative models do not redesign the edition at print time. |
 | D-AUTO | DONE | Full automation is the product target; humans may configure/review, but daily layout assembly must not require manual InDesign/Canva work. |
 
+## AUT-09 / AUT-12 measured diagnostics slice — 2026-10-17
+
+[Issue #47](https://github.com/interzettel/kushluk/issues/47) now has a **read-only software timing/reporting implementation** without activating an actual scheduler or assuming paper delivery.
+
+- **AUT-09 (partial, unchecked):** `src/kushluk/run_metrics.py` and `kushluk run-report` expose allowlisted UTC stage events, source/renderer/archive milestones, fail-closed unknown/failed/submitted transport-state distinctions, and explicit `physical_print_verified: false`. `tests/test_run_metrics.py` includes private-token, inconsistent history and submission-uncertain cases. **Still missing:** true physical printer completion, independently observed delivery, alerts/notification pathway.
+- **AUT-12 (partial, unchecked):** `kushluk run --ready-by HH:MM` records an optional **software archive** target; `kushluk timing-plan --ready-by HH:MM --margin-minutes N --history-days N` reads up to 90 previous local edition receipts, requires >=3 validated archive timings and suggests a conservative nearest-rank p90 start with optional buffer. Generated native scheduler recipes pass an expected trigger clock so timing reports can separately measure process launch lag; the planner prefers three or more comparable trigger-to-archive samples, otherwise labels its run-start-only basis. It **never edits/installs** the timer or represents fixtures as measurements of a real host. **Still missing:** observed OS scheduler trigger-to-start/wake latency, production margins and independent ready-by-08:00 acceptance. Manual start-clock adjustments continue via `schedule-export`.
+- **Five-day local rehearsal (synthetic only):** `tests/test_synthetic_five_mornings.py` exercises date isolation, no duplicate resends, paused mornings, deadline misses and repeat invocations using fake delivery-free stages. This is not TRIAL-01/04/05 and not a real host/reboot.
+- [Timing methods and evidence limitations](TIMING_REPORTS.md). **No AUT-09 or AUT-12 checkbox advanced** until the complete acceptance description can be met. The operational ledger remains **13/90 · 14.44%** and all G1–G8 **0/8 · 00.00%**.
+
 ## Unattended production contract — current completion plan, 2026-10-17
 
 **Priority:** [Issue #47](https://github.com/interzettel/kushluk/issues/47) (Stage 1 / P1). This is the actively maintained work list: it describes *what remains* even when an earlier parent checkbox was checked for a software slice. A programmatic timer template is not five genuinely unattended mornings.

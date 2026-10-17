@@ -57,7 +57,7 @@ def templates(
             "\n[Service]\n"
             "Type=oneshot\n"
             f"WorkingDirectory={workdir}\n"
-            f"ExecStart={exec_path} run --latest-start {latest_start}\n"
+            f"ExecStart={exec_path} run --latest-start {latest_start} --expected-start {start}\n"
             "UMask=0077\n"
             "NoNewPrivileges=true\n"
             "\n[Install]\n"
@@ -80,7 +80,8 @@ def templates(
     # Explicit argument array (not a shell command) prevents quoting/injection.
     plist = {
         "Label": "org.interzettel.kushluk.morning",
-        "ProgramArguments": [exec_path, "run", "--latest-start", latest_start],
+        "ProgramArguments": [exec_path, "run", "--latest-start", latest_start,
+                             "--expected-start", start],
         "WorkingDirectory": workdir,
         "StartCalendarInterval": {"Hour": h, "Minute": m},
         "RunAtLoad": False,

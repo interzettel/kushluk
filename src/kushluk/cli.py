@@ -22,6 +22,7 @@ from kushluk.opml import (
 from kushluk.print_proof import make_print_proof
 from kushluk.print_inspection import PrintInspectionError, inspect_print_pdf
 from kushluk.recovery import deliver_archived
+from kushluk.run_metrics import run_report, timing_plan
 from kushluk.scheduled import pause_day, read_run_status, resume_day, run_once
 from kushluk.schedule_templates import ScheduleTemplateError, export_templates
 from kushluk.setup_web import run_setup_web
@@ -83,6 +84,14 @@ def build_parser() -> argparse.ArgumentParser:
         "--latest-start", metavar="HH:MM", type=_clock_time,
         help="Last permitted local START, not a promise of completed printing",
     )
+    run.add_argument(
+        "--ready-by", metavar="HH:MM", type=_clock_time,
+        help="Optional clock target for measuring PDF archive readiness, not physical print",
+    )
+    run.add_argument(
+        "--expected-start", metavar="HH:MM", type=_clock_time,
+        help="Expected OS timer trigger to measure wake/launch delay; not an SLA",
+    )
 
     for command, help_text in (
         ("pause-day", "Pause future run starts for one local edition date"),
@@ -113,6 +122,19 @@ def build_parser() -> argparse.ArgumentParser:
                         help="OS local scheduler clock, HH:MM (default 07:30)")
     export.add_argument("--latest-start", type=_clock_time, default=time(7, 45),
                         help="Last allowed local start, HH:MM (default 07:45)")
+
+    report = sub.add_parser(
+        "run-report", help="Read typed, privacy-safe run timing and submission status"
+    )
+    report.add_argument("--date", dest="target_date", help="YYYY-MM-DD, local today by default")
+
+    plan = sub.add_parser(
+        "timing-plan", help="Recommend a start clock from measured validated-archive latency"
+    )
+    plan.add_argument("--date", dest="target_date", help="Future local date, today by default")
+    plan.add_argument("--ready-by", type=_clock_time, default=time(8, 0))
+    plan.add_argument("--margin-minutes", type=int, default=10)
+    plan.add_argument("--history-days", type=int, default=30)
 
     run_status = sub.add_parser("run-status", help="Read durable local edition run state")
     run_status.add_argument("--date", dest="target_date", help="YYYY-MM-DD")
@@ -357,6 +379,23 @@ def main(argv: list[str] | None = None) -> int:
         )
         return 2 if failed_delivery else 0
 
+    if args.command in {"run-report", "timing-plan"}:
+        target = (date.fromisoformat(args.target_date) if args.target_date
+                  else datetime.now(ZoneInfo(settings.timezone)).date())
+        if args.command == "run-report":
+            report = run_report(settings, target_date=target)
+        else:
+            try:
+                report = timing_plan(
+                    settings, target_date=target, ready_by=args.ready_by,
+                    margin_minutes=args.margin_minutes, history_days=args.history_days,
+                )
+            except ValueError:
+                print(json.dumps({"status": "rejected", "error": "invalid_timing_options"}))
+                return 2
+        print(json.dumps(report, ensure_ascii=False))
+        return 0
+
     if args.command in {"run", "run-status", "pause-day", "resume-day"}:
         local_today = datetime.now(ZoneInfo(settings.timezone)).date()
         target = date.fromisoformat(args.target_date) if args.target_date else local_today
@@ -374,6 +413,8 @@ def main(argv: list[str] | None = None) -> int:
                 email_on_print_failure=args.email_on_print_failure,
                 print_profile=args.print_profile,
                 latest_start=args.latest_start,
+                ready_by=args.ready_by,
+                expected_start=args.expected_start,
             )
         print(json.dumps(outcome.as_dict(), ensure_ascii=False))
         return 0 if outcome.status in {
