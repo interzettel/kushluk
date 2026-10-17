@@ -138,29 +138,7 @@ The progress command and its CI gate are part of the merged [engineering foundat
 
 **[Explore all 90 individual tasks and their current states](docs/PROGRESS.md#individual-tasks)** · [Master issue ledger #43](https://github.com/interzettel/kushluk/issues/43) · [Task-to-issue map](docs/ISSUE_CROSSWALK.md) · [Kushluk Project board](https://github.com/orgs/interzettel/projects/3) · [Board configuration #62](https://github.com/interzettel/kushluk/issues/62)
 
-<details>
-<summary><strong>Granular task ledger by work area</strong></summary>
-
-| Work area | Tracked tasks | Checked at this snapshot | Progress |
-| --- | ---: | ---: | ---: |
-| Project records | 5 | 4 | 80.00% |
-| Four-page formats | 10 | 0 | 00.00% |
-| Unattended runs | 13 | 0 | 00.00% |
-| Source connectors | 10 | 0 | 00.00% |
-| Image handling | 9 | 0 | 00.00% |
-| Editorial layouts | 11 | 0 | 00.00% |
-| Design integration research | 5 | 0 | 00.00% |
-| Newspaper research | 3 | 0 | 00.00% |
-| Automation research | 2 | 0 | 00.00% |
-| Image rights research | 1 | 0 | 00.00% |
-| Editorial intelligence | 6 | 0 | 00.00% |
-| Setup and controls | 8 | 0 | 00.00% |
-| Physical trials | 7 | 0 | 00.00% |
-| **Total checked work-ledger items** | **90** | **4** | **04.44%** |
-
-This table is a **dated ledger snapshot, not a product readiness score**. Every task ID, description and checked/unchecked state is in the [generated itemized report](docs/PROGRESS.md#individual-tasks), with its issue owner in the [crosswalk](docs/ISSUE_CROSSWALK.md). Product delivery is measured separately against eight evidence gates.
-
-</details>
+The [generated progress report](docs/PROGRESS.md) contains the current per-workstream table, all 90 task IDs, and eight separately evidence-gated delivery checks. It is regenerated from the work ledger; the README deliberately does **not** duplicate dated percentages that would quickly go stale.
 
 We use a **solo-maintainer + assisted development** workflow, not recurring Scrum ceremonies. The natural hierarchy is **direction → milestone → work package → task → proof**. A new idea may stay under investigation; a bug fix needs a regression test; a shipped feature requires implementation and evidence. Completing research can mean rejecting an idea with reasons.
 
