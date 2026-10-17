@@ -10,7 +10,7 @@ from http.client import HTTPConnection, HTTPSConnection
 from ipaddress import ip_address
 import socket
 import ssl
-from urllib.parse import urljoin, urlsplit
+from urllib.parse import parse_qsl, urljoin, urlsplit, urlunsplit
 
 
 class FeedNetworkError(ValueError):
@@ -164,3 +164,31 @@ def fetch_public_xml(url: str) -> bytes:
         finally:
             conn.close()
     raise FeedNetworkError("Too many feed redirects")
+
+# Reference links are written to the publication but never fetched automatically.
+# Keep reader credentials out of PDF/EPUB hyperlinks and edition archives.
+_SENSITIVE_PARAMETERS = frozenset({
+    "token", "accesstoken", "refreshtoken", "apikey", "auth", "authtoken",
+    "key", "secret", "sig", "signature", "session", "sessionid", "password",
+    "pass", "jwt", "credential", "authorization", "subscriberid", "email",
+    "oauth", "code",
+})
+
+
+def public_article_link(value: str | None) -> str | None:
+    """Return a conservative clickable public reference or None; no DNS/network."""
+    if not value or not isinstance(value, str):
+        return None
+    try:
+        parts = urlsplit(value.strip())
+        # Fragments may contain personal identity/session information and are
+        # not needed to cite the canonical source page.
+        clean = urlunsplit((parts.scheme, parts.netloc, parts.path, parts.query, ""))
+        _target(clean)
+        for key, _value in parse_qsl(parts.query, keep_blank_values=True):
+            normalized = "".join(ch for ch in key.lower() if ch.isalnum())
+            if normalized in _SENSITIVE_PARAMETERS:
+                return None
+    except (ValueError, FeedNetworkError):
+        return None
+    return clean

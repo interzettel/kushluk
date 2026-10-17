@@ -37,6 +37,10 @@ No GitHub Release or version bump, no hardware acceptance or five-morning reliab
 
 A failed RSS source (unsafe destination, timeout, invalid XML or rejected DTD) no longer suppresses healthy sources. The engine records a redacted source-index failure code and keeps already validated successful candidates, allowing a degraded-but-traceable edition; it never prints private feed URLs/tokens in diagnostics. Unexpected implementation errors still surface instead of being swallowed. See [#49](https://github.com/interzettel/kushluk/issues/49); this does not make provider permissions or content rights complete.
 
+### Safer outbound story references
+
+RSS item links are now checked as references (without network access) before becoming `Story.source_url`: only public HTTP(S) locations, no embedded credentials, private IPs, unsafe schemes, or known token/session query parameters; fragments are removed. Offline EPUB export **rechecks old archived links** under the same policy before embedding hyperlinks. Unsafe links retain the headline/source attribution but have no clickable URL. Some legitimate personalized paywall links may be omitted rather than risk publishing private tokens; this is deliberate. F-011 remains partial; legal authorization and full provider rights checks remain open.
+
 ## Repository hygiene
 
 - Default branch: `main`.

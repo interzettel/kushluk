@@ -11,7 +11,7 @@ from html import escape
 import json
 import os
 from pathlib import Path
-from urllib.parse import urlsplit
+from kushluk.feed_network import public_article_link
 from zipfile import ZipFile, ZIP_DEFLATED, ZIP_STORED
 import xml.etree.ElementTree as ET
 
@@ -68,17 +68,9 @@ def _metadata(archive: Path, target_date: date) -> dict:
 
 def _source_link(story: dict) -> str:
     label = _e(story.get("source_name") or "Source")
-    address = story.get("source_url")
-    if not isinstance(address, str) or not address:
-        return f"<p class=\"source\">Source: {label}</p>"
-    try:
-        url = urlsplit(address)
-        allowed = url.scheme in {"https", "http"} and url.hostname is not None
-        allowed = allowed and url.username is None and url.password is None
-    except ValueError:
-        allowed = False
-    if not allowed:
-        return f"<p class=\"source\">Source: {label}</p>"
+    address = public_article_link(story.get("source_url"))
+    if not address:
+        return f'<p class="source">Source: {label}</p>'
     return f'<p class="source">Source: <a href="{_e(address)}">{label}</a></p>'
 
 
