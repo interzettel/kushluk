@@ -39,6 +39,10 @@ This table maps every task identifier in [WORK_LEDGER.md](WORK_LEDGER.md) to a *
 | **TRIAL-01 to TRIAL-07** | 7 | [#13 Real-world proof](https://github.com/interzettel/kushluk/issues/13) | TRIAL-01/02/03 require real user host/hardware/provider permissions; no fabricated trial results |
 | **TOTAL** | **90** | **All mapped** | No task IDs left unassigned in the 2026-10-16 WORK_LEDGER snapshot |
 
+## #47 unattended automation follow-up — 17 October 2026
+
+AUT-01/02/03/10 have prior software evidence. AUT-05 now has tested native systemd-user/launchd **template generation** and is checked as a provided software recipe. AUT-09 remains unchecked until all stage observations and real delivery states are supported (CUPS submission is not printed paper), while AUT-12 has configurable clocks but no verified adaptive real-world margin. The full action list and human host acceptance are maintained in [WORK_LEDGER.md](WORK_LEDGER.md), [NATIVE_SCHEDULERS.md](NATIVE_SCHEDULERS.md) and GitHub [#47](https://github.com/interzettel/kushluk/issues/47). **13/90 (14.44%) software checklist only; 0/8 release evidence gates**.
+
 ## Verified software reconciliation — 17 October 2026
 
 The operational ledger now checks **FMT-01/02, FMT-06/07 and AUT-02/10** against previously merged implementation, test suites and passing Linux/macOS Actions. See the individual dated evidence table in [WORK_LEDGER.md](WORK_LEDGER.md). These are not Issue #45/#46/#47 closure, physical printer proof, true end-to-end unattended host acceptance or G1–G8 verification. Tests of full clipping, A4 duplex device orientation, deadline guards and source/provider rights remain pending. Checkboxes count **10/90 (11.11%)**, not overall product completion.

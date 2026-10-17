@@ -69,6 +69,12 @@ Or `kushluk resume-day --date 2026-10-17`. Resume only removes a valid marker; i
 
 This calls the **existing** `deliver-archived` recovery implementation. The operator must first inspect the actual print queue/status. A unique request ID is required for a separate deliberate retry. Reusing it returns `already_attempted`, never a new delivery. A different ID can submit again *only after fresh operator acknowledgment*—including the risk the earlier print/SMTP request was already accepted. It never regenerates source content.
 
+## Native Linux/macOS scheduler templates
+
+Use `kushluk schedule-export` to generate a **disabled**, reviewable systemd user timer/service or launchd LaunchAgent from explicit absolute paths and an owner-configured schedule. The output is create-only and mode-0600; no service is installed or enabled. Example commands, real-host caveats and a five-morning acceptance checklist are in [NATIVE_SCHEDULERS.md](NATIVE_SCHEDULERS.md).
+
+`scheduled.json` carries a bounded, typed `stages` array. Linux/macOS `run-status` distinguishes a running process holding the edition lock from an abandoned nonterminal receipt; a dead process always needs review and does not automatically retry. `print_submitted` is CUPS queue acceptance, **not an observation that pages were printed**.
+
 ## Local scheduler examples — not unattended proof
 
 Example POSIX cron on an installed local host (use the *actual* path to the Kushluk environment and its configured `KUSHLUK_*` settings; do **not** blindly copy as a deployed schedule):
