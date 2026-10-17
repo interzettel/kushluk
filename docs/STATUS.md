@@ -1,9 +1,13 @@
 # Kushluk Status
 
 Last implementation verification snapshot: 2026-10-17 (four-page software CI; physical trials outstanding).
-Documentation and issue inventory reviewed: 2026-10-16.
+Documentation and issue inventory reviewed: 2026-10-17; six evidence-backed task checkboxes reconciled.
 
 **Status caveat:** the 2026-10-16 inventory did **not** independently rerun CI or physical print tests. Do not infer four-page migration, unattended execution, or real-reader trials are done from the new planning issues. [#43](https://github.com/interzettel/kushluk/issues/43) indexes all issues, and [ISSUE_CROSSWALK.md](ISSUE_CROSSWALK.md) maps the 90 existing work-ledger tasks to accountable issues. Execution blockers have dedicated issues: [#45](https://github.com/interzettel/kushluk/issues/45) format, [#46](https://github.com/interzettel/kushluk/issues/46) print profiles, [#47](https://github.com/interzettel/kushluk/issues/47) local scheduler/retries. Docs/ADR ambiguities: [#44](https://github.com/interzettel/kushluk/issues/44).
+
+### Engineering hardening and ledger reconciliation (17 Oct 2026)
+
+Six existing software slices (FMT-01/02/06/07, AUT-02/10) have now been evidence-reconciled from source, tests and previously green Linux/macOS CI into [WORK_LEDGER.md](WORK_LEDGER.md); the task checkboxes are not eight release gates. FMT-03's realistic clipping validation and AUT-03's deadline guard remain open. Source exception messages and SMTP/CUPS failure output have been made generic before persisting into run receipts or printed CLI warnings; specific failure codes and safe local guidance remain. CI's synthetic CLI generation now uses `tools.offline_smoke` (all network sockets and print/email submissions forbidden) on Linux and native macOS, with a real four-page PDF on macOS. This is not live-source, device or host acceptance. Evidence is linked to [#54](https://github.com/interzettel/kushluk/issues/54), [#45](https://github.com/interzettel/kushluk/issues/45), [#46](https://github.com/interzettel/kushluk/issues/46), [#47](https://github.com/interzettel/kushluk/issues/47).
 
 ## Planning and next release
 
@@ -186,12 +190,6 @@ The work ledger tracks dedicated spikes for:
 
 ## Next execution boundary
 
-The next implementation slice is not another format decision. It is:
-
-1. implement and test A4 and A3 physical print profiles against the four-page source;
-2. establish real print profile preflight;
-3. establish the stable unattended-run boundary;
-4. add asset/media handling;
-5. run real physical editions.
+The next substantive implementation is the stable versioned unattended-run boundary and deadline/reader controls (#47), alongside richer deterministic archetypes (#51), rights-aware assets (#50), and source/verification adapters (#49). A4/A3 **software** print profiles already exist; full device-specific paper preflight and physical acceptance remain (#46/#13). Actual host/printer trials and a first-reader participant remain unverified.
 
 See `docs/WORK_LEDGER.md` for task IDs and acceptance criteria.

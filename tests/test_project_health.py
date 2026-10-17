@@ -37,9 +37,9 @@ class ProjectHealthTests(unittest.TestCase):
         self.assertEqual(len(result["gates"]), 8)
         self.assertEqual(result["verified_count"], 0)
         self.assertEqual(result["verified_percentage"], "00.00%")
-        self.assertEqual(result["task_progress"]["percentage"], "04.44%")
+        self.assertEqual(result["task_progress"]["percentage"], "11.11%")
         self.assertEqual(result["task_progress"]["groups"][0]["percentage"], "80.00%")
-        self.assertEqual(result["task_progress"]["groups"][1]["percentage"], "00.00%")
+        self.assertEqual(result["task_progress"]["groups"][1]["percentage"], "40.00%")
         self.assertEqual(
             (REPO / "docs/PROGRESS.md").read_text(encoding="utf-8"),
             render(result),
@@ -51,10 +51,10 @@ class ProjectHealthTests(unittest.TestCase):
         self.assertIn('#F3EFE4', graphic)
         self.assertIn('role="img"', graphic)
         self.assertIn("AWAITING PROOF", graphic)
-        self.assertIn("04.44%", graphic)
+        self.assertIn("11.11%", graphic)
         self.assertIn("00.00%", graphic)
         self.assertIn("80.00%", graphic)
-        self.assertIn("04.44%", render(result))
+        self.assertIn("11.11%", render(result))
 
     def test_percentage_formatting_boundaries(self):
         self.assertEqual(format_percent(0, 8), "00.00%")

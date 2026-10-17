@@ -1,7 +1,7 @@
 # Kushluk Work Ledger
 
-Last implementation-status review: 2026-10-07.
-Issue/task reconciliation reviewed: 2026-10-16 (no new implementation completion implied).
+Last implementation-status review: 2026-10-17.
+Issue/task reconciliation reviewed: 2026-10-17 (six evidence-backed software task checks; external acceptance unchanged).
 
 This is the cross-stage execution ledger for Kushluk. It records work that is decided, open, blocked, or research-only. It complements `ROADMAP.md`; the roadmap explains sequencing, while this file is the operational source of truth for unfinished work.
 
@@ -52,6 +52,21 @@ Workflow tools such as n8n, Apple Shortcuts, systemd/cron, launchd, or a future 
 | D-RENDER | DONE | Approved production layouts are deterministic; generative models do not redesign the edition at print time. |
 | D-AUTO | DONE | Full automation is the product target; humans may configure/review, but daily layout assembly must not require manual InDesign/Canva work. |
 
+## Evidence reconciliation — 2026-10-17
+
+Six previously unchecked tasks are now checked **for implemented software behavior only**, after source/test and current green CI review. This is not a declaration that related GitHub issues or real-device evidence gates are finished.
+
+| Ledger task | Software proof | What remains outside its completed slice |
+| --- | --- | --- |
+| FMT-01 | [#80](https://github.com/interzettel/kushluk/pull/80), `tests/test_four_pages.py`: stable four-page publication model and archived page IDs | Legacy one-page archive migration proof under #45 |
+| FMT-02 | [#80](https://github.com/interzettel/kushluk/pull/80), `tests/test_four_pages.py`: deterministic four-page HTML/PDF without manual composition | More sophisticated page archetypes (#51) |
+| FMT-06 | [#81](https://github.com/interzettel/kushluk/pull/81), `tests/test_print_profiles.py`: A3 software imposition 4|1 and 2|3, validated PDF | Device-specific duplex orientation and physical paper proof (#13) |
+| FMT-07 | `src/kushluk/printing.py`, `tests/test_printing.py`: explicit one-sided CUPS fallback when duplex is unsupported | Printer-specific real-device test (#46/#13) |
+| AUT-02 | [#82](https://github.com/interzettel/kushluk/pull/82), `src/kushluk/cli.py`, `tests/test_scheduled.py`: `kushluk run` date-scoped replay protection | Versioned external operation contract (#47/AUT-01), unattended host proof |
+| AUT-10 | [#83](https://github.com/interzettel/kushluk/pull/83), `tests/test_recovery.py`: explicit idempotent archive-only delivery retry, no forced regeneration | Real printer-state uncertainty and five-morning host trial |
+
+**Not checked despite partial code:** FMT-03 (realistic per-page clipping/overflow), FMT-04 (A4 physical duplex sheet validation), FMT-08/09/10 (complete platform/profile/geometry and paper preflight), AUT-01/03/05/09 (complete versioned contract, deadline controls, unattended recipe and all run-state transitions). All G1–G8 evidence gates remain unverified. The checked-task percentage reports ledger state, **never overall product readiness**.
+
 ## Immediate execution queue
 
 ### P0 — Make the repository internally consistent
@@ -64,15 +79,15 @@ Workflow tools such as n8n, Apple Shortcuts, systemd/cron, launchd, or a future 
 
 ### P1 — Four-page production migration
 
-- [ ] **FMT-01** Replace the one-page publication geometry with four logical A4 pages in the canonical publication schema.
+- [x] **FMT-01** Replace the one-page publication geometry with four logical A4 pages in the canonical publication schema.
   - Acceptance: page identity/order is explicit and archived.
-- [ ] **FMT-02** Refactor renderer/templates to produce four logical A4 pages before physical imposition.
+- [x] **FMT-02** Refactor renderer/templates to produce four logical A4 pages before physical imposition.
   - Acceptance: deterministic HTML/PDF output, no hand editing.
 - [ ] **FMT-03** Update validation from “exactly one page” to four-page geometry and per-page overflow checks.
 - [ ] **FMT-04** Implement **A4 Home Printer** profile: two A4 sheets, duplex where supported, logical order 1–4.
 - [ ] **FMT-05** Add optional three-point staple registration marks inside the safe binding margin.
-- [ ] **FMT-06** Implement **A3 Folded Newspaper** imposition: outside `4 | 1`, inside `2 | 3`, then half-fold to A4.
-- [ ] **FMT-07** Add single-sided A4 fallback when duplex is unavailable.
+- [x] **FMT-06** Implement **A3 Folded Newspaper** imposition: outside `4 | 1`, inside `2 | 3`, then half-fold to A4.
+- [x] **FMT-07** Add single-sided A4 fallback when duplex is unavailable.
 - [ ] **FMT-08** Extend printer capability/profile selection without changing editorial layout.
 - [ ] **FMT-09** Add print fixtures for margins, fold safety, binding safety, rotation, and duplex edge choice.
 - [ ] **FMT-10** Add paper/profile preflight: detect incompatible media where the platform exposes it; otherwise rely on explicit paper-profile configuration without pretending the printer knows stock/colour.
@@ -80,7 +95,7 @@ Workflow tools such as n8n, Apple Shortcuts, systemd/cron, launchd, or a future 
 ### P1 — Daily full automation
 
 - [ ] **AUT-01** Define a stable run request/response contract so external orchestrators can trigger Kushluk without knowing internal implementation details.
-- [ ] **AUT-02** Add a scheduler-safe CLI/API entrypoint that is idempotent for a date/edition.
+- [x] **AUT-02** Add a scheduler-safe CLI/API entrypoint that is idempotent for a date/edition.
 - [ ] **AUT-03** Add deadline and “already generated/printed” guards to prevent accidental duplicate morning prints.
 - [ ] **AUT-04** Add optional `morning_intent` input to the run model and ranking trace.
 - [ ] **AUT-05** Provide an unattended local-host recipe (systemd/cron/launchd) as the baseline.
@@ -88,7 +103,7 @@ Workflow tools such as n8n, Apple Shortcuts, systemd/cron, launchd, or a future 
 - [ ] **AUT-07** Prototype Apple Shortcuts as a trigger/control surface: generate now, pause today, digital-only, reprint, and optional voice morning intent.
 - [ ] **AUT-08** Investigate the practical Apple printing path: what can be automated through macOS printing/CUPS versus what AirPrint/iOS requires interactively.
 - [ ] **AUT-09** Add run-state observability: started, sources complete, editorial complete, rendered, validated, submitted to printer, printed/failed, digitally delivered.
-- [ ] **AUT-10** Add recovery semantics so a failed print never causes editorial regeneration unless explicitly requested.
+- [x] **AUT-10** Add recovery semantics so a failed print never causes editorial regeneration unless explicitly requested.
 - [ ] **AUT-11 (RESEARCH)** Test wake-up, local-host-availability, and printer-reachability triggers as optional release signals without weakening the configured deadline.
 - [ ] **AUT-12** Keep exact pipeline start time adaptive/configurable; an earlier ~07:30 idea is only a scheduling heuristic for an 08:00-ready edition.
 - [ ] **AUT-13 (RESEARCH)** Test driverless/network CUPS/IPP from the chosen local/home-server deployment, including containerised operation only if it simplifies printer reachability rather than complicating it.

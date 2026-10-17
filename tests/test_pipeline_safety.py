@@ -171,3 +171,64 @@ def test_end_to_end_crash_then_explicit_archive_only_recovery(tmp_path, monkeypa
     assert repeated.status == "already_attempted"
     assert submitted == [archived]
     assert archived.read_bytes() == original
+
+
+def test_sensitive_connector_errors_never_enter_edition_or_archived_receipts(
+    tmp_path, monkeypatch, capsys,
+):
+    import json
+    from kushluk.cli import main
+
+    cfg = config(tmp_path)
+    secret = "SECRET_TOKEN_DO_NOT_ARCHIVE"
+    private_calendar = f"https://calendar.example.test/?token={secret}"
+
+    def deny_weather(_self):
+        raise RuntimeError(f"Weather API rejected key {secret}")
+
+    def deny_calendar(_self):
+        raise OSError(f"Cannot read {private_calendar}")
+
+    def deny_rss(_self):
+        raise ValueError(f"RSS contains private credential {secret}")
+
+    monkeypatch.setattr(pipeline.OpenMeteoWeatherConnector, "fetch", deny_weather)
+    monkeypatch.setattr(pipeline.CalendarFixtureConnector, "fetch", deny_calendar)
+    monkeypatch.setattr(pipeline.RSSConnector, "fetch", deny_rss)
+    monkeypatch.setenv("KUSHLUK_OUTPUT_DIR", str(cfg.output_dir))
+    monkeypatch.setenv("KUSHLUK_ARCHIVE_DIR", str(cfg.archive_dir))
+    monkeypatch.setenv("KUSHLUK_CALENDAR_FIXTURE", str(cfg.calendar_fixture))
+    monkeypatch.setenv("KUSHLUK_RSS_URLS", "")
+    monkeypatch.setenv("KUSHLUK_PROFILE_FILE", str(tmp_path / "no-profile.json"))
+    monkeypatch.setenv("KUSHLUK_SOURCE_REGISTRY", str(tmp_path / "no-registry.json"))
+    assert main(["generate", "--date", str(DATE), "--no-pdf"]) == 0
+    displayed = capsys.readouterr().out
+    assert "weather_unavailable" in displayed
+    assert "calendar_unavailable" in displayed
+    assert "rss_unavailable" in displayed
+    assert secret not in displayed
+    for extension in ("run.json", "metadata.json", "edition.md", "edition.html"):
+        artifact = cfg.archive_dir / "20260923-001" / extension
+        assert artifact.exists()
+        assert secret not in artifact.read_text(encoding="utf-8")
+    receipt = json.loads((cfg.archive_dir / "20260923-001" / "run.json").read_text())
+    assert {r["code"] for r in receipt["failures"]} >= {
+        "weather_unavailable", "calendar_unavailable", "rss_unavailable",
+    }
+
+
+def test_renderer_exception_redacted_from_archived_publication(tmp_path, monkeypatch):
+    offline_sources(monkeypatch)
+    secret = "SMALL_PRIVATE_URL_TOKEN"
+    monkeypatch.setattr(
+        pipeline, "render_pdf",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(
+            OSError(f"Could not open /home/reader/calendar/{secret}")
+        ),
+    )
+    result = pipeline.run_pipeline(config(tmp_path), target_date=DATE)
+    assert result.pdf_path is None
+    assert any(x.code == "pdf_unavailable" for x in result.failures)
+    for path in result.archive_dir.iterdir():
+        if path.suffix in {".md", ".json", ".html"}:
+            assert secret not in path.read_text(encoding="utf-8")

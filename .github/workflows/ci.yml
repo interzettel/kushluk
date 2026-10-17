@@ -20,12 +20,8 @@ jobs:
       - run: pip install -e ".[dev]"
       - run: ruff check src tests tools
       - run: pytest -q
-      - name: Walking-skeleton smoke test
-        run: |
-          kushluk doctor
-          kushluk generate --date 2026-09-23 --no-pdf
-          test -n "$(find output -name '*.html' -print -quit)"
-          test -n "$(find archive -name 'metadata.json' -print -quit)"
+      - name: Hermetic CLI edition smoke (no network, CUPS or SMTP)
+        run: python -m tools.offline_smoke
 
   macos:
     name: macOS / ${{ matrix.runner }}
@@ -50,12 +46,8 @@ jobs:
         run: python -m weasyprint --info
       - run: ruff check src tests tools
       - run: pytest -q
-      - name: macOS CLI + PDF smoke test
-        run: |
-          kushluk doctor
-          kushluk generate --date 2026-09-23
-          python -c 'from pathlib import Path; from pypdf import PdfReader; files = list(Path("output").glob("*.pdf")); assert files, "Kushluk produced no PDF"; assert all(len(PdfReader(str(f)).pages) == 4 for f in files), "Edition must validate as exactly four logical A4 pages"'
-          test -n "$(find archive -name metadata.json -print -quit)"
+      - name: Hermetic macOS CLI + PDF smoke (no network, CUPS or SMTP)
+        run: python -m tools.offline_smoke --pdf
       - name: Verify offline A4/A3 print-proof CLI
         run: |
           kushluk print-proof --output-dir output/print-proof

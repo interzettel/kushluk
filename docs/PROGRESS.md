@@ -1,6 +1,6 @@
 # Kushluk progress and evidence gates
 
-**Snapshot reviewed:** 2026-10-16 · Sources: [WORK_LEDGER.md](WORK_LEDGER.md), [progress-manifest.json](progress-manifest.json)
+**Snapshot reviewed:** 2026-10-17 · Sources: [WORK_LEDGER.md](WORK_LEDGER.md), [progress-manifest.json](progress-manifest.json)
 
 > These numbers are NOT an overall percentage of product completion. Checked tasks count operational checklist marks only. Delivery gates are independently verified with linked evidence.
 
@@ -21,13 +21,13 @@
 
 ## Operational work ledger
 
-**4 of 90 task checkboxes checked (04.44%).** This measures task-record state, not overall readiness.
+**10 of 90 task checkboxes checked (11.11%).** This measures task-record state, not overall readiness.
 
 | Task group | Checked | Total | Progress |
 | --- | ---: | ---: | ---: |
 | DOC | 4 | 5 | 80.00% |
-| FMT | 0 | 10 | 00.00% |
-| AUT | 0 | 13 | 00.00% |
+| FMT | 4 | 10 | 40.00% |
+| AUT | 2 | 13 | 15.38% |
 | SRC | 0 | 10 | 00.00% |
 | IMG | 0 | 9 | 00.00% |
 | LAY | 0 | 11 | 00.00% |
@@ -38,7 +38,7 @@
 | ED | 0 | 6 | 00.00% |
 | UX | 0 | 8 | 00.00% |
 | TRIAL | 0 | 7 | 00.00% |
-| **TOTAL** | **4** | **90** | **04.44%** |
+| **TOTAL** | **10** | **90** | **11.11%** |
 
 ## Individual tasks
 
@@ -56,29 +56,29 @@ The lines below are generated from WORK_LEDGER.md. Each task ID has a primary ow
 
 </details>
 
-<details><summary><strong>FMT — 0/10 checked · 00.00%</strong></summary>
+<details><summary><strong>FMT — 4/10 checked · 40.00%</strong></summary>
 
 | Task ID | Ledger state | Description |
 | --- | --- | --- |
-| `FMT-01` | OPEN | Replace the one-page publication geometry with four logical A4 pages in the canonical publication schema. |
-| `FMT-02` | OPEN | Refactor renderer/templates to produce four logical A4 pages before physical imposition. |
+| `FMT-01` | CHECKED | Replace the one-page publication geometry with four logical A4 pages in the canonical publication schema. |
+| `FMT-02` | CHECKED | Refactor renderer/templates to produce four logical A4 pages before physical imposition. |
 | `FMT-03` | OPEN | Update validation from “exactly one page” to four-page geometry and per-page overflow checks. |
 | `FMT-04` | OPEN | Implement **A4 Home Printer** profile: two A4 sheets, duplex where supported, logical order 1–4. |
 | `FMT-05` | OPEN | Add optional three-point staple registration marks inside the safe binding margin. |
-| `FMT-06` | OPEN | Implement **A3 Folded Newspaper** imposition: outside `4 \| 1`, inside `2 \| 3`, then half-fold to A4. |
-| `FMT-07` | OPEN | Add single-sided A4 fallback when duplex is unavailable. |
+| `FMT-06` | CHECKED | Implement **A3 Folded Newspaper** imposition: outside `4 \| 1`, inside `2 \| 3`, then half-fold to A4. |
+| `FMT-07` | CHECKED | Add single-sided A4 fallback when duplex is unavailable. |
 | `FMT-08` | OPEN | Extend printer capability/profile selection without changing editorial layout. |
 | `FMT-09` | OPEN | Add print fixtures for margins, fold safety, binding safety, rotation, and duplex edge choice. |
 | `FMT-10` | OPEN | Add paper/profile preflight: detect incompatible media where the platform exposes it; otherwise rely on explicit paper-profile configuration without pretending the printer knows stock/colour. |
 
 </details>
 
-<details><summary><strong>AUT — 0/13 checked · 00.00%</strong></summary>
+<details><summary><strong>AUT — 2/13 checked · 15.38%</strong></summary>
 
 | Task ID | Ledger state | Description |
 | --- | --- | --- |
 | `AUT-01` | OPEN | Define a stable run request/response contract so external orchestrators can trigger Kushluk without knowing internal implementation details. |
-| `AUT-02` | OPEN | Add a scheduler-safe CLI/API entrypoint that is idempotent for a date/edition. |
+| `AUT-02` | CHECKED | Add a scheduler-safe CLI/API entrypoint that is idempotent for a date/edition. |
 | `AUT-03` | OPEN | Add deadline and “already generated/printed” guards to prevent accidental duplicate morning prints. |
 | `AUT-04` | OPEN | Add optional `morning_intent` input to the run model and ranking trace. |
 | `AUT-05` | OPEN | Provide an unattended local-host recipe (systemd/cron/launchd) as the baseline. |
@@ -86,7 +86,7 @@ The lines below are generated from WORK_LEDGER.md. Each task ID has a primary ow
 | `AUT-07` | OPEN | Prototype Apple Shortcuts as a trigger/control surface: generate now, pause today, digital-only, reprint, and optional voice morning intent. |
 | `AUT-08` | OPEN | Investigate the practical Apple printing path: what can be automated through macOS printing/CUPS versus what AirPrint/iOS requires interactively. |
 | `AUT-09` | OPEN | Add run-state observability: started, sources complete, editorial complete, rendered, validated, submitted to printer, printed/failed, digitally delivered. |
-| `AUT-10` | OPEN | Add recovery semantics so a failed print never causes editorial regeneration unless explicitly requested. |
+| `AUT-10` | CHECKED | Add recovery semantics so a failed print never causes editorial regeneration unless explicitly requested. |
 | `AUT-11` | OPEN | Test wake-up, local-host-availability, and printer-reachability triggers as optional release signals without weakening the configured deadline. |
 | `AUT-12` | OPEN | Keep exact pipeline start time adaptive/configurable; an earlier ~07:30 idea is only a scheduling heuristic for an 08:00-ready edition. |
 | `AUT-13` | OPEN | Test driverless/network CUPS/IPP from the chosen local/home-server deployment, including containerised operation only if it simplifies printer reachability rather than complicating it. |

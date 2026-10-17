@@ -31,29 +31,30 @@ A future maintainer/orchestrator can explain what Kushluk is, what it is not, th
 
 Status: **ACTIVE — software path exists; real local proof pending**
 
-Goal: prove one real edition end to end while migrating the original one-page walking skeleton to the accepted four-page production model.
+Goal: make the implemented four-page software path safe, autonomous and ready for real-world validation; do not conflate synthetic CI with actual paper.
 
-Implemented legacy walking-skeleton path:
+Implemented software walking-skeleton path:
 - Köln/default weather;
 - generic ICS calendar with fixture fallback;
 - real RSS/Atom stories;
 - canonical candidate and story-cluster models;
 - inspectable deterministic ranking;
 - publication Markdown/metadata;
-- deterministic A4 HTML;
-- PDF page validation and editorial cut/retry;
+- deterministic four-page logical A4 HTML and versioned page identities;
+- four-page PDF count, geometry, marker order and editorial cut/retry (not glyph-accurate overflow);
 - CUPS capability detection and printing;
 - SMTP digital delivery/fallback;
 - archive and run summary;
 - runtime doctor;
 - CI smoke test.
 
-Four-page canonical software migration landed under #45; remaining delivery work (ADR 0013/0014):
-- A4 two-sheet duplex profile and optional staple marks;
-- A3 folded-newspaper imposition;
-- optional morning-intent input;
-- stable unattended-run/orchestrator boundary;
-- media asset acquisition/placement layer.
+Four-page canonical software migration landed under #45 and A4/single-sided/A3-folded software paths under #46; **remaining software** (ADR 0013/0014):
+- full binding/fold/overflow and device-specific print preflight, optional staple marks;
+- optional morning-intent input and stable versioned scheduler/orchestrator boundary;
+- media asset acquisition/placement layer and richer layout archetypes;
+- source/transport exception redaction and hermetic CI smoke tests (#54).
+
+**Remaining physical evidence:** real A4 duplex/A3 paper behavior and unattended host reliability, under #13.
 
 Remaining real-world proof:
 - configure a real private calendar/task/mail source;
