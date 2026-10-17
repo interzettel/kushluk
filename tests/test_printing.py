@@ -115,3 +115,28 @@ def test_printer_submission_timeout_becomes_failure(tmp_path, monkeypatch):
     result = print_pdf(pdf, printer="Test", execute=True)
     assert not result.success and result.attempted
     assert "TimeoutExpired" in result.detail
+
+
+def test_cups_stderr_and_timeout_details_do_not_escape_into_receipts(tmp_path, monkeypatch):
+    secret = "PRIVATE_CUPS_QUEUE_TOKEN"
+    monkeypatch.setattr(printing.shutil, "which", lambda name: f"/usr/bin/{name}")
+    monkeypatch.setattr(printing, "detect_printer_capabilities",
+                        lambda *args: printing.PrinterCapabilities(
+                            "Synthetic", True, True, ("A4",), "Ready"))
+    pdf = tmp_path / "test.pdf"
+    pdf.write_bytes(b"%PDF-1.4")
+    monkeypatch.setattr(printing.subprocess, "run",
+                        lambda *_args, **_kw: subprocess.CompletedProcess(
+                            ["lp"], 1, "", f"private queue failed: {secret}"))
+    result = print_pdf(pdf, execute=True)
+    assert not result.success
+    assert secret not in result.detail
+    assert "CUPS" in result.detail
+
+    def timeout(_cmd, **kwargs):
+        raise subprocess.TimeoutExpired(cmd=f"lp -d {secret}", timeout=30)
+    monkeypatch.setattr(printing.subprocess, "run", timeout)
+    result = print_pdf(pdf, execute=True)
+    assert not result.success
+    assert "TimeoutExpired" in result.detail
+    assert secret not in result.detail
