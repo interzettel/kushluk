@@ -32,7 +32,7 @@ _FORM = """<!doctype html>
 <title>Kushluk — Set up your morning</title>
 <style>
 :root{color-scheme:light;font-family:system-ui,-apple-system,sans-serif;background:#f4f0e8;color:#252b26}
-*{box-sizing:border-box}body{margin:0;min-height:100vh}
+*{box-sizing:border-box}body{margin:0;min-height:100vh}\n.skip{position:absolute;left:1rem;top:-10rem;padding:.7rem 1rem;background:#fffefa;color:#244f3b;z-index:10}\n.skip:focus{top:1rem}
 .shell{max-width:1080px;margin:0 auto;padding:48px 26px}
 .eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:#596b59}
 header{border-bottom:1px solid #c2c5b7;padding-bottom:22px;display:flex;justify-content:space-between;gap:20px}
@@ -46,7 +46,7 @@ h2{font:normal 26px Georgia,serif;margin:0 0 10px}
 .note{font-size:13px;color:#647063;line-height:1.6;margin-bottom:24px}
 label{display:block;font-size:13px;font-weight:650;margin:20px 0 7px}
 input{width:100%;border:1px solid #bdc4b9;background:#fff;padding:12px 13px;border-radius:2px;font:inherit}
-input:focus-visible,button:focus-visible{outline:3px solid #367554;outline-offset:2px}
+input:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid #367554;outline-offset:2px}
 .pair{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 button{margin-top:30px;background:#244f3b;color:#fff;border:0;border-radius:2px;padding:14px 24px;font-weight:700;cursor:pointer;width:100%;font:inherit}
 button:hover{background:#316a4c}
@@ -54,7 +54,7 @@ button:hover{background:#316a4c}
 footer{border-top:1px solid #c2c5b7;margin-top:86px;padding-top:20px;font-size:12px;color:#627162}
 @media(max-width:760px){main{grid-template-columns:1fr;gap:36px;padding-top:36px}.shell{padding:24px 18px}.panel{padding:23px}aside{margin-top:20px}.pair{gap:10px}}
 </style>
-</head><body><div class="shell">
+</head><body><a class="skip" href="#setup-form">Skip to setup form</a><div class="shell">
 <header><span class="brand">kushluk.</span><span class="eyebrow">Your local morning paper · 01 / 03</span></header>
 <main>
 <div><p class="eyebrow">Your home, your sources</p>
@@ -63,20 +63,20 @@ footer{border-top:1px solid #c2c5b7;margin-top:86px;padding-top:20px;font-size:1
 <aside><strong>What this step does</strong><br>Creates one private profile on this computer. No accounts, subscriptions, printer jobs or source permissions are changed.<br><br><strong>Next</strong><br>Review your sources, then test a printer separately. Nothing runs unattended until you configure it.</aside>
 </div>
 <div class="panel"><h2>Make it yours</h2>
-<p class="note">Use an approximate city-center location; a street address is not required. All fields stay on this device.</p>
-<form method="post" action="/" autocomplete="off">
+<p class="note" id="location-help">Use an approximate city-center location; a street address is not required. All fields stay on this device.</p>
+<form id="setup-form" method="post" action="/" autocomplete="off" aria-label="Local home profile setup">
 <input type="hidden" name="csrf" value="__TOKEN__">
 <label for="home_name">Name of your home</label>
 <input id="home_name" name="home_name" required maxlength="120" placeholder="e.g. My Morning" autocomplete="off">
 <div class="pair">
-<div><label for="latitude">Approximate latitude</label><input id="latitude" type="number" step="any" min="-90" max="90" name="latitude" required placeholder="50.9"></div>
-<div><label for="longitude">Approximate longitude</label><input id="longitude" type="number" step="any" min="-180" max="180" name="longitude" required placeholder="6.9"></div>
+<div><label for="latitude">Approximate latitude</label><input id="latitude" type="number" step="any" min="-90" max="90" name="latitude" required aria-describedby="location-help" placeholder="50.9"></div>
+<div><label for="longitude">Approximate longitude</label><input id="longitude" type="number" step="any" min="-180" max="180" name="longitude" required aria-describedby="location-help" placeholder="6.9"></div>
 </div>
 <label for="timezone">Time zone (region/city)</label>
-<input id="timezone" name="timezone" required maxlength="100" placeholder="e.g. Europe/Berlin" spellcheck="false"><p class="small">Enter a time zone such as Europe/Berlin, not only GMT+2. This keeps your edition time correct when clocks change.</p>
+<input id="timezone" name="timezone" required maxlength="100" aria-describedby="timezone-help" placeholder="e.g. Europe/Berlin" spellcheck="false"><p class="small" id="timezone-help">Enter a time zone such as Europe/Berlin, not only GMT+2. This keeps your edition time correct when clocks change.</p>
 <p class="small">Your printer comes later. Step 3 lets you discover and check an installed queue before saving it.</p>
 <button type="submit">Save my local profile</button>
-<p class="small">Saved locally. No feed activation, printing, telemetry or background services.</p>
+<p class="small">After saving, your profile stays on this computer. No feed activation, printing, telemetry or background services.</p>
 </form></div></main>
 <footer>Local-first · Reference-only sources · Your morning, not another account.</footer>
 </div></body></html>"""
