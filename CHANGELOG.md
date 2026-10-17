@@ -43,6 +43,8 @@ separately under [the release plan](docs/RELEASE_PLAN.md).
 
 - Generate a pending-review licence evidence worksheet for each isolated wheel/sdist install, with hashed Python inventory and unresolved native-library/font-rights rows. Metadata does not grant legal approval (#54/#57).
 
+- Extend the independent U1–U6 reader handoff and synthetic regression for Letter selection and read-only `/status`; add private keyboard/screen-reader A1–A5 observation template and local completeness preflight without awarding a human or device pass (#5).
+
 **No prerelease has been published.** `pyproject.toml` remains `0.1.0`;
 the future version `v0.2.0-alpha.1` requires an explicit owner decision,
 review of dependencies/licenses and controlled tag/release creation.
