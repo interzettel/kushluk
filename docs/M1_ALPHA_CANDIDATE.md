@@ -96,6 +96,8 @@ testing artifact** only. Its `alpha-version-trial.json` retains the exact
 source SHA and explicitly records that the checkout version was unchanged,
 legal rights remain unapproved, and no tag/release was published.
 
+**Provenance note:** for pull-request CI, `tracked_git_source_sha` identifies the GitHub checkout's tested merge commit, which can differ from the PR branch-tip SHA. For an authorized release, use the final reviewed **`main` SHA**, re-run the trial there, and bind checksums to those exact source and distribution bytes.
+
 **Observed pre-merge dry run:** on an earlier PR branch, the Linux Python
 3.12 trial produced actual `kushluk-0.2.0a1-py3-none-any.whl` and
 `kushluk-0.2.0a1.tar.gz` and reported two clean installs. The final
