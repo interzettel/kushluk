@@ -53,6 +53,10 @@ RSS item links are now checked as references (without network access) before bec
 
 EPUB export accepts an explicit IETF language tag (e.g., `--language de`) and places it consistently in OPF metadata and XHTML navigation/chapters. The old honest `und` default remains for editions without a known dominant language. Static TOC labels have English, German, and Turkish translations. The real W3C EPUBCheck job now covers English and German synthetic exports, but real screen-reader/multilingual content acceptance remains open under #33.
 
+### Browser source consent review (F-007/F-008 — partial)
+
+The loopback-only `setup-web` page now offers a second, **fully offline** source-review page: paste a bounded OPML proposal in memory, preview escaped title and hostname only (no private query tokens), explicitly approve *one feed at a time* into the existing reference-only registry, or pause/resume with fresh consent. No source bodies are imported, fetched or enabled without opt-in. Browser and CLI reuse the same per-feed consent path. Provider-specific full-text rights, novices/accessibility and printer hardware remain unverified. See [LOCAL_SETUP.md](LOCAL_SETUP.md).
+
 ## Repository hygiene
 
 - Default branch: `main`.
