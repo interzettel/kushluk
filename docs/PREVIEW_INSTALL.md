@@ -66,6 +66,12 @@ For an existing private archive, the new **non-mutating** `kushluk archive-check
 
 The [compatibility matrix](COMPATIBILITY_MATRIX.md) records exactly which software/platform paths have CI evidence and which hardware/device claims remain open. A [human alpha approval handoff](RELEASE_APPROVAL.md) keeps all release publication steps separate from this development preview.
 
+The optional `kushluk-m1-isolated-0.2.0a1-trial` CI artifact is a
+*disposable proposed-version test* built from a temporary tracked source
+snapshot. It is not the development package or an officially supported
+alpha. The checked-in package remains `0.1.0`. See the
+[M1 alpha evidence and remaining signoff](M1_ALPHA_CANDIDATE.md).
+
 ## Known limitations and release decision
 
 - **No device proof:** four PDF pages in CI do not prove A4/A3 duplex, print-stock behavior, CUPS compatibility, folding/binding, or correct user-visible paper.

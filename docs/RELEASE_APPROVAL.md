@@ -17,6 +17,15 @@ The current [M1 alpha evidence handoff](M1_ALPHA_CANDIDATE.md) records a green h
 - [ ] **Founder release decision** authorizes the exact alpha version bump, Git tag `v0.2.0-alpha.1`, release assets, checksums and distribution channel. A merge or green badge **does not** constitute that decision.
 - [ ] After explicit authorization only: update package version, build from the approved SHA, re-run clean installs and checks, create annotated tag and GitHub prerelease intentionally, and document SHA/recovery/upgrade contract. Do not publish to PyPI merely because GitHub artifacts exist.
 
+## Isolated alpha-version packaging trial (not publication)
+
+The CI `Isolated 0.2.0a1 candidate version` job builds a temporary
+tracked Git snapshot with Python version `0.2.0a1`, clean-installs wheel
+and sdist, and rechecks M1 bundle hashes and synthetic preview invariants.
+It **does not** edit the development checkout, and never tags or publishes
+to GitHub Releases or PyPI. A final authorized version bump, exact release
+SHA, human licensing signoff, legal copy and changelog review remain required.
+
 ## Scope boundaries for alpha versus later trials
 
 The **alpha** may be evaluated as an offline synthetic developer preview with stated limitations, once the above release authorization is complete. **M2a** private printer trials need a physical A4 page and safe queue/recovery observation. **M2b stable** requires five real unattended mornings, independent reader/device proof and release gate review. None can be awarded by synthetic CI, self-reported receipts, QA docs or a proposed percentage.
