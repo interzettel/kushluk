@@ -7,7 +7,8 @@ import pytest
 from kushluk.cli import main
 from kushluk.config import Settings
 from kushluk.local_profile import (
-    LocalProfileError, read_local_profile, update_local_printer, write_local_profile,
+    LocalProfileError, read_local_profile, update_local_printer,
+    update_local_paper_size, write_local_profile,
 )
 
 
@@ -31,10 +32,12 @@ def test_profile_round_trip_and_env_override(tmp_path, monkeypatch):
     profile = read_local_profile(path)
     assert profile["schema_version"] == 1
     assert profile["latitude"] == 51.2277
+    assert profile["paper_size"] == "a4"
     cfg = Settings.from_env()
     assert cfg.home_name == "My Home"
     assert cfg.longitude == 6.7735
     assert cfg.timezone == "Europe/Berlin"
+    assert cfg.paper_size == "a4"
     if os.name != "nt":
         assert path.stat().st_mode & 0o777 == 0o600
 
@@ -85,6 +88,7 @@ def test_setup_guided_prompts_for_only_required_values(tmp_path, monkeypatch, ca
     {"home_name": "\x00secret"},
     {"home_name": ""},
     {"timezone": "Not/A-Timezone"},
+    {"paper_size": "tabloid"},
     {"printer": "queue\nInjected"},
     {"latitude": float("nan")},
     {"longitude": float("inf")},
@@ -187,3 +191,60 @@ def test_invalid_printer_update_never_rewrites_existing_profile(tmp_path):
         with pytest.raises(LocalProfileError):
             update_local_printer(path, printer=value)
     assert path.read_bytes() == original
+
+
+def test_legacy_v1_profile_without_paper_size_reads_as_a4(tmp_path, monkeypatch):
+    path = tmp_path / "existing.json"
+    path.write_text(json.dumps({"schema_version": 1, **_params()}))
+    monkeypatch.setenv("KUSHLUK_PROFILE_FILE", str(path))
+    monkeypatch.delenv("KUSHLUK_PAPER_SIZE", raising=False)
+    assert read_local_profile(path)["paper_size"] == "a4"
+    assert Settings.from_env().paper_size == "a4"
+    assert "paper_size" not in json.loads(path.read_text())
+
+
+def test_letter_selection_and_explicit_preference_change(tmp_path, monkeypatch):
+    path = tmp_path / "profile.json"
+    write_local_profile(path, **_params(), paper_size="letter")
+    monkeypatch.setenv("KUSHLUK_PROFILE_FILE", str(path))
+    monkeypatch.delenv("KUSHLUK_PAPER_SIZE", raising=False)
+    assert Settings.from_env().paper_size == "letter"
+    original = read_local_profile(path)
+    update_local_paper_size(path, paper_size="a4")
+    current = read_local_profile(path)
+    assert current["paper_size"] == "a4"
+    assert {**current, "paper_size": "letter"} == original
+    assert path.stat().st_mode & 0o777 == 0o600
+    assert not list(tmp_path.glob(".profile-*"))
+    unchanged = path.read_bytes()
+    for rejected in ("Letter", "a3", "", "custom", None):
+        with pytest.raises(LocalProfileError):
+            update_local_paper_size(path, paper_size=rejected)
+        assert path.read_bytes() == unchanged
+
+
+def test_paper_env_override_is_validated(tmp_path, monkeypatch):
+    path = tmp_path / "profile.json"
+    write_local_profile(path, **_params(), paper_size="letter")
+    monkeypatch.setenv("KUSHLUK_PROFILE_FILE", str(path))
+    monkeypatch.setenv("KUSHLUK_PAPER_SIZE", "a4")
+    assert Settings.from_env().paper_size == "a4"
+    monkeypatch.setenv("KUSHLUK_PAPER_SIZE", "custom")
+    with pytest.raises(ValueError, match="KUSHLUK_PAPER_SIZE"):
+        Settings.from_env()
+
+
+def test_cli_setup_letter_is_explicit_and_never_prints(tmp_path, monkeypatch, capsys):
+    path = tmp_path / "profile.json"
+    monkeypatch.setenv("KUSHLUK_PROFILE_FILE", str(path))
+    monkeypatch.setattr("kushluk.printing.print_pdf",
+                        lambda *a, **kw: pytest.fail("No printing in setup"))
+    assert main([
+        "setup", "--home-name", "Example", "--latitude", "40.0",
+        "--longitude", "-74.0", "--timezone", "America/New_York",
+        "--paper-size", "letter", "--non-interactive",
+    ]) == 0
+    assert read_local_profile(path)["paper_size"] == "letter"
+    reply = json.loads(capsys.readouterr().out)
+    assert reply["contacts_network"] is False
+    assert reply["source_permissions_modified"] is False
