@@ -9,6 +9,7 @@ import pytest
 
 from kushluk import printer_preflight as preflight
 from kushluk.printing import PrinterCapabilities
+from kushluk.local_profile import write_local_profile, read_local_profile
 from kushluk.setup_web import SetupHTTPServer
 
 
@@ -178,3 +179,70 @@ def test_queue_name_escaped_when_rendered():
     html = preflight.render_printer_review(inventory, None, csrf="safe")
     assert "<script>" not in html
     assert "&lt;script&gt;" in html
+
+
+def test_browser_save_checked_queue_requires_consent_and_existing_profile(local_server, monkeypatch):
+    server = local_server
+    def discover():
+        return preflight.PrinterInventory("found", ("DeskJet_2820e", "Other"), "Found")
+    def check(name, inventory):
+        return preflight.PrinterReadiness(name, "reported-ready", True, False, False, "Advisory only.")
+    monkeypatch.setattr("kushluk.setup_web.discover_queues", discover)
+    monkeypatch.setattr("kushluk.setup_web.check_queue", check)
+    _, page = request(server)
+    csrf = token(page)
+    save = {"csrf": csrf, "queue": "DeskJet_2820e", "consent": "yes"}
+    assert request(server, "POST", "/printer/save", save)[0] == 422
+    request(server, "POST", "/printer/scan", {"csrf": csrf})
+    assert request(server, "POST", "/printer/save", save)[0] == 422
+    request(server, "POST", "/printer/check", {"csrf": csrf, "queue": "DeskJet_2820e"})
+    assert request(server, "POST", "/printer/save", save)[0] == 422
+    assert not server.profile_file.exists()
+
+    write_local_profile(server.profile_file, home_name="Reader", latitude=50.9,
+                        longitude=6.9, timezone="Europe/Berlin")
+    original = read_local_profile(server.profile_file)
+    assert request(server, "POST", "/printer/save", {**save, "consent": "no"})[0] == 422
+    assert request(server, "POST", "/printer/save", {"csrf": csrf, "queue": "DeskJet_2820e"})[0] == 400
+    assert read_local_profile(server.profile_file) == original
+    status, html = request(server, "POST", "/printer/save", save)
+    assert status == 200
+    assert "Printer preference saved locally" in html
+    profile = read_local_profile(server.profile_file)
+    assert profile["printer"] == "DeskJet_2820e"
+    assert profile["home_name"] == "Reader"
+    status, html = request(server)
+    assert status == 200 and "DeskJet_2820e" in html
+    assert "No print job has been sent" in html
+    assert not server.registry_file.exists()
+    request(server, "POST", "/printer/scan", {"csrf": csrf})
+    assert request(server, "POST", "/printer/save", save)[0] == 422
+    assert read_local_profile(server.profile_file) == profile
+
+
+def test_save_printer_rejects_wrong_queue_csrf_origin_host_and_stale_check(local_server, monkeypatch):
+    server = local_server
+    write_local_profile(server.profile_file, home_name="Reader", latitude=50.9,
+                        longitude=6.9, timezone="Europe/Berlin")
+    monkeypatch.setattr("kushluk.setup_web.discover_queues",
+                        lambda: preflight.PrinterInventory("found", ("Safe_A", "Safe_B"), "OK"))
+    monkeypatch.setattr("kushluk.setup_web.check_queue",
+                        lambda name, inv: preflight.PrinterReadiness(name, "unconfirmed", False, False, False, "Offline"))
+    csrf = token(request(server)[1])
+    request(server, "POST", "/printer/scan", {"csrf": csrf})
+    request(server, "POST", "/printer/check", {"csrf": csrf, "queue": "Safe_A"})
+    good = {"csrf": csrf, "queue": "Safe_A", "consent": "yes"}
+    for fields, headers in [
+        ({**good, "queue": "Safe_B"}, None),
+        ({**good, "queue": "../Safe_A"}, None),
+        ({**good, "csrf": "invalid"}, None),
+        (good, {"Origin": "https://evil.invalid"}),
+        (good, {"Host": "localhost:8080"}),
+        ({**good, "consent": "1"}, None),
+        ({**good, "unexpected": "x"}, None),
+    ]:
+        assert request(server, "POST", "/printer/save", fields, headers)[0] in (400, 403, 404, 422)
+    assert read_local_profile(server.profile_file)["printer"] is None
+    assert request(server, "POST", "/printer/save", good)[0] == 200
+    # Availability metadata can be unconfirmed; saved selection != printer acceptance.
+    assert read_local_profile(server.profile_file)["printer"] == "Safe_A"
