@@ -48,6 +48,36 @@ the actual shipping distribution can resolve different dependency versions. SPDX
 is not legal signoff. Native/font redistribution rights, transitive obligations,
 provenance and binary reproducibility still need the independent release review.
 
+## Per-install licence-review worksheet (review pending)
+
+Each clean **wheel** and **sdist** installation now creates a hashed
+`license-review-worksheet.json` beside its `installed-environment.json`.
+This fixed-schema worksheet assigns every installed Python distribution an
+explicit **pending** licence-review row and classifies its metadata as
+declared SPDX expression, classifier-only, legacy field, or missing. It also
+includes four native libraries (**Pango, Fontconfig, HarfBuzz, Cairo**) and
+three font-family match queries (**sans-serif, serif, monospace**) as pending
+independent reviews. The source snapshot hash is included; the result is
+not an approval.
+
+To combine a locally saved native inventory with a clean-install inventory:
+
+```bash
+python -m tools.license_review_matrix \
+  --python /PRIVATE/installed-environment.json \
+  --native /PRIVATE/native-evidence.json \
+  --output /PRIVATE/reviews/license-worksheet.json
+```
+
+Without `--native`, those native/font rows are still present but explicitly
+unobserved. A CI-installed runtime is **not** the same as an exact pinned release
+dependency graph, and numeric native versions do not identify fonts bundled or
+embedded into a PDF. Reviewers must separately establish and record actual
+licence texts and fulfil attribution, embedding and redistribution obligations;
+the worksheet neither copies licence text nor grants rights. Machine-generated
+rows always have `approved_for_release=false`, and a human must sign off
+separately outside the generation tool. No fonts are uploaded or bundled.
+
 ## What remains before publishing anything
 
 - Inspect each transitive Python distribution's actual license and retained notices; verify bundled code/assets/fonts and any incompatible terms.
