@@ -13,6 +13,7 @@ from kushluk.config import Settings
 from kushluk.doctor import core_ready, run_doctor
 from kushluk.epub import EpubError, export_archived_epub
 from kushluk.field_proof import FieldProofError, record_field_proof
+from kushluk.host_trial_review import HostTrialReviewError, review_host_trial
 from kushluk.local_profile import LocalProfileError, profile_path, write_local_profile
 from kushluk.newsletter_discovery import NewsletterError, discover, save_proposals, set_mode
 from kushluk.connectors.google_local import (
@@ -339,6 +340,16 @@ def build_parser() -> argparse.ArgumentParser:
                             default="a4-home")
     inspection.add_argument("--rasterize", action="store_true")
     inspection.add_argument("--dpi", type=int, default=100)
+
+    host_review = sub.add_parser(
+        "host-trial-review",
+        help="Read-only five-day host trial evidence cross-check; never approves hardware",
+    )
+    host_review.add_argument("--start-date", required=True, help="First local YYYY-MM-DD date")
+    host_review.add_argument("--days", type=int, default=5, help="Consecutive days (5–14)")
+    host_review.add_argument("--receipts-dir", type=Path, required=True)
+    host_review.add_argument("--archive-root", type=Path,
+                             help="Private archive root; defaults to configured local archive")
 
     field = sub.add_parser(
         "record-field-proof", help="Record self-attested physical printer, reader or host trial"
@@ -814,6 +825,21 @@ def main(argv: list[str] | None = None) -> int:
             "report": str(args.output_dir / "inspection.json"),
         }))
         return 2 if report["structural_errors"] else 0
+
+    if args.command == "host-trial-review":
+        try:
+            start = date.fromisoformat(args.start_date)
+            report = review_host_trial(
+                archive_root=args.archive_root or settings.archive_dir,
+                receipts_dir=args.receipts_dir, start_date=start, days=args.days,
+                timezone=settings.timezone,
+            )
+        except (HostTrialReviewError, ValueError) as exc:
+            code = str(exc) if isinstance(exc, HostTrialReviewError) else "invalid_start_date"
+            print(json.dumps({"status": "rejected", "error": code}))
+            return 2
+        print(json.dumps(report, ensure_ascii=False))
+        return 0
 
     if args.command == "record-field-proof":
         try:
