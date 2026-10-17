@@ -48,6 +48,8 @@ kushluk record-field-proof --kind epub-reader \
 
 Use synthetic or otherwise rights-cleared data for shared screenshots. A private EPUB may contain personal calendar information or references from subscriptions. Never publish it as a public CI artifact.
 
+The [host trial cross-check](HOST_TRIAL_REVIEW.md) can compare a consecutive local-date window against actual archived run receipts and operator observations, without creating, sending or accepting any evidence. It is a helper for the independent reviewer, **not** a five-morning certification.
+
 ## 3 — Five unattended real-host mornings
 
 For each genuine morning, retain the run receipt (including date/edition ID), offline and online outcome, actual printer queue ID if applicable, whether duplicate printing was observed, restart/sleep/wake behavior, readiness against configured deadline, and any manual intervention. Use `kushluk run-status --date YYYY-MM-DD` as evidence; use the manual archive-recovery command **only with its existing explicit duplicate-risk acknowledgement**. After physical observation, record `--kind host-resume --artifact SOME_RUN_RECEIPT.json` and at least one additional log/photo as evidence.
