@@ -35,7 +35,7 @@ def profile_path() -> Path:
 
 def _validate(data: object) -> dict:
     if (not isinstance(data, dict)
-            or set(data) not in {_FIELDS, _FIELDS - {"paper_size"}}
+            or frozenset(data) not in {_FIELDS, _FIELDS - {"paper_size"}}
             or data.get("schema_version") != 1):
         raise LocalProfileError("Unsupported local profile schema")
     name = data["home_name"]
