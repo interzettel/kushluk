@@ -8,6 +8,10 @@ Core rule:
 
 > **Selection over collection. Reliability before cleverness.**
 
+## Composed page archetypes
+
+The runnable deterministic composition and audited copy-fitting rules are documented in [LAYOUT_COMPOSITION.md](LAYOUT_COMPOSITION.md). Balanced, news-heavy and practical-heavy archetypes share four A4 logical pages and theme-independent source references; none should invent image rights. Character budgets and a WeasyPrint geometry inspector are initial software checks, not final line-by-line typographic proof.
+
 ## Edition geometry
 
 Default:
