@@ -9,6 +9,14 @@ This is the cross-stage execution ledger for Kushluk. It records work that is de
 
 **Known ADR reconciliation issue:** accepted ADR 0015 (replaceable orchestration and agent runtime) is now indexed; two files still claim accepted ADR 0012. Resolve the duplicate under #44 before treating either variant as a uniquely canonical decision. Do not silently change accepted-ADR text.
 
+## M1 follow-up: bounded archive compatibility and dependency inventory — #54/#87, 2026-10-17
+
+[PR #121](https://github.com/interzettel/kushluk/pull/121) builds on green M1 clean-install [PR #120](https://github.com/interzettel/kushluk/pull/120). Both clean wheel and sdist environments now run `pip check` and produce an installed Python distribution/version/license-**metadata** inventory, with SHA-256 provenance and explicitly **incomplete** legal, native dependency and vulnerability checks. [Audit bounds](DEPENDENCY_AUDIT.md).
+
+The installed CLI `kushluk archive-check --archive-root ...` now assesses bounded private archived **metadata** read-only, classifying canonically structured schema-v2 pages as readable, legacy schema-v1/future as unsupported pending migration, and malformed/symlink references as unsafe. It exposes aggregate counts only; no archived content migration or physical/SMTP delivery approval. [Archive compatibility contract](ARCHIVE_COMPATIBILITY.md).
+
+**Remaining:** authoritative independent license/VEX/CVE review, native PDF/font dependency notice review, an approved and reversible migration design for v1, actual older-user archived editions, and any future release tag/version. **Task ledger remains 26/90 · 28.89%; evidence gates G1–G8 0/8**, package version 0.1.0, **no prerelease publication**.
+
 ## Google OAuth source adapters and exact DOI metadata checking — #49/#48/#16, 2026-10-17
 
 [PR #119](https://github.com/interzettel/kushluk/pull/119) adds a local Gmail metadata OAuth client, a separate Google Tasks read-only client wired into real editions, limited cloud HTTP queries and a conservative exact Crossref bibliographic checker. See [GOOGLE_PROVIDERS.md](GOOGLE_PROVIDERS.md).
