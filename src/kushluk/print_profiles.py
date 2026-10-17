@@ -6,6 +6,17 @@ from pathlib import Path
 from kushluk.validation import validate_pdf
 
 
+def resolve_home_print_profile(paper_size: str, profile: str | None = None) -> str:
+    """Resolve a saved home choice only when no explicit profile was requested."""
+    if profile is None:
+        if paper_size not in {"a4", "letter"}:
+            raise ValueError("invalid_home_paper_size")
+        return "letter-home" if paper_size == "letter" else "a4-home"
+    if profile not in {"a4-home", "letter-home", "a3-folded"}:
+        raise ValueError("invalid_print_profile")
+    return profile
+
+
 LETTER_WIDTH = 612.0
 LETTER_HEIGHT = 792.0
 
