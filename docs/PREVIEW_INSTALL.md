@@ -17,6 +17,7 @@ Open [GitHub Actions → CI](https://github.com/interzettel/kushluk/actions/work
 - `wheel/kushluk-preview.html`, `.md`, `-edition.json`, `preview-manifest.json` — synthetic sample generated **after clean wheel installation**
 - `sdist/...` — equivalent files generated from the **clean sdist installation**
 - `release-evidence.json` — platform, Python version, archive SHA-256s and verification state
+- `m1-preflight.json` — independent checksum/installed-preview/rights-boundary audit; **not a release approval**
 - On macOS: `wheel/kushluk-preview.pdf` and `sdist/kushluk-preview.pdf` — checked as four logical A4 PDF pages
 
 CI artifacts are temporary (14-day retention), **not** signed release assets, release tags or an approval to put the application into unattended production. The artifact ZIP is only for developer review. Verify checksums before installing any copied files.
