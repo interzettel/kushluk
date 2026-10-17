@@ -66,6 +66,7 @@ def discover_queues() -> PrinterInventory:
 def check_queue(name: str, inventory: PrinterInventory) -> PrinterReadiness:
     # A caller must scan first; never trust arbitrary destinations from a POST.
     if (not isinstance(name, str) or not _QUEUE.fullmatch(name)
+            or not isinstance(inventory, PrinterInventory)
             or inventory.status != "found" or name not in inventory.queues):
         raise ValueError("Select a queue from the last local printer scan")
     capabilities = detect_printer_capabilities(name)
