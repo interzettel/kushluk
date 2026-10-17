@@ -49,6 +49,10 @@ RSS item links are now checked as references (without network access) before bec
 
 `kushluk setup-web` provides a temporary loopback-only browser form with CSRF/Host/Origin protections, no third-party resources, and a create-only private profile. It neither activates subscriptions nor configures actual printers or schedulers; see [LOCAL_SETUP.md](LOCAL_SETUP.md). End-user accessibility/real device and installation acceptance are not verified.
 
+### E-reader language semantics (F-016 — partial)
+
+EPUB export accepts an explicit IETF language tag (e.g., `--language de`) and places it consistently in OPF metadata and XHTML navigation/chapters. The old honest `und` default remains for editions without a known dominant language. Static TOC labels have English, German, and Turkish translations. The real W3C EPUBCheck job now covers English and German synthetic exports, but real screen-reader/multilingual content acceptance remains open under #33.
+
 ## Repository hygiene
 
 - Default branch: `main`.

@@ -25,3 +25,17 @@ The exporter writes `mimetype` as the first **uncompressed** ZIP entry, the stan
 The [EPUB conformance workflow](../.github/workflows/epub-conformance.yml) builds a **synthetic offline edition** from `tools/make_epub_fixture.py` and runs the official [W3C EPUBCheck](https://github.com/w3c/epubcheck) **v5.4.0**, with its downloaded ZIP checked against the release asset's SHA-256. The official validator is not a package dependency or copied into the repository. Only artificial/public fixture content is used; no private archives or subscribed feeds are uploaded.
 
 **This is a real validator execution only when the workflow's `W3C EPUBCheck 5.4.0` job succeeds.** The earlier home-made ZIP/XML checks are necessary but not equivalent. Even a valid EPUB under EPUBCheck still needs **Ace by DAISY accessibility checks, screen-reader navigation, and actual Kobo/Kindle/KOReader hardware evidence**; do not turn a green validator into a false reader acceptance gate. 
+
+## Declared publication language for screen readers
+
+The archived v2 schema does not know the primary language of your reading material. Instead of guessing from your location or timezone, offline export now accepts an **explicit language**:
+
+```bash
+kushluk export-epub --date 2026-10-17 --language en
+kushluk export-epub --date 2026-10-17 --language de-DE --output ~/Books/edition-de.epub
+kushluk export-epub --date 2026-10-17 --language tr --output ~/Books/edition-tr.epub
+```
+
+Omitting `--language` retains `und` (“undetermined”), rather than falsely asserting that a reader's multilingual sources are English or German. The value is checked against a conservative BCP 47 subset, used consistently in `dc:language`, OPF `xml:lang`, navigation and chapter root `lang`/`xml:lang`. Navigation section names are translated for **English, German and Turkish**; other languages currently use English navigation labels while retaining the selected tag. The result reports the selected language.
+
+This is an **accessibility metadata improvement**, not an assertion that each article, its generated text, pronunciation or full WCAG accessibility is validated. Mixed-language excerpts still need item-level tags and accessible-reader trials. Both explicit English and German synthetic editions are now checked by the independent W3C EPUBCheck 5.4.0 workflow, without transmitting private archives.

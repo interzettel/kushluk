@@ -50,3 +50,4 @@ jobs:
           jar="$(find "${RUNNER_TEMP}/epubcheck" -name epubcheck.jar -type f -print -quit)"
           test -n "$jar"
           java -jar "$jar" "${RUNNER_TEMP}/synthetic.epub"
+          java -jar "$jar" "${RUNNER_TEMP}/synthetic-de.epub"

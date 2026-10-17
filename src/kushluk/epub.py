@@ -10,6 +10,7 @@ from hashlib import sha256
 from html import escape
 import json
 import os
+import re
 from pathlib import Path
 from kushluk.feed_network import public_article_link
 from zipfile import ZipFile, ZIP_DEFLATED, ZIP_STORED
@@ -18,6 +19,27 @@ import xml.etree.ElementTree as ET
 
 class EpubError(ValueError):
     """Public error with no private archive content included."""
+
+
+# Only publication-level language is known in archived v2 content.
+_LABELS = {
+    "en": ("Front", "Today", "For You", "Sources"),
+    "de": ("Titelseite", "Heute", "Für dich", "Quellen"),
+    "tr": ("Kapak", "Bugün", "Senin için", "Kaynaklar"),
+}
+
+
+def _language_tag(value: str) -> str:
+    """Validate a conservative IETF BCP47 language-tag subset."""
+    if not isinstance(value, str) or len(value) > 35 or not re.fullmatch(
+        r"[A-Za-z]{2,3}(?:-[A-Za-z0-9]{2,8}){0,4}", value, re.ASCII
+    ):
+        raise EpubError("Invalid EPUB language tag")
+    return value
+
+
+def _labels(language: str) -> tuple[str, str, str, str]:
+    return _LABELS.get(language.split("-", 1)[0].lower(), _LABELS["en"])
 
 
 def _e(text: object) -> str:
@@ -74,9 +96,9 @@ def _source_link(story: dict) -> str:
     return f'<p class="source">Source: <a href="{_e(address)}">{label}</a></p>'
 
 
-def _section(page: dict, payload: dict) -> str:
+def _section(page: dict, payload: dict, language: str) -> str:
     number = page["number"]
-    titles = {1: "Front", 2: "Today", 3: "For You", 4: "Sources"}
+    titles = dict(enumerate(_labels(language), 1))
     body = [f"<h1>Page {number} · {titles[number]}</h1>"]
     practical = payload["practical"]
     stories = {row["id"]: row for row in payload["stories"]}
@@ -108,29 +130,29 @@ def _section(page: dict, payload: dict) -> str:
     return (
         '<?xml version="1.0" encoding="UTF-8"?>\n'
         '<!DOCTYPE html>\n'
-        '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="und">'
+        '<html xmlns="http://www.w3.org/1999/xhtml" ' + f'lang="{language}" xml:lang="{language}">'
         '<head><title>Kushluk · ' + _e(titles[number]) + '</title>'
         '<link rel="stylesheet" type="text/css" href="style.css" /></head>'
         '<body><main>' + "".join(body) + "</main></body></html>"
     )
 
 
-def _navigation() -> str:
+def _navigation(language: str) -> str:
     items = "".join(
         f'<li><a href="page-{n}.xhtml">Page {n} · {title}</a></li>'
-        for n, title in enumerate(("Front", "Today", "For You", "Sources"), 1)
+        for n, title in enumerate(_labels(language), 1)
     )
     return (
         '<?xml version="1.0" encoding="UTF-8"?>\n'
         '<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml" '
-        'xmlns:epub="http://www.idpf.org/2007/ops" xml:lang="und">'
+        'xmlns:epub="http://www.idpf.org/2007/ops" ' + f'lang="{language}" xml:lang="{language}">'
         '<head><title>Kushluk contents</title></head><body>'
         '<nav epub:type="toc" id="toc"><h1>Contents</h1><ol>' + items
         + "</ol></nav></body></html>"
     )
 
 
-def _package(payload: dict) -> str:
+def _package(payload: dict, language: str) -> str:
     edition = _e(payload["edition_id"])
     date_text = _e(payload["target_date"])
     raw = payload.get("generated_at")
@@ -150,11 +172,11 @@ def _package(payload: dict) -> str:
     return (
         '<?xml version="1.0" encoding="UTF-8"?>\n'
         '<package xmlns="http://www.idpf.org/2007/opf" version="3.0" '
-        'unique-identifier="pub-id" xml:lang="und">'
+        'unique-identifier="pub-id" ' + f'xml:lang="{language}">'
         '<metadata xmlns:dc="http://purl.org/dc/elements/1.1/">'
         f'<dc:identifier id="pub-id">urn:kushluk:{edition}</dc:identifier>'
         f'<dc:title>Kushluk · {date_text}</dc:title>'
-        '<dc:language>und</dc:language>'
+        f'<dc:language>{language}</dc:language>'
         f'<meta property="dcterms:modified">{modified_text}</meta>'
         '</metadata><manifest>'
         '<item id="nav" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/>'
@@ -170,8 +192,10 @@ a { color: inherit; }
 """
 
 
-def export_archived_epub(archive_root: Path, target_date: date, output: Path) -> dict:
+def export_archived_epub(archive_root: Path, target_date: date, output: Path,
+                         *, language: str = "und") -> dict:
     """Write a private EPUB, exclusively, from an already archived metadata.json."""
+    language = _language_tag(language)
     edition_id = f"{target_date:%Y%m%d}-001"
     payload = _metadata(archive_root / edition_id, target_date)
     output.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
@@ -191,12 +215,12 @@ def export_archived_epub(archive_root: Path, target_date: date, output: Path) ->
                 '</rootfiles></container>',
                 compress_type=ZIP_DEFLATED,
             )
-            epub.writestr("OEBPS/package.opf", _package(payload), compress_type=ZIP_DEFLATED)
-            epub.writestr("OEBPS/nav.xhtml", _navigation(), compress_type=ZIP_DEFLATED)
+            epub.writestr("OEBPS/package.opf", _package(payload, language), compress_type=ZIP_DEFLATED)
+            epub.writestr("OEBPS/nav.xhtml", _navigation(language), compress_type=ZIP_DEFLATED)
             epub.writestr("OEBPS/style.css", _STYLE, compress_type=ZIP_DEFLATED)
             for page in payload["pages"]:
                 epub.writestr(f'OEBPS/page-{page["number"]}.xhtml',
-                              _section(page, payload), compress_type=ZIP_DEFLATED)
+                              _section(page, payload, language), compress_type=ZIP_DEFLATED)
     except BaseException:
         output.unlink(missing_ok=True)
         raise
@@ -218,6 +242,7 @@ def export_archived_epub(archive_root: Path, target_date: date, output: Path) ->
         "status": "exported",
         "edition_id": edition_id,
         "chapters": 4,
+        "language": language,
         "source": "archived-metadata-only",
         "epub_sha256": sha256(output.read_bytes()).hexdigest(),
         "output": str(output),
