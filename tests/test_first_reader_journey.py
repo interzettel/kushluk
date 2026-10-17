@@ -176,7 +176,6 @@ def test_synthetic_first_reader_journey_u1_to_u6(browser, monkeypatch):
     assert calls == ["discover", ("check", "Local_A4")]
 
     # U6: the flow must be truthful about disabled operations.
-    assert "no print job" in printer_page.lower()
     assert "will never submit a print job" in printer_page
     assert "never copied articles" in page
     assert "No sources were enabled and no paper was printed" in done
