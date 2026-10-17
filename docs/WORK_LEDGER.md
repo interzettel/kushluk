@@ -9,6 +9,19 @@ This is the cross-stage execution ledger for Kushluk. It records work that is de
 
 **Known ADR reconciliation issue:** accepted ADR 0015 (replaceable orchestration and agent runtime) is now indexed; two files still claim accepted ADR 0012. Resolve the duplicate under #44 before treating either variant as a uniquely canonical decision. Do not silently change accepted-ADR text.
 
+## Editorial input adapters, conservative provenance and local newsletter discovery — #49/#48/#16, 2026-10-17
+
+[PR #118](https://github.com/interzettel/kushluk/pull/118) adds optional task/research inputs and metadata-only newsletter proposals. [EDITORIAL_INPUTS.md](EDITORIAL_INPUTS.md) documents the rights and trust boundaries.
+
+**Three software-level SRC tasks checked, with narrowly scoped evidence:**
+- **SRC-03**: working provider-replaceable local JSON task adapter, owner-provided export; strict schema, due/overdue filtering, no completed task, no credentials and nonsecret failure behavior. **Real remote OAuth task provider remains open.**
+- **SRC-04**: opt-in Crossref public scholarly metadata title search with 5-result bound, HTTPS hostname-pinned SSRF/redirect guard; includes DOI pointer, originating date and no abstract/body or invented facts. **Broader current-news and general web research adapters remain open.**
+- **SRC-07**: preserved candidate/origin identifiers, clean source URL, publish/retrieval timestamps, reference-only rights and conservative verification status through clustering, story selection and publication archive.
+
+**Partially implemented but unchecked:** SRC-01 local owner-exported header discovery with 60-day/250-record limits and no message bodies, but no live consented mailbox API; SRC-02 explicit four per-newsletter rights modes are stored but **all ingestion remains disabled** pending provider-specific permission review; SRC-08 unverified/conflicted source-pointer states, not factual claim verification; SRC-09 existing clustering covers RSS and research but not newsletter/social ingestion or independent disagreement evidence. SRC-05/06/10 still open. #16 local metered cost/production adversarial tests remain separate.
+
+**Ledger software snapshot:** **26/90 · 28.89%** checked; SRC **3/10 · 30.00%**. Evidence gates **G1–G8 0/8 · 00.00%**; version stays `0.1.0`. No public, mail, OAuth, physical print or verified-claim acceptance claimed.
+
 ## Rights-aware owner-imported media — #50, 2026-10-17
 
 **Status:** [PR #117](https://github.com/interzettel/kushluk/pull/117) under full Linux/macOS CI review. [MEDIA_RIGHTS.md](MEDIA_RIGHTS.md) defines private-print versus shareable rights boundaries, explicit local grant/import/assignment, checksum-secured originals and text-only fallback.
@@ -186,11 +199,11 @@ Six previously unchecked tasks are now checked **for implemented software behavi
 
 - [ ] **SRC-01** Implement connected-mail newsletter discovery over a bounded recent window.
 - [ ] **SRC-02** Implement per-newsletter modes from ADR 0012.
-- [ ] **SRC-03** Add a real task connector.
-- [ ] **SRC-04** Add public-web/news research as a provider-independent candidate source.
+- [x] **SRC-03** Add a real task connector.
+- [x] **SRC-04** Add public-web/news research as a provider-independent candidate source.
 - [ ] **SRC-05** Add Reddit/Hacker News connectors.
 - [ ] **SRC-06** Investigate/implement X/social source adapter without making it a hard dependency.
-- [ ] **SRC-07** Preserve original source URLs/message references and timestamps through synthesis.
+- [x] **SRC-07** Preserve original source URLs/message references and timestamps through synthesis.
 - [ ] **SRC-08** Strengthen claim verification for material stories.
 - [ ] **SRC-09** Deduplicate newsletters, RSS, social, and web coverage into story clusters.
 - [ ] **SRC-10** Add travel-context signal adapters from calendar plus connected ticket/confirmation/provider sources without building a permanent travel-history corpus.
