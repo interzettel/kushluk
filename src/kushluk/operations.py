@@ -15,6 +15,7 @@ from typing import Any
 from kushluk.config import Settings
 from kushluk.recovery import deliver_archived
 from kushluk.run_metrics import run_report, timing_plan
+from kushluk.incident import build_incident_report
 from kushluk.scheduled import pause_day, read_run_status, resume_day, run_once
 
 
@@ -28,6 +29,7 @@ _ACTION_FIELDS = {
             "acknowledge_delivery", "ready_by", "expected_start"},
     "status": {"schema_version", "action", "date"},
     "report": {"schema_version", "action", "date"},
+    "incident_report": {"schema_version", "action", "date"},
     "timing_plan": {"schema_version", "action", "date", "ready_by",
                     "margin_minutes", "history_days"},
     "pause": {"schema_version", "action", "date"},
@@ -63,6 +65,11 @@ def operate_request(
     if set(request) - _ACTION_FIELDS[action]:
         raise OperationError("unknown_fields")
     target_date = _strict_date(request.get("date"))
+    if action == "incident_report":
+        incident = build_incident_report(settings, target_date=target_date)
+        return {"schema_version": 1, "action": action,
+                "status": incident["status"], "outcome": incident,
+                "physical_verified": False, "remote_report_sent": False}
     if action == "report":
         report = run_report(settings, target_date=target_date)
         return {"schema_version": 1, "action": action,
