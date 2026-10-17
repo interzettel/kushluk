@@ -6,7 +6,7 @@ import re
 import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
-from kushluk.feed_network import FeedNetworkError, fetch_public_xml
+from kushluk.feed_network import FeedNetworkError, fetch_public_xml, public_article_link
 
 from kushluk.models import Candidate, SourceRef
 
@@ -40,7 +40,7 @@ class RSSConnector:
                 )
                 for raw in _entries(root)[: self.per_feed]:
                     title = _clean(raw.get("title") or "Untitled")
-                    link = raw.get("link") or ""
+                    link = public_article_link(raw.get("link")) or ""
                     # All RSS is reference-only, including legacy env-configured
                     # endpoints and direct connector calls. No feed article body.
                     summary = ""
