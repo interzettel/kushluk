@@ -82,5 +82,20 @@ alert, push message, SMTP delivery or cloud-monitoring service.
 - `archive_complete_delivery_not_implied`: archived output exists, but no
   physical or human delivery is independently verified.
 
+## Agent incident-report contract (issue #20)
+
+The explicit `kushluk incident-report --date YYYY-MM-DD [--output PRIVATE_FILE]`
+command and local `incident_report` JSON operation add a stable version-1,
+content-free, human-readable incident with typed severity, separately identified
+submission outcomes, fixed allowed failure codes and non-executable remediation
+advice. Unknown receipt codes are replaced with `unclassified_failure`, never
+echoed; no provider errors, calendar fields or raw prompts enter the output.
+
+Read [the agent incident protocol](AGENT_INCIDENT_PROTOCOL.md) before reusing
+these reports in another agent. Merely preparing or saving a private local report
+**does not** send or authorize remote diagnostics, launch a notification, retry
+a run or prove paper/recipient delivery. Existing issue #18 governs any future
+voluntary data contribution.
+
 The user-facing next step remains a real local notification capability under
 #17/#20/#47; this patch addresses comprehensible *read-only remediation* first.
