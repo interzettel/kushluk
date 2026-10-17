@@ -12,7 +12,10 @@ from pathlib import Path
 from urllib.parse import parse_qs
 import webbrowser
 
-from kushluk.local_profile import LocalProfileError, profile_path, write_local_profile
+from kushluk.local_profile import (
+    LocalProfileError, profile_path, read_local_profile,
+    update_local_printer, write_local_profile,
+)
 from kushluk.opml import OPMLImportError
 from kushluk.printer_preflight import (
     check_queue, discover_queues, render_printer_review,
@@ -143,7 +146,7 @@ class SetupHandler(BaseHTTPRequestHandler):
             and self.headers.get("Host") == f"127.0.0.1:{self.server.server_port}"
             and self.path in {
                 "/", "/sources", "/sources/import", "/sources/approve", "/sources/mode",
-                "/printer", "/printer/scan", "/printer/check",
+                "/printer", "/printer/scan", "/printer/check", "/printer/save",
             }
         )
 
@@ -152,9 +155,14 @@ class SetupHandler(BaseHTTPRequestHandler):
             self._reply(404, "<h1>Not found</h1>")
             return
         if self.path == "/printer":
+            try:
+                profile = read_local_profile(self.server.profile_file)
+            except LocalProfileError:
+                profile = {}
             page = render_printer_review(
                 self.server.printer_inventory, self.server.printer_readiness,
-                csrf=self.server.csrf,
+                csrf=self.server.csrf, saved_queue=profile.get("printer"),
+                profile_exists=bool(profile),
             )
             self._reply(200, page)
             return
@@ -209,6 +217,7 @@ class SetupHandler(BaseHTTPRequestHandler):
             "/sources/mode": {"csrf", "id", "mode"},
             "/printer/scan": {"csrf"},
             "/printer/check": {"csrf", "queue"},
+            "/printer/save": {"csrf", "queue", "consent"},
         }
         if self.path == "/sources/mode" and "consent" in fields:
             expected_fields["/sources/mode"].add("consent")
@@ -228,9 +237,8 @@ class SetupHandler(BaseHTTPRequestHandler):
                 self.server.printer_inventory = discover_queues()
                 self.server.printer_readiness = None
                 notice = "Local queue discovery completed; no print job sent."
-            else:
-                # Enforce prior user-initiated discovery before invoking even a
-                # mocked/custom capability provider.
+            elif self.path == "/printer/check":
+                # Enforce explicit discovery before invoking any capability checker.
                 if (self.server.printer_inventory is None
                         or fields["queue"][0] not in self.server.printer_inventory.queues):
                     self._reply(422, "<h1>Printer was not selected from the scan</h1>")
@@ -243,9 +251,34 @@ class SetupHandler(BaseHTTPRequestHandler):
                     self._reply(422, "<h1>Printer was not selected from the scan</h1>")
                     return
                 notice = "Read-only capability check completed; nothing printed."
+            else:
+                # No unscanned, unchecked, stale or unconsented queue may persist.
+                queue = fields["queue"][0]
+                if (fields["consent"][0] != "yes"
+                        or self.server.printer_inventory is None
+                        or self.server.printer_inventory.status != "found"
+                        or queue not in self.server.printer_inventory.queues
+                        or self.server.printer_readiness is None
+                        or self.server.printer_readiness.name != queue):
+                    self._reply(422, "<h1>Check the printer and confirm before saving</h1>")
+                    return
+                try:
+                    update_local_printer(self.server.profile_file, printer=queue)
+                    profile = read_local_profile(self.server.profile_file)
+                except (LocalProfileError, OSError):
+                    self._reply(422, "<h1>Printer preference not saved</h1>"
+                                "<p>Create a private profile first or check its permissions.</p>")
+                    return
+                notice = "Printer preference saved locally. No printing has been enabled."
+            if self.path != "/printer/save":
+                try:
+                    profile = read_local_profile(self.server.profile_file)
+                except LocalProfileError:
+                    profile = {}
             self._reply(200, render_printer_review(
                 self.server.printer_inventory, self.server.printer_readiness,
                 csrf=self.server.csrf, notice=notice,
+                saved_queue=profile.get("printer"), profile_exists=bool(profile),
             ))
             return
         if self.path.startswith("/sources/"):
