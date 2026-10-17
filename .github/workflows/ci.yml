@@ -23,6 +23,29 @@ jobs:
       - name: Hermetic CLI edition smoke (no network, CUPS or SMTP)
         run: python -m tools.offline_smoke
 
+  package-linux:
+    name: Installable wheel/sdist / Linux Python ${{ matrix.python }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install PEP 517 isolated build tooling
+        run: python -m pip install --upgrade build
+      - name: Rebuild wheel/sdist twice and clean-install both
+        run: python -m tools.release_check --artifact-dir output/m1-preview
+      - name: Upload synthetic installer evidence (no tag or release)
+        uses: actions/upload-artifact@v4
+        with:
+          name: kushluk-m1-linux-py${{ matrix.python }}
+          path: output/m1-preview/
+          retention-days: 14
+
   macos:
     name: macOS / ${{ matrix.runner }}
     runs-on: ${{ matrix.runner }}
@@ -76,4 +99,14 @@ jobs:
         with:
           name: kushluk-print-proof-${{ matrix.runner }}
           path: output/print-proof/
+          retention-days: 14
+      - name: Install PEP 517 isolated build tooling
+        run: python -m pip install --upgrade build
+      - name: Check clean wheel and sdist installs on macOS with four-page PDF
+        run: python -m tools.release_check --pdf --artifact-dir output/m1-preview
+      - name: Upload local installable preview candidate (unreleased)
+        uses: actions/upload-artifact@v4
+        with:
+          name: kushluk-m1-${{ matrix.runner }}
+          path: output/m1-preview/
           retention-days: 14
