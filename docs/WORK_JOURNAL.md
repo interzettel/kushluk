@@ -2,6 +2,14 @@
 
 A concise, dated evidence/history record for one maintainer with AI helpers. **This is not an activity-time tracker or a substitute for GitHub commits and discussions.**
 
+## 2026-10-17 — User-owned Google grants and narrow DOI evidence checks
+
+**PR #119** adds a desktop local OAuth flow with separate least-privilege `gmail.metadata`/`tasks.readonly` grants; limited Gmail header-only source review, optional real Google Tasks candidate generation, token-mode validation and explicit local disconnect. No remote credential or mail contents are stored in the repo.
+
+Crossref `crossref-check` tests exact DOI title/year metadata, disputes mismatches and abstains when missing/unavailable; does not claim independent verification of research conclusions. Hermetic security tests include malformed scopes, private token files, limited provider request fields, denied redirects, malicious private data and safe error codes. **No live Google OAuth token/user mailbox was accessed**; real acceptance remains evidence-gated.
+
+**Ledger 26/90 (28.89%) unchanged** until real authorized-provider and independent claim reviews. G1–G8 0/8, package v0.1.0.
+
 ## 2026-10-17 — Local tasks, public research pointers, bounded newsletter source review
 
 **Issues:** #49 task/public research; #48 newsletter discovery; #16 provenance and trust. **Stage:** PR #118 awaiting final cross-platform merge CI; no private inbox, paywalled provider or verified-claim entitlement claimed.
