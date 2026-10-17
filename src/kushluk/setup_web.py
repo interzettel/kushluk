@@ -158,7 +158,7 @@ class SetupHandler(BaseHTTPRequestHandler):
             return
         if self.server.profile_file.exists() or self.server.profile_file.is_symlink():
             self._reply(409, "<h1>Profile already exists</h1>"
-                        "<p>This setup page never overwrites your local preferences. <a href="/sources">Continue to source review</a>.</p>")
+                        "<p>This setup page never overwrites your local preferences. <a href=\'/sources\'>Continue to source review</a>.</p>")
             return
         self._reply(200, _FORM.replace("__TOKEN__", self.server.csrf))
 
