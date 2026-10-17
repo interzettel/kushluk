@@ -13,6 +13,7 @@ from kushluk.doctor import core_ready, run_doctor
 from kushluk.epub import EpubError, export_archived_epub
 from kushluk.field_proof import FieldProofError, record_field_proof
 from kushluk.local_profile import LocalProfileError, profile_path, write_local_profile
+from kushluk.media import MediaError, import_local_media, read_asset
 from kushluk.pipeline import run_pipeline
 from kushluk.operations import OperationError, operate_file
 from kushluk.opml import (
@@ -70,6 +71,27 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Send email only if requested printing fails",
     )
+
+    media_import = sub.add_parser(
+        "media-import", help="Explicitly approve and import one LOCAL raster; never fetch URLs"
+    )
+    media_import.add_argument("--file", type=Path, required=True)
+    media_import.add_argument("--store", type=Path, required=True)
+    media_import.add_argument("--license-id", required=True)
+    media_import.add_argument("--credit", required=True)
+    media_import.add_argument("--alt", required=True)
+    media_import.add_argument("--caption", default="")
+    media_import.add_argument("--source-url")
+    media_import.add_argument("--scope", choices=("private_print", "shareable"), required=True)
+    media_import.add_argument("--approve-print", action="store_true", default=False)
+    media_import.add_argument("--focal-x", type=float, default=0.5)
+    media_import.add_argument("--focal-y", type=float, default=0.5)
+    media_import.add_argument("--crop-policy", choices=("focal-crop", "contain"),
+                              default="focal-crop")
+
+    media_info = sub.add_parser("media-info", help="Inspect one owner-approved local image")
+    media_info.add_argument("--store", type=Path, required=True)
+    media_info.add_argument("--asset-id", required=True)
 
     run = sub.add_parser("run", help="Idempotent local scheduled edition run (at most once)")
     run.add_argument("--date", dest="target_date", help="YYYY-MM-DD; defaults to today locally")
@@ -311,6 +333,31 @@ def main(argv: list[str] | None = None) -> int:
             "contains_credentials": False,
             "contacts_network": False,
             "source_permissions_modified": False,
+        }))
+        return 0
+
+    if args.command in ("media-import", "media-info"):
+        try:
+            if args.command == "media-import":
+                result = import_local_media(
+                    args.file, args.store, license_id=args.license_id,
+                    attribution=args.credit, alt_text=args.alt,
+                    caption=args.caption, permission_scope=args.scope,
+                    approved_for_print=args.approve_print,
+                    source_url=args.source_url, focal_x=args.focal_x,
+                    focal_y=args.focal_y, crop_policy=args.crop_policy,
+                )
+            else:
+                result, _ = read_asset(args.store, args.asset_id)
+        except (MediaError, OSError, ValueError) as exc:
+            print(json.dumps({"status": "rejected", "error": (
+                str(exc) if isinstance(exc, MediaError) else "media_operation_failed"
+            )}))
+            return 2
+        print(json.dumps({
+            "status": "approved_local_media", "asset_id": result.asset_id,
+            "license_id": result.license_id, "scope": result.permission_scope,
+            "width_px": result.width_px, "height_px": result.height_px,
         }))
         return 0
 
