@@ -5,6 +5,14 @@ Documentation and issue inventory reviewed: 2026-10-17; six evidence-backed task
 
 **Status caveat:** the 2026-10-16 inventory did **not** independently rerun CI or physical print tests. Do not infer four-page migration, unattended execution, or real-reader trials are done from the new planning issues. [#43](https://github.com/interzettel/kushluk/issues/43) indexes all issues, and [ISSUE_CROSSWALK.md](ISSUE_CROSSWALK.md) maps the 90 existing work-ledger tasks to accountable issues. Execution blockers have dedicated issues: [#45](https://github.com/interzettel/kushluk/issues/45) format, [#46](https://github.com/interzettel/kushluk/issues/46) print profiles, [#47](https://github.com/interzettel/kushluk/issues/47) local scheduler/retries. Docs/ADR ambiguities: [#44](https://github.com/interzettel/kushluk/issues/44).
 
+### Native scheduler templates and recovered run-state reporting (#47)
+
+`kushluk schedule-export --platform systemd|launchd --executable ABS_PATH --working-dir ABS_PATH --output-dir ABS_PATH [--start HH:MM --latest-start HH:MM]` generates **uninstalled, create-only mode-0600** Linux user timer/service or macOS LaunchAgent files. The generated command calls the existing `kushluk run` idempotent pipeline, never `--print` by default. Clock times are configurable, and OS timezone must match the configured Kushluk timezone. No wake, login, start or delivery has been physically accepted. See [NATIVE_SCHEDULERS.md](NATIVE_SCHEDULERS.md).
+
+`scheduled.json` now preserves bounded chronological stage history. On Linux/macOS a private held flock differentiates **actively running** from **stale-after-crash** receipts. Stale or submission-uncertain states require review and cannot silently rerun; printing submission is not proof of printed paper. Synthetic crash/live-status tests are tracked under [#47](https://github.com/interzettel/kushluk/issues/47).
+
+**Software ledger:** AUT-05 is now checked for a tested native recipe; **13/90 (14.44%)** operational checkboxes, AUT **5/13 (38.46%)**; G1–G8 **0/8 (00.00%)**. AUT-09 (full real-delivery stage reporting), AUT-12 (observed adaptive scheduling), restart host evidence and five unattended mornings stay open.
+
 ### Stable local scheduler operations v1 (F-014 / #47; software only)
 
 `kushluk operate --request PRIVATE.json` accepts strictly versioned local JSON run/status/pause/resume/archived-delivery requests, with separate delivery consent and bounded errors. `kushluk run --latest-start HH:MM` enforces a last *start* cutoff in the configured IANA time zone, not a guaranteed print-ready deadline; date-scoped `pause-day` and `resume-day` persist small private markers without cancelling active runs or submitting jobs. The existing at-most-once run and manual archive reprint receipts remain authoritative. See [OPERATIONS_V1.md](OPERATIONS_V1.md) and `tests/test_operations.py`.
