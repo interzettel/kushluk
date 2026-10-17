@@ -10,6 +10,8 @@ from kushluk.config import Settings
 from kushluk.connectors.calendar_fixture import CalendarFixtureConnector
 from kushluk.connectors.calendar_ics import ICSCalendarConnector
 from kushluk.connectors.rss import RSSConnector
+from kushluk.connectors.task_local import LocalTaskConnector, TaskSourceError
+from kushluk.connectors.public_research import CrossrefMetadataConnector, ResearchError
 from kushluk.connectors.weather import OpenMeteoWeatherConnector
 from kushluk.delivery import send_email_edition
 from kushluk.editor import select_stories
@@ -83,7 +85,18 @@ def run_pipeline(
     else:
         _load_calendar_fixture(settings, practical, failures)
 
+    if settings.tasks_file is not None:
+        try:
+            practical.extend(LocalTaskConnector(settings.tasks_file, target_date).fetch())
+        except (TaskSourceError, OSError, ValueError) as exc:
+            failures.append(_failure("tasks_unavailable", "degraded", exc, "task"))
+
     candidates = []
+    if settings.research_query:
+        try:
+            candidates.extend(CrossrefMetadataConnector(settings.research_query).fetch())
+        except (ResearchError, OSError, ValueError) as exc:
+            failures.append(_failure("research_unavailable", "degraded", exc, "research"))
     rss_connector = RSSConnector(
         settings.rss_urls, reference_only_urls=settings.reference_only_rss_urls,
     )

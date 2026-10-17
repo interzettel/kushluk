@@ -2,6 +2,16 @@
 
 A concise, dated evidence/history record for one maintainer with AI helpers. **This is not an activity-time tracker or a substitute for GitHub commits and discussions.**
 
+## 2026-10-17 — Local tasks, public research pointers, bounded newsletter source review
+
+**Issues:** #49 task/public research; #48 newsletter discovery; #16 provenance and trust. **Stage:** PR #118 awaiting final cross-platform merge CI; no private inbox, paywalled provider or verified-claim entitlement claimed.
+
+- Add owner-exported replaceable local task connector for dated incomplete tasks, bounded file size/schema and source-safe errors.
+- Add explicit opt-in Crossref DOI/title/date public metadata adapter, using hostname-pinned HTTPS fetch, URL redaction, and reference-only mode; scholarly titles are not accepted as verified claims.
+- Persist original candidate source IDs, safe URLs, originating and retrieval time, transform and rights mode through clustering and published story metadata. Titles that differ remain flagged for human verification.
+- Add local header-only discovery and explicit mode-review CLI; proposals are owner-local/private and never activate copying or synthesis. All four modes remain disabled for live ingestion.
+- Software task evidence SRC-03/04/07 checked **26/90 (28.89%)**, SRC **3/10**. No hardware/evidence gate advanced (G1–G8 0/8); #16 cost and real provider verification remain outstanding.
+
 ## 2026-10-17 — Permission-gated print images and offline original artwork proof
 
 **Issues:** #50 media pipeline, #21 print, #4/#16 source rights/security. **State:** PR #117 implementation under final CI review; no physical/legal acceptance.

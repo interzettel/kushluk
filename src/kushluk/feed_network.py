@@ -121,18 +121,32 @@ class _PublicHTTPS(HTTPSConnection):
 
 def fetch_public_xml(url: str) -> bytes:
     """Fetch one permitted RSS XML response; reject unsafe redirects and large feeds."""
+    return _fetch_public_bytes(url, accept="application/rss+xml, application/atom+xml, application/xml, text/xml")
+
+
+def fetch_public_json(url: str, *, expected_host: str) -> bytes:
+    """Read a public JSON endpoint with the same DNS/TLS/size/redirect defenses."""
+    from urllib.parse import urlsplit
+    if urlsplit(url).scheme != "https" or urlsplit(url).hostname != expected_host:
+        raise FeedNetworkError("unapproved_public_json_endpoint")
+    return _fetch_public_bytes(url, accept="application/json", expected_host=expected_host)
+
+
+def _fetch_public_bytes(url: str, *, accept: str, expected_host: str | None = None) -> bytes:
     current = url
     previous_scheme = None
     for redirect in range(_MAX_REDIRECTS + 1):
         scheme, host, port, target = _target(
             current, previous_scheme=previous_scheme
         )
+        if expected_host and (scheme != "https" or host != expected_host):
+            raise FeedNetworkError("unapproved_public_json_redirect")
         address = _public_ip(host, port)
         conn = (_PublicHTTPS if scheme == "https" else _PublicHTTP)(host, address, port)
         try:
             conn.request("GET", target, headers={
                 "User-Agent": "Kushluk/0.1 (+https://github.com/interzettel/kushluk)",
-                "Accept": "application/rss+xml, application/atom+xml, application/xml, text/xml",
+                "Accept": accept,
                 "Accept-Encoding": "identity",
                 "Connection": "close",
             })

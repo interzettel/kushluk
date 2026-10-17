@@ -3,7 +3,8 @@ from __future__ import annotations
 import hashlib
 from urllib.parse import urlsplit, urlunsplit
 
-from kushluk.models import Candidate, Story, StoryCluster
+from kushluk.models import Candidate, Story, StoryCluster, StoryProvenance
+from kushluk.feed_network import public_article_link
 
 
 def cluster_candidates(candidates: list[Candidate]) -> list[tuple[StoryCluster, list[Candidate]]]:
@@ -51,13 +52,37 @@ def select_stories(candidates: list[Candidate], limit: int = 3) -> list[Story]:
             if len(cluster.candidate_ids) > 1
             else ""
         )
+        def provenance(entry: Candidate) -> StoryProvenance:
+            origin = entry.metadata.get("origin_id")
+            return StoryProvenance(
+                candidate_id=entry.id,
+                origin_ref=origin[:160] if isinstance(origin, str) else None,
+                source_name=entry.source.name[:100],
+                source_kind=entry.source.kind,
+                url=public_article_link(entry.url),
+                published_at=entry.published_at,
+                retrieved_at=entry.source.retrieved_at,
+                transform_mode="source-pointer",
+                rights_mode="reference-only",
+            )
+
+        evidence = [provenance(entry) for entry in items[:12]]
+        # Multiple near-duplicate titles do not establish independent fact-checking.
+        titles = {" ".join(entry.title.casefold().split()) for entry in items}
+        verification = (
+            "unverified-source-pointer" if len(evidence) == 1
+            else "potential-title-conflict" if len(titles) > 1
+            else "multi-source-unverified"
+        )
         stories.append(
             Story(
                 id=cluster.id,
                 headline=candidate.title,
                 deck=candidate.summary or "Open the source for the full story.",
                 source_name=candidate.source.name,
-                source_url=candidate.url or candidate.source.url,
+                source_url=public_article_link(candidate.url),
+                provenance=evidence,
+                verification_state=verification,
                 cluster_size=len(cluster.candidate_ids),
                 why_selected=(
                     f"score {candidate.score:.2f}: relevance {candidate.relevance:.2f}, "
