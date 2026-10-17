@@ -21,6 +21,10 @@ The offline `kushluk export-epub --date YYYY-MM-DD` command builds an EPUB3 ZIP 
 
 The private source registry now stores four reader intent choices: ignore, reference-only, derivative, and private-direct. **Only reference-only is executable**; the other modes stay disabled until provider-specific rights and implementation checks exist. Reference-only RSS feeds discard feed-provided description/content from the candidate passed into editorial/archives; headline, link and generic "Open the source" pointer remain. The legacy explicitly configured RSS path is separate and has not been rights-audited. See [OPML.md](OPML.md), [#4](https://github.com/interzettel/kushluk/issues/4) and [#49](https://github.com/interzettel/kushluk/issues/49).
 
+### Real-device evidence handoff (not certification)
+
+`kushluk record-field-proof` stores privacy-conscious local operator observations and source-artifact/photo SHA-256 hashes for paper, e-reader, and host restart tests; matching structural PDF inspection is required before reporting a passing paper trial. All receipts explicitly remain **self-reported, independently unverified and not accepted as release gates**. See [FIELD_ACCEPTANCE.md](FIELD_ACCEPTANCE.md). Hardware access and actual user trials remain open under #13/#33/#47.
+
 ## Repository hygiene
 
 - Default branch: `main`.
