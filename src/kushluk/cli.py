@@ -13,7 +13,9 @@ from kushluk.doctor import core_ready, run_doctor
 from kushluk.epub import EpubError, export_archived_epub
 from kushluk.field_proof import FieldProofError, record_field_proof
 from kushluk.local_profile import LocalProfileError, profile_path, write_local_profile
-from kushluk.media import (\n    MediaError, assign_media, import_local_media, read_asset, remove_local_media,\n)
+from kushluk.media import (
+    MediaError, assign_media, import_local_media, read_asset, remove_local_media,
+)
 from kushluk.pipeline import run_pipeline
 from kushluk.operations import OperationError, operate_file
 from kushluk.opml import (
