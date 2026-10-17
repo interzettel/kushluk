@@ -83,7 +83,7 @@ def _timing(record: dict, *, target_date: date, timezone_name: str) -> dict:
     expected_clock = record.get("expected_start_local")
     expected = None
     if isinstance(expected_clock, str) and re.fullmatch(
-        r"(?:[01]\\d|2[0-3]):[0-5]\\d", expected_clock
+        r"(?:[01]\d|2[0-3]):[0-5]\d", expected_clock
     ):
         expected = datetime.combine(
             target_date, time.fromisoformat(expected_clock),
