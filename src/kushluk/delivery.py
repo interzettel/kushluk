@@ -78,4 +78,4 @@ def send_email_edition(
             status="failed",
             detail=f"Email delivery failed ({type(exc).__name__}); check local SMTP configuration.",
         )
-    return DeliveryResult(channel="email", status="sent", detail="Edition submitted to the configured email recipient.");
+    return DeliveryResult(channel="email", status="sent", detail="Edition submitted to the configured email recipient.")
