@@ -13,7 +13,7 @@ from kushluk.doctor import core_ready, run_doctor
 from kushluk.epub import EpubError, export_archived_epub
 from kushluk.field_proof import FieldProofError, record_field_proof
 from kushluk.local_profile import LocalProfileError, profile_path, write_local_profile
-from kushluk.media import MediaError, import_local_media, read_asset
+from kushluk.media import (\n    MediaError, assign_media, import_local_media, read_asset, remove_local_media,\n)
 from kushluk.pipeline import run_pipeline
 from kushluk.operations import OperationError, operate_file
 from kushluk.opml import (
@@ -92,6 +92,19 @@ def build_parser() -> argparse.ArgumentParser:
     media_info = sub.add_parser("media-info", help="Inspect one owner-approved local image")
     media_info.add_argument("--store", type=Path, required=True)
     media_info.add_argument("--asset-id", required=True)
+
+    media_assign = sub.add_parser(
+        "media-assign", help="Explicitly pin one approved local image to one story ID"
+    )
+    media_assign.add_argument("--store", type=Path, required=True)
+    media_assign.add_argument("--asset-id", required=True)
+    media_assign.add_argument("--story-id", required=True)
+
+    media_remove = sub.add_parser(
+        "media-remove", help="Revoke local source approval (archives remain separately owned)"
+    )
+    media_remove.add_argument("--store", type=Path, required=True)
+    media_remove.add_argument("--asset-id", required=True)
 
     run = sub.add_parser("run", help="Idempotent local scheduled edition run (at most once)")
     run.add_argument("--date", dest="target_date", help="YYYY-MM-DD; defaults to today locally")
@@ -334,6 +347,23 @@ def main(argv: list[str] | None = None) -> int:
             "contacts_network": False,
             "source_permissions_modified": False,
         }))
+        return 0
+
+    if args.command in ("media-assign", "media-remove"):
+        try:
+            if args.command == "media-assign":
+                assign_media(args.store, story_id=args.story_id, asset_id=args.asset_id)
+                status = "approved_local_assignment"
+            else:
+                remove_local_media(args.store, args.asset_id)
+                status = "revoked_from_local_store"
+        except (MediaError, OSError, ValueError) as exc:
+            print(json.dumps({"status": "rejected", "error": (
+                str(exc) if isinstance(exc, MediaError) else "media_operation_failed"
+            )}))
+            return 2
+        print(json.dumps({"status": status, "asset_id": args.asset_id,
+                          "existing_archives_unchanged": True}))
         return 0
 
     if args.command in ("media-import", "media-info"):
