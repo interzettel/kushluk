@@ -229,6 +229,12 @@ class SetupHandler(BaseHTTPRequestHandler):
                 self.server.printer_readiness = None
                 notice = "Local queue discovery completed; no print job sent."
             else:
+                # Enforce prior user-initiated discovery before invoking even a
+                # mocked/custom capability provider.
+                if (self.server.printer_inventory is None
+                        or fields["queue"][0] not in self.server.printer_inventory.queues):
+                    self._reply(422, "<h1>Printer was not selected from the scan</h1>")
+                    return
                 try:
                     self.server.printer_readiness = check_queue(
                         fields["queue"][0], self.server.printer_inventory,
