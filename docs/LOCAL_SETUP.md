@@ -64,3 +64,7 @@ Choose an installed queue, then click **Check this queue**. Kuşluk invokes the 
 The browser **never executes `lp`/`lpr`**, submits a job, installs drivers, changes the CUPS default destination, edits the user's profile, or enables unattended delivery. Any CUPS command can contact the **configured local printing service**, and that service can itself be connected to a network printer; that is why discovery requires an explicit click. The browser remains bound to numeric loopback with exact Host/Origin/CSRF checks and no telemetry.
 
 **Proof boundary:** even a “reported ready” queue may be out of paper, offline after sleep, have an unusable duplex alignment, lack real A3 support, or print badly. Physical print acceptance still requires the A4/A3 artifact and independent observation described in [FIELD_ACCEPTANCE.md](FIELD_ACCEPTANCE.md). This UI is a non-printing readiness aid, **not** the real-device release gate.
+
+## Usability proof and independent reader trial
+
+Use [FIRST_READER_PILOT.md](FIRST_READER_PILOT.md) and the intentionally blank [FIRST_READER_TEMPLATE.json](FIRST_READER_TEMPLATE.json) for an independently observed first-reader pilot. Follow tasks U1–U6, including explicit CUPS readiness without printing, and record hints and problems anonymously. A protocol or simulated CI result is **not** an observed novice usability success.
