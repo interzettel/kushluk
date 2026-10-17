@@ -119,6 +119,18 @@ def print_pdf(
             return PrintResult(True, False,
                                "Printer does not advertise US Letter media; refusing submission.",
                                printer=resolved)
+        # Do not fake Letter support by passing an A4 PDF with media=Letter.
+        # Verify geometry and numbered page identity again at the print boundary.
+        try:
+            from kushluk.print_profiles import validate_letter_home
+            if validate_letter_home(pdf_path):
+                return PrintResult(True, False,
+                                   "Selected PDF is not a validated four-page Letter edition.",
+                                   printer=resolved)
+        except (ImportError, OSError, ValueError):
+            return PrintResult(True, False,
+                               "Letter PDF validation unavailable; refusing submission.",
+                               printer=resolved)
     if media == "A3":
         if not capabilities.available:
             return PrintResult(True, False, "A3 printer is unavailable or offline.", printer=resolved)
