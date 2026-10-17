@@ -69,9 +69,9 @@ def build_parser() -> argparse.ArgumentParser:
     generate.add_argument("--no-pdf", action="store_true", help="Skip PDF rendering")
     generate.add_argument(
         "--print-profile",
-        choices=("a4-home", "a3-folded"),
-        default="a4-home",
-        help="Select output sheet geometry (default: a4-home)",
+        choices=("a4-home", "letter-home", "a3-folded"),
+        default=None,
+        help="Default to saved home A4/Letter preference, or override explicitly",
     )
     generate.add_argument(
         "--print",
@@ -190,7 +190,8 @@ def build_parser() -> argparse.ArgumentParser:
     run.add_argument("--email", dest="send_email", action="store_true")
     run.add_argument("--email-on-print-failure", action="store_true")
     run.add_argument(
-        "--print-profile", choices=("a4-home", "a3-folded"), default="a4-home"
+        "--print-profile", choices=("a4-home", "letter-home", "a3-folded"),
+        default=None, help="Default to saved home A4/Letter preference",
     )
 
     run.add_argument(
@@ -266,11 +267,12 @@ def build_parser() -> argparse.ArgumentParser:
         help="I inspected prior delivery status and accept the risk of another submission",
     )
     deliver.add_argument(
-        "--print-profile", choices=("a4-home", "a3-folded"), default="a4-home"
+        "--print-profile", choices=("a4-home", "letter-home", "a3-folded"),
+        default="a4-home", help="Explicit archived print format; no surprise conversion",
     )
 
     proof = sub.add_parser(
-        "print-proof", help="Generate offline A4/A3 sample PDFs (never prints)"
+        "print-proof", help="Generate offline A4, Letter and A3 sample PDFs (never prints)"
     )
     proof.add_argument(
         "--output-dir", type=Path, default=Path("output/print-proof"),
@@ -336,7 +338,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     inspection.add_argument("--pdf", type=Path, required=True)
     inspection.add_argument("--output-dir", type=Path, required=True)
-    inspection.add_argument("--profile", choices=("a4-home", "a3-folded"),
+    inspection.add_argument("--profile", choices=("a4-home", "letter-home", "a3-folded"),
                             default="a4-home")
     inspection.add_argument("--rasterize", action="store_true")
     inspection.add_argument("--dpi", type=int, default=100)
@@ -630,7 +632,10 @@ def main(argv: list[str] | None = None) -> int:
         print(f"Markdown: {result.markdown_path}")
         print(f"HTML: {result.html_path}")
         print(f"PDF: {result.pdf_path or 'not rendered'}")
-        print(f"Print profile: {args.print_profile}")
+        chosen = args.print_profile or (
+            "letter-home" if settings.paper_size == "letter" else "a4-home"
+        )
+        print(f"Print profile: {chosen}")
         print(f"Printable PDF: {result.printable_pdf_path or 'not rendered'}")
         print(f"Archive: {result.archive_dir}")
         if result.warnings:
