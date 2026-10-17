@@ -15,6 +15,22 @@
 | EPUB/e-reader | software EPUB/conformance tests tracked elsewhere | format checks only | actual reader layout/navigation and accessibility |
 | Unattended Linux/macOS | disabled systemd-user/LaunchAgent templates; status and receipt tools | repeatable software outcomes, at-most-once policy | wake/reboot, OS timer, printer recovery and five real mornings |
 
+## Observed macOS native/font evidence (not a licensing review)
+
+In [the successful five-job PR #124 CI run](https://github.com/interzettel/kushluk/actions/runs/39044494049), the recorded native inventory reported the following values:
+
+| Package / resolved family | Apple Silicon | Intel |
+|---|---|---|
+| Pango | 1.58.2 | 1.58.2 |
+| Cairo | 1.18.4 | 1.18.4 |
+| Fontconfig | 2.18.3 | 2.18.3 |
+| HarfBuzz | 14.4.0 | 14.3.1 |
+| `serif` match | Times New Roman | Times New Roman |
+| `sans-serif` match | Verdana | Verdana |
+| `monospace` match | Andale Mono | Andale Mono |
+
+These are **host-selected family names**, not copied/bundled fonts or a claim of permission to redistribute or embed them. Native text engine version mismatch is one reason structural PDF validation does **not** imply byte-identical or glyph-identical output across macOS architectures. A release reviewer must separately inspect actual font assets, embedding permissions and substitution policy.
+
 Every row is bounded by the actual CI run's platform/version and SHA. For current status use [Actions](https://github.com/interzettel/kushluk/actions/workflows/ci.yml) and **record the exact successful run**; a markdown table is not a replacement for build evidence.
 
 The software artifact is currently a **development 0.1.0 wheel/sdist**, *not* the proposed `v0.2.0-alpha.1` release. All local device and identity evidence is stored privately. Do not copy reader calendar, source URLs, archived editions, printer serial numbers or actual photographs to public Actions artifacts.
