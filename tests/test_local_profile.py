@@ -135,3 +135,13 @@ def test_no_profile_preserves_legacy_behavior(tmp_path, monkeypatch):
     assert cfg.home_name == "Cologne"
     assert cfg.latitude == 50.9384
     assert cfg.timezone == "Europe/Berlin"
+
+
+def test_explicit_empty_printer_env_can_disable_saved_printer(tmp_path, monkeypatch):
+    path = tmp_path / "profile.json"
+    write_local_profile(path, **{**_params(), "printer": "My Printer"})
+    monkeypatch.setenv("KUSHLUK_PROFILE_FILE", str(path))
+    monkeypatch.delenv("KUSHLUK_PRINTER", raising=False)
+    assert Settings.from_env().printer == "My Printer"
+    monkeypatch.setenv("KUSHLUK_PRINTER", "")
+    assert Settings.from_env().printer is None
