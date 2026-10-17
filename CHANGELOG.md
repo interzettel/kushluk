@@ -39,6 +39,8 @@ separately under [the release plan](docs/RELEASE_PLAN.md).
 
 - Add an accessible, read-only `/status` page to the existing loopback setup browser, with today's archive and queue-submission states, fixed safe operator guidance and no active delivery effects (#5/#20).
 
+- Record operator-observed US Letter physical samples through `record-field-proof --kind paper-letter`, with mandatory matching `letter-home` PDF inspection; self-report never advances release gates (#129).
+
 **No prerelease has been published.** `pyproject.toml` remains `0.1.0`;
 the future version `v0.2.0-alpha.1` requires an explicit owner decision,
 review of dependencies/licenses and controlled tag/release creation.
