@@ -303,7 +303,12 @@ def assign_media(store: Path, *, story_id: str, asset_id: str) -> None:
         raise MediaError("unsafe_bindings_file")
     bindings = read_media_assignments(store)
     if path.exists() and not bindings:
-        raise MediaError("invalid_bindings_file")
+        try:
+            existing = json.loads(_read_file(path, 65536))
+            if existing != {"schema_version": 1, "bindings": {}}:
+                raise MediaError("invalid_bindings_file")
+        except (ValueError, UnicodeError) as exc:
+            raise MediaError("invalid_bindings_file") from exc
     bindings[story_id] = asset_id
     content = (json.dumps({"schema_version": 1, "bindings": bindings},
                           sort_keys=True) + "\n").encode()
