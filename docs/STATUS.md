@@ -5,6 +5,12 @@ Documentation and issue inventory reviewed: 2026-10-17; six evidence-backed task
 
 **Status caveat:** the 2026-10-16 inventory did **not** independently rerun CI or physical print tests. Do not infer four-page migration, unattended execution, or real-reader trials are done from the new planning issues. [#43](https://github.com/interzettel/kushluk/issues/43) indexes all issues, and [ISSUE_CROSSWALK.md](ISSUE_CROSSWALK.md) maps the 90 existing work-ledger tasks to accountable issues. Execution blockers have dedicated issues: [#45](https://github.com/interzettel/kushluk/issues/45) format, [#46](https://github.com/interzettel/kushluk/issues/46) print profiles, [#47](https://github.com/interzettel/kushluk/issues/47) local scheduler/retries. Docs/ADR ambiguities: [#44](https://github.com/interzettel/kushluk/issues/44).
 
+### Separate local Google OAuth providers and bibliographic claim checks (#49/#48/#16)
+
+Local `google-connect --provider gmail|tasks` now requests only the selected provider's desktop OAuth grant (`gmail.metadata` or `tasks.readonly`), saves a private token and keeps the other provider disconnected. `gmail-discover --acknowledge-metadata-read` scans at most 100 message headers (From/List-ID/internalDate only) and leaves all newsletter ingestion disabled; scan completeness is explicit. `KUSHLUK_GOOGLE_TASKS_VAULT` opts read-only Google Tasks due/overdue items into the actual paper. `google-disconnect` deletes the chosen local token but cannot revoke Google's remote grant; [GOOGLE_PROVIDERS.md](GOOGLE_PROVIDERS.md) gives owner-side steps.
+
+`crossref-check` compares a DOI's exact title/year to a Crossref response, returning bibliographic match/conflict/abstain without claiming **any** verified study finding. CI uses synthetic provider sessions; no authorized real-account OAuth, live provider acceptance, generalized claim checking or false cross-publisher corroboration is claimed. **Operational tasks remain 26/90 (28.89%), SRC 3/10 (30.00%), gates 0/8, version 0.1.0.**
+
 ### Compliant editorial inputs, source provenance and inert newsletter discovery (#49/#48/#16)
 
 `KUSHLUK_TASKS_FILE` enables an owner-exported, schema-checked, bounded local task adapter. `KUSHLUK_RESEARCH_QUERY` opt-in performs one host-pinned Crossref public DOI/title/date metadata-only query, no licensed full text or abstracts. Each selected `Story` now tracks source candidate IDs, DOI/URL and publish/retrieval timestamps with transform/rights mode and explicit unverified/conflict statuses—**not** independent factual corroboration.
