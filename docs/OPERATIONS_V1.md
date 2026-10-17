@@ -69,6 +69,10 @@ Or `kushluk resume-day --date 2026-10-17`. Resume only removes a valid marker; i
 
 This calls the **existing** `deliver-archived` recovery implementation. The operator must first inspect the actual print queue/status. A unique request ID is required for a separate deliberate retry. Reusing it returns `already_attempted`, never a new delivery. A different ID can submit again *only after fresh operator acknowledgment*—including the risk the earlier print/SMTP request was already accepted. It never regenerates source content.
 
+## Read-only version 1 diagnostics operations
+
+The v1 JSON boundary also accepts `{"schema_version":1,"action":"report","date":"2026-10-17"}` and `{"schema_version":1,"action":"timing_plan","date":"2026-10-18","ready_by":"08:00","margin_minutes":10,"history_days":30}`. The first reports typed software stage/submission state, not paper/recipient verification. The second requires >=3 prior valid archived-PDF duration samples and suggests a start clock for **manual** timer reconfiguration; it never schedules. To retain a software archive target on an actual `run` request, pass `"ready_by":"08:00"`. See [TIMING_REPORTS.md](TIMING_REPORTS.md).
+
 ## Native Linux/macOS scheduler templates
 
 Use `kushluk schedule-export` to generate a **disabled**, reviewable systemd user timer/service or launchd LaunchAgent from explicit absolute paths and an owner-configured schedule. The output is create-only and mode-0600; no service is installed or enabled. Example commands, real-host caveats and a five-morning acceptance checklist are in [NATIVE_SCHEDULERS.md](NATIVE_SCHEDULERS.md).
