@@ -33,7 +33,7 @@ from kushluk.source_registry import (
 
 
 def _clock_time(value: str) -> time:
-    if not re.fullmatch(r"(?:[01]\\d|2[0-3]):[0-5]\\d", value):
+    if not re.fullmatch(r"(?:[01]\d|2[0-3]):[0-5]\d", value):
         raise argparse.ArgumentTypeError("Expected a local clock time HH:MM")
     return time.fromisoformat(value)
 
