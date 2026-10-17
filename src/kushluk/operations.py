@@ -99,8 +99,10 @@ def operate_request(
             raise OperationError("fallback_requires_print")
         if (printer or email or fallback) and request.get("acknowledge_delivery") is not True:
             raise OperationError("delivery_consent_required")
-        profile = request.get("print_profile", "a4-home")
-        if profile not in ("a4-home", "a3-folded"):
+        profile = request.get("print_profile")
+        if "print_profile" in request and profile not in (
+            "a4-home", "letter-home", "a3-folded"
+        ):
             raise OperationError("invalid_print_profile")
         latest_start = (_time(request["latest_start"])
                         if "latest_start" in request else None)
@@ -128,7 +130,7 @@ def operate_request(
         if request["acknowledge_possible_duplicate"] is not True:
             raise OperationError("explicit_reprint_consent_required")
         profile = request.get("print_profile", "a4-home")
-        if profile not in ("a4-home", "a3-folded"):
+        if profile not in ("a4-home", "letter-home", "a3-folded"):
             raise OperationError("invalid_print_profile")
         result = deliver_archived(
             settings, target_date=target_date, channel=channel,
