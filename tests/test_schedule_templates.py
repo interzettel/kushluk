@@ -49,6 +49,7 @@ def test_launchd_plist_is_no_shell_and_no_autostart(tmp_path):
     payload = plistlib.loads((opts["output_dir"] / names[0]).read_bytes())
     assert payload["ProgramArguments"] == [
         "/opt/kushluk/.venv/bin/kushluk", "run", "--latest-start", "07:45",
+        "--expected-start", "07:30",
     ]
     assert payload["StartCalendarInterval"] == {"Hour": 7, "Minute": 30}
     assert payload["RunAtLoad"] is False
