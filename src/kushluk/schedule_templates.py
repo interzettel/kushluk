@@ -84,6 +84,7 @@ def templates(
         "WorkingDirectory": workdir,
         "StartCalendarInterval": {"Hour": h, "Minute": m},
         "RunAtLoad": False,
+        "Umask": 0o077,
         "StandardOutPath": str(working_dir / "kushluk-scheduler.stdout.log"),
         "StandardErrorPath": str(working_dir / "kushluk-scheduler.stderr.log"),
     }
