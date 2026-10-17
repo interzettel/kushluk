@@ -111,6 +111,12 @@ def compose(
         raise ValueError("unknown_archetype")
     rule = RULES[selected]
     actions: list[CompositionDecision] = []
+    if archetype == "auto":
+        actions.append(CompositionDecision(
+            "select_archetype", "edition",
+            f"manifest counts: {len(practical)} practical; "
+            f"{len(stories)} candidates; selected {selected}",
+        ))
     capacity = rule["front_practical"] + rule["day_practical"]
     indexed = sorted(enumerate(practical), key=lambda pair: (_practical_rank(pair[1]), pair[0]))
     required = [x for _, x in indexed if _practical_rank(x) in (0, 1)]
