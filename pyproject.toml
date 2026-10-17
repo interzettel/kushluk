@@ -35,6 +35,10 @@ include = [
   "/README.md",
   "/LICENSE",
   "/THIRD_PARTY_NOTICES.md",
+  "/SECURITY.md",
+  "/CHANGELOG.md",
+  "/docs/PREVIEW_INSTALL.md",
+  "/docs/RELEASE_PLAN.md",
   "/pyproject.toml",
 ]
 
