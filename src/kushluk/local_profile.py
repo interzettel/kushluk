@@ -8,6 +8,8 @@ from __future__ import annotations
 import json
 import math
 import os
+import stat
+import tempfile
 from pathlib import Path
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
@@ -104,3 +106,47 @@ def write_local_profile(path: Path, *, home_name: str, latitude: float,
     except BaseException:
         path.unlink(missing_ok=True)
         raise
+
+
+def update_local_printer(path: Path, *, printer: str) -> None:
+    """Change only the queue in an existing private profile, by explicit action.
+
+    The initial profile remains create-only. Reject symlinks and non-private
+    files; atomically replace the checked file without in-place truncation.
+    This stores a preference, never a permission to submit a print job.
+    """
+    current = read_local_profile(path)
+    if not current:
+        raise LocalProfileError("Create a local profile before saving a printer")
+    checked = _validate({**current, "printer": printer})
+    if not printer:
+        raise LocalProfileError("A discovered printer queue must be selected")
+    try:
+        before = path.lstat()
+    except OSError as exc:
+        raise LocalProfileError("Local profile is not available") from exc
+    if not stat.S_ISREG(before.st_mode) or before.st_mode & 0o077:
+        raise LocalProfileError("Local profile must be an owner-only regular file")
+    if current["printer"] == printer:
+        return
+    payload = (json.dumps(checked, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
+    filename = None
+    try:
+        fd, filename = tempfile.mkstemp(prefix=".profile-", suffix=".tmp", dir=str(path.parent))
+        os.fchmod(fd, 0o600)
+        with os.fdopen(fd, "wb") as stream:
+            stream.write(payload)
+            stream.flush()
+            os.fsync(stream.fileno())
+        after = path.lstat()
+        if (not stat.S_ISREG(after.st_mode) or after.st_ino != before.st_ino
+                or after.st_dev != before.st_dev or after.st_mtime_ns != before.st_mtime_ns
+                or after.st_size != before.st_size or after.st_mode & 0o077):
+            raise LocalProfileError("Local profile changed during printer selection")
+        os.replace(filename, path)
+    finally:
+        if filename is not None:
+            try:
+                os.unlink(filename)
+            except FileNotFoundError:
+                pass

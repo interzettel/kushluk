@@ -47,7 +47,7 @@ def _token(markup):
 def _form(token, **changes):
     values = {
         "csrf": token, "home_name": "Household", "latitude": "50.9",
-        "longitude": "6.9", "timezone": "Europe/Berlin", "printer": "",
+        "longitude": "6.9", "timezone": "Europe/Berlin",
     }
     values.update(changes)
     return urlencode(values).encode("utf-8")
@@ -69,6 +69,7 @@ def test_only_loopback_listener_and_private_creation(setup_server):
     assert 'name="home_name"' in html
     assert "Kuşluk" in html
     assert "Save my local profile" in html
+    assert 'name="printer"' not in html
     assert "default-src 'none'" in headers["Content-Security-Policy"]
     assert headers["Cache-Control"].startswith("no-store")
     assert headers["Referrer-Policy"] == "no-referrer"
@@ -137,6 +138,7 @@ def test_reject_unknown_duplicate_and_oversized_forms(setup_server):
     for payload in (
         body + b"&secret_key=never-accept",
         body + b"&timezone=UTC",
+        body + b"&printer=Unchecked_Queue",
         b"x" * 4097,
     ):
         status, _, _ = _post(setup_server, payload)

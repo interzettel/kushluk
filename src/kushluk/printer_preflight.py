@@ -85,6 +85,7 @@ def check_queue(name: str, inventory: PrinterInventory) -> PrinterReadiness:
 def render_printer_review(
     inventory: PrinterInventory | None, readiness: PrinterReadiness | None,
     *, csrf: str, notice: str | None = None,
+    saved_queue: str | None = None, profile_exists: bool = False,
 ) -> str:
     banner = f'<p role="status">{escape(notice)}</p>' if notice else ""
     if inventory is None:
@@ -100,6 +101,11 @@ def render_printer_review(
                 f'<input type="hidden" name="queue" value="{label}">'
                 '<button type="submit">Check this queue</button></form></section>'
             )
+    saved = (
+        '<p role="status">Printer preference saved locally: '
+        + escape(saved_queue) + '. No print job has been sent.</p>'
+        if saved_queue else ""
+    )
     result = ""
     if readiness:
         result = (
@@ -111,6 +117,19 @@ def render_printer_review(
             + ("yes" if readiness.duplex else "not confirmed")
             + '</p><p>' + escape(readiness.note) + '</p></div>'
         )
+        if profile_exists:
+            checked = escape(readiness.name, quote=True)
+            result += (
+                '<form method="post" action="/printer/save">'
+                f'<input type="hidden" name="csrf" value="{escape(csrf, quote=True)}">'
+                f'<input type="hidden" name="queue" value="{checked}">'
+                '<label><input type="checkbox" name="consent" value="yes" required> '
+                'Save this queue as my default for later <strong>explicit</strong> print actions. '
+                'This does not print now or enable automatic printing.</label>'
+                '<button type="submit">Save printer preference</button></form>'
+            )
+        else:
+            result += '<p>Create your home profile first to save this queue.</p>'
     return (
         '<!doctype html><html lang="en"><head><meta charset="utf-8">'
         '<meta name="viewport" content="width=device-width, initial-scale=1">'
@@ -132,7 +151,7 @@ def render_printer_review(
         + '<form method="post" action="/printer/scan">'
         f'<input type="hidden" name="csrf" value="{csrf}">'
         '<button type="submit">Discover local printer queues</button></form>'
-        + listing + result
+        + listing + saved + result
         + '<p><strong>What this does not prove:</strong> that the printer is powered on, '
         'has paper, prints A4/A3 correctly, handles duplex alignment, or works after reboot. '
         'Complete a real hardware trial separately.</p>'

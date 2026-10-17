@@ -16,7 +16,7 @@ Recruit at least **one person who has not helped develop Kuşluk** for the first
 | U2 | Set a home label, *approximate* coordinates and timezone | Create a private profile; explain why street address is unnecessary | 5 minutes |
 | U3 | Review a synthetic OPML list, including one untrusted provider | Accurately distinguish preview from approval; activate only one intentionally | 7 minutes |
 | U4 | Pause and resume an approved source | Pause leaves it disabled; resume requires distinct permission acknowledgment | 4 minutes |
-| U5 | Inspect printer queues without using paper | Explicitly start discovery; select a queue or understand a missing-CUPS result; no print submission | 6 minutes |
+| U5 | Inspect printer queues without using paper | Explicitly start discovery; select and check a queue, optionally save that queue with separate consent if a profile exists, or understand a missing-CUPS result; no print submission | 6 minutes |
 | U6 | Explain what has **not** happened | Understand that no unattended edition, private article copying or printer proof has occurred | 3 minutes |
 
 If the printer is not configured, **U5 may succeed with an appropriate no-printer explanation**; do not pretend capability data was available. Failures of packaging or setup count as U1 problems rather than skipping the task.
