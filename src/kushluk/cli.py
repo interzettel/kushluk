@@ -35,6 +35,7 @@ from kushluk.print_inspection import PrintInspectionError, inspect_print_pdf
 from kushluk.recovery import deliver_archived
 from kushluk.run_metrics import run_report, timing_plan
 from kushluk.incident import build_incident_report, save_private_incident_report
+from kushluk.local_notifications import notify_local
 from kushluk.scheduled import pause_day, read_run_status, resume_day, run_once
 from kushluk.schedule_templates import ScheduleTemplateError, export_templates
 from kushluk.setup_web import run_setup_web
@@ -190,6 +191,8 @@ def build_parser() -> argparse.ArgumentParser:
     run.add_argument("--print", dest="send_to_printer", action="store_true")
     run.add_argument("--email", dest="send_email", action="store_true")
     run.add_argument("--email-on-print-failure", action="store_true")
+    run.add_argument("--notify-local", action="store_true",
+                     help="Explicitly submit failure notice to current desktop session")
     run.add_argument(
         "--print-profile", choices=("a4-home", "letter-home", "a3-folded"),
         default=None, help="Default to saved home A4/Letter preference",
@@ -248,6 +251,14 @@ def build_parser() -> argparse.ArgumentParser:
     )
     incident.add_argument("--date", dest="target_date", help="YYYY-MM-DD, local today by default")
     incident.add_argument("--output", type=Path, help="Create private report file; never overwrite")
+
+    local_notice = sub.add_parser(
+        "notify-local", help="Preview or explicitly send one local desktop failure alert"
+    )
+    local_notice.add_argument("--date", dest="target_date",
+                              help="YYYY-MM-DD, local today by default")
+    local_notice.add_argument("--send", action="store_true",
+                              help="Explicit OS notification; absent means read-only preview")
 
     plan = sub.add_parser(
         "timing-plan", help="Recommend a start clock from measured validated-archive latency"
@@ -659,11 +670,13 @@ def main(argv: list[str] | None = None) -> int:
         )
         return 2 if failed_delivery else 0
 
-    if args.command in {"run-report", "timing-plan", "incident-report"}:
+    if args.command in {"run-report", "timing-plan", "incident-report", "notify-local"}:
         target = (date.fromisoformat(args.target_date) if args.target_date
                   else datetime.now(ZoneInfo(settings.timezone)).date())
         if args.command == "run-report":
             report = run_report(settings, target_date=target)
+        elif args.command == "notify-local":
+            report = notify_local(settings, target_date=target, send=args.send)
         elif args.command == "incident-report":
             report = build_incident_report(settings, target_date=target)
             if args.output is not None:
@@ -708,7 +721,12 @@ def main(argv: list[str] | None = None) -> int:
                 ready_by=args.ready_by,
                 expected_start=args.expected_start,
             )
-        print(json.dumps(outcome.as_dict(), ensure_ascii=False))
+        result = outcome.as_dict()
+        if args.command == "run" and args.notify_local:
+            result["local_notification"] = notify_local(
+                settings, target_date=target, send=True,
+            )
+        print(json.dumps(result, ensure_ascii=False))
         return 0 if outcome.status in {
             "completed", "already_completed", "not_run", "paused",
             "already_paused", "resumed", "not_paused",
