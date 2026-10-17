@@ -22,6 +22,8 @@ The command emits **aggregate counts only** and keeps private edition IDs, absol
 
 A v2 metadata check **does not** prove a compatible PDF, e-reader EPUB, correct print imposition, trustworthy source rights or an authorized resend. The separate `deliver-archived` still performs its own independent preflight and requires explicit possible-duplicate acknowledgment. The compatibility command returns `migration_performed: false` and `delivery_approved: false` in every case.
 
+The [preservation and migration playbook](ARCHIVE_MIGRATION_PLAYBOOK.md) describes owner backup/restore evidence and the required *create-only* behavior for any future converter. It does not authorize converting or reprinting schema-v1 records.
+
 ## Migration remains an explicit engineering decision
 
 The first Stage 1 prototype used different page architecture before the canonical four-page schema-v2 edition. No general trustworthy mapping for the earlier schema's missing canonical pages and references has been approved. Therefore no blind v1→v2 up-conversion is implemented. A future migration must describe source schemas, archive directory/version backups, round-trip/rollback behavior, paper-identity checks, deterministic matching, consent when private media changes, and its own regression tests. Older archives remain readable as **files** for their owners, but are **not** promised equivalent reprintability.

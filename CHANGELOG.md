@@ -25,6 +25,12 @@ separately under [the release plan](docs/RELEASE_PLAN.md).
 - Add read-only `kushluk archive-check` with bounded schema-v2 reference checks
   and explicit legacy-v1/future migration hold, never implicit archival edits.
 
+- Add private field-proof receipt review and consecutive local host-date cross-checks; no automated acceptance of operator self-reports or printer behavior.
+- Require the WeasyPrint 70.x security line (excluding vulnerable 69.0), and add weekly/manual live Python advisory scans plus macOS native text-library/font-family inventory for reviewer evidence; no claim of completed legal/font audits.
+- Fail closed on symlinked, missing, empty or oversized archived inputs before manual PDF/email recovery.
+- Improve local setup keyboard skip navigation and screen-reader descriptions, and add content-free recovery guidance in run reports (not an automatic notification service).
+- Document a conservative legacy archive migration hold, platform/device compatibility matrix and explicit human alpha release approval checklist.
+
 **No prerelease has been published.** `pyproject.toml` remains `0.1.0`;
 the future version `v0.2.0-alpha.1` requires an explicit owner decision,
 review of dependencies/licenses and controlled tag/release creation.

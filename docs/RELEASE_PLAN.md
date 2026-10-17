@@ -15,7 +15,7 @@
 | Milestone | Target train | Included features | Measurable exit gate | Status |
 | --- | --- | --- | --- | --- |
 | **M0 · Press-line prototype** | Development 0.1.0 (not official release) | F-001..005 | Four logical A4 PDF pages, A4/A3 software profiles, crash-safe archive and dry-run evidence on Linux/Intel/ARM; **not** real-device completion | **Software slices implemented; G1/G2/G3 remain unverified as tracked** |
-| **M1 · First GitHub preview** | **v0.2.0-alpha.1** — proposed first official *prerelease* | F-001..006 | Source OPML preview is offline and requires explicit approval; reproducible build/package install; synthetic sample edition, readable README/config/SECURITY; CI green; exact release artifact and tag. No automatic home-print reliability advertised | **Packaging candidate under PR #120; release/tag not authorized** |
+| **M1 · First GitHub preview** | **v0.2.0-alpha.1** — proposed first official *prerelease* | F-001..006 | Source OPML preview is offline and requires explicit approval; reproducible build/package install; synthetic sample edition, readable README/config/SECURITY; CI green; exact release artifact and tag. No automatic home-print reliability advertised | **Installable packaging candidate validated by merged PRs #120/#121; release/tag not authorized** |
 | **M2a · First invited private pilot** | **v0.3.0-beta.1** | F-007..014, plus the M1 feature set | At least one supported physical A4 printer verified, tested run/failure/reboot and a reader able to set up; source rights and secrets check. A3 enabled only if actually verified on hardware | **Blocked by human + real host/printer proof** |
 | **M2b · First stable public release** | **v1.0.0** | F-001..014 (scope narrowed to features that satisfy acceptance; any optional A3/SMTP unavailable in a profile is identified rather than falsely promised) | **Five real unattended mornings**, duplicate-delivery and fallback trials, genuine printer/provenance evidence, repeatable first-run installation, supported printer/platform matrix, privacy/security docs, packaging+changelog+tag. Passing unit tests alone not enough | **Not yet** |
 | **M3 · Reader formats** | **v1.1.0** | F-015..017 | Same canonical edition exports validated reflowable EPUB, tested on actual target reader; OPDS private/optional and only shipped if authenticated and tested | Proposed post-v1 |
@@ -51,6 +51,8 @@ A green CI run is **preview engineering evidence only**. It does not create a `v
 ### M1 supplementary release-readiness diagnostics (not acceptance)
 
 [PR #121](https://github.com/interzettel/kushluk/pull/121) adds machine-readable version/license **metadata** from each installed wheel and sdist environment, pip dependency-consistency tests, and a bounded v1/v2 archive structural compatibility report. These narrow the evidence gaps for the checklist below but **do not** finish the dependency-license/vulnerability audit, native font review, historical v1 migration, or founder release decision. [Dependency audit](DEPENDENCY_AUDIT.md) · [Archive contract](ARCHIVE_COMPATIBILITY.md). Neither a source distribution nor a compatibility inventory permits silent resale or reprinting of another person's material.
+
+[Alpha release approval checklist](RELEASE_APPROVAL.md) · [supported CI/device matrix](COMPATIBILITY_MATRIX.md) · [v1 archive migration hold](ARCHIVE_MIGRATION_PLAYBOOK.md). These are review guides, not gate approvals.
 
 ## Release verification checklist
 
