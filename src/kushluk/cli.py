@@ -14,6 +14,9 @@ from kushluk.epub import EpubError, export_archived_epub
 from kushluk.field_proof import FieldProofError, record_field_proof
 from kushluk.local_profile import LocalProfileError, profile_path, write_local_profile
 from kushluk.newsletter_discovery import NewsletterError, discover, save_proposals, set_mode
+from kushluk.connectors.google_local import (
+    GoogleProviderError, authorize, discover_gmail, fetch_google_tasks,
+)
 from kushluk.media import (
     MediaError, assign_media, import_local_media, read_asset, remove_local_media,
 )
@@ -108,6 +111,30 @@ def build_parser() -> argparse.ArgumentParser:
     )
     media_remove.add_argument("--store", type=Path, required=True)
     media_remove.add_argument("--asset-id", required=True)
+
+    google_connect = sub.add_parser(
+        "google-connect",
+        help="Interactive local OAuth for one Google provider (never shares grants)",
+    )
+    google_connect.add_argument("--provider", choices=("gmail", "tasks"), required=True)
+    google_connect.add_argument("--oauth-client", type=Path, required=True)
+    google_connect.add_argument("--vault", type=Path, required=True)
+
+    gmail_review = sub.add_parser(
+        "gmail-discover",
+        help="Consent-gated bounded Gmail header metadata review; no bodies or ingestion",
+    )
+    gmail_review.add_argument("--vault", type=Path, required=True)
+    gmail_review.add_argument("--output", type=Path, required=True)
+    gmail_review.add_argument("--days", type=int, default=30)
+    gmail_review.add_argument("--acknowledge-metadata-read", action="store_true")
+
+    tasks_preview = sub.add_parser(
+        "google-tasks-preview",
+        help="Count read-only tasks due or overdue; no content output or mutation",
+    )
+    tasks_preview.add_argument("--vault", type=Path, required=True)
+    tasks_preview.add_argument("--date", required=True, help="YYYY-MM-DD")
 
     discover_mail = sub.add_parser(
         "newsletter-discover",
@@ -370,6 +397,33 @@ def main(argv: list[str] | None = None) -> int:
             "contacts_network": False,
             "source_permissions_modified": False,
         }))
+        return 0
+
+    if args.command in ("google-connect", "gmail-discover", "google-tasks-preview"):
+        try:
+            if args.command == "google-connect":
+                authorize(args.provider, oauth_client=args.oauth_client, vault=args.vault)
+                result = {"status": "local_oauth_grant_created",
+                          "provider": args.provider, "separate_scopes": True}
+            elif args.command == "gmail-discover":
+                if not args.acknowledge_metadata_read:
+                    raise GoogleProviderError("explicit_gmail_metadata_consent_required")
+                result = discover_gmail(args.vault, days=args.days)
+                save_proposals(args.output, result["sources"])
+                result = {
+                    "status": "review_only", "candidates": len(result["sources"]),
+                    "scanned_messages": result["scanned_messages"],
+                    "partial_scan": result["partial_scan"], "ingestion_enabled": False,
+                }
+            else:
+                items = fetch_google_tasks(args.vault, target_date=date.fromisoformat(args.date))
+                result = {"status": "read_only", "eligible_task_count": len(items),
+                          "mutations": False, "titles_exposed": False}
+        except (GoogleProviderError, NewsletterError, OSError, ValueError) as exc:
+            msg = str(exc) if isinstance(exc, (GoogleProviderError, NewsletterError)) else "provider_operation_failed"
+            print(json.dumps({"status": "rejected", "error": msg}))
+            return 2
+        print(json.dumps(result))
         return 0
 
     if args.command in ("newsletter-discover", "newsletter-set-mode"):
