@@ -68,6 +68,21 @@ No proprietary model subscription or Kushluk-operated account should be required
 
 This is an early open-source prototype. Check the [status report](docs/STATUS.md) for implementation detail before depending on a feature.
 
+## First installable preview (M1 candidate)
+
+The `kushluk` **wheel and source distribution** can now be built reproducibly and clean-installed on Linux (Python 3.11/3.12) and macOS (Apple Silicon/Intel) in CI. The installed `kushluk preview` command produces a **fixed, fictional, four-page** publication without any RSS, weather, inbox, private profile, printer or SMTP connection:
+
+```bash
+python -m pip install build
+python -m tools.release_check --artifact-dir output/m1-preview
+# Or, after installing a built wheel in a clean environment:
+kushluk preview --output-dir ./synthetic-preview
+# For PDF, install the [pdf] extra and supported native Pango dependencies:
+kushluk preview --output-dir ./synthetic-preview-pdf --pdf
+```
+
+[Preview install instructions, supported platforms and limitations](docs/PREVIEW_INSTALL.md) · [M1 release checklist](docs/RELEASE_PLAN.md). The built archives and sample proofs are available as temporary **CI artifacts**, not an official downloadable release. The installed version remains **0.1.0**; `v0.2.0-alpha.1` has **not** been tagged or published. Four-page PDF checks are software evidence, not physical printing or real-reader acceptance.
+
 ## Make an edition
 
 Requires **Python 3.11+**. Native **macOS (Apple Silicon and Intel)** setup, Pango/PDF installation, and CUPS printer commands are documented in the [Mac setup guide](docs/MACOS.md). Mac CI covers software behavior; physical printing still requires a real-machine trial.
@@ -119,7 +134,7 @@ The progress command and its CI gate are part of the merged [engineering foundat
 
 [![Kushluk progress — proof gates and operational checklist](docs/progress.svg)](docs/PROGRESS.md)
 
-**Task checklist: 4/90 (04.44%) · Evidence-verified delivery gates: 0/8 (00.00%).** These are separate measurements, not an overall product-completion score.
+**Operational task progress and all eight separate release evidence gates are maintained in [the generated progress report](docs/PROGRESS.md).** Do not infer readiness from the task count or a successful synthetic package test.
 
 **[Explore all 90 individual tasks and their current states](docs/PROGRESS.md#individual-tasks)** · [Master issue ledger #43](https://github.com/interzettel/kushluk/issues/43) · [Task-to-issue map](docs/ISSUE_CROSSWALK.md) · [Kushluk Project board](https://github.com/orgs/interzettel/projects/3) · [Board configuration #62](https://github.com/interzettel/kushluk/issues/62)
 
