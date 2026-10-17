@@ -18,13 +18,13 @@
 
 Kushluk is **local-first, print-first personal publishing software**. It gathers useful signals from your day and information sources you are entitled to access, selects what matters, and assembles a finite edition that you can read away from the screen. It is **not** a news subscription, a hosted library of other publishers' articles, or an AI-generated feed to scroll forever.
 
-The intended object is **four logical DIN A4 pages**, composed once and delivered through different physical profiles:
+The canonical publication has **four logical DIN A4 pages**, composed once and available through separate physical print profiles. **DIN A4 and US Letter** are the two recommended home-printer formats; A3 folding is optional:
 
-| At home | With an A3-capable printer | When printing is unavailable |
-| --- | --- | --- |
-| Two A4 sheets, duplex where supported, optionally bound | One A3 duplex sheet, imposed and folded to A4 | Saved local HTML/PDF and optional configured email |
+| DIN A4 at home | US Letter at home | Optional A3 folded | Without a printer |
+| --- | --- | --- | --- |
+| Four A4 pages on two duplex sheets, or simplex | Four true 8.5 × 11 in pages, proportional scaling from canonical A4 | Two landscape sides, folded into four A4 pages | Locally saved HTML/PDF and optional configured email |
 
-**Important:** that four-page architecture is an **accepted design decision**, not a claim about the code shipped today. The Stage 1 software now renders **four logical A4 pages** and validates their page count, order, and A4 dimensions. Physical A4/A3 imposition, unattended delivery, and real printing trials remain separately tracked.
+**Important:** that four-page architecture is an **accepted design decision**, not a claim about the code shipped today. The Stage 1 software now renders **four logical A4 pages** and validates their page count, order, and A4 dimensions. True A4/Letter geometry and A3 imposition have software tests. Actual A4/Letter/A3 paper output, unattended delivery, readability and device acceptance remain separately tracked.
 
 ## Where the name comes from
 
@@ -52,9 +52,11 @@ No proprietary model subscription or Kushluk-operated account should be required
 - Python package, `kushluk` CLI and runtime health check.
 - Weather via Open-Meteo, RSS/Atom stories and a generic ICS calendar (with local fixture fallback).
 - Canonical candidates, source-aware story clustering, ranking and an optional lead story.
-- Four logical A4 HTML pages with ordered page IDs; optional WeasyPrint PDF with page-count, geometry, page-order validation and editorial cut/retry.
+- Four canonical A4 HTML pages with ordered IDs, optional validated WeasyPrint PDF and distinct A4, **US Letter** and advanced A3 printable variants; Letter uses proportional fit, not editorial reflow.
 - Local Markdown/JSON/HTML archive, with PDF when validated.
 - CUPS printer discovery/submission, SMTP delivery and configured email-on-print-failure.
+- Accessible local home setup with saved A4/Letter paper choice, and read-only source/printer preflight.
+- Opt-in macOS/Linux local failure notification submission with fixed private-data-safe text; no default notification or automatic retry.
 - Existing pytest/Ruff and GitHub Actions smoke checks.
 
 </details>
@@ -108,7 +110,7 @@ python -m pip install -e ".[pdf]"
 kushluk generate
 ```
 
-The default `--print-profile a4-home` uses the canonical four-page A4 PDF; `--print-profile a3-folded` creates a separate two-side, landscape A3 booklet PDF (outside `4|1`, inside `2|3`) while preserving the four-page source archive. Both are software print profiles; physical media, feed and duplex orientation still require real-printer tests.
+By default, printing follows your **saved home paper choice** (DIN A4 or US Letter). The optional `--print-profile a4-home|letter-home|a3-folded` overrides the saved format. Letter generates a distinct four-page **612 × 792 pt** PDF by fitting the original A4 design proportionally, while preserving the canonical archive; A3 uses two landscape booklet sides (`4|1` and `2|3`). These are software profiles. Real paper, duplex direction, type size and device margins still require physical trials.
 
 Printing and email are **separately configured**. If a compatible local CUPS printer is available, use `kushluk generate --print`; for SMTP delivery use `kushluk generate --email`. Neither command makes a printer or mail account appear automatically. Read [onboarding](docs/ONBOARDING.md), the [macOS print/setup guide](docs/MACOS.md) when applicable, and [.env.example](.env.example).
 
@@ -118,7 +120,7 @@ For **local-only RSS subscription preview**, use `kushluk sources-import-opml su
 
 For local crash recovery, `kushluk deliver-archived` resends **only the validated archived edition** with explicit acknowledgment and a unique request ID. It never fetches new sources or regenerates a page. Generate a hardware-test kit without printing via `kushluk print-proof --output-dir output/print-proof`; see [physical-print verification](docs/PRINT_PROOF.md).
 
-To schedule local editions safely, use `kushluk run` and inspect `kushluk run-status`. The daily receipt prevents automatic duplicate printing or email submissions, including after interrupted delivery. See [native scheduling and launchd](docs/SCHEDULING.md). Full unattended-host acceptance is not yet complete.
+To schedule local editions safely, use `kushluk run` and inspect `kushluk run-status`. The daily receipt prevents automatic duplicate printing or email submissions, including after interrupted delivery. Optional `kushluk notify-local --date YYYY-MM-DD --send` or `kushluk run --notify-local` submits one fixed local desktop alert for a failed incident when explicitly requested (not proof the user saw it). See [local notifications](docs/LOCAL_NOTIFICATIONS.md) and [native scheduling and launchd](docs/SCHEDULING.md). Full unattended-host acceptance is not yet complete.
 
 Run checks before contributing:
 
