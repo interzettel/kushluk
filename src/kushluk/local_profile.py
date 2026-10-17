@@ -20,6 +20,7 @@ class LocalProfileError(ValueError):
 
 _FIELDS = frozenset({
     "schema_version", "home_name", "latitude", "longitude", "timezone", "printer",
+    "paper_size",
 })
 _MAX_BYTES = 8192
 
@@ -33,7 +34,9 @@ def profile_path() -> Path:
 
 
 def _validate(data: object) -> dict:
-    if not isinstance(data, dict) or set(data) != _FIELDS or data.get("schema_version") != 1:
+    if (not isinstance(data, dict)
+            or set(data) not in {_FIELDS, _FIELDS - {"paper_size"}}
+            or data.get("schema_version") != 1):
         raise LocalProfileError("Unsupported local profile schema")
     name = data["home_name"]
     if (not isinstance(name, str) or not name.strip() or len(name) > 120
@@ -57,6 +60,9 @@ def _validate(data: object) -> dict:
             (not isinstance(printer, str) or len(printer) > 120
              or any(ord(c) < 32 for c in printer))):
         raise LocalProfileError("Printer queue name is invalid")
+    paper_size = data.get("paper_size", "a4")
+    if type(paper_size) is not str or paper_size not in {"a4", "letter"}:
+        raise LocalProfileError("Unsupported home paper size (choose a4 or letter)")
     return {
         "schema_version": 1,
         "home_name": name.strip(),
@@ -64,6 +70,7 @@ def _validate(data: object) -> dict:
         "longitude": float(data["longitude"]),
         "timezone": zone,
         "printer": printer,
+        "paper_size": paper_size,
     }
 
 
@@ -86,11 +93,11 @@ def read_local_profile(path: Path | None = None) -> dict:
 
 def write_local_profile(path: Path, *, home_name: str, latitude: float,
                         longitude: float, timezone: str,
-                        printer: str | None = None) -> None:
+                        printer: str | None = None, paper_size: str = "a4") -> None:
     checked = _validate({
         "schema_version": 1, "home_name": home_name,
         "latitude": latitude, "longitude": longitude,
-        "timezone": timezone, "printer": printer,
+        "timezone": timezone, "printer": printer, "paper_size": paper_size,
     })
     path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
     payload = (json.dumps(checked, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
@@ -108,6 +115,15 @@ def write_local_profile(path: Path, *, home_name: str, latitude: float,
         raise
 
 
+def update_local_paper_size(path: Path, *, paper_size: str) -> None:
+    """Explicitly update only a private paper preference; never submit to CUPS."""
+    current = read_local_profile(path)
+    if not current:
+        raise LocalProfileError("Create a local profile before saving paper size")
+    checked = _validate({**current, "paper_size": paper_size})
+    _replace_checked_profile(path, current=current, checked=checked)
+
+
 def update_local_printer(path: Path, *, printer: str) -> None:
     """Change only the queue in an existing private profile, by explicit action.
 
@@ -121,14 +137,19 @@ def update_local_printer(path: Path, *, printer: str) -> None:
     checked = _validate({**current, "printer": printer})
     if not printer:
         raise LocalProfileError("A discovered printer queue must be selected")
+    _replace_checked_profile(path, current=current, checked=checked)
+
+
+def _replace_checked_profile(path: Path, *, current: dict, checked: dict) -> None:
+    """Create-only temp + checked inode replacement for either explicit preference."""
+    if checked == current:
+        return
     try:
         before = path.lstat()
     except OSError as exc:
         raise LocalProfileError("Local profile is not available") from exc
     if not stat.S_ISREG(before.st_mode) or before.st_mode & 0o077:
         raise LocalProfileError("Local profile must be an owner-only regular file")
-    if current["printer"] == printer:
-        return
     payload = (json.dumps(checked, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
     filename = None
     try:
@@ -142,7 +163,7 @@ def update_local_printer(path: Path, *, printer: str) -> None:
         if (not stat.S_ISREG(after.st_mode) or after.st_ino != before.st_ino
                 or after.st_dev != before.st_dev or after.st_mtime_ns != before.st_mtime_ns
                 or after.st_size != before.st_size or after.st_mode & 0o077):
-            raise LocalProfileError("Local profile changed during printer selection")
+            raise LocalProfileError("Local profile changed during preference update")
         os.replace(filename, path)
     finally:
         if filename is not None:
