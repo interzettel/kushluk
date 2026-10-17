@@ -4,6 +4,7 @@ import os
 from dataclasses import dataclass
 from pathlib import Path
 
+from kushluk.local_profile import read_local_profile
 from kushluk.source_registry import approved_urls
 
 
@@ -37,6 +38,7 @@ class Settings:
         # A configured registry is a deliberately approved source list.
         # Legacy explicit KUSHLUK_RSS_URLS remains supported, but no default
         # Hacker News feed is silently added to a registry-backed profile.
+        profile = read_local_profile()
         registry = approved_urls()
         raw_urls = os.getenv("KUSHLUK_RSS_URLS")
         if raw_urls is None:
@@ -46,10 +48,10 @@ class Settings:
             legacy = tuple(part.strip() for part in raw_urls.split(",") if part.strip())
             rss = tuple(dict.fromkeys((*legacy, *registry)))
         return cls(
-            home_name=os.getenv("KUSHLUK_HOME_NAME", "Cologne"),
-            latitude=float(os.getenv("KUSHLUK_LATITUDE", "50.9384")),
-            longitude=float(os.getenv("KUSHLUK_LONGITUDE", "6.9603")),
-            timezone=os.getenv("KUSHLUK_TIMEZONE", "Europe/Berlin"),
+            home_name=os.getenv("KUSHLUK_HOME_NAME", profile.get("home_name", "Cologne")),
+            latitude=float(os.getenv("KUSHLUK_LATITUDE", profile.get("latitude", 50.9384))),
+            longitude=float(os.getenv("KUSHLUK_LONGITUDE", profile.get("longitude", 6.9603))),
+            timezone=os.getenv("KUSHLUK_TIMEZONE", profile.get("timezone", "Europe/Berlin")),
             rss_urls=rss,
             reference_only_rss_urls=rss,
             archive_dir=Path(os.getenv("KUSHLUK_ARCHIVE_DIR", "archive")),
@@ -58,7 +60,7 @@ class Settings:
             calendar_fixture=Path(
                 os.getenv("KUSHLUK_CALENDAR_FIXTURE", "fixtures/calendar.json")
             ),
-            printer=os.getenv("KUSHLUK_PRINTER") or None,
+            printer=os.getenv("KUSHLUK_PRINTER") or profile.get("printer") or None,
             smtp_host=os.getenv("KUSHLUK_SMTP_HOST") or None,
             smtp_port=int(os.getenv("KUSHLUK_SMTP_PORT", "587")),
             smtp_username=os.getenv("KUSHLUK_SMTP_USERNAME") or None,
