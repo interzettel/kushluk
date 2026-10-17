@@ -48,6 +48,10 @@ The developer-oriented installation proof under [#54](https://github.com/interze
 
 A green CI run is **preview engineering evidence only**. It does not create a `v0.2.0-alpha.1` tag, make PyPI claims, approve rights/host printing, pass a real-reader trial, or substitute for the owner's signoff. Development version remains `0.1.0`. Binary wheels/source archives and synthetic samples are retained as temporary Actions artifacts, not a signed/public release. Release-checklist items requiring final legal/dependency review, human release approval and an actual release tag remain unchecked.
 
+### M1 supplementary release-readiness diagnostics (not acceptance)
+
+[PR #121](https://github.com/interzettel/kushluk/pull/121) adds machine-readable version/license **metadata** from each installed wheel and sdist environment, pip dependency-consistency tests, and a bounded v1/v2 archive structural compatibility report. These narrow the evidence gaps for the checklist below but **do not** finish the dependency-license/vulnerability audit, native font review, historical v1 migration, or founder release decision. [Dependency audit](DEPENDENCY_AUDIT.md) · [Archive contract](ARCHIVE_COMPATIBILITY.md). Neither a source distribution nor a compatibility inventory permits silent resale or reprinting of another person's material.
+
 ## Release verification checklist
 
 - [ ] `pyproject.toml` version and annotated tag correspond; no unreviewed version bump
