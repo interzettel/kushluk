@@ -20,6 +20,9 @@ from kushluk.print_proof import make_print_proof
 from kushluk.print_inspection import PrintInspectionError, inspect_print_pdf
 from kushluk.recovery import deliver_archived
 from kushluk.scheduled import read_run_status, run_once
+from kushluk.source_preflight import (
+    SourcePreflightError, check_sources, save_private_preflight,
+)
 from kushluk.source_registry import (
     SourceApprovalError, approve_source, read_registry, revoke_source, set_source_mode,
 )
@@ -125,6 +128,17 @@ def build_parser() -> argparse.ArgumentParser:
                       choices=("ignore", "reference-only", "derivative", "private-direct"))
     mode.add_argument("--acknowledge-rights-boundary", action="store_true")
     mode.add_argument("--registry", type=Path)
+
+    preflight = sub.add_parser(
+        "sources-preflight", help="Offline approved-source inventory; network is opt-in"
+    )
+    preflight.add_argument("--registry", type=Path)
+    preflight.add_argument("--network", action="store_true",
+                           help="Explicitly contact up to five approved RSS feeds")
+    preflight.add_argument("--limit", type=int, default=5,
+                           help="Maximum approved feeds to contact (1–10)")
+    preflight.add_argument("--output", type=Path,
+                           help="New private diagnostic JSON file; never overwrite")
 
     listed = sub.add_parser("sources-list", help="Show approved RSS source IDs, no URLs")
     listed.add_argument("--registry", type=Path)
@@ -311,6 +325,19 @@ def main(argv: list[str] | None = None) -> int:
             return 2
         print(json.dumps(payload, ensure_ascii=False))
         return 0
+
+    if args.command == "sources-preflight":
+        try:
+            result = check_sources(
+                path=args.registry, network=args.network, limit=args.limit,
+            )
+            if args.output is not None:
+                save_private_preflight(result, args.output)
+        except (SourcePreflightError, SourceApprovalError) as exc:
+            print(json.dumps({"status": "rejected", "error": str(exc)}))
+            return 2
+        print(json.dumps(result, ensure_ascii=False))
+        return 0 if result["failed_sources"] == 0 else 2
 
     if args.command == "export-epub":
         try:
