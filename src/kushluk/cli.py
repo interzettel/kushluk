@@ -147,6 +147,8 @@ def build_parser() -> argparse.ArgumentParser:
 
     epub = sub.add_parser("export-epub", help="Offline EPUB3 export of an archived edition")
     epub.add_argument("--date", dest="target_date", required=True, help="YYYY-MM-DD")
+    epub.add_argument("--language", default="und",
+                      help="Edition language tag (e.g. en, de, tr, de-DE); und if unknown")
     epub.add_argument("--output", type=Path,
                       help="New private EPUB path (default: edition.epub in archive)")
 
@@ -408,7 +410,9 @@ def main(argv: list[str] | None = None) -> int:
             path = args.output or (
                 settings.archive_dir / f"{target:%Y%m%d}-001" / "edition.epub"
             )
-            result = export_archived_epub(settings.archive_dir, target, path)
+            result = export_archived_epub(
+                settings.archive_dir, target, path, language=args.language,
+            )
         except (EpubError, ValueError) as exc:
             code = str(exc) if isinstance(exc, EpubError) else "invalid_date"
             print(json.dumps({"status": "rejected", "error": code}))
