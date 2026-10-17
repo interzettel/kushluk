@@ -71,7 +71,7 @@ This calls the **existing** `deliver-archived` recovery implementation. The oper
 
 ## Read-only version 1 diagnostics operations
 
-The v1 JSON boundary also accepts `{"schema_version":1,"action":"report","date":"2026-10-17"}` and `{"schema_version":1,"action":"timing_plan","date":"2026-10-18","ready_by":"08:00","margin_minutes":10,"history_days":30}`. The first reports typed software stage/submission state, not paper/recipient verification. The second requires >=3 prior valid archived-PDF duration samples and suggests a start clock for **manual** timer reconfiguration; it never schedules. To retain a software archive target on an actual `run` request, pass `"ready_by":"08:00"`. See [TIMING_REPORTS.md](TIMING_REPORTS.md).
+The v1 JSON boundary also accepts `{"schema_version":1,"action":"report","date":"2026-10-17"}` and `{"schema_version":1,"action":"timing_plan","date":"2026-10-18","ready_by":"08:00","margin_minutes":10,"history_days":30}`. The first reports typed software stage/submission state, not paper/recipient verification. The second requires >=3 prior valid archived-PDF duration samples and suggests a start clock for **manual** timer reconfiguration; it never schedules. To retain a software archive target on an actual `run` request, pass `"ready_by":"08:00"` and optionally `"expected_start":"07:30"` to quantify scheduled-launch delay. Generated systemd and launchd commands supply the latter field automatically. See [TIMING_REPORTS.md](TIMING_REPORTS.md).
 
 ## Native Linux/macOS scheduler templates
 
