@@ -59,3 +59,28 @@ Bad:
 
 Good:
 > Calendar sync failed, so today's edition was generated without calendar events. Printing continued. Reconnect the calendar connector before the next edition.
+
+## Local operator guidance (software status, not a notification delivery guarantee)
+
+`kushluk run-report --date YYYY-MM-DD` now includes an additive `operator_guidance`
+object with a stable `code`, severity and **fixed** action text. It never embeds raw
+provider exceptions, private sources, file paths, tokens or article content.
+This is a local, user-requested diagnostic report, **not** an automatic desktop
+alert, push message, SMTP delivery or cloud-monitoring service.
+
+- `manual_review_no_auto_retry`: interrupted, corrupted or uncertain job.
+  Inspect archived receipts **and actual print/SMTP queues** before deciding on a new
+  explicit archive-only resend. Never auto-retry an uncertain submission.
+- `printer_queue_not_physical_proof`: CUPS accepted a submission; inspect actual
+  paper and page order separately.
+- `smtp_accepted_not_recipient_proof`: SMTP accepted a submission; delivery to
+  the recipient is not established.
+- `archive_ready_late`: the software archive missed its configured ready-by time;
+  only measured run history should guide a new scheduler trigger.
+- `no_run_receipt` or `schedule_paused`: inspect the local scheduler or explicit
+  pause status. These must not trigger hidden generation or delivery.
+- `archive_complete_delivery_not_implied`: archived output exists, but no
+  physical or human delivery is independently verified.
+
+The user-facing next step remains a real local notification capability under
+#17/#20/#47; this patch addresses comprehensible *read-only remediation* first.
