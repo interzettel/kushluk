@@ -88,6 +88,10 @@ def build_parser() -> argparse.ArgumentParser:
         "--ready-by", metavar="HH:MM", type=_clock_time,
         help="Optional clock target for measuring PDF archive readiness, not physical print",
     )
+    run.add_argument(
+        "--expected-start", metavar="HH:MM", type=_clock_time,
+        help="Expected OS timer trigger to measure wake/launch delay; not an SLA",
+    )
 
     for command, help_text in (
         ("pause-day", "Pause future run starts for one local edition date"),
@@ -410,6 +414,7 @@ def main(argv: list[str] | None = None) -> int:
                 print_profile=args.print_profile,
                 latest_start=args.latest_start,
                 ready_by=args.ready_by,
+                expected_start=args.expected_start,
             )
         print(json.dumps(outcome.as_dict(), ensure_ascii=False))
         return 0 if outcome.status in {
