@@ -6,6 +6,7 @@ all input is synthetic, and no print job, network feed access or scheduler runs.
 from __future__ import annotations
 
 import re
+import socket
 from http.client import HTTPConnection
 from threading import Thread
 from urllib.parse import urlencode
@@ -84,6 +85,20 @@ def test_synthetic_first_reader_journey_u1_to_u6(browser, monkeypatch):
 
     monkeypatch.setattr("kushluk.setup_web.discover_queues", discover)
     monkeypatch.setattr("kushluk.setup_web.check_queue", check)
+
+    # Prohibit live source access and OS print submissions during this rehearsal.
+    original_connect = socket.create_connection
+
+    def loopback_only(address, *args, **kwargs):
+        if address[0] != "127.0.0.1":
+            pytest.fail("Synthetic first-reader journey attempted external network access")
+        return original_connect(address, *args, **kwargs)
+
+    monkeypatch.setattr(socket, "create_connection", loopback_only)
+    monkeypatch.setattr(
+        "kushluk.printer_preflight.subprocess.run",
+        lambda *_a, **_kw: pytest.fail("Synthetic first-reader journey ran a system command"),
+    )
 
     # U1/U2: first GET is inert; create exactly one owner-local home profile.
     status, page = request(server)
