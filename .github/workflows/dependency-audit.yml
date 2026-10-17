@@ -1,0 +1,55 @@
+name: Python dependency vulnerability audit (candidate only)
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 6 * * 1'
+  pull_request:
+    paths:
+      - 'pyproject.toml'
+      - '.github/workflows/dependency-audit.yml'
+      - 'tools/native_inventory.py'
+      - 'docs/DEPENDENCY_AUDIT.md'
+
+permissions:
+  contents: read
+
+jobs:
+  python-advisories:
+    name: PyPI advisory audit / Python 3.12
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: Install the actual optional runtime dependency set in a clean venv
+        run: |
+          python -m venv "$RUNNER_TEMP/kushluk-target"
+          "$RUNNER_TEMP/kushluk-target/bin/python" -m pip install --upgrade pip
+          "$RUNNER_TEMP/kushluk-target/bin/python" -m pip install -e '.[pdf,google,images]'
+          mkdir -p output/security
+          "$RUNNER_TEMP/kushluk-target/bin/python" -m pip freeze --exclude-editable > output/security/resolved-runtime-requirements.txt
+          "$RUNNER_TEMP/kushluk-target/bin/python" -m pip check
+      - name: Install the independent auditor
+        run: python -m pip install 'pip-audit>=2.9,<3'
+      - name: Query current published Python advisories (no automatic fixes)
+        run: |
+          python -m pip_audit \
+            --no-deps \
+            --requirement output/security/resolved-runtime-requirements.txt \
+            --format json \
+            --output output/security/pypi-advisories.json
+      - name: Retain unredacted *public package* audit inputs and findings for review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kushluk-python-advisories
+          path: output/security/
+          if-no-files-found: warn
+          retention-days: 14
+
+# Excludes private profiles, local reader archives, calendar feeds, environment
+# secrets and native font files. It intentionally fails on published advisories
+# or scanner errors, never grants licensing/release approval and never upgrades.
