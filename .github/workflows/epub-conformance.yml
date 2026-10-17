@@ -1,0 +1,52 @@
+name: EPUB conformance
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "src/kushluk/epub.py"
+      - "tools/make_epub_fixture.py"
+      - ".github/workflows/epub-conformance.yml"
+  pull_request:
+    paths:
+      - "src/kushluk/epub.py"
+      - "tools/make_epub_fixture.py"
+      - ".github/workflows/epub-conformance.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  official-epubcheck:
+    name: W3C EPUBCheck 5.4.0 (synthetic archive)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - name: Install Kushluk (no optional renderer)
+        run: python -m pip install -e .
+      - name: Generate source-free EPUB sample
+        env:
+          KUSHLUK_ARCHIVE_DIR: ${{ runner.temp }}/synthetic-archive
+          KUSHLUK_EPUB_TEST_OUTPUT: ${{ runner.temp }}/synthetic.epub
+        run: python tools/make_epub_fixture.py
+      - name: Retrieve and SHA-256 verify official EPUBCheck
+        run: |
+          curl --fail --location --retry 3 --silent --show-error \
+            https://github.com/w3c/epubcheck/releases/download/v5.4.0/epubcheck-5.4.0.zip \
+            --output "${RUNNER_TEMP}/epubcheck-5.4.0.zip"
+          echo "33350c61038e71dfb3d45a76aed04bf5481e6d5500cb780f6e98db8bbd15a28c  ${RUNNER_TEMP}/epubcheck-5.4.0.zip" \
+            | sha256sum --check --
+          unzip -q "${RUNNER_TEMP}/epubcheck-5.4.0.zip" -d "${RUNNER_TEMP}/epubcheck"
+      - name: Independent EPUB 3 conformance
+        run: |
+          jar="$(find "${RUNNER_TEMP}/epubcheck" -name epubcheck.jar -type f -print -quit)"
+          test -n "$jar"
+          java -jar "$jar" "${RUNNER_TEMP}/synthetic.epub"
