@@ -1,7 +1,7 @@
 """Native-scheduler-safe run gate. No external agent, service or daemon required."""
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import date, datetime, time, timezone
 import stat
 from zoneinfo import ZoneInfo
@@ -155,6 +155,8 @@ def _running_lock_held(receipt: Path) -> bool:
 
 def _existing_outcome(path: Path, edition_id: str, request: dict[str, Any]) -> ScheduledOutcome:
     try:
+        if path.is_symlink():
+            raise ValueError("Symlinked run receipt")
         saved = json.loads(path.read_text(encoding="utf-8"))
         if saved.get("edition_id") != edition_id or saved.get("schema_version") != 1:
             raise ValueError("Receipt format does not match the edition.")
@@ -333,6 +335,11 @@ def run_once(
         if lock_fd >= 0:
             os.close(lock_fd)
         return _existing_outcome(receipt, edition_id, request)
+    except OSError:
+        if lock_fd >= 0:
+            os.close(lock_fd)
+        return ScheduledOutcome("needs_review", edition_id,
+                                failure_codes=("receipt_creation_failed",))
 
     record = initial
 
