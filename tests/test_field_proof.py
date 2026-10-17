@@ -122,3 +122,74 @@ def test_symlink_evidence_rejected(tmp_path):
             device="Device", operator="Human", observations="Inspected page",
             result="pass", acknowledge=True, output=tmp_path / "r.json",
         )
+
+
+def test_letter_field_receipt_requires_matching_letter_profile(tmp_path):
+    artifact, photo, inspection = _files(tmp_path)
+    report = json.loads(inspection.read_text())
+    report["profile"] = "letter-home"
+    inspection.write_text(json.dumps(report))
+    output = tmp_path / "private" / "letter.json"
+    data = record_field_proof(
+        kind="paper-letter", artifact=artifact, evidence=[photo],
+        inspection=inspection, output=output, device="US home Letter printer",
+        operator="Observer", observations="Real four-page US Letter trial inspected",
+        result="pass", acknowledge=True,
+    )
+    assert data["kind"] == "paper-letter"
+    assert data["independently_verified"] is False
+    assert data["release_gate_accepted"] is False
+    assert data["print_inspection_sha256"] == sha256(inspection.read_bytes()).hexdigest()
+
+
+@pytest.mark.parametrize("profile", ["a4-home", "a3-folded", None, "custom"])
+def test_letter_cannot_use_another_paper_inspection(tmp_path, profile):
+    artifact, photo, inspect = _files(tmp_path)
+    record = json.loads(inspect.read_text())
+    if profile is not None:
+        record["profile"] = profile
+    inspect.write_text(json.dumps(record))
+    target = tmp_path / "receipt.json"
+    with pytest.raises(FieldProofError, match="does not match"):
+        record_field_proof(
+            kind="paper-letter", artifact=artifact, evidence=[photo],
+            inspection=inspect, output=target, device="Printer",
+            operator="Human", observations="Test observation", result="pass",
+            acknowledge=True,
+        )
+    assert not target.exists()
+
+
+def test_cli_letter_record_does_not_claim_real_acceptance(tmp_path, capsys):
+    artifact, photo, inspect = _files(tmp_path)
+    record = json.loads(inspect.read_text())
+    record["profile"] = "letter-home"
+    inspect.write_text(json.dumps(record))
+    output = tmp_path / "private" / "letter-field.json"
+    assert main([
+        "record-field-proof", "--kind", "paper-letter",
+        "--artifact", str(artifact), "--inspection", str(inspect),
+        "--device", "Home Letter printer", "--operator", "Observer",
+        "--observations", "Measured margins and four physical pages",
+        "--result", "pass", "--evidence", str(photo),
+        "--acknowledge-direct-observation", "--output", str(output),
+    ]) == 0
+    response = json.loads(capsys.readouterr().out)
+    assert response["kind"] == "paper-letter"
+    assert response["independently_verified"] is False
+    assert response["release_gate_accepted"] is False
+
+
+def test_a4_and_a3_reject_cross_profile_inspection_if_provided(tmp_path):
+    artifact, photo, inspect = _files(tmp_path)
+    record = json.loads(inspect.read_text())
+    record["profile"] = "letter-home"
+    inspect.write_text(json.dumps(record))
+    for kind in ("paper-a4", "paper-a3"):
+        with pytest.raises(FieldProofError, match="does not match"):
+            record_field_proof(
+                kind=kind, artifact=artifact, inspection=inspect, evidence=[photo],
+                output=tmp_path / "receipt.json", device="Printer",
+                operator="Observer", observations="Observation",
+                result="pass", acknowledge=True,
+            )
