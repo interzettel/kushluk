@@ -13,7 +13,7 @@ from pathlib import Path
 import shutil
 import subprocess
 
-from kushluk.print_profiles import validate_a3_booklet
+from kushluk.print_profiles import validate_a3_booklet, validate_letter_home
 from kushluk.validation import validate_pdf
 
 
@@ -34,7 +34,7 @@ def inspect_print_pdf(
     Text matrix positions are *anchors*, not reliable glyph bounding boxes.
     Raster snapshots provide a separate human inspection surface.
     """
-    if profile not in {"a4-home", "a3-folded"}:
+    if profile not in {"a4-home", "letter-home", "a3-folded"}:
         raise PrintInspectionError("Unknown print profile")
     if type(dpi) is not int or not (72 <= dpi <= 180):
         raise PrintInspectionError("Raster proof DPI must be between 72 and 180")
@@ -50,6 +50,9 @@ def inspect_print_pdf(
         if profile == "a4-home":
             structural = validate_pdf(pdf)
             structural_errors = list(structural.errors)
+            expected = 4
+        elif profile == "letter-home":
+            structural_errors = validate_letter_home(pdf)
             expected = 4
         else:
             structural_errors = validate_a3_booklet(pdf)
