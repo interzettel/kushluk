@@ -85,6 +85,12 @@ def frozen_publication():
 
 def make_preview(output_dir: Path, *, pdf: bool = False) -> dict:
     """Write a fixed preview only to a new/empty destination; no overwrite."""
+    if pdf:
+        try:
+            import weasyprint  # noqa: F401
+            import pypdf  # noqa: F401
+        except (ImportError, OSError) as exc:
+            raise PreviewError("pdf_dependencies_required") from exc
     if output_dir.is_symlink() or (output_dir.exists() and not output_dir.is_dir()):
         raise PreviewError("unsafe_preview_destination")
     if output_dir.exists() and any(output_dir.iterdir()):
