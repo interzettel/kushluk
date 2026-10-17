@@ -59,14 +59,18 @@ def impose_letter_home(source_pdf: Path, destination_pdf: Path) -> Path:
     destination_pdf.parent.mkdir(parents=True, exist_ok=True)
     if destination_pdf.is_symlink() or destination_pdf.exists():
         raise ValueError("Letter output path must be new")
+    created = False
     try:
         with destination_pdf.open("xb") as stream:
+            created = True
             writer.write(stream)
         errors = validate_letter_home(destination_pdf)
         if errors:
             raise ValueError("Invalid Letter print variant: " + "; ".join(errors))
     except BaseException:
-        destination_pdf.unlink(missing_ok=True)
+        # Never delete a concurrently created pre-existing destination.
+        if created:
+            destination_pdf.unlink(missing_ok=True)
         raise
     return destination_pdf
 
@@ -91,7 +95,7 @@ def validate_letter_home(path: Path) -> list[str]:
             if f"{index} / 4" not in text:
                 errors.append(f"Page {index} does not have its canonical page marker.")
         return errors
-    except (OSError, ValueError, TypeError):
+    except Exception:
         return ["Could not inspect Letter PDF."]
 
 
