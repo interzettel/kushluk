@@ -42,8 +42,14 @@ class Settings:
         registry = approved_urls()
         raw_urls = os.getenv("KUSHLUK_RSS_URLS")
         if raw_urls is None:
-            rss = registry or (("https://hnrss.org/frontpage",) if not
-                               _has_source_registry() else ())
+            # Guided first-run profiles imply deliberate source consent:
+            # never insert the historical Hacker News example before a user
+            # approves a feed. Older no-profile installations keep their
+            # original example feed unless a registry exists.
+            rss = registry or (
+                ("https://hnrss.org/frontpage",)
+                if not _has_source_registry() and not profile else ()
+            )
         else:
             legacy = tuple(part.strip() for part in raw_urls.split(",") if part.strip())
             rss = tuple(dict.fromkeys((*legacy, *registry)))
