@@ -7,7 +7,7 @@ import pytest
 from kushluk.cli import main
 from kushluk.config import Settings
 from kushluk.local_profile import (
-    LocalProfileError, read_local_profile, write_local_profile,
+    LocalProfileError, read_local_profile, update_local_printer, write_local_profile,
 )
 
 
@@ -145,3 +145,45 @@ def test_explicit_empty_printer_env_can_disable_saved_printer(tmp_path, monkeypa
     assert Settings.from_env().printer == "My Printer"
     monkeypatch.setenv("KUSHLUK_PRINTER", "")
     assert Settings.from_env().printer is None
+
+
+def test_explicit_printer_preference_preserves_profile_and_mode(tmp_path):
+    path = tmp_path / "profile.json"
+    write_local_profile(path, **_params())
+    old = read_local_profile(path)
+    update_local_printer(path, printer="DeskJet_2820e")
+    new = read_local_profile(path)
+    assert {**new, "printer": None} == old
+    assert new["printer"] == "DeskJet_2820e"
+    assert path.stat().st_mode & 0o777 == 0o600
+    assert list(tmp_path.glob(".profile-*")) == []
+    update_local_printer(path, printer="DeskJet_2820e")
+    assert read_local_profile(path) == new
+
+
+def test_printer_update_cannot_create_or_follow_symlinks_or_weak_permissions(tmp_path):
+    missing = tmp_path / "missing.json"
+    with pytest.raises(LocalProfileError):
+        update_local_printer(missing, printer="Queue_A")
+    assert not missing.exists()
+    target = tmp_path / "real.json"
+    write_local_profile(target, **_params())
+    link = tmp_path / "link.json"
+    link.symlink_to(target)
+    with pytest.raises(LocalProfileError):
+        update_local_printer(link, printer="Queue_A")
+    assert read_local_profile(target)["printer"] is None
+    target.chmod(0o644)
+    with pytest.raises(LocalProfileError, match="owner-only"):
+        update_local_printer(target, printer="Queue_A")
+    assert read_local_profile(target)["printer"] is None
+
+
+def test_invalid_printer_update_never_rewrites_existing_profile(tmp_path):
+    path = tmp_path / "profile.json"
+    write_local_profile(path, **_params())
+    original = path.read_bytes()
+    for value in ("", "injected\\nqueue", "x" * 121):
+        with pytest.raises(LocalProfileError):
+            update_local_printer(path, printer=value)
+    assert path.read_bytes() == original
