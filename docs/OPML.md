@@ -57,6 +57,10 @@ The registry preserves the selected mode and durable source ID, but **only `refe
 Do not confuse saved `derivative` or `private-direct` preferences with actual support for those workflows. Neither is currently allowed to fetch article bodies, save them in an edition, or be distributed. This is not a legal rights-verification service. All RSS inputs—including explicitly configured legacy `KUSHLUK_RSS_URLS` and the historical default sample feed—now use the **same reference-only and guarded network policy**. Existing custom RSS article-body/description copies into editions are intentionally no longer supported. Feed endpoint URLs with subscription tokens are not archived as story provenance; only validated article links and headline references are retained. The source-mode control is a protective increment, not the complete permissions acceptance gate.
 
 
+### Safe article links
+
+RSS story links from providers are never used to fetch full article bodies. Before placing links in a PDF/HTML/EPUB edition, the system accepts only public HTTP(S) article references that lack embedded credentials and known authentication/session query parameters; nonpublic or unsafe links are omitted. Legacy archived EPUBs are checked again during export. Removing a suspicious link does not invent a replacement or remove the truthful headline/source name.
+
 ### Per-source degradation
 
 A blocked, offline or malformed feed reports `rss_feed_unavailable` with only its 1-based position and a safe category. The connector preserves candidates from the other healthy RSS feeds and never logs feed URL tokens. If no source provides a valid article headline, the existing `no_editorial_stories` degradation remains visible. No article is invented to cover missing data.
