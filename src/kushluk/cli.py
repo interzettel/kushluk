@@ -23,6 +23,7 @@ from kushluk.print_proof import make_print_proof
 from kushluk.print_inspection import PrintInspectionError, inspect_print_pdf
 from kushluk.recovery import deliver_archived
 from kushluk.scheduled import pause_day, read_run_status, resume_day, run_once
+from kushluk.schedule_templates import ScheduleTemplateError, export_templates
 from kushluk.setup_web import run_setup_web
 from kushluk.source_preflight import (
     SourcePreflightError, check_sources, save_private_preflight,
@@ -96,6 +97,22 @@ def build_parser() -> argparse.ArgumentParser:
     )
     operation.add_argument("--request", type=Path, required=True,
                            help="Local JSON request file, <= 4 KiB; use mode 0600")
+
+    export = sub.add_parser(
+        "schedule-export",
+        help="Write disabled systemd/launchd units; never install/enable services",
+    )
+    export.add_argument("--platform", choices=("systemd", "launchd"), required=True)
+    export.add_argument("--executable", type=Path, required=True,
+                        help="Absolute path to installed Kushluk executable")
+    export.add_argument("--working-dir", type=Path, required=True,
+                        help="Absolute existing location for local settings and archives")
+    export.add_argument("--output-dir", type=Path, required=True,
+                        help="New/empty directory for reviewable templates")
+    export.add_argument("--start", type=_clock_time, default=time(7, 30),
+                        help="OS local scheduler clock, HH:MM (default 07:30)")
+    export.add_argument("--latest-start", type=_clock_time, default=time(7, 45),
+                        help="Last allowed local start, HH:MM (default 07:45)")
 
     run_status = sub.add_parser("run-status", help="Read durable local edition run state")
     run_status.add_argument("--date", dest="target_date", help="YYYY-MM-DD")
@@ -276,6 +293,22 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     settings = Settings.from_env()
+
+    if args.command == "schedule-export":
+        try:
+            produced = export_templates(
+                platform=args.platform, executable=args.executable,
+                working_dir=args.working_dir, output_dir=args.output_dir,
+                start=args.start.strftime("%H:%M"),
+                latest_start=args.latest_start.strftime("%H:%M"),
+            )
+        except ScheduleTemplateError as exc:
+            print(json.dumps({"status": "rejected", "error": str(exc)}))
+            return 2
+        print(json.dumps({"status": "templates_created_not_installed",
+                          "files": produced, "schedule_enabled": False,
+                          "printing_enabled": False, "host_verified": False}))
+        return 0
 
     if args.command == "operate":
         try:
