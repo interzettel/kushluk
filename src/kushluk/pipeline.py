@@ -11,6 +11,7 @@ from kushluk.connectors.calendar_fixture import CalendarFixtureConnector
 from kushluk.connectors.calendar_ics import ICSCalendarConnector
 from kushluk.connectors.rss import RSSConnector
 from kushluk.connectors.task_local import LocalTaskConnector, TaskSourceError
+from kushluk.connectors.google_local import GoogleProviderError, fetch_google_tasks
 from kushluk.connectors.public_research import CrossrefMetadataConnector, ResearchError
 from kushluk.connectors.weather import OpenMeteoWeatherConnector
 from kushluk.delivery import send_email_edition
@@ -90,6 +91,17 @@ def run_pipeline(
             practical.extend(LocalTaskConnector(settings.tasks_file, target_date).fetch())
         except (TaskSourceError, OSError, ValueError) as exc:
             failures.append(_failure("tasks_unavailable", "degraded", exc, "task"))
+
+    # Separate optional read-only Google Tasks grant. Never use Gmail credentials.
+    if settings.google_tasks_vault is not None:
+        try:
+            practical.extend(fetch_google_tasks(
+                settings.google_tasks_vault, target_date=target_date,
+            ))
+        except (GoogleProviderError, OSError, ValueError) as exc:
+            failures.append(_failure(
+                "google_tasks_unavailable", "degraded", exc, "task",
+            ))
 
     candidates = []
     if settings.research_query:
