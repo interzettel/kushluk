@@ -1,3 +1,7 @@
+# Kushluk work journal
+
+A concise, dated evidence/history record for one maintainer with AI helpers. **This is not an activity-time tracker or a substitute for GitHub commits and discussions.**
+
 ## 2026-10-17 — Opt-in printer preference after local preflight
 
 **Kind:** onboarding engineering. **Issue:** #5 (UX-01). **State:** proposed implementation, awaiting CI and review in the linked PR.
@@ -5,10 +9,6 @@
 - Connects a deliberately checked local CUPS queue to an existing private profile via an explicitly confirmed, printer-only update. The initial home profile remains create-only.
 - Negative tests cover missing prior scan/check, stale selection, CSRF/Origin/Host, missing profile, symlinks, non-private files, and preference preservation.
 - No printing, driver installation, automatic delivery or release-gate claim. Actual reader observation, paper, e-reader and unattended-host trials remain outstanding; progress percentages and hardware gates unchanged.
-
-# Kushluk work journal
-
-A concise, dated evidence/history record for one maintainer with AI helpers. **This is not an activity-time tracker or a substitute for GitHub commits and discussions.**
 
 ## 2026-10-16 — Solo project operations and editorial entrypoint
 
