@@ -2,7 +2,6 @@
 from http.client import HTTPConnection
 from threading import Thread
 from urllib.parse import urlencode
-import json
 import re
 
 import pytest
@@ -182,3 +181,10 @@ def test_cli_setup_web_is_separate_from_settings_and_no_external_binding(
     assert main(["setup-web", "--no-open", "--output", str(path)]) == 0
     assert invoked == [(path, False)]
     assert not path.exists()
+
+
+def test_non_ascii_csrf_is_rejected_without_server_error(setup_server):
+    _, _, html = _request(setup_server)
+    status, _, _ = _post(setup_server, _form(_token(html) + "★"))
+    assert status == 403
+    assert not setup_server.profile_file.exists()
