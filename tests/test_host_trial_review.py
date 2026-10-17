@@ -113,6 +113,27 @@ def test_invalid_approvals_symlinks_and_missing_validation_fail_closed(tmp_path)
     assert not result["days"][0]["matching_operator_host_pass_reported"]
 
 
+
+def test_legitimate_failed_and_paper_proofs_are_not_malformed(tmp_path):
+    archive = tmp_path / "archive"
+    receipts = tmp_path / "receipts"
+    receipts.mkdir()
+    path = make_day(archive, BASE)
+    failure = make_attestation(receipts, path, name="failed.json")
+    failure["operator_reported_result"] = "fail"
+    (receipts / "failed.json").write_text(json.dumps(failure))
+    paper = dict(failure)
+    paper["kind"] = "paper-a4"
+    paper["operator_reported_result"] = "pass"
+    paper["print_inspection_sha256"] = "a" * 64
+    (receipts / "paper.json").write_text(json.dumps(paper))
+    result = review_host_trial(archive_root=archive, receipts_dir=receipts,
+                               start_date=BASE)
+    assert result["other_receipts_out_of_scope"] == 2
+    assert result["invalid_or_unsupported_receipts"] == 0
+    assert result["days_with_matching_operator_host_reports"] == 0
+
+
 def test_early_observation_does_not_attest_later_run(tmp_path):
     archive = tmp_path / "archive"
     receipts = tmp_path / "receipts"
