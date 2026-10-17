@@ -54,3 +54,13 @@ With the same local `kushluk setup-web` process running, follow **Review your so
 The browser applies loopback-only Host and Origin checks, CSRF validation, bounded form bodies, XML DTD/ENTITY rejection, and escaped user-supplied titles. There is **no background feed fetching**: use `kushluk sources-preflight --network` later if you deliberately want to test connectivity. A site that grants RSS access still might prohibit copying its full articles. This UI does not make that determination.
 
 **Still outstanding:** assistive-technology/novice usability testing, a real print-driver wizard, source/provider-specific rights evidence, and observed hardware/reliability acceptance. Do not enable a new source without access authorization.
+
+## Third step — local printer readiness (read-only)
+
+From `kushluk setup-web`, open `/printer` after reviewing feeds. Simply opening the page **does not query printers**. Click **Discover local printer queues** to request a bounded `lpstat -p` listing from the **local** CUPS subsystem. If CUPS is missing or unavailable, the page reports this without blocking digital/newspaper generation. No printer queue is silently selected.
+
+Choose an installed queue, then click **Check this queue**. Kuşluk invokes the existing, bounded CUPS capability checker for only that selected queue (`lpoptions -p QUEUE -l` and `lpstat -p QUEUE`), and displays whether the queue is reported available and whether A4, A3 and duplex appear among advertised options. These are **metadata observations**, not physical test results. Queue names are constrained/escaped and read-only results are held only in the browser server's memory. A queue cannot be checked unless it was returned by the last explicit local scan.
+
+The browser **never executes `lp`/`lpr`**, submits a job, installs drivers, changes the CUPS default destination, edits the user's profile, or enables unattended delivery. Any CUPS command can contact the **configured local printing service**, and that service can itself be connected to a network printer; that is why discovery requires an explicit click. The browser remains bound to numeric loopback with exact Host/Origin/CSRF checks and no telemetry.
+
+**Proof boundary:** even a “reported ready” queue may be out of paper, offline after sleep, have an unusable duplex alignment, lack real A3 support, or print badly. Physical print acceptance still requires the A4/A3 artifact and independent observation described in [FIELD_ACCEPTANCE.md](FIELD_ACCEPTANCE.md). This UI is a non-printing readiness aid, **not** the real-device release gate.
