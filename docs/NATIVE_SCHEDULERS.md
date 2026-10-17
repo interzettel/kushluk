@@ -57,7 +57,7 @@ To disable: `launchctl bootout "gui/$(id -u)/org.interzettel.kushluk.morning"`. 
 
 ## Timing and evidence reports (read-only)
 
-After a locally initiated run, inspect `kushluk run-report --date YYYY-MM-DD`. To measure the software deadline, use `kushluk run --ready-by 08:00`. Once **three or more** valid completed local edition receipts exist, `kushluk timing-plan --date YYYY-MM-DD --ready-by 08:00 --margin-minutes 10` suggests a start clock from a conservative p90 software archive latency. This is only a suggestion for manual review; **it does not modify the exported unit files**. An OS's trigger/wake/login delay and actual CUPS/SMTP delivery are **not** included. Full semantics: [TIMING_REPORTS.md](TIMING_REPORTS.md).
+Generated Linux/macOS templates now pass `--expected-start HH:MM` alongside `--latest-start`, allowing the report to separate a delayed OS scheduler launch from Kushluk's own time-to-archive. After a locally initiated run, inspect `kushluk run-report --date YYYY-MM-DD`. To measure the software deadline, use `kushluk run --ready-by 08:00`. Once **three or more** valid completed local edition receipts exist, `kushluk timing-plan --date YYYY-MM-DD --ready-by 08:00 --margin-minutes 10` suggests a start clock from a conservative p90 software archive latency. This is only a suggestion for manual review; **it does not modify the exported unit files**. An OS's trigger/wake/login delay and actual CUPS/SMTP delivery are **not** included. Full semantics: [TIMING_REPORTS.md](TIMING_REPORTS.md).
 
 ## 3. Run-state semantics after restart
 
