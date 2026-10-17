@@ -57,6 +57,10 @@ EPUB export accepts an explicit IETF language tag (e.g., `--language de`) and pl
 
 The loopback-only `setup-web` page now offers a second, **fully offline** source-review page: paste a bounded OPML proposal in memory, preview escaped title and hostname only (no private query tokens), explicitly approve *one feed at a time* into the existing reference-only registry, or pause/resume with fresh consent. No source bodies are imported, fetched or enabled without opt-in. Browser and CLI reuse the same per-feed consent path. Provider-specific full-text rights, novices/accessibility and printer hardware remain unverified. See [LOCAL_SETUP.md](LOCAL_SETUP.md).
 
+### Printer readiness in local onboarding (F-008 — partial)
+
+Step 3 of `kushluk setup-web` now offers **explicit** local CUPS queue discovery (`lpstat -p`) and a per-discovered-queue, read-only capability check for advertised A4/A3, duplex and current availability. A browser GET does not trigger hardware probing. It never submits print jobs or edits system queues/profile state, and all reported capability states are advisory until real printer trials. See [LOCAL_SETUP.md](LOCAL_SETUP.md), [FIELD_ACCEPTANCE.md](FIELD_ACCEPTANCE.md), #5/#13.
+
 ## Repository hygiene
 
 - Default branch: `main`.
