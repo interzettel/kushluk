@@ -25,7 +25,8 @@ def cfg(tmp_path):
     )
 
 
-def record_day(settings, day, *, seconds=180, status="completed", secret=None):
+def record_day(settings, day, *, seconds=180, status="completed", secret=None,
+               expected_start=None):
     """Controlled, purely synthetic timestamped local receipt, never live hardware."""
     folder = settings.archive_dir / f"{day:%Y%m%d}-001"
     folder.mkdir(parents=True, exist_ok=True)
@@ -55,6 +56,7 @@ def record_day(settings, day, *, seconds=180, status="completed", secret=None):
         "stages": [row["stage"] for row in events],
         "failure_codes": [],
         "ready_by_local": "08:00",
+        "expected_start_local": expected_start,
         "request": {
             "send_to_printer": False, "send_email": False,
             "email_on_print_failure": False, "print_profile": "a4-home",
@@ -229,3 +231,50 @@ def test_read_only_cli_operations_do_not_schedule_or_print(tmp_path, monkeypatch
     assert main(["timing-plan", "--date", str(TARGET)]) == 0
     assert json.loads(capsys.readouterr().out)["status"] == "insufficient_history"
     assert not settings.archive_dir.exists()
+
+
+def test_trigger_to_archive_is_measured_separately_from_process_duration(tmp_path):
+    settings = cfg(tmp_path)
+    # Expected trigger 07:40 local is 05:40 UTC; process actually starts at 05:45 UTC.
+    record_day(settings, TARGET, seconds=300, expected_start="07:40")
+    report = run_report(settings, target_date=TARGET)
+    assert report["timing"]["expected_trigger_local"] == "07:40"
+    assert report["timing"]["trigger_delay_seconds"] == 300
+    assert report["timing"]["trigger_to_archive_seconds"] == 600
+    assert report["timing"]["elapsed_to_archive_seconds"] == 300
+
+
+def test_planning_prefers_trigger_to_archive_when_three_samples_exist(tmp_path):
+    settings = cfg(tmp_path)
+    target = date(2026, 9, 30)
+    for offset, seconds in enumerate((180, 300, 480), start=1):
+        record_day(settings, target - timedelta(days=offset),
+                   seconds=seconds, expected_start="07:40")
+    plan = timing_plan(settings, target_date=target)
+    assert plan["status"] == "suggested_not_installed"
+    assert plan["sample_basis"] == "expected_trigger_to_archive"
+    assert plan["trigger_sample_count"] == 3
+    assert plan["p90_seconds"] == 780
+    assert plan["recommended_start_local"] == "07:37"
+
+
+def test_run_records_expected_trigger_as_a_clock_not_a_provider_url(
+    tmp_path, monkeypatch,
+):
+    settings = cfg(tmp_path)
+    def fake_run(*_args, **kwargs):
+        for stage in ("validated", "archive_ready", "complete"):
+            kwargs["on_stage"](stage)
+        return SimpleNamespace(
+            failures=[], print_result=None, email_result=None,
+            pdf_path=Path("fixture.pdf"),
+        )
+    monkeypatch.setattr(scheduled, "run_pipeline", fake_run)
+    assert scheduled.run_once(
+        settings, target_date=TARGET, ready_by=time(8), expected_start=time(7, 30),
+    ).status == "completed"
+    receipt = json.loads(
+        (settings.archive_dir / "20260923-001" / "scheduled.json").read_text()
+    )
+    assert receipt["expected_start_local"] == "07:30"
+    assert run_report(settings, target_date=TARGET)["timing"]["expected_trigger_local"] == "07:30"
