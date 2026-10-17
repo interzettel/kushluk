@@ -74,8 +74,7 @@ footer{border-top:1px solid #c2c5b7;margin-top:86px;padding-top:20px;font-size:1
 </div>
 <label for="timezone">IANA timezone</label>
 <input id="timezone" name="timezone" required maxlength="100" placeholder="e.g. Europe/Berlin" spellcheck="false">
-<label for="printer">Printer queue <span class="small">(optional, not tested here)</span></label>
-<input id="printer" name="printer" maxlength="120" placeholder="Leave blank to choose later">
+<p class="small">Your printer comes later. Step 3 lets you discover and check an installed queue before saving it.</p>
 <button type="submit">Save my local profile</button>
 <p class="small">Saved locally. No feed activation, printing, telemetry or background services.</p>
 </form></div></main>
@@ -211,7 +210,7 @@ class SetupHandler(BaseHTTPRequestHandler):
             self._reply(400, "<h1>Invalid form</h1>")
             return
         expected_fields = {
-            "/": {"csrf", "home_name", "latitude", "longitude", "timezone", "printer"},
+            "/": {"csrf", "home_name", "latitude", "longitude", "timezone"},
             "/sources/import": {"csrf", "opml"},
             "/sources/approve": {"csrf", "index", "consent"},
             "/sources/mode": {"csrf", "id", "mode"},
@@ -328,7 +327,7 @@ class SetupHandler(BaseHTTPRequestHandler):
                 latitude=float(fields["latitude"][0]),
                 longitude=float(fields["longitude"][0]),
                 timezone=fields["timezone"][0],
-                printer=fields["printer"][0] or None,
+                printer=None,
             )
         except (LocalProfileError, ValueError, OSError):
             self._reply(422, "<h1>Could not save profile</h1>"
