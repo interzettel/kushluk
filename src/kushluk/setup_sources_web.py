@@ -138,8 +138,8 @@ def render_source_review(
     return (
         '<!doctype html><html lang="en"><head><meta charset="utf-8">'
         '<meta name="viewport" content="width=device-width, initial-scale=1">'
-        '<title>Kuşluk · Review sources</title>' + _STYLE + '</head><body>'
-        '<div class="wrap"><header><span class="brand">kuşluk.</span>'
+        '<title>Kushluk · Review sources</title>' + _STYLE + '</head><body>'
+        '<div class="wrap"><header><span class="brand">kushluk.</span>'
         '<span class="eyebrow">Your sources · 02 / 03</span></header>'
         '<h1>Choose what belongs in your paper.</h1>'
         '<p>Import a reading list for review. Nothing is activated until you approve '
