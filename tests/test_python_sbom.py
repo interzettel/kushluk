@@ -50,9 +50,10 @@ def test_no_unsafe_expressions_or_paths_can_escape_into_component_names():
 
 
 def test_create_only_writes_deterministic_private_bom(tmp_path, monkeypatch, capsys):
+    original = python_sbom.make_inventory
     monkeypatch.setattr(python_sbom, "make_inventory",
-                        lambda: python_sbom.make_inventory([pkg("kushluk", "0.1.0"),
-                                                           pkg("pypdf", "6.0")]))
+                        lambda: original([pkg("kushluk", "0.1.0"),
+                                          pkg("pypdf", "6.0")]))
     output = tmp_path / "evidence" / "installed.json"
     assert python_sbom.main(["--output", str(output)]) == 0
     first = output.read_bytes()
