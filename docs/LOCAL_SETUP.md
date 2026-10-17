@@ -25,3 +25,19 @@ Profile file: `~/.config/kushluk/profile.json` or `$XDG_CONFIG_HOME/kushluk/prof
 Normal existing settings support is preserved. Once created, `Settings.from_env()` uses local profile values as defaults; **explicit environment variables still override them**: `KUSHLUK_HOME_NAME`, `KUSHLUK_LATITUDE`, `KUSHLUK_LONGITUDE`, `KUSHLUK_TIMEZONE`, `KUSHLUK_PRINTER`. An older installation without a profile retains its historical defaults. A malformed/tampered profile errors rather than being ignored. You can modify or remove your own local profile manually, with a backup, to restart setup.
 
 **This is not the finished onboarding experience.** It does not automatically detect your location, manage calendars/newsletters, set up actual CUPS printers or launch a scheduled service. Use [OPML and approved sources](OPML.md) for explicit subscription permissions, then `kushluk sources-preflight` for offline inventory and optional `--network` health checks. Use `kushluk doctor` for installed PDF/driver checks, and [FIELD_ACCEPTANCE.md](FIELD_ACCEPTANCE.md) for real physical printer and reboot acceptance. Storing coordinates locally is your choice; do not upload private profile files as issue attachments.
+
+## Browser setup — first local UI slice
+
+On the computer where Kuşluk is installed, run:
+
+```bash
+kushluk setup-web
+# Or keep the browser closed and open the printed local URL yourself:
+kushluk setup-web --no-open
+```
+
+This starts a **temporary local HTTP page**, accessible at a randomly selected `http://127.0.0.1:PORT/` URL. It binds exclusively to numeric IPv4 loopback, not the LAN or a public address. A simple responsive form explains what is saved, asks for an approximate location and IANA timezone, and lets you name an optional printer queue. Only the existing `profile.json` is created, with owner-only permissions. The browser never contacts a provider, imports feeds, runs a scheduler, prints a document, or checks any subscription. The process is stopped with **Ctrl+C** in its terminal.
+
+Safety properties: exact loopback Host and form Origin checks, a random per-server CSRF token, strict accepted form fields and 4-KiB POST limit, explicit no-cache/CSP/referrer headers, no remote JavaScript/fonts/images, no cookies or third-party analytics, sanitized error messages, and no profile overwrite. Its threat boundary is a trusted personal computer; this is not a remote multi-user administration server. **Do not port-forward or reverse-proxy it.** The form does not edit previously saved settings; if a profile already exists, the page instructs you to manage the local file rather than silently overwrite it.
+
+Browser setup is one improved step, not complete F-008 acceptance. It still needs installation packaging, an accessible/source consent walkthrough, actual printer hardware detection/driver setup and observed nontechnical first-run usability testing.

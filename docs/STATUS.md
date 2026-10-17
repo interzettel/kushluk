@@ -45,6 +45,10 @@ RSS item links are now checked as references (without network access) before bec
 
 `kushluk setup` creates a private offline local profile for a reader-selected display name, latitude/longitude, timezone, and optional printer queue. Environment overrides and installations without profiles keep working; no credentials or source permissions enter the profile. Guided printer/canonical source onboarding and physical hardware acceptance remain open. See [LOCAL_SETUP.md](LOCAL_SETUP.md) and #5.
 
+### Browser-first local setup slice (F-008, partial)
+
+`kushluk setup-web` provides a temporary loopback-only browser form with CSRF/Host/Origin protections, no third-party resources, and a create-only private profile. It neither activates subscriptions nor configures actual printers or schedulers; see [LOCAL_SETUP.md](LOCAL_SETUP.md). End-user accessibility/real device and installation acceptance are not verified.
+
 ## Repository hygiene
 
 - Default branch: `main`.
