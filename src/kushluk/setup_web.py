@@ -29,7 +29,7 @@ _FORM = """<!doctype html>
 <html lang="en"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Kuşluk — Set up your morning</title>
+<title>Kushluk — Set up your morning</title>
 <style>
 :root{color-scheme:light;font-family:system-ui,-apple-system,sans-serif;background:#f4f0e8;color:#252b26}
 *{box-sizing:border-box}body{margin:0;min-height:100vh}
@@ -55,7 +55,7 @@ footer{border-top:1px solid #c2c5b7;margin-top:86px;padding-top:20px;font-size:1
 @media(max-width:760px){main{grid-template-columns:1fr;gap:36px;padding-top:36px}.shell{padding:24px 18px}.panel{padding:23px}aside{margin-top:20px}.pair{gap:10px}}
 </style>
 </head><body><div class="shell">
-<header><span class="brand">kuşluk.</span><span class="eyebrow">Your local morning paper · 01 / 03</span></header>
+<header><span class="brand">kushluk.</span><span class="eyebrow">Your local morning paper · 01 / 03</span></header>
 <main>
 <div><p class="eyebrow">Your home, your sources</p>
 <h1>A quieter way to start the day.</h1>
@@ -69,11 +69,11 @@ footer{border-top:1px solid #c2c5b7;margin-top:86px;padding-top:20px;font-size:1
 <label for="home_name">Name of your home</label>
 <input id="home_name" name="home_name" required maxlength="120" placeholder="e.g. My Morning" autocomplete="off">
 <div class="pair">
-<div><label for="latitude">Latitude</label><input id="latitude" type="number" step="any" min="-90" max="90" name="latitude" required placeholder="50.9"></div>
-<div><label for="longitude">Longitude</label><input id="longitude" type="number" step="any" min="-180" max="180" name="longitude" required placeholder="6.9"></div>
+<div><label for="latitude">Approximate latitude</label><input id="latitude" type="number" step="any" min="-90" max="90" name="latitude" required placeholder="50.9"></div>
+<div><label for="longitude">Approximate longitude</label><input id="longitude" type="number" step="any" min="-180" max="180" name="longitude" required placeholder="6.9"></div>
 </div>
-<label for="timezone">IANA timezone</label>
-<input id="timezone" name="timezone" required maxlength="100" placeholder="e.g. Europe/Berlin" spellcheck="false">
+<label for="timezone">Time zone (region/city)</label>
+<input id="timezone" name="timezone" required maxlength="100" placeholder="e.g. Europe/Berlin" spellcheck="false"><p class="small">Enter a time zone such as Europe/Berlin, not only GMT+2. This keeps your edition time correct when clocks change.</p>
 <p class="small">Your printer comes later. Step 3 lets you discover and check an installed queue before saving it.</p>
 <button type="submit">Save my local profile</button>
 <p class="small">Saved locally. No feed activation, printing, telemetry or background services.</p>
@@ -83,7 +83,7 @@ footer{border-top:1px solid #c2c5b7;margin-top:86px;padding-top:20px;font-size:1
 
 _DONE = """<!doctype html><html lang="en"><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Kuşluk — Saved locally</title>
+<title>Kushluk — Saved locally</title>
 <style>body{font:17px/1.65 system-ui;background:#f4f0e8;color:#25372c;
 max-width:600px;margin:12vh auto;padding:25px}
 h1{font:normal 54px/1.1 Georgia,serif}a{color:#244f3b}</style>

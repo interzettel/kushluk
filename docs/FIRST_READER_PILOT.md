@@ -8,6 +8,12 @@ Recruit at least **one person who has not helped develop Kuşluk** for the first
 
 **Observer:** independently follow what the participant actually does. Give only the printed one-page handoff, not conversational hints, unless they become stuck. Record every hint and failure. A hint is a sign of friction; do not mark a hinted task unassisted.
 
+## Starting and validating the pilot
+
+Give the participant only [FIRST_READER_HANDOFF.md](FIRST_READER_HANDOFF.md) and the fictional OPML sample within it. This is a reproducible trial instruction, **not** an observed result. The handoff includes a clean installation attempt (U1), temporary local profile/registry paths, explicit opt-in, and a stop condition. Note any help without marking that task unassisted.
+
+A separate synthetic integration regression, `tests/test_first_reader_journey.py`, exercises the U1–U6 **software interaction contract** using loopback HTTP, fake CUPS and fictional feeds. It is not independent reader evidence. Before sharing a redacted observation, the observer may check private record completeness with `python -m tools.first_reader_evidence /PRIVATE/PATH/record.json`; `ready_for_review` is not a gate pass or verification.
+
 ## Exact first-run sequence
 
 | ID | Task posed to the reader | Observable acceptance | Maximum allotted |
@@ -41,4 +47,4 @@ Do **not** mark G1–G8 / F-008 “accepted” or edit task percentages on a sel
 
 ## Where evidence lives
 
-Use [first-reader-template.json](FIRST_READER_TEMPLATE.json) as a **blank local, private form**. Copy it outside the repository, fill only anonymized observations, retain any evidence files with consent, and link to a redacted summary in [#5](https://github.com/interzettel/kushluk/issues/5). Do not upload the raw response sheet or participant data to the public issue. Actual dates, OS details and app commit must be present; demo values or fabricated results are invalid.
+Use [FIRST_READER_TEMPLATE.json](FIRST_READER_TEMPLATE.json) as a **blank local, private form**. Copy it outside the repository, fill only anonymized observations, retain any evidence files with consent, and link to a redacted summary in [#5](https://github.com/interzettel/kushluk/issues/5). Do not upload the raw response sheet or participant data to the public issue. Actual dates, OS details and app commit must be present; demo values or fabricated results are invalid.

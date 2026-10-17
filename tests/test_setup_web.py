@@ -67,7 +67,7 @@ def test_only_loopback_listener_and_private_creation(setup_server):
     status, headers, html = _request(server)
     assert status == 200
     assert 'name="home_name"' in html
-    assert "Kuşluk" in html
+    assert "Kushluk" in html
     assert "Save my local profile" in html
     assert 'name="printer"' not in html
     assert "default-src 'none'" in headers["Content-Security-Policy"]
