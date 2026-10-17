@@ -1,5 +1,4 @@
 """Native schedule templates are reversible files, not an installed timer."""
-from datetime import time
 from pathlib import Path
 import plistlib
 import stat
