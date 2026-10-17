@@ -14,7 +14,7 @@ import webbrowser
 
 from kushluk.local_profile import (
     LocalProfileError, profile_path, read_local_profile,
-    update_local_printer, write_local_profile,
+    update_local_printer, update_local_paper_size, write_local_profile,
 )
 from kushluk.opml import OPMLImportError
 from kushluk.printer_preflight import (
@@ -45,8 +45,8 @@ aside{margin-top:48px;padding-top:24px;border-top:1px solid #c2c5b7;font-size:14
 h2{font:normal 26px Georgia,serif;margin:0 0 10px}
 .note{font-size:13px;color:#647063;line-height:1.6;margin-bottom:24px}
 label{display:block;font-size:13px;font-weight:650;margin:20px 0 7px}
-input{width:100%;border:1px solid #bdc4b9;background:#fff;padding:12px 13px;border-radius:2px;font:inherit}
-input:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid #367554;outline-offset:2px}
+input,select{width:100%;border:1px solid #bdc4b9;background:#fff;padding:12px 13px;border-radius:2px;font:inherit}
+input:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid #367554;outline-offset:2px}
 .pair{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 button{margin-top:30px;background:#244f3b;color:#fff;border:0;border-radius:2px;padding:14px 24px;font-weight:700;cursor:pointer;width:100%;font:inherit}
 button:hover{background:#316a4c}
@@ -74,6 +74,12 @@ footer{border-top:1px solid #c2c5b7;margin-top:86px;padding-top:20px;font-size:1
 </div>
 <label for="timezone">Time zone (region/city)</label>
 <input id="timezone" name="timezone" required maxlength="100" aria-describedby="timezone-help" placeholder="e.g. Europe/Berlin" spellcheck="false"><p class="small" id="timezone-help">Enter a time zone such as Europe/Berlin, not only GMT+2. This keeps your edition time correct when clocks change.</p>
+<label for="paper_size">Preferred home paper format</label>
+<select id="paper_size" name="paper_size" required aria-describedby="paper-help">
+<option value="a4" selected>DIN A4 — 210 × 297 mm</option>
+<option value="letter">US Letter — 8.5 × 11 in (216 × 279 mm)</option>
+</select>
+<p class="small" id="paper-help">Choose the paper you actually keep at home. A4 is the default for existing profiles; you can change this later. Selecting a format never starts printing.</p>
 <p class="small">Your printer comes later. Step 3 lets you discover and check an installed queue before saving it.</p>
 <button type="submit">Save my local profile</button>
 <p class="small">After saving, your profile stays on this computer. No feed activation, printing, telemetry or background services.</p>
@@ -161,7 +167,7 @@ class SetupHandler(BaseHTTPRequestHandler):
             page = render_printer_review(
                 self.server.printer_inventory, self.server.printer_readiness,
                 csrf=self.server.csrf, saved_queue=profile.get("printer"),
-                profile_exists=bool(profile),
+                profile_exists=bool(profile), paper_size=profile.get("paper_size", "a4"),
             )
             self._reply(200, page)
             return
@@ -210,7 +216,8 @@ class SetupHandler(BaseHTTPRequestHandler):
             self._reply(400, "<h1>Invalid form</h1>")
             return
         expected_fields = {
-            "/": {"csrf", "home_name", "latitude", "longitude", "timezone"},
+            "/": {"csrf", "home_name", "latitude", "longitude", "timezone", "paper_size"},
+            "/paper/save": {"csrf", "paper_size"},
             "/sources/import": {"csrf", "opml"},
             "/sources/approve": {"csrf", "index", "consent"},
             "/sources/mode": {"csrf", "id", "mode"},
@@ -230,6 +237,23 @@ class SetupHandler(BaseHTTPRequestHandler):
         if (not fields["csrf"][0].isascii()
                 or not compare_digest(fields["csrf"][0], self.server.csrf)):
             self._reply(403, "<h1>Expired or invalid form</h1>")
+            return
+        if self.path == "/paper/save":
+            try:
+                update_local_paper_size(self.server.profile_file,
+                                        paper_size=fields["paper_size"][0])
+                profile = read_local_profile(self.server.profile_file)
+            except (LocalProfileError, OSError):
+                self._reply(422, "<h1>Paper preference not saved</h1>"
+                            "<p>Create a local profile and choose A4 or Letter.</p>")
+                return
+            self._reply(200, render_printer_review(
+                self.server.printer_inventory, self.server.printer_readiness,
+                csrf=self.server.csrf,
+                notice="Paper preference saved locally. Nothing has been printed.",
+                saved_queue=profile.get("printer"), profile_exists=True,
+                paper_size=profile["paper_size"],
+            ))
             return
         if self.path.startswith("/printer/"):
             if self.path == "/printer/scan":
@@ -278,6 +302,7 @@ class SetupHandler(BaseHTTPRequestHandler):
                 self.server.printer_inventory, self.server.printer_readiness,
                 csrf=self.server.csrf, notice=notice,
                 saved_queue=profile.get("printer"), profile_exists=bool(profile),
+                paper_size=profile.get("paper_size", "a4"),
             ))
             return
         if self.path.startswith("/sources/"):
@@ -327,7 +352,7 @@ class SetupHandler(BaseHTTPRequestHandler):
                 latitude=float(fields["latitude"][0]),
                 longitude=float(fields["longitude"][0]),
                 timezone=fields["timezone"][0],
-                printer=None,
+                paper_size=fields["paper_size"][0], printer=None,
             )
         except (LocalProfileError, ValueError, OSError):
             self._reply(422, "<h1>Could not save profile</h1>"
