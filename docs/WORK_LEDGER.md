@@ -1,7 +1,7 @@
 # Kushluk Work Ledger
 
 Last implementation-status review: 2026-10-17.
-Issue/task reconciliation reviewed: 2026-10-17 (six evidence-backed software task checks; external acceptance unchanged).
+Issue/task reconciliation reviewed: 2026-10-17 (software-only native scheduler recipe added; external acceptance unchanged).
 
 This is the cross-stage execution ledger for Kushluk. It records work that is decided, open, blocked, or research-only. It complements `ROADMAP.md`; the roadmap explains sequencing, while this file is the operational source of truth for unfinished work.
 
@@ -51,6 +51,23 @@ Workflow tools such as n8n, Apple Shortcuts, systemd/cron, launchd, or a future 
 | ADR-0015 | DONE | The core edition engine owns publication state; orchestration, agents and design adapters are replaceable via stable Kushluk contracts. |
 | D-RENDER | DONE | Approved production layouts are deterministic; generative models do not redesign the edition at print time. |
 | D-AUTO | DONE | Full automation is the product target; humans may configure/review, but daily layout assembly must not require manual InDesign/Canva work. |
+
+## Unattended production contract — current completion plan, 2026-10-17
+
+**Priority:** [Issue #47](https://github.com/interzettel/kushluk/issues/47) (Stage 1 / P1). This is the actively maintained work list: it describes *what remains* even when an earlier parent checkbox was checked for a software slice. A programmatic timer template is not five genuinely unattended mornings.
+
+| Order | Ledger ID | Executable acceptance boundary | Status |
+| --- | --- | --- | --- |
+| 1 | AUT-05 | Versioned, owner-reviewable **systemd user timer + macOS launchd LaunchAgent**, configurable trigger and latest-start margin; export never installs, enables or prints; synthetic unit tests | **Software implemented**; real-host enable/reboot unverified |
+| 2 | AUT-09 | Durable typed chronological run stages and safe last-known-state query across Linux/macOS processes; stale receipt after crash must not be treated as a live/print-complete run | **Software partial**: advisory run lock and stage trace; true printed/recipient delivery cannot be observed from CUPS/SMTP submission |
+| 3 | AUT-12 | Start clock set explicitly by owner; no 07:30 hard-coded product invariant; measure actual trigger/readiness latency and tune deadline margin from observed runs | **Configurable software implemented**, adaptive/observed margin not yet verified |
+| 4 | AUT-01/02/03/10 | Strict operation contract, date-scoped idempotency and safe manual archive-only reprint with no implicit retry after crash | **Software implemented**, full host/adapter acceptance open |
+| 5 | AUT-04 | Edition-scoped morning intent with no persistence into global interests | **Open**; requires editorial/ranking integration |
+| 6 | AUT-06/07/08/11/13 & RES-AUTO-01/02 | Optional n8n/Shortcuts/AirPrint/wake/IPP research or adapters; do not make a proprietary service core infrastructure | **Research or conditional work**, not Stage 1 blockers |
+
+**Acceptance still outstanding before marking #47 finished or G3 verified:** actual host selection and user-authorized install, real systemd/launchd enable/disable and reboot/wake checks, at least five timed morning editions, one deliberate outage/crash and human-checked reprint avoidance, exact 08:00-ready metrics, safe local logs and privacy, printer/SMTP queue acceptance and true delivery boundaries. Cross-process pause/start ordering and network-filesystem lock correctness are also not proven. Provider connections, physical devices and human observations have not been fabricated.
+
+**Progress rule:** `AUT-05` may be checked for a **working exported recipe with tests**, even though its real unattended-host acceptance remains open. `AUT-09` and `AUT-12` remain unchecked until their full observability/adaptive or verified scheduling requirements are met. Separately tracked delivery gates G1–G8 remain unverified.
 
 ## Scheduler operations v1 evidence — 2026-10-17
 
@@ -109,7 +126,7 @@ Six previously unchecked tasks are now checked **for implemented software behavi
 - [x] **AUT-02** Add a scheduler-safe CLI/API entrypoint that is idempotent for a date/edition.
 - [x] **AUT-03** Add deadline and “already generated/printed” guards to prevent accidental duplicate morning prints.
 - [ ] **AUT-04** Add optional `morning_intent` input to the run model and ranking trace.
-- [ ] **AUT-05** Provide an unattended local-host recipe (systemd/cron/launchd) as the baseline.
+- [x] **AUT-05** Provide an unattended local-host recipe (systemd/cron/launchd) as the baseline.
 - [ ] **AUT-06** Prototype an n8n orchestration that calls the same stable Kushluk run boundary rather than reimplementing editorial logic inside n8n.
 - [ ] **AUT-07** Prototype Apple Shortcuts as a trigger/control surface: generate now, pause today, digital-only, reprint, and optional voice morning intent.
 - [ ] **AUT-08** Investigate the practical Apple printing path: what can be automated through macOS printing/CUPS versus what AirPrint/iOS requires interactively.
