@@ -14,7 +14,7 @@ from pathlib import Path
 import tempfile
 from typing import Iterator
 
-from kushluk.opml import OPMLImportError, _valid_feed_url, read_proposal
+from kushluk.opml import FeedProposal, OPMLImportError, _valid_feed_url, read_proposal
 
 MAX_REGISTRY_BYTES = 2_097_152
 MAX_SOURCES = 500
@@ -129,7 +129,7 @@ def _atomic_registry(path: Path, rows: list[dict]) -> None:
 
 def approve_source(proposal: Path, index: int, *, acknowledge: bool,
                    path: Path | None = None) -> tuple[str, int, bool]:
-    """Approve exactly one proposal by 1-based index. No network or article-body access."""
+    """Approve one persisted OPML proposal, reusing the same explicit consent gate."""
     if not acknowledge:
         raise SourceApprovalError("Explicit --acknowledge-feed-access required")
     try:
@@ -138,7 +138,18 @@ def approve_source(proposal: Path, index: int, *, acknowledge: bool,
         raise SourceApprovalError("Invalid unactivated OPML proposal") from exc
     if not (1 <= index <= len(feeds)):
         raise SourceApprovalError("Source index outside proposal")
-    candidate = feeds[index - 1]
+    return approve_feed(feeds[index - 1], acknowledge=acknowledge, path=path)
+
+
+def approve_feed(candidate: FeedProposal, *, acknowledge: bool,
+                 path: Path | None = None) -> tuple[str, int, bool]:
+    """Approve exactly one reviewed, inactive feed. No fetch and no copying rights."""
+    if not acknowledge:
+        raise SourceApprovalError("Explicit --acknowledge-feed-access required")
+    if (not isinstance(candidate, FeedProposal) or candidate.enabled
+            or candidate.mode != "reference-only"
+            or not isinstance(candidate.title, str) or not candidate.title.strip()):
+        raise SourceApprovalError("Invalid unactivated feed proposal")
     try:
         identifier = _source_id(candidate.url)
     except OPMLImportError as exc:
