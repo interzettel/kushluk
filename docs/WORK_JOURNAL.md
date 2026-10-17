@@ -2,6 +2,14 @@
 
 A concise, dated evidence/history record for one maintainer with AI helpers. **This is not an activity-time tracker or a substitute for GitHub commits and discussions.**
 
+## 2026-10-17 — First-reader synthetic path and observer preflight
+
+**Kind:** onboarding QA + privacy-safe evidence tooling. **Issue:** #5 (F-008 / UX-01). **State:** implementation in PR awaiting CI; no independent reader claim.
+
+- Added an end-to-end **synthetic** U1–U6 loopback journey regression with fake CUPS, fictional sources, explicit consent, pause/resume and printer preference persistence.
+- Added local-only observer-record completeness preflight, private handoff instructions and consistent ASCII Kushluk setup mastheads.
+- Actual first-reader observation, keyboard/assistive-technology study, physical printer/e-reader and unattended host acceptance remain unperformed. No acceptance gate/percentage or released version changes.
+
 ## 2026-10-17 — Opt-in printer preference after local preflight
 
 **Kind:** onboarding engineering. **Issue:** #5 (UX-01). **State:** proposed implementation, awaiting CI and review in the linked PR.
