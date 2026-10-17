@@ -1,7 +1,6 @@
 """Conservative, read-only archived edition compatibility contract tests."""
 from __future__ import annotations
 
-from datetime import date
 import json
 
 import pytest
