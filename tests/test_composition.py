@@ -174,3 +174,27 @@ def test_excess_practical_over_balanced_bounds_never_publishes_a_missing_calenda
     many = [PracticalItem("Meeting", str(i), source=calendar) for i in range(7)]
     with pytest.raises(CompositionCapacityError):
         compose(many, stories(2), archetype="balanced")
+
+
+@pytest.mark.parametrize("item_count", [0, 1, 2, 3, 4, 6])
+def test_front_page_never_fragments_with_sparse_practical_grid(
+    tmp_path, item_count,
+):
+    """Regression: one front item must not become its own logical fifth sheet."""
+    pytest.importorskip("weasyprint")
+    pypdf = pytest.importorskip("pypdf")
+    from kushluk.renderer import render_pdf
+
+    publication = build_publication(
+        target_date=date(2026, 9, 23), timezone="Europe/Berlin",
+        location_name="Cologne", practical=practical(item_count),
+        stories=stories(3), archetype="balanced",
+    )
+    pdf = render_pdf(
+        render_html(publication, tmp_path / f"front-{item_count}.html"),
+        tmp_path / f"front-{item_count}.pdf",
+    )
+    reader = pypdf.PdfReader(str(pdf))
+    assert len(reader.pages) == 4
+    for index, page in enumerate(reader.pages, 1):
+        assert f"{index} / 4" in " ".join((page.extract_text() or "").split())
