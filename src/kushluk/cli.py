@@ -13,6 +13,7 @@ from kushluk.doctor import core_ready, run_doctor
 from kushluk.epub import EpubError, export_archived_epub
 from kushluk.field_proof import FieldProofError, record_field_proof
 from kushluk.local_profile import LocalProfileError, profile_path, write_local_profile
+from kushluk.newsletter_discovery import NewsletterError, discover, save_proposals, set_mode
 from kushluk.media import (
     MediaError, assign_media, import_local_media, read_asset, remove_local_media,
 )
@@ -107,6 +108,26 @@ def build_parser() -> argparse.ArgumentParser:
     )
     media_remove.add_argument("--store", type=Path, required=True)
     media_remove.add_argument("--asset-id", required=True)
+
+    discover_mail = sub.add_parser(
+        "newsletter-discover",
+        help="Review bounded local header export; no mailbox access or source activation",
+    )
+    discover_mail.add_argument("--snapshot", type=Path, required=True)
+    discover_mail.add_argument("--output", type=Path, required=True)
+    discover_mail.add_argument("--days", type=int, default=30)
+
+    mail_mode = sub.add_parser(
+        "newsletter-set-mode",
+        help="Store explicit newsletter rights intent; all ingestion modes remain disabled",
+    )
+    mail_mode.add_argument("--proposal", type=Path, required=True)
+    mail_mode.add_argument("--id", required=True)
+    mail_mode.add_argument(
+        "--mode", required=True,
+        choices=("ignore", "reference-only", "derivative", "private-direct"),
+    )
+    mail_mode.add_argument("--acknowledge", action="store_true")
 
     run = sub.add_parser("run", help="Idempotent local scheduled edition run (at most once)")
     run.add_argument("--date", dest="target_date", help="YYYY-MM-DD; defaults to today locally")
@@ -349,6 +370,29 @@ def main(argv: list[str] | None = None) -> int:
             "contacts_network": False,
             "source_permissions_modified": False,
         }))
+        return 0
+
+    if args.command in ("newsletter-discover", "newsletter-set-mode"):
+        try:
+            if args.command == "newsletter-discover":
+                entries = discover(args.snapshot, days=args.days)
+                save_proposals(args.output, entries)
+                result = {
+                    "status": "review_only", "candidates": len(entries),
+                    "ingestion_enabled": False, "private_proposal": True,
+                }
+            else:
+                result = set_mode(
+                    args.proposal, newsletter_id=args.id, mode=args.mode,
+                    acknowledge=args.acknowledge,
+                )
+        except (NewsletterError, OSError, ValueError) as exc:
+            print(json.dumps({
+                "status": "rejected",
+                "error": str(exc) if isinstance(exc, NewsletterError) else "newsletter_operation_failed",
+            }))
+            return 2
+        print(json.dumps(result))
         return 0
 
     if args.command in ("media-assign", "media-remove"):
