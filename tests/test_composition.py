@@ -4,7 +4,7 @@ from datetime import date
 import pytest
 
 from kushluk.composition import (
-    CompositionCapacityError, choose_archetype, compose, fit_text, plan_composition_pages,
+    CompositionCapacityError, choose_archetype, compose, fit_text,
 )
 from kushluk.models import PracticalItem, SourceRef, Story
 from kushluk.publication import build_publication
