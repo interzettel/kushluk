@@ -24,7 +24,7 @@ def build_publication(
     stories: list[Story],
     serial: int = 1,
     notes: list[str] | None = None,
-    archetype: LayoutArchetype | str = "auto",
+    archetype: LayoutArchetype | str = "balanced",
 ) -> Publication:
     edition_id = f"{target_date:%Y%m%d}-{serial:03d}"
     generated_at = datetime.now(ZoneInfo(timezone)).isoformat(timespec="seconds")
