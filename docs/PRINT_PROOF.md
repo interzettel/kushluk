@@ -39,6 +39,9 @@ separately if the printer lacks duplex support.
 
 ## US Letter acceptance
 
+After physical observation, the operator may record a separate `paper-letter` field proof with a matching `letter-home` `inspection.json` using [FIELD_ACCEPTANCE.md](FIELD_ACCEPTANCE.md). The command cannot confirm that the paper or device in an operator-provided photograph matches its reported metadata; independent review remains required.
+
+
 Use **8.5 × 11 in US Letter** stock with the generated `kushluk-proof-letter.pdf` at actual size, without any automatic printer-side fit, cropping or media substitution. Confirm the physical page dimensions, four logical page numbers, margins, text legibility, long-edge duplex or single-sided fallback, and correct page order. The Letter variant scales the canonical A4 design proportionally, so its text is slightly smaller. An A4 PDF sent to a Letter queue is not a valid substitute.
 
 Check `kushluk inspect-print --profile letter-home --pdf output/print-proof/kushluk-proof-letter.pdf --output-dir output/letter-inspection` before the actual trial, and keep the original offline proof and SHA-256 linked to the evidence.
