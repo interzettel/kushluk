@@ -23,6 +23,7 @@ class Settings:
     calendar_fixture: Path = Path("fixtures/calendar.json")
     tasks_file: Path | None = None
     research_query: str | None = None
+    google_tasks_vault: Path | None = None
     printer: str | None = None
     smtp_host: str | None = None
     smtp_port: int = 587
@@ -72,6 +73,7 @@ class Settings:
             ),
             tasks_file=Path(os.environ["KUSHLUK_TASKS_FILE"]) if os.getenv("KUSHLUK_TASKS_FILE") else None,
             research_query=os.getenv("KUSHLUK_RESEARCH_QUERY") or None,
+            google_tasks_vault=Path(os.environ["KUSHLUK_GOOGLE_TASKS_VAULT"]) if os.getenv("KUSHLUK_GOOGLE_TASKS_VAULT") else None,
             printer=(
                 (os.environ["KUSHLUK_PRINTER"] or None)
                 if "KUSHLUK_PRINTER" in os.environ
