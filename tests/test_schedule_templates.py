@@ -7,7 +7,7 @@ import pytest
 
 from kushluk.cli import main
 from kushluk.schedule_templates import (
-    ScheduleTemplateError, export_templates, templates,
+    ScheduleTemplateError, export_templates,
 )
 
 
