@@ -1,7 +1,7 @@
 """Native-scheduler-safe run gate. No external agent, service or daemon required."""
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import date, datetime, time, timezone
 import stat
 from zoneinfo import ZoneInfo
@@ -10,6 +10,11 @@ import os
 from pathlib import Path
 import tempfile
 from typing import Any
+
+try:
+    import fcntl  # POSIX advisory locks for active-vs-interrupted status on Linux/macOS
+except ImportError:  # Windows can still fail closed on nonterminal receipts
+    fcntl = None
 
 from kushluk.config import Settings
 from kushluk.pipeline import run_pipeline
@@ -23,6 +28,7 @@ class ScheduledOutcome:
     email_sent: bool = False
     failure_codes: tuple[str, ...] = ()
     stage: str = "not_started"
+    stages: tuple[str, ...] = ()
 
     def as_dict(self) -> dict[str, Any]:
         return {
@@ -33,6 +39,7 @@ class ScheduledOutcome:
             "email_sent": self.email_sent,
             "failure_codes": list(self.failure_codes),
             "stage": self.stage,
+            "stages": list(self.stages),
         }
 
 
@@ -55,6 +62,97 @@ def _atomic_write(path: Path, record: dict[str, Any]) -> None:
             tmp_path.unlink(missing_ok=True)
 
 
+# Only known, content-free machine stages may appear in status JSON.
+STAGES = frozenset({
+    "not_started", "paused", "started", "sources_complete",
+    "editorial_complete", "rendering", "rendered", "validated",
+    "archive_ready", "print_submission_unknown", "print_submitted",
+    "print_failed", "email_submission_unknown", "email_sent", "email_failed",
+    "complete", "interrupted",
+})
+TERMINAL = frozenset({"completed", "needs_review"})
+
+
+def _safe_stages(value: object) -> tuple[str, ...]:
+    if not isinstance(value, list) or len(value) > 40:
+        return ()
+    if not all(isinstance(s, str) and s in STAGES for s in value):
+        return ()
+    return tuple(value)
+
+
+def _safe_failure_codes(value: object) -> tuple[str, ...]:
+    if not isinstance(value, list) or len(value) > 40:
+        return ("invalid_failure_codes",)
+    if not all(isinstance(s, str) and 1 <= len(s) <= 64
+               and s.replace("_", "").isalnum() for s in value):
+        return ("invalid_failure_codes",)
+    return tuple(value)
+
+
+def _safe_stage(value: object) -> str:
+    return value if isinstance(value, str) and value in STAGES else "interrupted"
+
+
+def _lock_path(receipt: Path) -> Path:
+    return receipt.with_name(".kushluk-run.lock")
+
+
+def _run_lock(receipt: Path) -> int | None:
+    """Keep the per-edition POSIX lock open until the run completes.
+
+    Returning None means a concurrent run holds the lock. Never remove the lock
+    inode, since replacing/unlinking it can let another process acquire a new one.
+    """
+    if fcntl is None:
+        return -1  # Windows: exclusive receipt creation still prevents replay.
+    flags = os.O_RDWR | os.O_CREAT
+    if hasattr(os, "O_NOFOLLOW"):
+        flags |= os.O_NOFOLLOW
+    fd = os.open(_lock_path(receipt), flags, 0o600)
+    try:
+        metadata = os.fstat(fd)
+        if not stat.S_ISREG(metadata.st_mode) or metadata.st_mode & 0o077:
+            raise OSError("Insecure run lock")
+        try:
+            fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            os.close(fd)
+            return None
+        return fd
+    except BaseException:
+        try:
+            os.close(fd)
+        except OSError:
+            pass
+        raise
+
+
+def _running_lock_held(receipt: Path) -> bool:
+    """Only a held POSIX lock proves a run is still alive, not an old PID."""
+    if fcntl is None:
+        return False
+    lock = _lock_path(receipt)
+    if not lock.exists() or lock.is_symlink():
+        return False
+    try:
+        fd = os.open(lock, os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0))
+    except OSError:
+        return False
+    try:
+        fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except BlockingIOError:
+        os.close(fd)
+        return True
+    except OSError:
+        os.close(fd)
+        return False
+    else:
+        fcntl.flock(fd, fcntl.LOCK_UN)
+        os.close(fd)
+        return False
+
+
 def _existing_outcome(path: Path, edition_id: str, request: dict[str, Any]) -> ScheduledOutcome:
     try:
         saved = json.loads(path.read_text(encoding="utf-8"))
@@ -63,14 +161,15 @@ def _existing_outcome(path: Path, edition_id: str, request: dict[str, Any]) -> S
         if saved.get("request") != request:
             return ScheduledOutcome(
                 "needs_review", edition_id,
-                failure_codes=("request_mismatch",), stage=str(saved.get("stage", "unknown")),
+                failure_codes=("request_mismatch",), stage=_safe_stage(saved.get("stage")),
             )
         if saved.get("status") == "completed":
             return ScheduledOutcome(
                 "already_completed", edition_id,
                 bool(saved.get("print_submitted")), bool(saved.get("email_sent")),
-                tuple(saved.get("failure_codes", [])),
-                str(saved.get("stage", "complete")),
+                _safe_failure_codes(saved.get("failure_codes", [])),
+                _safe_stage(saved.get("stage", "complete")),
+                _safe_stages(saved.get("stages", [])),
             )
     except (ValueError, OSError, TypeError, AttributeError):
         pass
@@ -214,9 +313,16 @@ def run_once(
         "email_sent": False,
         "failure_codes": [],
         "delivery_attempts": [],
+        "stages": ["started"],
     }
     try:
-        # Exclusive creation is the durable concurrency gate across processes.
+        lock_fd = _run_lock(receipt)
+    except OSError:
+        return ScheduledOutcome("needs_review", edition_id, failure_codes=("run_lock_unavailable",))
+    if lock_fd is None:
+        return ScheduledOutcome("needs_review", edition_id, failure_codes=("run_in_progress",))
+    try:
+        # The receipt is still the durable at-most-once gate, independent of locks.
         with receipt.open("x", encoding="utf-8") as stream:
             os.chmod(receipt, 0o600)
             json.dump(initial, stream, indent=2)
@@ -224,12 +330,17 @@ def run_once(
             stream.flush()
             os.fsync(stream.fileno())
     except FileExistsError:
+        if lock_fd >= 0:
+            os.close(lock_fd)
         return _existing_outcome(receipt, edition_id, request)
 
     record = initial
 
     def on_stage(stage: str) -> None:
+        if stage not in STAGES:
+            raise ValueError("Unrecognized pipeline stage")
         record["stage"] = stage
+        record["stages"].append(stage)
         record["updated_at"] = datetime.now(timezone.utc).isoformat()
         _atomic_write(receipt, record)
 
@@ -239,6 +350,7 @@ def run_once(
         record["delivery_attempts"].append(channel)
         record["status"] = f"{channel}_submission_unknown"
         record["stage"] = f"{channel}_submission_unknown"
+        record["stages"].append(record["stage"])
         _atomic_write(receipt, record)
 
     try:
@@ -254,7 +366,10 @@ def run_once(
         submitted = bool(result.print_result and result.print_result.success)
         mailed = bool(result.email_result and result.email_result.status == "sent")
         status = "needs_review" if errors else "completed"
-        outcome = ScheduledOutcome(status, edition_id, submitted, mailed, errors, "complete")
+        outcome = ScheduledOutcome(
+            status, edition_id, submitted, mailed, errors, "complete",
+            tuple(record["stages"]),
+        )
         record.update(outcome.as_dict())
         _atomic_write(receipt, record)
         return outcome
@@ -262,13 +377,17 @@ def run_once(
         # Don't store str(exc): providers sometimes put tokens/URLs in errors.
         record["status"] = "needs_review"
         record["stage"] = "interrupted"
+        record["stages"].append("interrupted")
         record["failure_codes"] = [f"unexpected_{type(exc).__name__}"]
         _atomic_write(receipt, record)
         return ScheduledOutcome(
             "needs_review", edition_id,
             failure_codes=(f"unexpected_{type(exc).__name__}",),
-            stage="interrupted",
+            stage="interrupted", stages=tuple(record["stages"]),
         )
+    finally:
+        if lock_fd >= 0:
+            os.close(lock_fd)
 
 
 def read_run_status(settings: Settings, *, target_date: date) -> ScheduledOutcome:
@@ -286,11 +405,20 @@ def read_run_status(settings: Settings, *, target_date: date) -> ScheduledOutcom
         saved = json.loads(path.read_text(encoding="utf-8"))
         if saved.get("edition_id") != edition_id or saved.get("schema_version") != 1:
             raise ValueError("Invalid receipt")
+        if not isinstance(saved, dict):
+            raise ValueError("Invalid receipt type")
+        state = saved["status"]
+        if state not in {"started", "print_submission_unknown",
+                         "email_submission_unknown", "completed", "needs_review"}:
+            raise ValueError("Unknown receipt state")
+        if state not in TERMINAL:
+            state = "in_progress" if _running_lock_held(path) else "needs_review"
         return ScheduledOutcome(
-            str(saved["status"]), edition_id,
+            state, edition_id,
             bool(saved.get("print_submitted")), bool(saved.get("email_sent")),
-            tuple(saved.get("failure_codes", [])),
-            str(saved.get("stage", "unknown")),
+            _safe_failure_codes(saved.get("failure_codes", [])),
+            _safe_stage(saved.get("stage", "interrupted")),
+            _safe_stages(saved.get("stages", [])),
         )
     except (ValueError, OSError, TypeError, AttributeError, KeyError):
         return ScheduledOutcome("needs_review", edition_id, failure_codes=("invalid_receipt",))
