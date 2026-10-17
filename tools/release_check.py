@@ -148,6 +148,18 @@ def _clean_install(
             or inventory["legal_license_review_complete"]
             or inventory["vulnerability_audit_complete"]):
         raise ReleaseCheckError("invalid_installed_dependency_inventory")
+    # Machine-generated review gaps only; do not grant license or native-font approval.
+    worksheet_path = home / "license-review" / "worksheet.json"
+    _run([
+        str(python), str(ROOT / "tools" / "license_review_matrix.py"),
+        "--python", str(inventory_path), "--output", str(worksheet_path),
+    ], cwd=home, env=env)
+    worksheet = json.loads(worksheet_path.read_text(encoding="utf-8"))
+    if (worksheet.get("approved_for_release") is not False
+            or worksheet.get("human_signoff_required") is not True
+            or worksheet["review_counts"]["python_pending"] != len(
+                inventory["installed_packages"])):
+        raise ReleaseCheckError("invalid_license_review_worksheet")
     _run([str(command), "--help"], cwd=home, env=env)
     preview_dir = home / "preview"
     args = [str(command), "preview", "--output-dir", str(preview_dir)]
@@ -187,6 +199,9 @@ def _clean_install(
         "dependency_inventory": "installed-environment.json",
         "dependency_inventory_sha256": _digest(inventory_path),
         "dependency_count": len(inventory["installed_packages"]),
+        "license_review_worksheet": "license-review-worksheet.json",
+        "license_review_worksheet_sha256": _digest(worksheet_path),
+        "license_signoff_complete": False,
         "legal_license_review_complete": False,
         "vulnerability_audit_complete": False,
         "installed_package_location": "isolated-venv-site-packages",
@@ -237,6 +252,10 @@ def verify_preview(*, artifact_dir: Path, pdf: bool = False) -> dict:
             shutil.copy2(
                 temp / label / "installed-environment.json",
                 artifact_dir / label / "installed-environment.json",
+            )
+            shutil.copy2(
+                temp / label / "license-review" / "worksheet.json",
+                artifact_dir / label / "license-review-worksheet.json",
             )
         evidence = {
             "schema_version": 1, "status": "clean_install_passed",
