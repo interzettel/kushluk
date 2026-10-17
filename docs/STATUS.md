@@ -61,6 +61,10 @@ The loopback-only `setup-web` page now offers a second, **fully offline** source
 
 Step 3 of `kushluk setup-web` now offers **explicit** local CUPS queue discovery (`lpstat -p`) and a per-discovered-queue, read-only capability check for advertised A4/A3, duplex and current availability. A browser GET does not trigger hardware probing. It never submits print jobs or edits system queues/profile state, and all reported capability states are advisory until real printer trials. See [LOCAL_SETUP.md](LOCAL_SETUP.md), [FIELD_ACCEPTANCE.md](FIELD_ACCEPTANCE.md), #5/#13.
 
+### Prepared, but not collected: independent acceptance evidence
+
+The [first-reader pilot protocol and blank consent-safe record](FIRST_READER_PILOT.md) specify actual U1–U6 setup tasks including printer readiness; nobody has yet completed an independent first-user observation. [Provider-specific rights proof](RIGHTS_EVIDENCE.md) now specifies license account/scope, transformation boundaries, AI processing, third-party images, attribution, review and revocation evidence required before derivative or private-direct workflows may execute. Neither document confers legal permission or hardware evidence. F-007/F-008/F-011 remain partial; G1–G8 unchanged.
+
 ## Repository hygiene
 
 - Default branch: `main`.
