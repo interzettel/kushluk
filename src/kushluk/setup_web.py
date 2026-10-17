@@ -14,6 +14,9 @@ import webbrowser
 
 from kushluk.local_profile import LocalProfileError, profile_path, write_local_profile
 from kushluk.opml import OPMLImportError
+from kushluk.printer_preflight import (
+    check_queue, discover_queues, render_printer_review,
+)
 from kushluk.setup_sources_web import (
     approve_reviewed, change_reviewed_mode, import_review_opml, render_source_review,
 )
@@ -97,6 +100,8 @@ class SetupHTTPServer(HTTPServer):
         self.profile_file = path
         self.registry_file = registry if registry is not None else registry_path()
         self.pending_feeds = ()  # Ephemeral, unapproved, never written to disk.
+        self.printer_inventory = None
+        self.printer_readiness = None
         self.csrf = secrets.token_urlsafe(32)
         super().__init__(("127.0.0.1", port), SetupHandler)
 
@@ -138,12 +143,20 @@ class SetupHandler(BaseHTTPRequestHandler):
             and self.headers.get("Host") == f"127.0.0.1:{self.server.server_port}"
             and self.path in {
                 "/", "/sources", "/sources/import", "/sources/approve", "/sources/mode",
+                "/printer", "/printer/scan", "/printer/check",
             }
         )
 
     def do_GET(self) -> None:
-        if not self._valid_request() or self.path not in {"/", "/sources"}:
+        if not self._valid_request() or self.path not in {"/", "/sources", "/printer"}:
             self._reply(404, "<h1>Not found</h1>")
+            return
+        if self.path == "/printer":
+            page = render_printer_review(
+                self.server.printer_inventory, self.server.printer_readiness,
+                csrf=self.server.csrf,
+            )
+            self._reply(200, page)
             return
         if self.path == "/sources":
             try:
@@ -194,6 +207,8 @@ class SetupHandler(BaseHTTPRequestHandler):
             "/sources/import": {"csrf", "opml"},
             "/sources/approve": {"csrf", "index", "consent"},
             "/sources/mode": {"csrf", "id", "mode"},
+            "/printer/scan": {"csrf"},
+            "/printer/check": {"csrf", "queue"},
         }
         if self.path == "/sources/mode" and "consent" in fields:
             expected_fields["/sources/mode"].add("consent")
@@ -207,6 +222,25 @@ class SetupHandler(BaseHTTPRequestHandler):
         if (not fields["csrf"][0].isascii()
                 or not compare_digest(fields["csrf"][0], self.server.csrf)):
             self._reply(403, "<h1>Expired or invalid form</h1>")
+            return
+        if self.path.startswith("/printer/"):
+            if self.path == "/printer/scan":
+                self.server.printer_inventory = discover_queues()
+                self.server.printer_readiness = None
+                notice = "Local queue discovery completed; no print job sent."
+            else:
+                try:
+                    self.server.printer_readiness = check_queue(
+                        fields["queue"][0], self.server.printer_inventory,
+                    )
+                except ValueError:
+                    self._reply(422, "<h1>Printer was not selected from the scan</h1>")
+                    return
+                notice = "Read-only capability check completed; nothing printed."
+            self._reply(200, render_printer_review(
+                self.server.printer_inventory, self.server.printer_readiness,
+                csrf=self.server.csrf, notice=notice,
+            ))
             return
         if self.path.startswith("/sources/"):
             try:
