@@ -8,6 +8,7 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 from kushluk.archive import list_editions
+from kushluk.archive_compat import ArchiveCompatError, inspect_archive_root
 from kushluk.config import Settings
 from kushluk.doctor import core_ready, run_doctor
 from kushluk.epub import EpubError, export_archived_epub
@@ -376,6 +377,13 @@ def build_parser() -> argparse.ArgumentParser:
     web_setup.add_argument("--output", type=Path,
                            help="New private profile path, never overwrite")
 
+    archive_check = sub.add_parser(
+        "archive-check",
+        help="Read-only v1/v2 archive metadata compatibility counts; never migrate",
+    )
+    archive_check.add_argument("--archive-root", type=Path, required=True)
+    archive_check.add_argument("--limit", type=int, default=100)
+
     archive = sub.add_parser("archive-list", help="List recent local Kushluk editions")
     archive.add_argument("--limit", type=int, default=20)
 
@@ -386,6 +394,16 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
+    if args.command == "archive-check":
+        try:
+            result = inspect_archive_root(args.archive_root, limit=args.limit)
+        except (ArchiveCompatError, OSError) as exc:
+            reason = str(exc) if isinstance(exc, ArchiveCompatError) else "archive_check_failed"
+            print(json.dumps({"status": "rejected", "error": reason}))
+            return 2
+        print(json.dumps(result, sort_keys=True))
+        return 0 if not result["truncated"] else 1
+
     if args.command == "preview":
         try:
             manifest = make_preview(args.output_dir, pdf=args.pdf)
