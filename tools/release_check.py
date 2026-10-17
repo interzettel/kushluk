@@ -59,6 +59,23 @@ def _digest(path: Path) -> str:
     return sha256(path.read_bytes()).hexdigest()
 
 
+def _installed_inside_venv(installed_path: str, venv_dir: Path) -> bool:
+    """Resolve macOS /var vs /private/var aliases before checking isolation.
+
+    A raw string-prefix test incorrectly rejects valid macOS virtualenvs and
+    can also accept a similarly named sibling directory. The installed module
+    must be a real file under the same real virtualenv and inside site-packages.
+    """
+    try:
+        target = Path(installed_path).resolve(strict=True)
+        root = venv_dir.resolve(strict=True)
+        return target.is_file() and target.is_relative_to(root) and (
+            "site-packages" in target.parts
+        )
+    except (OSError, RuntimeError):
+        return False
+
+
 def _check_packages(directory: Path, *, version: str) -> tuple[Path, Path]:
     wheels = list(directory.glob("kushluk-*.whl"))
     sdists = list(directory.glob("kushluk-*.tar.gz"))
@@ -134,6 +151,8 @@ def _clean_install(
     installed_path = _run(
         [str(python), "-c", check_code], cwd=home, env=env,
     ).strip()
+    if not _installed_inside_venv(installed_path, venv_dir):
+        raise ReleaseCheckError("installed_module_outside_clean_venv")
     _run([str(python), "-m", "pip", "check"], cwd=home, env=env)
     # Execute the stdlib-only inventory tool using the *installed* venv Python.
     # Never record metadata_location, installer paths, direct_url or user settings.
@@ -205,7 +224,7 @@ def _clean_install(
         "legal_license_review_complete": False,
         "vulnerability_audit_complete": False,
         "installed_package_location": "isolated-venv-site-packages",
-        "runtime_module_from_venv": installed_path.startswith(str(venv_dir)),
+        "runtime_module_from_venv": True,  # strictly checked above after realpath resolution
         "fixture_version": manifest["fixture_version"],
         "pdf_validated": pdf,
         "synthetic_only": True,
