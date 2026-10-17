@@ -34,6 +34,7 @@ from kushluk.preview import PreviewError, make_preview
 from kushluk.print_inspection import PrintInspectionError, inspect_print_pdf
 from kushluk.recovery import deliver_archived
 from kushluk.run_metrics import run_report, timing_plan
+from kushluk.incident import build_incident_report, save_private_incident_report
 from kushluk.scheduled import pause_day, read_run_status, resume_day, run_once
 from kushluk.schedule_templates import ScheduleTemplateError, export_templates
 from kushluk.setup_web import run_setup_web
@@ -241,6 +242,12 @@ def build_parser() -> argparse.ArgumentParser:
         "run-report", help="Read typed, privacy-safe run timing and submission status"
     )
     report.add_argument("--date", dest="target_date", help="YYYY-MM-DD, local today by default")
+
+    incident = sub.add_parser(
+        "incident-report", help="Local typed failure report; no remote escalation or retry"
+    )
+    incident.add_argument("--date", dest="target_date", help="YYYY-MM-DD, local today by default")
+    incident.add_argument("--output", type=Path, help="Create private report file; never overwrite")
 
     plan = sub.add_parser(
         "timing-plan", help="Recommend a start clock from measured validated-archive latency"
@@ -652,11 +659,23 @@ def main(argv: list[str] | None = None) -> int:
         )
         return 2 if failed_delivery else 0
 
-    if args.command in {"run-report", "timing-plan"}:
+    if args.command in {"run-report", "timing-plan", "incident-report"}:
         target = (date.fromisoformat(args.target_date) if args.target_date
                   else datetime.now(ZoneInfo(settings.timezone)).date())
         if args.command == "run-report":
             report = run_report(settings, target_date=target)
+        elif args.command == "incident-report":
+            report = build_incident_report(settings, target_date=target)
+            if args.output is not None:
+                try:
+                    save_private_incident_report(args.output, report)
+                except (OSError, ValueError):
+                    print(json.dumps({"status": "rejected", "error": "incident_export_failed"}))
+                    return 2
+                print(json.dumps({"status": "private_incident_report_written",
+                                  "remote_report_sent": False,
+                                  "delivery_attempted": False}))
+                return 0
         else:
             try:
                 report = timing_plan(
