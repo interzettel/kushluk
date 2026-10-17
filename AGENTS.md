@@ -66,13 +66,13 @@ Current path:
 
 `Open-Meteo + ICS/fixture calendar + RSS -> canonical candidates -> clustering/ranking -> publication -> four logical A4 pages in HTML/PDF -> CUPS/SMTP -> archive`
 
-This executable path predates ADR 0013. The canonical four-page migration is implemented in #45; A4/A3 physical profiles and real-world acceptance remain under #46/#13.
+The canonical four-page migration is implemented in #45. A4-home/single-sided and A3-folded software profiles exist under #46. Actual paper, duplex orientation and real-host acceptance remain under #13.
 
 Implemented infrastructure includes:
 - typed failures and run summaries;
 - deterministic story clustering and ranking;
 - optional lead support with no forced lead;
-- one-page PDF validation and editorial cut/retry in the current walking skeleton;
+- four-page PDF count/geometry/page-order validation and editorial cut/retry (not glyph-perfect clipping proof);
 - printer capability/duplex detection;
 - SMTP delivery and print-failure fallback;
 - archive listing;
@@ -88,7 +88,7 @@ The implementation must prove:
 
 `real inputs -> normalized candidates -> ranked publication -> four logical A4 pages -> validated output -> selected A4/A3 print profile or digital fallback -> archive`
 
-The original walking-skeleton code path exists. Remaining work includes four-page migration, print-profile imposition, unattended orchestration, media handling, real local connectors, printer access, and repeated usage.
+The original walking-skeleton code path exists. Four-page generation and baseline A3-folded imposition are implemented. Remaining work includes richer overflow/print preflight, the versioned unattended operation interface, media handling, real local connectors, actual printer/host access, and repeated human usage.
 
 Do not build a broad agent platform before this loop is proven in reality.
 
