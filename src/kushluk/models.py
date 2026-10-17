@@ -77,6 +77,46 @@ class Story:
 
 
 @dataclass(slots=True)
+class MediaAsset:
+    """Private, explicit owner permission for a content-addressed local image."""
+    schema_version: int
+    asset_id: str
+    sha256: str
+    source_kind: str
+    source_url: str | None
+    license_id: str
+    permission_scope: str
+    approved_for_print: bool
+    attribution: str
+    alt_text: str
+    caption: str
+    width_px: int
+    height_px: int
+    focal_x: float
+    focal_y: float
+    crop_policy: str
+
+
+@dataclass(slots=True)
+class MediaPlacement:
+    """Immutable print-slot decision, not an external URL or raster file path."""
+    story_id: str
+    asset_id: str
+    slot: str
+    crop_sha256: str
+    crop_box: tuple[int, int, int, int]
+    crop_policy: str
+    width_mm: int
+    height_mm: int
+    effective_dpi: float
+    license_id: str
+    permission_scope: str
+    attribution: str
+    alt_text: str
+    caption: str
+
+
+@dataclass(slots=True)
 class Failure:
     code: str
     severity: FailureSeverity
@@ -146,6 +186,7 @@ class Publication:
     pages: list[EditionPage] = field(default_factory=list)
     archetype: LayoutArchetype = "balanced"
     composition_decisions: list[CompositionDecision] = field(default_factory=list)
+    media: list[MediaPlacement] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)

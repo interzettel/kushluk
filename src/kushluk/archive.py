@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Any
 
 from kushluk.models import Publication
+from kushluk.media import MediaError, render_bytes
 from kushluk.publication import publication_markdown
 
 
@@ -15,10 +16,25 @@ def archive_publication(
     html_path: Path | None = None,
     pdf_path: Path | None = None,
     imposed_pdf_path: Path | None = None,
+    media_store: Path | None = None,
     run_summary: dict[str, Any] | None = None,
 ) -> Path:
     edition_dir = archive_root / publication.edition_id
     edition_dir.mkdir(parents=True, exist_ok=True)
+    if media_store is not None:
+        for placement in publication.media:
+            try:
+                crop = render_bytes(media_store, placement)
+            except (MediaError, OSError):
+                continue
+            media_dir = edition_dir / "media"
+            media_dir.mkdir(parents=True, exist_ok=True, mode=0o700)
+            target = media_dir / f"{placement.crop_sha256}.png"
+            if target.is_symlink():
+                raise ValueError("unsafe_media_archive_target")
+            if not target.exists():
+                target.write_bytes(crop)
+                target.chmod(0o600)
     (edition_dir / "edition.md").write_text(publication_markdown(publication), encoding="utf-8")
     (edition_dir / "metadata.json").write_text(
         json.dumps(publication.to_dict(), ensure_ascii=False, indent=2), encoding="utf-8"

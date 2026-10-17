@@ -52,7 +52,9 @@ def test_three_archetypes_share_four_canonical_pages_with_explicit_budgets(
     assert len(publication.pages[3].blocks) == len(publication.stories)
     all_story_ids = [sid for page in publication.pages[:3] for sid in page.story_ids]
     assert all_story_ids == [s.id for s in publication.stories]
-    assert all(b.budget.image_slots == 0 for p in publication.pages for b in p.blocks)
+    assert all(b.budget.image_slots in (0, 1) for p in publication.pages for b in p.blocks)
+    assert all(b.budget.image_slots == 0 for p in publication.pages for b in p.blocks
+               if b.kind in ("brief", "practical", "source-index"))
     assert all(b.budget.deck_chars > 0 for p in publication.pages
                for b in p.blocks if b.kind in ("lead", "brief"))
     assert all(b.budget.detail_chars == 118 for p in publication.pages

@@ -22,7 +22,7 @@ The six-column A4 story-grid rhythm supports two short leads side by side on new
 
 ### Image capacity
 
-`SlotBudget` includes `image_slots` and `caption_chars`, but all production archetypes currently permit **zero images**. This is intentional: #50 has not yet delivered a rights-checked, locally preflighted raster/vector asset path. Unverified image references are stripped from printable selections and logged as a `remove_image` decision. There is no automatic remote image fetch, fake image, or undeclared attribution. Aspect-ratio and caption/crop resolution work remains open under LAY-03/#50.
+`SlotBudget` includes `image_slots` and `caption_chars`. Eligible balanced/practical-heavy lead slots now accept **one explicit owner-imported, permission-asserted local PNG/JPEG** with >=180 effective DPI in a 66 × 33 mm focal-crop or white-contain placement. News-heavy multi-lead covers and briefs remain text-only until their layout is separately approved. Unverified images are removed from printable selections with an explicit composition decision. Nothing fetches remote media URLs or infers redistribution rights. See [MEDIA_RIGHTS.md](MEDIA_RIGHTS.md); independent crop/face/print QA and larger media variants remain LAY-03/#50 work.
 
 ## Deterministic archetype choice
 

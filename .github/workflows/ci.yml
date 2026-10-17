@@ -56,6 +56,17 @@ jobs:
           name: kushluk-layout-compare-${{ matrix.runner }}
           path: output/layout-compare/
           retention-days: 14
+      - name: Generate rights-cleared local media print proof kit
+        run: python -m tools.media_proof --output-dir output/media-proof
+      - name: Upload rights-aware image proofs
+        uses: actions/upload-artifact@v4
+        with:
+          name: kushluk-media-proof-${{ matrix.runner }}
+          path: |
+            output/media-proof/*.pdf
+            output/media-proof/*.html
+            output/media-proof/media-proof.json
+          retention-days: 14
       - name: Verify offline A4/A3 print-proof CLI
         run: |
           kushluk print-proof --output-dir output/print-proof

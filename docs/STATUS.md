@@ -5,6 +5,14 @@ Documentation and issue inventory reviewed: 2026-10-17; six evidence-backed task
 
 **Status caveat:** the 2026-10-16 inventory did **not** independently rerun CI or physical print tests. Do not infer four-page migration, unattended execution, or real-reader trials are done from the new planning issues. [#43](https://github.com/interzettel/kushluk/issues/43) indexes all issues, and [ISSUE_CROSSWALK.md](ISSUE_CROSSWALK.md) maps the 90 existing work-ledger tasks to accountable issues. Execution blockers have dedicated issues: [#45](https://github.com/interzettel/kushluk/issues/45) format, [#46](https://github.com/interzettel/kushluk/issues/46) print profiles, [#47](https://github.com/interzettel/kushluk/issues/47) local scheduler/retries. Docs/ADR ambiguities: [#44](https://github.com/interzettel/kushluk/issues/44).
 
+### Local rights-aware original-image print pipeline (#50; software stage)
+
+Only explicitly owner-imported local PNG/JPEG records with bounded caption/credit/alt, source and license status, normalized SHA-256, crop/focal hints and `private_print`/`shareable` scope are eligible. `media-import` refuses unacknowledged rights; `media-assign` explicitly binds a vetted crop to one editorial story ID. `KUSHLUK_MEDIA_DIR` opts the local pipeline into those bindings; remote RSS images are **never fetched** from URLs or inferred as licensed.
+
+A 66×33 mm lead slot is eligible in balanced/practical-heavy editions only, with >=180 effective print DPI, deterministic crop or white contain, inline verified PNG and full attribution. Corrupt/denied/tiny images use text-only fallback. Selected crops and rights metadata survive in private edition archives; owner-controlled `media-remove` revokes future use but not earlier exports. Original synthetic fixture suite and proof generator run in macOS CI. See [MEDIA_RIGHTS.md](MEDIA_RIGHTS.md).
+
+**Software ledger IMG-01/04/05/06/07/08:** **23/90 · 25.56%** all tasks, IMG **6/9 · 66.67%**. IMG-02 lawful external acquisition, IMG-03 real watermark/content review and IMG-09 physical paper/fixture acceptance stay open, as does RES-IMG-01 provider-specific legal review. G1–G8 remain **0/8**, version `0.1.0`.
+
 ### Three deterministic A4 composition archetypes (#51, #21)
 
 `kushluk.composition` now plans typed practical/lead/brief/source blocks with bounded text/image slots and an audited deterministic balanced, news-heavy or practical-heavy choice. The actual news pipeline selects archetype by manifest; direct `build_publication` keeps its backwards-compatible balanced default for EPUB readers. Copy tightening, movement, demotion, replacement, omission and clearing non-approved image references operate before rendering. Missing mandatory calendar/task capacity fails rather than silently dropping those items.

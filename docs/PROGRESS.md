@@ -21,7 +21,7 @@
 
 ## Operational work ledger
 
-**17 of 90 task checkboxes checked (18.89%).** This measures task-record state, not overall readiness.
+**23 of 90 task checkboxes checked (25.56%).** This measures task-record state, not overall readiness.
 
 | Task group | Checked | Total | Progress |
 | --- | ---: | ---: | ---: |
@@ -29,7 +29,7 @@
 | FMT | 4 | 10 | 40.00% |
 | AUT | 5 | 13 | 38.46% |
 | SRC | 0 | 10 | 00.00% |
-| IMG | 0 | 9 | 00.00% |
+| IMG | 6 | 9 | 66.67% |
 | LAY | 4 | 11 | 36.36% |
 | DES-EXT | 0 | 5 | 00.00% |
 | RES-NEWS | 0 | 3 | 00.00% |
@@ -38,7 +38,7 @@
 | ED | 0 | 6 | 00.00% |
 | UX | 0 | 8 | 00.00% |
 | TRIAL | 0 | 7 | 00.00% |
-| **TOTAL** | **17** | **90** | **18.89%** |
+| **TOTAL** | **23** | **90** | **25.56%** |
 
 ## Individual tasks
 
@@ -110,18 +110,18 @@ The lines below are generated from WORK_LEDGER.md. Each task ID has a primary ow
 
 </details>
 
-<details><summary><strong>IMG — 0/9 checked · 00.00%</strong></summary>
+<details><summary><strong>IMG — 6/9 checked · 66.67%</strong></summary>
 
 | Task ID | Ledger state | Description |
 | --- | --- | --- |
-| `IMG-01` | OPEN | Add a first-class media asset model: source URL, local/cache path, licence/usage status, attribution, caption, alt text, aspect ratio, dimensions, focal point, crop policy, and verification state. |
+| `IMG-01` | CHECKED | Add a first-class media asset model: source URL, local/cache path, licence/usage status, attribution, caption, alt text, aspect ratio, dimensions, focal point, crop policy, and verification state. |
 | `IMG-02` | OPEN | Build image candidate acquisition for stories from original/reputable sources where lawful and technically available. |
 | `IMG-03` | OPEN | Reject hotlink-only, low-resolution, watermarked, duplicate, or unclear-rights assets according to policy. |
-| `IMG-04` | OPEN | Add deterministic image placement slots to the layout manifest. |
-| `IMG-05` | OPEN | Add automatic crop/focal-point handling with safe fallbacks (`contain`, alternate crop, illustration, or text-only). |
-| `IMG-06` | OPEN | Add caption and attribution fitting rules. |
-| `IMG-07` | OPEN | Validate effective print resolution and prevent unusable assets from reaching print. |
-| `IMG-08` | OPEN | Cache selected assets for reproducible archived editions. |
+| `IMG-04` | CHECKED | Add deterministic image placement slots to the layout manifest. |
+| `IMG-05` | CHECKED | Add automatic crop/focal-point handling with safe fallbacks (`contain`, alternate crop, illustration, or text-only). |
+| `IMG-06` | CHECKED | Add caption and attribution fitting rules. |
+| `IMG-07` | CHECKED | Validate effective print resolution and prevent unusable assets from reaching print. |
+| `IMG-08` | CHECKED | Cache selected assets for reproducible archived editions. |
 | `IMG-09` | OPEN | Create a fixture suite covering portrait, landscape, square, tiny, missing, and awkward-focal-point images. |
 
 </details>
