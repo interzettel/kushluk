@@ -127,6 +127,9 @@ def inspect_bundle(root: Path, *, require_pdf: bool = False) -> dict:
         inventory = _read_json(install_dir / "installed-environment.json")
         review = _read_json(install_dir / "license-review-worksheet.json")
         packages = inventory.get("installed_packages")
+        counts = review.get("review_counts")
+        if not isinstance(counts, dict):
+            raise M1EvidenceError("inventory_or_license_evidence_mismatch")
         if (inventory.get("schema_version") != 1
                 or inventory.get("kind") != "installed-python-environment-inventory"
                 or not isinstance(packages, list) or len(packages) != number
@@ -139,7 +142,7 @@ def inspect_bundle(root: Path, *, require_pdf: bool = False) -> dict:
                 or review.get("approved_for_release") is not False
                 or review.get("python_inventory_sha256")
                 != item.get("dependency_inventory_sha256")
-                or review.get("review_counts", {}).get("python_pending") != number):
+                or counts.get("python_pending") != number):
             raise M1EvidenceError("inventory_or_license_evidence_mismatch")
         manifest = _read_json(install_dir / "preview-manifest.json")
         declared = manifest.get("files")
