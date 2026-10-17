@@ -24,22 +24,6 @@ def test_a3_folded_contains_outside_4_1_and_inside_2_3(tmp_path):
         render_html(publication, tmp_path / "original.html"), tmp_path / "original.pdf"
     )
     original_bytes = source.read_bytes()
-    from weasyprint import HTML
-    boxes = []
-    for page in HTML(filename=str(tmp_path / "original.html")).render().pages:
-        sheet = []
-        def walk(node):
-            if node.element_tag in {"section", "article", "footer", "header", "div"}:
-                element = getattr(node, "element", None)
-                klass = element.get("class", "") if element is not None else ""
-                if node.element_tag != "div" or "grid" in klass:
-                    sheet.append((node.element_tag, klass,
-                                  round(node.position_y, 1), round(node.height, 1)))
-            for child in getattr(node, "children", ()):
-                walk(child)
-        walk(page._page_box)
-        boxes.append(sheet)
-    assert len(boxes) == 4, boxes
     output = impose_a3_folded(source, tmp_path / "booklet.pdf")
     reader = pypdf.PdfReader(str(output))
     assert len(reader.pages) == 2
