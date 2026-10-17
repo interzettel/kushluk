@@ -376,8 +376,6 @@ def test_source_review_does_not_fetch_or_publish(setup_server, monkeypatch, tmp_
 
 
 def test_browser_letter_selection_survives_printer_page_and_can_change(tmp_path):
-    import json
-
     server = SetupHTTPServer(
         tmp_path / "private" / "profile.json",
         registry=tmp_path / "private" / "sources.json",
