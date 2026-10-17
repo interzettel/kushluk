@@ -164,3 +164,18 @@ def test_xml_entities_rejected_and_body_never_enters_candidates(monkeypatch):
     assert candidates[0].summary == ""
     from kushluk.editor import select_stories
     assert select_stories(candidates)[0].deck == "Open the source for the full story."
+
+
+def test_private_subscription_endpoint_is_not_exposed_as_story_url(monkeypatch):
+    monkeypatch.setattr(rss, "fetch_public_xml", lambda _url: (
+        b"<rss><channel><item><title>Public headline without link</title>"
+        b"<description>Private full text</description></item></channel></rss>"
+    ))
+    feed = "https://reader.example.org/private?token=never-publish"
+    candidates = rss.RSSConnector((feed,)).fetch()
+    assert candidates[0].source.url is None
+    assert candidates[0].source.name == "RSS feed"
+    from kushluk.editor import select_stories
+    stories = select_stories(candidates)
+    assert stories[0].source_url is None
+    assert "never-publish" not in str(stories)
