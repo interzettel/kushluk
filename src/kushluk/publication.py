@@ -3,17 +3,16 @@ from __future__ import annotations
 from datetime import date, datetime
 from zoneinfo import ZoneInfo
 
-from kushluk.models import EditionPage, PracticalItem, Publication, Story
+from kushluk.models import EditionPage, LayoutArchetype, PracticalItem, Publication, Story
+from kushluk.composition import compose, plan_composition_pages
 
 
-def plan_pages(practical: list[PracticalItem], stories: list[Story]) -> list[EditionPage]:
-    """Deterministic four-page reading order independent of printer and imposition."""
-    return [
-        EditionPage(1, "front", list(range(min(3, len(practical)))), [s.id for s in stories[:1]]),
-        EditionPage(2, "day", list(range(3, len(practical)))),
-        EditionPage(3, "stories", story_ids=[s.id for s in stories[1:]]),
-        EditionPage(4, "sources"),
-    ]
+def plan_pages(
+    practical: list[PracticalItem], stories: list[Story],
+    archetype: LayoutArchetype = "balanced",
+) -> list[EditionPage]:
+    """Four fixed A4 kinds; archetype changes semantic allocation, never sheet count."""
+    return plan_composition_pages(practical, stories, archetype)
 
 
 def build_publication(
@@ -25,19 +24,25 @@ def build_publication(
     stories: list[Story],
     serial: int = 1,
     notes: list[str] | None = None,
+    archetype: LayoutArchetype | str = "auto",
 ) -> Publication:
     edition_id = f"{target_date:%Y%m%d}-{serial:03d}"
     generated_at = datetime.now(ZoneInfo(timezone)).isoformat(timespec="seconds")
+    fitted_practical, fitted_stories, pages, selected, decisions = compose(
+        practical, stories, archetype=archetype,
+    )
     return Publication(
         edition_id=edition_id,
         target_date=target_date.isoformat(),
         timezone=timezone,
         generated_at=generated_at,
         location_name=location_name,
-        practical=practical,
-        stories=stories,
+        practical=fitted_practical,
+        stories=fitted_stories,
         notes=notes or [],
-        pages=plan_pages(practical, stories),
+        pages=pages,
+        archetype=selected,
+        composition_decisions=decisions,
     )
 
 
@@ -49,6 +54,7 @@ def publication_markdown(publication: Publication) -> str:
         f"timezone: {publication.timezone}",
         f"generated_at: {publication.generated_at}",
         f"schema_version: {publication.schema_version}",
+        f"archetype: {publication.archetype}",
         f"logical_pages: {len(publication.pages)}",
         "---",
         "",
