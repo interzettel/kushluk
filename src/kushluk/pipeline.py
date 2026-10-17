@@ -83,12 +83,23 @@ def run_pipeline(
         _load_calendar_fixture(settings, practical, failures)
 
     candidates = []
+    rss_connector = RSSConnector(
+        settings.rss_urls, reference_only_urls=settings.reference_only_rss_urls,
+    )
     try:
-        candidates.extend(RSSConnector(
-            settings.rss_urls, reference_only_urls=settings.reference_only_rss_urls,
-        ).fetch())
+        candidates.extend(rss_connector.fetch())
     except Exception as exc:
         failures.append(_failure("rss_unavailable", "degraded", exc, "rss"))
+    for rejected in rss_connector.failed_feeds:
+        failures.append(Failure(
+            code="rss_feed_unavailable",
+            severity="degraded",
+            message=(
+                f"RSS source {rejected['feed_number']} skipped "
+                f"({rejected['reason']})."
+            ),
+            source="rss",
+        ))
 
     if on_stage is not None:
         on_stage("sources_complete")

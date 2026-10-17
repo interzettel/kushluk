@@ -151,8 +151,11 @@ def test_xml_entities_rejected_and_body_never_enters_candidates(monkeypatch):
         b'<rss><!DOCTYPE foo [<!ENTITY x SYSTEM "file:///etc/passwd">]>'
         b"<channel><title>Newsletter</title></channel></rss>"
     ))
-    with pytest.raises(ValueError, match="disallowed declarations"):
-        rss.RSSConnector(("https://example.org/feed",)).fetch()
+    blocked = rss.RSSConnector(("https://example.org/feed",))
+    assert blocked.fetch() == []
+    assert blocked.failed_feeds == [
+        {"feed_number": 1, "reason": "invalid_feed_xml"}
+    ]
 
     monkeypatch.setattr(rss, "fetch_public_xml", lambda _url: (
         b"<rss><channel><title>Example</title><item><title>Headline</title>"

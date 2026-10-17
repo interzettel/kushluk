@@ -33,6 +33,10 @@ The private source registry now stores four reader intent choices: ignore, refer
 
 No GitHub Release or version bump, no hardware acceptance or five-morning reliability evidence, no progress gate movement. F-006 is implemented-but-unreleased, F-007/F-011/F-016/F-023 remain partial, and F-009/F-010 remain hardware/host blocked.
 
+### Per-feed RSS degradation, not all-or-nothing
+
+A failed RSS source (unsafe destination, timeout, invalid XML or rejected DTD) no longer suppresses healthy sources. The engine records a redacted source-index failure code and keeps already validated successful candidates, allowing a degraded-but-traceable edition; it never prints private feed URLs/tokens in diagnostics. Unexpected implementation errors still surface instead of being swallowed. See [#49](https://github.com/interzettel/kushluk/issues/49); this does not make provider permissions or content rights complete.
+
 ## Repository hygiene
 
 - Default branch: `main`.
