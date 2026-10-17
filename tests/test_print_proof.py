@@ -3,7 +3,7 @@ import json
 import pytest
 
 from kushluk.print_proof import make_print_proof
-from kushluk.print_profiles import validate_a3_booklet
+from kushluk.print_profiles import validate_a3_booklet, validate_letter_home
 from kushluk.validation import validate_pdf
 
 
@@ -14,12 +14,16 @@ def test_offline_print_proof_builds_a4_a3_checklist_and_manifest(tmp_path):
     from pathlib import Path
 
     a4 = Path(artifacts["a4"])
+    letter = Path(artifacts["letter"])
     a3 = Path(artifacts["a3"])
     assert a4.is_file() and a3.is_file()
     assert validate_pdf(a4).ok
+    assert validate_letter_home(letter) == []
     assert validate_a3_booklet(a3) == []
     report = json.loads(Path(artifacts["manifest"]).read_text())
     assert report["a4_logical_pages"] == 4
+    assert report["letter_logical_pages"] == 4
+    assert report["letter_media_box_pt"] == [612, 792]
     assert report["a3_sheet_sides"] == 2
     assert report["physical_verified"] is False
     assert report["a3_imposition"] == ["4 | 1", "2 | 3"]
