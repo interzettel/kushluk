@@ -9,6 +9,7 @@ on:
       - 'pyproject.toml'
       - '.github/workflows/dependency-audit.yml'
       - 'tools/native_inventory.py'
+      - 'tools/python_sbom.py'
       - 'docs/DEPENDENCY_AUDIT.md'
 
 permissions:
@@ -32,6 +33,10 @@ jobs:
           mkdir -p output/security
           "$RUNNER_TEMP/kushluk-target/bin/python" -m pip freeze --exclude-editable > output/security/resolved-runtime-requirements.txt
           "$RUNNER_TEMP/kushluk-target/bin/python" -m pip check
+      - name: Collect deterministic installed Python component evidence
+        run: |
+          "$RUNNER_TEMP/kushluk-target/bin/python" -m tools.python_sbom \
+            --output output/security/installed-python-components.cdx.json
       - name: Install the independent auditor
         run: python -m pip install 'pip-audit>=2.9,<3'
       - name: Query current published Python advisories (no automatic fixes)

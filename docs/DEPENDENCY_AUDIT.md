@@ -29,6 +29,25 @@ The **first live scan** on [PR #124, run 39044303399](https://github.com/interze
 
 The code's previous dependency bound `weasyprint>=62,<70` prevented pip from selecting the security fix. PR #124 changes this to **`weasyprint>=70,<71`**. This is a remediation **candidate** until the updated advisory workflow and full four-page Linux/macOS PDF regression matrix have passed. We have not reproduced an exploit in Kushluk, and dependency advisories are not evidence that any user has been compromised. Runtime still requires native font/lib inspection and restricted untrusted assets.
 
+## Installed Python component manifest (software-only evidence)
+
+The weekly/on-demand [Python advisory workflow](../.github/workflows/dependency-audit.yml)
+also now saves a deterministic **CycloneDX 1.5 JSON installed-environment inventory**
+(`installed-python-components.cdx.json`) from the same isolated Python 3.12 environment
+as the live advisory scan. Run manually with `python -m tools.python_sbom --output
+output/security/installed-python-components.cdx.json` inside the desired environment.
+It contains public normalized Python package names, versions, PURLs and only explicitly
+declared SPDX `License-Expression` text when present. It does **not** contain paths,
+private reader content, full dependency graph, exact wheel hashes, native libraries,
+fonts or a resolved release lockfile. Its bytes are deterministic for the same installed
+package metadata; the create-only private output does not silently overwrite evidence.
+
+**Important:** an installed-dependency component inventory is not a signed, validated
+release SBOM. The scan may contain packages from optional extras and build tooling;
+the actual shipping distribution can resolve different dependency versions. SPDX metadata
+is not legal signoff. Native/font redistribution rights, transitive obligations,
+provenance and binary reproducibility still need the independent release review.
+
 ## What remains before publishing anything
 
 - Inspect each transitive Python distribution's actual license and retained notices; verify bundled code/assets/fonts and any incompatible terms.
