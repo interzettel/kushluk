@@ -63,7 +63,8 @@ def check_crossref_claim(
         url = "https://api.crossref.org/works/" + quote(doi, safe="")
         payload = json.loads(fetch_public_json(url, expected_host="api.crossref.org"))
         entry = payload.get("message")
-        if not isinstance(entry, dict) or entry.get("DOI", "").lower() != doi.lower():
+        if (not isinstance(entry, dict) or not isinstance(entry.get("DOI"), str)
+                or entry["DOI"].lower() != doi.lower()):
             return ClaimCheck(state="abstain-unmatched-doi", **base)
         title = entry.get("title")
         if not isinstance(title, list) or not title or not isinstance(title[0], str):
@@ -83,6 +84,6 @@ def check_crossref_claim(
             else "bibliographic-conflict",
             **base,
         )
-    except (FeedNetworkError, ValueError, TypeError, KeyError, UnicodeError) as exc:
+    except (FeedNetworkError, ValueError, TypeError, KeyError, UnicodeError, AttributeError):
         # Remote outages, 429 and unparseable records are abstentions, not truth.
         return ClaimCheck(state="abstain-provider-unavailable", **base)
