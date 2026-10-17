@@ -144,9 +144,13 @@ def run_pipeline(
     if make_pdf and preflight.ok:
         working = publication
         for attempt in range(4):
+            if on_stage is not None:
+                on_stage("rendering")
             render_html(working, html_path)
             try:
                 candidate_pdf = render_pdf(html_path, pdf_path)
+                if on_stage is not None:
+                    on_stage("rendered")
                 pdf_validation = validate_pdf(candidate_pdf, expected_pages=4)
             except Exception as exc:
                 failures.append(_failure("pdf_unavailable", "degraded", exc, "renderer"))
@@ -188,7 +192,11 @@ def run_pipeline(
             )
             working = compact_for_layout(working, attempt + 1)
     else:
+        if on_stage is not None:
+            on_stage("rendering")
         render_html(publication, html_path)
+        if on_stage is not None:
+            on_stage("rendered")
 
     publication = replace(
         publication,
