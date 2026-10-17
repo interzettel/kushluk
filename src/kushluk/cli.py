@@ -15,7 +15,7 @@ from kushluk.field_proof import FieldProofError, record_field_proof
 from kushluk.local_profile import LocalProfileError, profile_path, write_local_profile
 from kushluk.newsletter_discovery import NewsletterError, discover, save_proposals, set_mode
 from kushluk.connectors.google_local import (
-    GoogleProviderError, authorize, discover_gmail, fetch_google_tasks,
+    GoogleProviderError, authorize, disconnect, discover_gmail, fetch_google_tasks,
 )
 from kushluk.claims import ClaimCheckError, check_crossref_claim
 from kushluk.media import (
@@ -128,6 +128,13 @@ def build_parser() -> argparse.ArgumentParser:
     google_connect.add_argument("--provider", choices=("gmail", "tasks"), required=True)
     google_connect.add_argument("--oauth-client", type=Path, required=True)
     google_connect.add_argument("--vault", type=Path, required=True)
+
+    google_disconnect = sub.add_parser(
+        "google-disconnect",
+        help="Remove one local Google grant (also revoke remotely in Google Account)",
+    )
+    google_disconnect.add_argument("--provider", choices=("gmail", "tasks"), required=True)
+    google_disconnect.add_argument("--vault", type=Path, required=True)
 
     gmail_review = sub.add_parser(
         "gmail-discover",
@@ -419,12 +426,18 @@ def main(argv: list[str] | None = None) -> int:
         print(json.dumps(result.as_dict()))
         return 0 if result.state == "bibliographic-match-claims-unverified" else 1
 
-    if args.command in ("google-connect", "gmail-discover", "google-tasks-preview"):
+    if args.command in ("google-connect", "google-disconnect", "gmail-discover", "google-tasks-preview"):
         try:
             if args.command == "google-connect":
                 authorize(args.provider, oauth_client=args.oauth_client, vault=args.vault)
                 result = {"status": "local_oauth_grant_created",
                           "provider": args.provider, "separate_scopes": True}
+            elif args.command == "google-disconnect":
+                disconnect(args.provider, vault=args.vault)
+                result = {
+                    "status": "local_google_token_deleted",
+                    "provider": args.provider, "remote_grant_revoked": False,
+                }
             elif args.command == "gmail-discover":
                 if not args.acknowledge_metadata_read:
                     raise GoogleProviderError("explicit_gmail_metadata_consent_required")
