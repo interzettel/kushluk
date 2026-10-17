@@ -344,6 +344,6 @@ def _failure(
     return Failure(
         code=code,
         severity=severity,
-        message=f"{source} unavailable: {type(exc).__name__}: {exc}",
+        message=f"{source} unavailable ({code}). Check local diagnostics; private provider errors are never archived.",
         source=source,
     )
