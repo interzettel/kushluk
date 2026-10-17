@@ -374,7 +374,8 @@ def build_parser() -> argparse.ArgumentParser:
     field = sub.add_parser(
         "record-field-proof", help="Record self-attested physical printer, reader or host trial"
     )
-    field.add_argument("--kind", choices=("paper-a4", "paper-a3", "epub-reader", "host-resume"),
+    field.add_argument("--kind", choices=("paper-a4", "paper-letter", "paper-a3",
+                                 "epub-reader", "host-resume"),
                        required=True)
     field.add_argument("--artifact", type=Path, required=True)
     field.add_argument("--output", type=Path, required=True, help="New private receipt filename")
