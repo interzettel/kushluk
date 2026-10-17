@@ -143,10 +143,94 @@ def _delivery(record: dict, channel: str) -> str:
     return "not_requested"
 
 
+def _operator_guidance(state: str, print_state: str, email_state: str,
+                       ready_by_met: bool | None) -> dict[str, str]:
+    """Actionable *fixed text*; no provider exceptions or reader content."""
+    if state == "needs_review":
+        return {
+            "code": "manual_review_no_auto_retry",
+            "severity": "action_required",
+            "message": ("An interrupted, invalid or uncertain run needs human review. "
+                        "Inspect the archived receipt and external printer/email queue "
+                        "before any explicit resend; never start a silent replay."),
+        }
+    if state == "in_progress":
+        return {
+            "code": "run_in_progress",
+            "severity": "info",
+            "message": ("A local run is active. Inspect the local run status before "
+                        "taking recovery action; do not submit another job."),
+        }
+    if state == "paused":
+        return {
+            "code": "schedule_paused",
+            "severity": "info",
+            "message": "This date is paused. Resume only when you intend to permit a new run.",
+        }
+    if state == "not_run":
+        return {
+            "code": "no_run_receipt",
+            "severity": "action_required",
+            "message": ("No run receipt exists for this date. Review the local scheduler "
+                        "and configured cutoff; no printing has been established."),
+        }
+    if state == "completed":
+        if print_state in {"submission_uncertain", "submission_failed"} or email_state in {
+            "submission_uncertain", "submission_failed"
+        }:
+            return {
+                "code": "delivery_needs_attention",
+                "severity": "action_required",
+                "message": ("The edition archive is complete but a delivery request failed "
+                            "or is uncertain. Inspect external queues before any deliberate "
+                            "archive-only resend."),
+            }
+        if ready_by_met is False:
+            return {
+                "code": "archive_ready_late",
+                "severity": "warning",
+                "message": ("The validated archive was ready after the configured clock "
+                            "target. Adjust the scheduler only from measured history; "
+                            "actual paper delivery was not verified."),
+            }
+        if print_state == "submission_accepted":
+            return {
+                "code": "printer_queue_not_physical_proof",
+                "severity": "info",
+                "message": ("The printer accepted a submission. Verify paper, page order and "
+                            "duplex on the actual device before marking it delivered."),
+            }
+        if email_state == "submission_accepted":
+            return {
+                "code": "smtp_accepted_not_recipient_proof",
+                "severity": "info",
+                "message": ("SMTP accepted the message; actual recipient delivery or reading "
+                            "has not been independently verified."),
+            }
+        return {
+            "code": "archive_complete_delivery_not_implied",
+            "severity": "info",
+            "message": ("The local edition archive is complete. No physical print or "
+                        "recipient delivery is implied by the software result."),
+        }
+    return {
+        "code": "status_requires_review",
+        "severity": "action_required",
+        "message": ("Review the local run state and scheduler; no automatic retry "
+                    "or physical delivery is implied."),
+    }
+
+
 def run_report(settings: Settings, *, target_date: date) -> dict:
     state = read_run_status(settings, target_date=target_date)
     record = _record(settings, target_date)
     timing = _timing(record, target_date=target_date, timezone_name=settings.timezone)
+    guidance = _operator_guidance(
+        state.status,
+        _delivery(record, "print"),
+        _delivery(record, "email"),
+        timing["ready_by_met"],
+    )
     return {
         "schema_version": 1,
         "edition_id": state.edition_id,
@@ -162,6 +246,7 @@ def run_report(settings: Settings, *, target_date: date) -> dict:
             "recipient_delivery_verified": False,
         },
         "evidence_scope": "local_software_receipt_only",
+        "operator_guidance": guidance,
     }
 
 
