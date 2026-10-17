@@ -27,6 +27,39 @@ On real A3 duplex/fold-capable hardware use `--kind paper-a3`, the **actual A3 b
 
 To record a **passing** physical sample, the CLI requires one or more evidence files, explicit direct-observation attestation, and a structurally clean PDF inspection JSON with the **same PDF SHA-256**. It records only evidence hashes and byte counts, never copies photographs into Git or transmits anything. If the printer failed, `--result fail` records the failure without a false positive.
 
+## 1b — Print US Letter on a real home printer
+
+US Letter is a recommended home format alongside DIN A4. Its software output
+is a separate four-page PDF, **612 × 792 pt per page**, proportionally scaled from
+the canonical A4 design. A4 printer or source proof cannot establish Letter
+readability, edge margins, or duplex behavior. Use real 8.5 × 11 in paper at
+100%/actual size (disable driver-side fit). Record device/driver, stock,
+legibility, page order, duplex orientation and any clipped content.
+
+```bash
+kushluk print-proof --output-dir output/print-proof
+kushluk inspect-print --profile letter-home \
+  --pdf output/print-proof/kushluk-proof-letter.pdf \
+  --output-dir output/proof-letter-visual --rasterize
+
+# Only after a human actually observes the real Letter paper output:
+kushluk record-field-proof --kind paper-letter \
+  --artifact output/print-proof/kushluk-proof-letter.pdf \
+  --inspection output/proof-letter-visual/inspection.json \
+  --evidence ~/Pictures/kushluk-real-letter-photo.jpg \
+  --device "Observed printer and driver, Letter stock" \
+  --operator "Observer initials" \
+  --observations "Actual four Letter pages, margins, readability and duplex" \
+  --result pass --acknowledge-direct-observation \
+  --output ~/kushluk-private-evidence/letter-field-001.json
+```
+
+The local recorder requires the inspection profile to be `letter-home` for a
+passing Letter receipt. It rejects a mismatched A4 or A3 inspection even if
+the PDF checksum agrees. This is format-consistency validation, **not** a
+physical proof or an automatic acceptance decision. The receipt remains
+self-reported and must be independently reviewed. See [#129](https://github.com/interzettel/kushluk/issues/129).
+
 ## 2 — Test EPUB on a real reader
 
 First run the independent [W3C EPUBCheck conformance job](../.github/workflows/epub-conformance.yml) or install EPUBCheck locally. A successful validator checks **file conformance**, not device layout, page navigation, screen-reader semantics or publisher-content rights.
