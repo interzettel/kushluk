@@ -78,6 +78,31 @@ a founder signature, provenance attestation or real-printer inspection.
 The checker does not download files, read environment credentials, phone
 home or alter existing releases.
 
+## Isolated PEP 440 alpha-version build trial
+
+A separate **unreleased** CI job now tests the proposed Python version
+`0.2.0a1` without modifying the checked-in `0.1.0`. Run:
+
+```bash
+python -m tools.alpha_build_trial --artifact-dir output/m1-alpha-version-trial
+```
+
+The tool uses `git archive HEAD` to stage only tracked files in a
+throwaway directory, changes exactly the package version there, and
+builds/reinstalls both artifacts from scratch. It then runs the independent
+M1 evidence preflight, requiring the installed version `0.2.0a1`.
+GitHub's `kushluk-m1-isolated-0.2.0a1-trial` is a **temporary developer
+testing artifact** only. Its `alpha-version-trial.json` retains the exact
+source SHA and explicitly records that the checkout version was unchanged,
+legal rights remain unapproved, and no tag/release was published.
+
+**Observed pre-merge dry run:** on an earlier PR branch, the Linux Python
+3.12 trial produced actual `kushluk-0.2.0a1-py3-none-any.whl` and
+`kushluk-0.2.0a1.tar.gz` and reported two clean installs. The final
+post-merge `main` SHA must independently pass this same job before an
+official release decision. Staged docs still contain development-version
+prose; these trial distributions are **not** approved public release assets.
+
 ## Decision still required
 
 Before creating an alpha tag or uploading to a GitHub Release:
