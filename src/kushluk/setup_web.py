@@ -6,6 +6,7 @@ Source rights, paid accounts, print jobs and scheduler controls are out of scope
 from __future__ import annotations
 
 from hmac import compare_digest
+from html import escape
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import secrets
 from pathlib import Path
@@ -13,6 +14,7 @@ from urllib.parse import parse_qs
 import webbrowser
 
 from kushluk.local_profile import LocalProfileError, profile_path, write_local_profile
+from kushluk.source_registry import SourceApprovalError, read_registry, set_source_mode
 
 _FORM = """<!doctype html>
 <html lang="en"><head>
@@ -82,7 +84,59 @@ h1{font:normal 54px/1.1 Georgia,serif}a{color:#244f3b}</style>
 No sources were enabled and no paper was printed.</p>
 <p>Close this browser tab, then use <code>kushluk sources-preflight</code>
 to review sources, or <code>kushluk doctor</code> to inspect runtime readiness.</p>
+<p><a href="/sources">Review approved feed permissions in your browser →</a></p>
 <p>No release or physical-printer verification is implied.</p></html>"""
+
+
+def _source_page(csrf: str, message: str = "") -> str:
+    """Private source-mode review. Neither feed URLs nor raw article content are shown."""
+    rows = read_registry()
+    blocks = []
+    for row in rows:
+        title = escape(row["title"])
+        identifier = escape(row["id"], quote=True)
+        mode = escape(row["mode"])
+        active = row["enabled"] and row["mode"] == "reference-only"
+        state = "Headlines only" if active else "Paused / awaiting separate rights"
+        blocks.append(
+            '<article class="feed"><h2>' + title + '</h2>'
+            '<p class="small">Mode: ' + mode + ' · ' + state + '</p>'
+            '<form method="post" action="/sources">'
+            '<input type="hidden" name="csrf" value="' + csrf + '">'
+            '<input type="hidden" name="source_id" value="' + identifier + '">'
+            '<label><input type="checkbox" name="acknowledge" value="yes">'
+            'I am allowed to retrieve this RSS feed for headline references.</label>'
+            '<div class="actions">'
+            '<button type="submit" name="mode" value="reference-only">'
+            'Use headlines only</button>'
+            '<button type="submit" name="mode" value="ignore">Pause source</button>'
+            '</div></form></article>'
+        )
+    body = "".join(blocks) if rows else (
+        "<p>There are no previously approved feeds yet. Import an OPML proposal "
+        "with the local CLI first; this page never imports or activates feeds.</p>"
+    )
+    return (
+        '<!doctype html><html lang="en"><meta charset="utf-8">'
+        '<meta name="viewport" content="width=device-width, initial-scale=1">'
+        '<title>Kuşluk — Source permissions</title>'
+        '<style>body{background:#f4f0e8;color:#25372c;font:16px/1.55 system-ui;'
+        'max-width:760px;margin:40px auto;padding:0 20px}'
+        'h1,h2{font-family:Georgia,serif}h1{font-size:clamp(32px,6vw,52px)}'
+        '.feed{background:white;border:1px solid #cbd1c6;padding:22px;margin:18px 0}'
+        '.small{color:#586759;font-size:14px}.actions{display:flex;gap:10px;flex-wrap:wrap}'
+        'button{background:#244f3b;border:0;color:white;padding:12px;cursor:pointer}'
+        'button:last-child{background:#747d6f}a{color:#244f3b}'
+        'input{margin-right:8px}button:focus-visible,input:focus-visible,'
+        'a:focus-visible{outline:3px solid #2d7151;outline-offset:2px}</style>'
+        '<p><a href="/">← Home setup</a></p><h1>Choose what your feeds can do.</h1>'
+        '<p>Only previously approved feeds appear here. A feed may supply '
+        'headlines and source links only; derivative summaries and article copying '
+        'remain disabled. All changes are local, with no network request.</p>'
+        + ('<p role="status"><strong>' + escape(message) + '</strong></p>'
+           if message else "")
+        + body + '</html>'
+    )
 
 
 class SetupHTTPServer(HTTPServer):
@@ -129,12 +183,18 @@ class SetupHandler(BaseHTTPRequestHandler):
         return (
             self.client_address[0] == "127.0.0.1"
             and self.headers.get("Host") == f"127.0.0.1:{self.server.server_port}"
-            and self.path == "/"
+            and self.path in {"/", "/sources"}
         )
 
     def do_GET(self) -> None:
         if not self._valid_request():
             self._reply(404, "<h1>Not found</h1>")
+            return
+        if self.path == "/sources":
+            try:
+                self._reply(200, _source_page(self.server.csrf))
+            except SourceApprovalError:
+                self._reply(422, "<h1>Local source registry is not readable</h1>")
             return
         if self.server.profile_file.exists() or self.server.profile_file.is_symlink():
             self._reply(409, "<h1>Profile already exists</h1>"
@@ -167,6 +227,31 @@ class SetupHandler(BaseHTTPRequestHandler):
                               max_num_fields=6)
         except (UnicodeError, ValueError):
             self._reply(400, "<h1>Invalid form</h1>")
+            return
+        if self.path == "/sources":
+            required = {"csrf", "source_id", "mode"}
+            if not required <= set(fields) or set(fields) - required - {"acknowledge"}:
+                self._reply(400, "<h1>Invalid source-review form</h1>")
+                return
+            if any(len(values) != 1 for values in fields.values()):
+                self._reply(400, "<h1>Duplicate fields rejected</h1>")
+                return
+            token = fields["csrf"][0]
+            if not token.isascii() or not compare_digest(token, self.server.csrf):
+                self._reply(403, "<h1>Invalid form token</h1>")
+                return
+            mode = fields["mode"][0]
+            if mode not in {"ignore", "reference-only"}:
+                self._reply(403, "<h1>Unsupported source rights mode</h1>")
+                return
+            if mode == "reference-only" and fields.get("acknowledge") != ["yes"]:
+                self._reply(403, "<h1>Explicit feed-access acknowledgement required</h1>")
+                return
+            try:
+                set_source_mode(fields["source_id"][0], mode)
+                self._reply(200, _source_page(self.server.csrf, "Source preference saved locally."))
+            except SourceApprovalError:
+                self._reply(422, "<h1>Source permission update rejected</h1>")
             return
         expected = {"csrf", "home_name", "latitude", "longitude", "timezone", "printer"}
         if set(fields) != expected or any(len(vals) != 1 for vals in fields.values()):
