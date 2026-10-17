@@ -10,6 +10,7 @@ from hashlib import sha256
 import json
 import os
 from pathlib import Path
+import stat
 
 from kushluk.config import Settings
 from kushluk.run_metrics import run_report
@@ -27,7 +28,7 @@ KNOWN_FAILURE_CODES = frozenset({
     "rss_unavailable", "research_unavailable", "editorial_unavailable",
     "source_unavailable", "archive_unavailable", "render_unavailable",
     "delivery_uncertain", "printer_unavailable", "lock_unavailable",
-    "run_interrupted", "no_pdf", "unknown_failure",
+    "run_interrupted", "no_pdf", "unknown_failure", "invalid_receipt",
 })
 _GUIDANCE = {
     # (component, severity when no stronger run failure, action, permission)
@@ -194,7 +195,13 @@ def save_private_incident_report(path: Path, report: dict) -> None:
     """Explicit create-only local export; never uploads, replaces or follows links."""
     if path.is_symlink() or path.exists():
         raise ValueError("incident_export_already_exists")
+    if path.parent.is_symlink():
+        raise ValueError("incident_export_unsafe_directory")
     path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+    parent_stat = path.parent.lstat()
+    if (not stat.S_ISDIR(parent_stat.st_mode)
+            or parent_stat.st_mode & 0o077):
+        raise ValueError("incident_export_unsafe_directory")
     flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_NOFOLLOW", 0)
     try:
         fd = os.open(path, flags, 0o600)
