@@ -266,6 +266,7 @@ def run_once(
     print_profile: str = "a4-home",
     latest_start: time | None = None,
     ready_by: time | None = None,
+    expected_start: time | None = None,
     now: datetime | None = None,
 ) -> ScheduledOutcome:
     """At-most-once delivery attempt per local edition; uncertain states block replay."""
@@ -315,6 +316,7 @@ def run_once(
         "started_at": started_at,
         "stage_events": [{"stage": "started", "at": started_at}],
         "ready_by_local": ready_by.strftime("%H:%M") if ready_by else None,
+        "expected_start_local": expected_start.strftime("%H:%M") if expected_start else None,
         "timezone": settings.timezone,
         "print_submitted": False,
         "email_sent": False,
