@@ -60,7 +60,11 @@ class Settings:
             calendar_fixture=Path(
                 os.getenv("KUSHLUK_CALENDAR_FIXTURE", "fixtures/calendar.json")
             ),
-            printer=os.getenv("KUSHLUK_PRINTER") or profile.get("printer") or None,
+            printer=(
+                (os.environ["KUSHLUK_PRINTER"] or None)
+                if "KUSHLUK_PRINTER" in os.environ
+                else (profile.get("printer") or None)
+            ),
             smtp_host=os.getenv("KUSHLUK_SMTP_HOST") or None,
             smtp_port=int(os.getenv("KUSHLUK_SMTP_PORT", "587")),
             smtp_username=os.getenv("KUSHLUK_SMTP_USERNAME") or None,
