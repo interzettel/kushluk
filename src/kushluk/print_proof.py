@@ -54,33 +54,7 @@ def make_print_proof(output_dir: Path) -> dict[str, str]:
     a4 = render_pdf(html, output_dir / "kushluk-proof-a4.pdf")
     checked = validate_pdf(a4)
     if not checked.ok:
-        # Print only known synthetic page identities, never user article text.
-        from pypdf import PdfReader
-        import re
-
-        identities = []
-        previews = []
-        for page in PdfReader(str(a4)).pages:
-            text = page.extract_text() or ""
-            identities.append(re.findall(r"[1-4] / 4", text))
-            previews.append(" ".join(text.split())[:100])
-        from weasyprint import HTML
-        dimensions = []
-        for rendered_page in HTML(filename=str(html)).render().pages:
-            page_boxes = []
-            def walk(node):
-                if node.element_tag in {"section", "footer", "article", "header"}:
-                    page_boxes.append((node.element_tag,
-                                       round(node.position_y, 1), round(node.height, 1)))
-                for child in getattr(node, "children", []):
-                    walk(child)
-            walk(rendered_page._page_box)
-            dimensions.append(page_boxes[:14])
-        raise ValueError(
-            "Invalid synthetic A4 proof: " + "; ".join(checked.errors)
-            + f"; page identities={identities}; synthetic preview={previews}; "
-            + f"layout boxes={dimensions}"
-        )
+        raise ValueError("Invalid synthetic A4 proof: " + "; ".join(checked.errors))
     a3 = impose_a3_folded(a4, output_dir / "kushluk-proof-a3.pdf")
     report = {
         "format": "kushluk-physical-proof-v1",
