@@ -183,7 +183,7 @@ def test_invalid_printer_update_never_rewrites_existing_profile(tmp_path):
     path = tmp_path / "profile.json"
     write_local_profile(path, **_params())
     original = path.read_bytes()
-    for value in ("", "injected\\nqueue", "x" * 121):
+    for value in ("", "injected\nqueue", "x" * 121):
         with pytest.raises(LocalProfileError):
             update_local_printer(path, printer=value)
     assert path.read_bytes() == original
