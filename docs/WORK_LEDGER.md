@@ -52,6 +52,17 @@ Workflow tools such as n8n, Apple Shortcuts, systemd/cron, launchd, or a future 
 | D-RENDER | DONE | Approved production layouts are deterministic; generative models do not redesign the edition at print time. |
 | D-AUTO | DONE | Full automation is the product target; humans may configure/review, but daily layout assembly must not require manual InDesign/Canva work. |
 
+## Scheduler operations v1 evidence — 2026-10-17
+
+Two previously open software tasks are now checked with dedicated tests, pending PR CI review; **hardware and real unattended host proofs remain separate**.
+
+| Task | Delivered software evidence | Still not a product/release acceptance |
+| --- | --- | --- |
+| AUT-01 | `src/kushluk/operations.py`: versioned, strict local JSON `operate` boundary for run/status/pause/resume/archived delivery. `tests/test_operations.py` exercises invalid/untrusted requests and permission boundaries. | Further ADR 0015 operations (independent preview/render/provider-health) and full agent/tool integration remain later work. |
+| AUT-03 | `scheduled.run_once` local-time `latest_start` cutoff plus existing durable at-most-once receipts; `pause_day`/`resume_day` only affect future starts. `tests/test_operations.py` covers cutoff, replay, tampering and authorized reprints. | No guarantee edition is *ready* at cutoff, no real print/device proof, and atomic pause-vs-start race remains a noted implementation limit. |
+
+**Operational ledger:** now **12/90 · 13.33%** (AUT **4/13 · 30.77%**); evidence gates **G1–G8: 0/8 · 00.00%**. AUT-05 native-host recipe is documented as an example but **not checked** without an independently verified unattended deployment; AUT-09 complete real-world stage taxonomy remains open.
+
 ## Evidence reconciliation — 2026-10-17
 
 Six previously unchecked tasks are now checked **for implemented software behavior only**, after source/test and current green CI review. This is not a declaration that related GitHub issues or real-device evidence gates are finished.
@@ -94,9 +105,9 @@ Six previously unchecked tasks are now checked **for implemented software behavi
 
 ### P1 — Daily full automation
 
-- [ ] **AUT-01** Define a stable run request/response contract so external orchestrators can trigger Kushluk without knowing internal implementation details.
+- [x] **AUT-01** Define a stable run request/response contract so external orchestrators can trigger Kushluk without knowing internal implementation details.
 - [x] **AUT-02** Add a scheduler-safe CLI/API entrypoint that is idempotent for a date/edition.
-- [ ] **AUT-03** Add deadline and “already generated/printed” guards to prevent accidental duplicate morning prints.
+- [x] **AUT-03** Add deadline and “already generated/printed” guards to prevent accidental duplicate morning prints.
 - [ ] **AUT-04** Add optional `morning_intent` input to the run model and ranking trace.
 - [ ] **AUT-05** Provide an unattended local-host recipe (systemd/cron/launchd) as the baseline.
 - [ ] **AUT-06** Prototype an n8n orchestration that calls the same stable Kushluk run boundary rather than reimplementing editorial logic inside n8n.
