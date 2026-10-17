@@ -95,7 +95,8 @@ def authorize(provider: str, *, oauth_client: Path, vault: Path) -> None:
 def _session(provider: str, vault: Path):
     path = _credential_path(vault, provider)
     payload = _read_private(path)
-    if set(payload.get("scopes", [])) != {_SCOPES[provider]}:
+    scopes = payload.get("scopes")
+    if not isinstance(scopes, list) or set(scopes) != {_SCOPES[provider]}:
         raise GoogleProviderError("oauth_scope_mismatch")
     try:
         from google.oauth2.credentials import Credentials
@@ -164,7 +165,8 @@ def discover_gmail(vault: Path, *, days: int = 30, now: datetime | None = None,
     partial = False
     reference = (now or datetime.now(timezone.utc)).astimezone(timezone.utc)
     for _ in range(2):
-        params = {"maxResults": min(50, max_messages - scanned)}
+        params = {"maxResults": min(50, max_messages - scanned),
+                  "fields": "messages(id),nextPageToken"}
         if page_token:
             params["pageToken"] = page_token
         payload = _get(session, base, params)
@@ -231,7 +233,7 @@ def fetch_google_tasks(vault: Path, *, target_date: date, session=None,
         raise GoogleProviderError("invalid_task_scan_bounds")
     session = session or _session("tasks", vault)
     base = _ENDPOINTS["tasks"]
-    lists = _get(session, base + "/users/@me/lists", {"maxResults": max_lists})
+    lists = _get(session, base + "/users/@me/lists", {"maxResults": max_lists, "fields": "items(id),nextPageToken"})
     entries = lists.get("items", [])
     if not isinstance(entries, list) or len(entries) > max_lists:
         raise GoogleProviderError("invalid_task_list_response")
@@ -248,6 +250,7 @@ def fetch_google_tasks(vault: Path, *, target_date: date, session=None,
         data = _get(session, url, {
             "maxResults": 50, "showCompleted": "false", "showDeleted": "false",
             "showHidden": "false",
+            "fields": "items(id,title,due,status),nextPageToken",
         })
         if not isinstance(data.get("items", []), list):
             raise GoogleProviderError("invalid_task_page")
@@ -274,3 +277,16 @@ def fetch_google_tasks(vault: Path, *, target_date: date, session=None,
             value=title, source=SourceRef(kind="task", name="Google Tasks (read-only)"),
         ) for due, _id, title in found[:6]
     ]
+
+
+def disconnect(provider: str, *, vault: Path) -> None:
+    """Delete local token only. Remote Google revocation must be done in Google settings."""
+    path = _credential_path(vault, provider)
+    if path.is_symlink():
+        raise GoogleProviderError("unsafe_google_credentials")
+    if path.exists():
+        _read_private(path)  # Reject an unsafe file rather than following it.
+        try:
+            path.unlink()
+        except OSError as exc:
+            raise GoogleProviderError("google_disconnect_failed") from exc
