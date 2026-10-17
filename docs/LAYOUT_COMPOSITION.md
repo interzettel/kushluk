@@ -18,7 +18,7 @@ Theme remains separate: printer geometry/imposition has no input to `choose_arch
 
 All story headlines have a 96-character maximum, source display names 55 characters, page-3 brief decks 330 characters. Each practical item has label/value/detail ceilings of 34/70/118 characters. **These are copy estimates**, not guarantees that every font, script, emoji, image or print driver will fit; the PDF and WeasyPrint geometry checks remain a separate stage.
 
-A six-column A4 CSS grid places practical entries in half-width cells. News-heavy covers can place two short leads side by side. The page kinds, logical numbering, masthead and paper-profile handling are shared across archetypes.
+The six-column A4 story-grid rhythm supports two short leads side by side on news-heavy covers. Practical blocks occupy three-column-equivalent half-width cells through a two-track print-engine fallback, avoiding a WeasyPrint implicit-grid-row fragmentation bug. Complete fold/binding grid approval remains LAY-09. The page kinds, logical numbering, masthead and paper-profile handling are shared across archetypes.
 
 ### Image capacity
 
