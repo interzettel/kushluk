@@ -7,7 +7,7 @@ import json
 import os
 from pathlib import Path
 
-KINDS = ("paper-a4", "paper-a3", "epub-reader", "host-resume")
+KINDS = ("paper-a4", "paper-letter", "paper-a3", "epub-reader", "host-resume")
 RESULTS = ("pass", "fail", "blocked")
 MAX_EVIDENCE_BYTES = 50 * 1024 * 1024
 
@@ -32,7 +32,7 @@ def _fingerprint(path: Path, *, limit: int = MAX_EVIDENCE_BYTES) -> dict:
     return {"sha256": digest.hexdigest(), "bytes": size}
 
 
-def _inspection_hash(path: Path, expected_sha: str) -> str:
+def _inspection_hash(path: Path, expected_sha: str, kind: str) -> str:
     if path.is_symlink():
         raise FieldProofError("Inspection must be a local regular file")
     try:
@@ -41,8 +41,13 @@ def _inspection_hash(path: Path, expected_sha: str) -> str:
         report = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, UnicodeError, json.JSONDecodeError) as exc:
         raise FieldProofError("Invalid print inspection JSON") from exc
+    expected_profile = {"paper-a4": "a4-home", "paper-letter": "letter-home",
+                        "paper-a3": "a3-folded"}[kind]
+    observed_profile = report.get("profile") if isinstance(report, dict) else None
     if (not isinstance(report, dict) or report.get("pdf_sha256") != expected_sha
-            or report.get("structural_errors") or report.get("schema_version") != 1):
+            or report.get("structural_errors") or report.get("schema_version") != 1
+            or (observed_profile is not None and observed_profile != expected_profile)
+            or (kind == "paper-letter" and observed_profile != "letter-home")):
         raise FieldProofError("Print inspection does not match a structurally valid PDF")
     return _fingerprint(path)["sha256"]
 
@@ -74,7 +79,7 @@ def record_field_proof(
     if inspection is not None:
         if not kind.startswith("paper-"):
             raise FieldProofError("Print inspection only applies to physical paper trials")
-        inspection_sha = _inspection_hash(inspection, artifact_info["sha256"])
+        inspection_sha = _inspection_hash(inspection, artifact_info["sha256"], kind)
     if kind.startswith("paper-") and result == "pass" and inspection_sha is None:
         raise FieldProofError("Passing paper proof requires matching PDF inspection JSON")
     evidence_info = [_fingerprint(path) for path in evidence]
