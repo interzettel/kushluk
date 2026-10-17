@@ -34,6 +34,9 @@ edition = build_publication(
 (folder / "metadata.json").write_text(
     json.dumps(edition.to_dict(), ensure_ascii=False), encoding="utf-8"
 )
+output = Path(os.environ["KUSHLUK_EPUB_TEST_OUTPUT"])
+print(export_archived_epub(archive, day, output, language="en"))
+# A second synthetic localized navigation package exercises metadata semantics.
 print(export_archived_epub(
-    archive, day, Path(os.environ["KUSHLUK_EPUB_TEST_OUTPUT"])
+    archive, day, output.with_name("synthetic-de.epub"), language="de"
 ))
