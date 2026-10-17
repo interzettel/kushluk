@@ -11,6 +11,7 @@ from kushluk.config import Settings
 from kushluk.doctor import core_ready, run_doctor
 from kushluk.epub import EpubError, export_archived_epub
 from kushluk.field_proof import FieldProofError, record_field_proof
+from kushluk.local_profile import LocalProfileError, profile_path, write_local_profile
 from kushluk.pipeline import run_pipeline
 from kushluk.opml import (
     OPMLImportError, read_opml, read_proposal, render_opml,
@@ -173,6 +174,20 @@ def build_parser() -> argparse.ArgumentParser:
     field.add_argument("--inspection", type=Path, help="Matching inspect-print JSON for paper")
     field.add_argument("--acknowledge-direct-observation", action="store_true")
 
+    setup = sub.add_parser(
+        "setup", help="Create a private offline home profile without storing credentials"
+    )
+    setup.add_argument("--home-name", help="Local display label, e.g. My Home")
+    setup.add_argument("--latitude", type=float, help="Latitude for local weather")
+    setup.add_argument("--longitude", type=float, help="Longitude for local weather")
+    setup.add_argument("--timezone", help="IANA timezone, e.g. Europe/Berlin")
+    setup.add_argument("--printer", help="Optional CUPS printer queue name")
+    setup.add_argument("--output", type=Path, help="New private profile path")
+    setup.add_argument(
+        "--non-interactive", action="store_true",
+        help="Fail if any required value is missing instead of prompting",
+    )
+
     archive = sub.add_parser("archive-list", help="List recent local Kushluk editions")
     archive.add_argument("--limit", type=int, default=20)
 
@@ -183,6 +198,41 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
+    if args.command == "setup":
+        def supply(value, prompt):
+            if value is not None:
+                return value
+            if args.non_interactive:
+                raise LocalProfileError("Missing required setup value")
+            try:
+                return input(prompt).strip()
+            except EOFError as exc:
+                raise LocalProfileError("Interactive input unavailable") from exc
+
+        try:
+            name = supply(args.home_name, "Home label: ")
+            latitude = float(supply(args.latitude, "Latitude: "))
+            longitude = float(supply(args.longitude, "Longitude: "))
+            zone = supply(args.timezone, "IANA timezone (e.g. Europe/Berlin): ")
+            target = args.output or profile_path()
+            write_local_profile(
+                target, home_name=name, latitude=latitude,
+                longitude=longitude, timezone=zone,
+                printer=args.printer,
+            )
+        except (LocalProfileError, ValueError) as exc:
+            reason = str(exc) if isinstance(exc, LocalProfileError) else "Invalid coordinates"
+            print(json.dumps({"status": "rejected", "error": reason}))
+            return 2
+        print(json.dumps({
+            "status": "local_profile_created",
+            "output": str(target),
+            "contains_credentials": False,
+            "contacts_network": False,
+            "source_permissions_modified": False,
+        }))
+        return 0
+
     settings = Settings.from_env()
 
     if args.command == "generate":
