@@ -21,14 +21,14 @@
 
 ## Operational work ledger
 
-**23 of 90 task checkboxes checked (25.56%).** This measures task-record state, not overall readiness.
+**26 of 90 task checkboxes checked (28.89%).** This measures task-record state, not overall readiness.
 
 | Task group | Checked | Total | Progress |
 | --- | ---: | ---: | ---: |
 | DOC | 4 | 5 | 80.00% |
 | FMT | 4 | 10 | 40.00% |
 | AUT | 5 | 13 | 38.46% |
-| SRC | 0 | 10 | 00.00% |
+| SRC | 3 | 10 | 30.00% |
 | IMG | 6 | 9 | 66.67% |
 | LAY | 4 | 11 | 36.36% |
 | DES-EXT | 0 | 5 | 00.00% |
@@ -38,7 +38,7 @@
 | ED | 0 | 6 | 00.00% |
 | UX | 0 | 8 | 00.00% |
 | TRIAL | 0 | 7 | 00.00% |
-| **TOTAL** | **23** | **90** | **25.56%** |
+| **TOTAL** | **26** | **90** | **28.89%** |
 
 ## Individual tasks
 
@@ -93,17 +93,17 @@ The lines below are generated from WORK_LEDGER.md. Each task ID has a primary ow
 
 </details>
 
-<details><summary><strong>SRC — 0/10 checked · 00.00%</strong></summary>
+<details><summary><strong>SRC — 3/10 checked · 30.00%</strong></summary>
 
 | Task ID | Ledger state | Description |
 | --- | --- | --- |
 | `SRC-01` | OPEN | Implement connected-mail newsletter discovery over a bounded recent window. |
 | `SRC-02` | OPEN | Implement per-newsletter modes from ADR 0012. |
-| `SRC-03` | OPEN | Add a real task connector. |
-| `SRC-04` | OPEN | Add public-web/news research as a provider-independent candidate source. |
+| `SRC-03` | CHECKED | Add a real task connector. |
+| `SRC-04` | CHECKED | Add public-web/news research as a provider-independent candidate source. |
 | `SRC-05` | OPEN | Add Reddit/Hacker News connectors. |
 | `SRC-06` | OPEN | Investigate/implement X/social source adapter without making it a hard dependency. |
-| `SRC-07` | OPEN | Preserve original source URLs/message references and timestamps through synthesis. |
+| `SRC-07` | CHECKED | Preserve original source URLs/message references and timestamps through synthesis. |
 | `SRC-08` | OPEN | Strengthen claim verification for material stories. |
 | `SRC-09` | OPEN | Deduplicate newsletters, RSS, social, and web coverage into story clusters. |
 | `SRC-10` | OPEN | Add travel-context signal adapters from calendar plus connected ticket/confirmation/provider sources without building a permanent travel-history corpus. |
