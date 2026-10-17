@@ -21,7 +21,7 @@
 
 ## Operational work ledger
 
-**13 of 90 task checkboxes checked (14.44%).** This measures task-record state, not overall readiness.
+**17 of 90 task checkboxes checked (18.89%).** This measures task-record state, not overall readiness.
 
 | Task group | Checked | Total | Progress |
 | --- | ---: | ---: | ---: |
@@ -30,7 +30,7 @@
 | AUT | 5 | 13 | 38.46% |
 | SRC | 0 | 10 | 00.00% |
 | IMG | 0 | 9 | 00.00% |
-| LAY | 0 | 11 | 00.00% |
+| LAY | 4 | 11 | 36.36% |
 | DES-EXT | 0 | 5 | 00.00% |
 | RES-NEWS | 0 | 3 | 00.00% |
 | RES-AUTO | 0 | 2 | 00.00% |
@@ -38,7 +38,7 @@
 | ED | 0 | 6 | 00.00% |
 | UX | 0 | 8 | 00.00% |
 | TRIAL | 0 | 7 | 00.00% |
-| **TOTAL** | **13** | **90** | **14.44%** |
+| **TOTAL** | **17** | **90** | **18.89%** |
 
 ## Individual tasks
 
@@ -126,17 +126,17 @@ The lines below are generated from WORK_LEDGER.md. Each task ID has a primary ow
 
 </details>
 
-<details><summary><strong>LAY — 0/11 checked · 00.00%</strong></summary>
+<details><summary><strong>LAY — 4/11 checked · 36.36%</strong></summary>
 
 | Task ID | Ledger state | Description |
 | --- | --- | --- |
 | `LAY-01` | OPEN | Define semantic content blocks independent of visual template: lead, brief, practical strip, calendar, weather, quote, image story, table, language item, continuation/QR, etc. |
-| `LAY-02` | OPEN | Define a finite family of page archetypes rather than one rigid template or free-form generated design. |
+| `LAY-02` | CHECKED | Define a finite family of page archetypes rather than one rigid template or free-form generated design. |
 | `LAY-03` | OPEN | Define layout-slot capacity rules in characters/lines/aspect ratios so the editor can fit copy before rendering. |
-| `LAY-04` | OPEN | Define overflow substitutions: shorten, move, demote, remove image, switch archetype, or cut story. |
-| `LAY-05` | OPEN | Separate **layout archetype** from **visual theme/style tokens** so the same editorial structure can support multiple approved looks. |
+| `LAY-04` | CHECKED | Define overflow substitutions: shorten, move, demote, remove image, switch archetype, or cut story. |
+| `LAY-05` | CHECKED | Separate **layout archetype** from **visual theme/style tokens** so the same editorial structure can support multiple approved looks. |
 | `LAY-06` | OPEN | Build at least three production-ready archetypes: balanced day, news-heavy day, and schedule/practical-heavy day. |
-| `LAY-07` | OPEN | Add deterministic layout scoring/selection based on the publication manifest. |
+| `LAY-07` | CHECKED | Add deterministic layout scoring/selection based on the publication manifest. |
 | `LAY-08` | OPEN | Freeze approved explorations into HTML/CSS/SVG templates and regression fixtures. |
 | `LAY-09` | OPEN | Implement/test the six-column A4 base grid with shared inner binding/fold safety. |
 | `LAY-10` | OPEN | Test the recovered editorial vocabulary (`WORTH KNOWING`, `FROM YESTERDAY`, `SINCE WE LAST LOOKED`, `NEARBY`, `ONE SMALL THING`, `WORD OF THE DAY`, `TEN MINUTES`, `GO DEEPER →`) without turning every label into a permanent box. |
