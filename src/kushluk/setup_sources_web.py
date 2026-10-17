@@ -24,7 +24,14 @@ def import_review_opml(value: str) -> tuple[FeedProposal, ...]:
     feeds = parse_opml(value.encode("utf-8"))
     if len(feeds) > MAX_BROWSER_FEEDS:
         raise OPMLImportError("Review at most 50 feeds in one browser import")
-    return tuple(feeds)
+    return tuple(
+        FeedProposal(
+            title=(f"Feed from {urlsplit(feed.url).hostname}" if feed.title == feed.url
+                   else feed.title),
+            url=feed.url,
+        )
+        for feed in feeds
+    )
 
 
 def approve_reviewed(pending: tuple[FeedProposal, ...], index: str,
@@ -104,7 +111,11 @@ def render_source_review(
         )
     active = []
     for row in approved:
-        name = escape(row["title"], quote=True)
+        safe_name = (
+            urlsplit(row["url"]).hostname or "Feed"
+            if row["title"] == row["url"] else row["title"]
+        )
+        name = escape(safe_name, quote=True)
         host = escape(urlsplit(row["url"]).hostname or "Feed", quote=True)
         status = "Active reference only" if row["enabled"] else "Paused / unsupported"
         action = "ignore" if row["enabled"] else "reference-only"
