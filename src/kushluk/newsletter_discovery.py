@@ -5,7 +5,7 @@ message IDs or token-bearing unsubscribe URLs. Discovery never grants rights.
 """
 from __future__ import annotations
 
-from datetime import date, datetime, timezone, timedelta
+from datetime import datetime, timezone, timedelta
 from email.utils import parseaddr
 from hashlib import sha256
 import json
