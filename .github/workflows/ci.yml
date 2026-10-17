@@ -45,6 +45,10 @@ jobs:
         run: python -m pip install --upgrade build
       - name: Rebuild wheel/sdist twice and clean-install both
         run: python -m tools.release_check --artifact-dir output/m1-preview
+      - name: Independently preflight M1 evidence (no release or tag)
+        run: |
+          python -m tools.m1_bundle_preflight --artifact-dir output/m1-preview \
+            > output/m1-preview/m1-preflight.json
       - name: Upload synthetic installer evidence (no tag or release)
         uses: actions/upload-artifact@v4
         with:
@@ -118,6 +122,10 @@ jobs:
         run: python -m pip install --upgrade build
       - name: Check clean wheel and sdist installs on macOS with four-page PDF
         run: python -m tools.release_check --pdf --artifact-dir output/m1-preview
+      - name: Independently preflight PDF-enabled M1 evidence (no release or tag)
+        run: |
+          python -m tools.m1_bundle_preflight --artifact-dir output/m1-preview --require-pdf \
+            > output/m1-preview/m1-preflight.json
       - name: Upload local installable preview candidate (unreleased)
         uses: actions/upload-artifact@v4
         with:
