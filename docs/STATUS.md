@@ -5,6 +5,14 @@ Documentation and issue inventory reviewed: 2026-10-17; six evidence-backed task
 
 **Status caveat:** the 2026-10-16 inventory did **not** independently rerun CI or physical print tests. Do not infer four-page migration, unattended execution, or real-reader trials are done from the new planning issues. [#43](https://github.com/interzettel/kushluk/issues/43) indexes all issues, and [ISSUE_CROSSWALK.md](ISSUE_CROSSWALK.md) maps the 90 existing work-ledger tasks to accountable issues. Execution blockers have dedicated issues: [#45](https://github.com/interzettel/kushluk/issues/45) format, [#46](https://github.com/interzettel/kushluk/issues/46) print profiles, [#47](https://github.com/interzettel/kushluk/issues/47) local scheduler/retries. Docs/ADR ambiguities: [#44](https://github.com/interzettel/kushluk/issues/44).
 
+### Compliant editorial inputs, source provenance and inert newsletter discovery (#49/#48/#16)
+
+`KUSHLUK_TASKS_FILE` enables an owner-exported, schema-checked, bounded local task adapter. `KUSHLUK_RESEARCH_QUERY` opt-in performs one host-pinned Crossref public DOI/title/date metadata-only query, no licensed full text or abstracts. Each selected `Story` now tracks source candidate IDs, DOI/URL and publish/retrieval timestamps with transform/rights mode and explicit unverified/conflict statuses—**not** independent factual corroboration.
+
+`newsletter-discover` reads up to 250 owner-exported header-only rows across at most 60 recent days and creates an inactive private review proposal with pseudonymous list ID and aggregate counts. `newsletter-set-mode` records explicit Ignore / Reference only / Derivative / Private direct intent; **all remain ingestion-disabled** without a real consented provider integration/rights check. No mailbox access, original message bodies, model uploads, or paid copying modes. See [EDITORIAL_INPUTS.md](EDITORIAL_INPUTS.md).
+
+Software checks **SRC-03/04/07** → **26/90 · 28.89%** overall, SRC **3/10 · 30.00%**. SRC-01/02/05/06/08/09/10 and broader provider/independent verification and #16 trust/cost manifest remain open. Evidence gates 0/8, package `0.1.0` unchanged.
+
 ### Local rights-aware original-image print pipeline (#50; software stage)
 
 Only explicitly owner-imported local PNG/JPEG records with bounded caption/credit/alt, source and license status, normalized SHA-256, crop/focal hints and `private_print`/`shareable` scope are eligible. `media-import` refuses unacknowledged rights; `media-assign` explicitly binds a vetted crop to one editorial story ID. `KUSHLUK_MEDIA_DIR` opts the local pipeline into those bindings; remote RSS images are **never fetched** from URLs or inferred as licensed.
