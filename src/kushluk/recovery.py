@@ -55,6 +55,15 @@ def _save_receipt(path: Path, payload: dict) -> None:
             temporary.unlink(missing_ok=True)
 
 
+def _require_archived_regular_file(path: Path, *, max_bytes: int) -> None:
+    """Fail closed on symlinks, nonfiles and out-of-bounds archive inputs."""
+    if path.is_symlink() or not path.is_file():
+        raise ValueError("Unsafe or missing archived file")
+    size = path.stat().st_size
+    if not 0 < size <= max_bytes:
+        raise ValueError("Archived file size outside limits")
+
+
 def deliver_archived(
     settings: Settings,
     *,
@@ -91,7 +100,11 @@ def deliver_archived(
         )
 
     try:
-        metadata = json.loads((archive / "metadata.json").read_text(encoding="utf-8"))
+        if settings.archive_dir.is_symlink() or archive.is_symlink() or not archive.is_dir():
+            raise ValueError("Unsafe archived edition directory")
+        metadata_path = archive / "metadata.json"
+        _require_archived_regular_file(metadata_path, max_bytes=2 * 1024 * 1024)
+        metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
         if not isinstance(metadata, dict):
             raise ValueError("Invalid publication metadata.")
         if metadata.get("edition_id") != edition_id or metadata.get("target_date") != (
@@ -104,18 +117,20 @@ def deliver_archived(
         if not isinstance(pages, list) or [p.get("number") for p in pages] != [1, 2, 3, 4]:
             raise ValueError("Archive is not the expected four-page publication.")
         pdf = archive / "edition.pdf"
+        _require_archived_regular_file(pdf, max_bytes=30 * 1024 * 1024)
         validation = validate_pdf(pdf)
         if not validation.ok:
             raise ValueError("Canonical archived PDF failed four-page validation.")
         html = archive / "edition.html"
-        if channel == "email" and not html.is_file():
-            raise ValueError("Archived HTML is missing.")
+        if channel == "email":
+            _require_archived_regular_file(html, max_bytes=5 * 1024 * 1024)
         if channel == "email" and not settings.email_configured:
             return ArchiveDeliveryOutcome(
                 edition_id, channel, request_id, "blocked", "email_not_configured"
             )
         if channel == "print" and print_profile == "a3-folded":
             pdf = archive / "edition.a3-folded.pdf"
+            _require_archived_regular_file(pdf, max_bytes=30 * 1024 * 1024)
             if validate_a3_booklet(pdf):
                 raise ValueError("Archived A3 booklet failed validation.")
         pdf_hash = sha256(pdf.read_bytes()).hexdigest()
