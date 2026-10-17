@@ -52,6 +52,8 @@ A green CI run is **preview engineering evidence only**. It does not create a `v
 
 [PR #121](https://github.com/interzettel/kushluk/pull/121) adds machine-readable version/license **metadata** from each installed wheel and sdist environment, pip dependency-consistency tests, and a bounded v1/v2 archive structural compatibility report. These narrow the evidence gaps for the checklist below but **do not** finish the dependency-license/vulnerability audit, native font review, historical v1 migration, or founder release decision. [Dependency audit](DEPENDENCY_AUDIT.md) · [Archive contract](ARCHIVE_COMPATIBILITY.md). Neither a source distribution nor a compatibility inventory permits silent resale or reprinting of another person's material.
 
+[Alpha release approval checklist](RELEASE_APPROVAL.md) · [supported CI/device matrix](COMPATIBILITY_MATRIX.md) · [v1 archive migration hold](ARCHIVE_MIGRATION_PLAYBOOK.md). These are review guides, not gate approvals.
+
 ## Release verification checklist
 
 - [ ] `pyproject.toml` version and annotated tag correspond; no unreviewed version bump
