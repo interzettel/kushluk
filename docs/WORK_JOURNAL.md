@@ -2,6 +2,15 @@
 
 A concise, dated evidence/history record for one maintainer with AI helpers. **This is not an activity-time tracker or a substitute for GitHub commits and discussions.**
 
+## 2026-10-17 — Privacy-safe failures, hermetic CI and evidence reconciliation
+
+**Issues:** #54 (CI/security), #44 (documentation), #45/#46 (FMT software), #47 (AUT software); implementation in PR under review.
+
+- Replace raw connector/renderer exception text and CUPS/SMTP subprocess/provider diagnostics with bounded safe status messages. Add fake-token regression tests for persisted edition/run/CLI output and transport receipts.
+- Replace live weather/RSS CI smoke generation with deterministic source fixtures, socket deny, disabled printer/SMTP and a real CLI path; macOS still verifies four-page PDF.
+- Reconcile exactly six previously unchecked FMT/AUT tasks based on software evidence: FMT-01/02/06/07 and AUT-02/10. Regenerate ledger, progress report and SVG to **10/90 (11.11%)**; leave G1–G8 at **0/8 (00.00%)**. Correct obsolete AGENTS, roadmap and status descriptions and real issue priority labels (#44 P0, #45–#51/#54 P1).
+- Remaining: real host/printer, visual overflow/fold preflight, deadline controls and independent reader/device proof. No release/version change.
+
 ## 2026-10-17 — First-reader synthetic path and observer preflight
 
 **Kind:** onboarding QA + privacy-safe evidence tooling. **Issue:** #5 (F-008 / UX-01). **State:** implementation in PR awaiting CI; no independent reader claim.
