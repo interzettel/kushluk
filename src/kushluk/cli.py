@@ -10,6 +10,7 @@ from kushluk.archive import list_editions
 from kushluk.config import Settings
 from kushluk.doctor import core_ready, run_doctor
 from kushluk.epub import EpubError, export_archived_epub
+from kushluk.field_proof import FieldProofError, record_field_proof
 from kushluk.pipeline import run_pipeline
 from kushluk.opml import (
     OPMLImportError, read_opml, read_proposal, render_opml,
@@ -142,6 +143,21 @@ def build_parser() -> argparse.ArgumentParser:
                             default="a4-home")
     inspection.add_argument("--rasterize", action="store_true")
     inspection.add_argument("--dpi", type=int, default=100)
+
+    field = sub.add_parser(
+        "record-field-proof", help="Record self-attested physical printer, reader or host trial"
+    )
+    field.add_argument("--kind", choices=("paper-a4", "paper-a3", "epub-reader", "host-resume"),
+                       required=True)
+    field.add_argument("--artifact", type=Path, required=True)
+    field.add_argument("--output", type=Path, required=True, help="New private receipt filename")
+    field.add_argument("--device", required=True, help="Observed hardware/host model")
+    field.add_argument("--operator", required=True, help="Human observer identifier")
+    field.add_argument("--observations", required=True, help="Actual measured observations")
+    field.add_argument("--result", choices=("pass", "fail", "blocked"), required=True)
+    field.add_argument("--evidence", action="append", type=Path, default=[])
+    field.add_argument("--inspection", type=Path, help="Matching inspect-print JSON for paper")
+    field.add_argument("--acknowledge-direct-observation", action="store_true")
 
     archive = sub.add_parser("archive-list", help="List recent local Kushluk editions")
     archive.add_argument("--limit", type=int, default=20)
@@ -328,6 +344,26 @@ def main(argv: list[str] | None = None) -> int:
             "report": str(args.output_dir / "inspection.json"),
         }))
         return 2 if report["structural_errors"] else 0
+
+    if args.command == "record-field-proof":
+        try:
+            receipt = record_field_proof(
+                kind=args.kind, artifact=args.artifact, output=args.output,
+                device=args.device, operator=args.operator, observations=args.observations,
+                result=args.result, evidence=args.evidence,
+                acknowledge=args.acknowledge_direct_observation,
+                inspection=args.inspection,
+            )
+        except FieldProofError as exc:
+            print(json.dumps({"status": "rejected", "error": str(exc)}))
+            return 2
+        print(json.dumps({
+            "status": "operator_report_recorded",
+            "kind": receipt["kind"], "reported_result": receipt["operator_reported_result"],
+            "independently_verified": False, "release_gate_accepted": False,
+            "output": str(args.output),
+        }))
+        return 0
 
     if args.command == "archive-list":
         for item in list_editions(settings.archive_dir, limit=max(1, args.limit)):
