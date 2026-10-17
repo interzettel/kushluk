@@ -63,6 +63,8 @@ Every clean installed wheel and source preview includes a machine-readable `inst
 
 For an existing private archive, the new **non-mutating** `kushluk archive-check --archive-root /private/archive` reports only version/structure counts. Valid schema-v2 metadata is classed structurally readable; legacy schema-v1 or future unknown archives remain untouched and require a separately specified migration. An archive check never authorizes printing or a repeated delivery. See [ARCHIVE_COMPATIBILITY.md](ARCHIVE_COMPATIBILITY.md).
 
+The [compatibility matrix](COMPATIBILITY_MATRIX.md) records exactly which software/platform paths have CI evidence and which hardware/device claims remain open. A [human alpha approval handoff](RELEASE_APPROVAL.md) keeps all release publication steps separate from this development preview.
+
 ## Known limitations and release decision
 
 - **No device proof:** four PDF pages in CI do not prove A4/A3 duplex, print-stock behavior, CUPS compatibility, folding/binding, or correct user-visible paper.
