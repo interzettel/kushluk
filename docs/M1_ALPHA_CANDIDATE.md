@@ -21,6 +21,17 @@ passed. GitHub uploaded four installable-candidate ZIPs on that CI run:
 | macOS 15 / Apple Silicon | 12110664354 | `85971a1bdb74853ffaff5a0e76c901c59bb2fa5bddbc360a00a5c1ce5eb786bb` |
 | macOS 15 / Intel | 12111446646 | `8445cee8488d583913f890981edebba65d79e42389619797b4465e3c1c6d0ee7` |
 
+**Audit correction:** an inspection of the prior Apple Silicon artifact from
+that run found `runtime_module_from_venv=false` in its wheel/sdist
+release receipts, even though the old checker reported a clean install. The
+old checker had used a raw string prefix test for macOS temporary paths
+(`/var` versus `/private/var`). That is an **evidence-validation defect**:
+the former green CI alone does *not* establish correctly attributed macOS
+virtualenv isolation. The corrected checker resolves actual paths and fails
+closed if the installed module is not under the real isolated venv. A **new
+green CI run on that corrected checker** supersedes the affected observation.
+Do not retrospectively rewrite the historical evidence.
+
 These are **outer GitHub Actions artifact checksums**, not wheel or sdist
 checksums. The wheel and sdist hashes are separately recorded in each
 `release-evidence.json`. The artifact ZIPs are **temporary**, typically
