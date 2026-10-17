@@ -67,6 +67,8 @@ Generated Linux/macOS templates now pass `--expected-start HH:MM` alongside `--l
 - `print_submitted` means accepted by the CUPS submission API, **not paper exited successfully**. `email_sent` means SMTP accepted submission, **not recipient delivery/read**. The `complete` stage means Kushluk returned from pipeline, not an independently verified morning paper.
 - `pause-day` only blocks **future starts**; it cannot cancel an already active run. Explicit `deliver-archived` with a new authorized request ID remains the only supported reprint path after review of the real printer queue.
 
+For each actual host morning, use the [read-only host trial reviewer](HOST_TRIAL_REVIEW.md) to match a private human observation receipt to the archived run's exact SHA-256. This **does not** verify scheduler execution or paper; inspect the original logs and physical output independently.
+
 ## 4. Human acceptance checklist (G3 remains unverified)
 
 On a **real selected host**, conduct at least five scheduled morning runs, including one cold reboot, one deliberate interrupted source/provider outage, an unexpected process termination, one blocked late start, and one paused morning. Compare scheduler trigger timestamps, local timezone, archive receipts, validated PDFs, printable artifacts and actual delivery/queue state. Measure readiness relative to 08:00 and record whether manual intervention was necessary. Validate log ownership and file permissions after restart, and test crash/recovery without duplicate print/email. A live print acceptance requires a real printer and independent verification, not just a CUPS job ID. Do not upload personal calendar/feeds, credentials, address or unredacted local logs into public issues.
