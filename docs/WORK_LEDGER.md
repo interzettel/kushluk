@@ -9,6 +9,26 @@ This is the cross-stage execution ledger for Kushluk. It records work that is de
 
 **Known ADR reconciliation issue:** accepted ADR 0015 (replaceable orchestration and agent runtime) is now indexed; two files still claim accepted ADR 0012. Resolve the duplicate under #44 before treating either variant as a uniquely canonical decision. Do not silently change accepted-ADR text.
 
+## Deterministic editorial composition — #51 / #21, 2026-10-17
+
+**Implementation branch:** [PR #116](https://github.com/interzettel/kushluk/pull/116), pending merge review and full PDF CI signoff. The canonical four logical A4 pages are unchanged; content planning now lives in `src/kushluk/composition.py` and [LAYOUT_COMPOSITION.md](LAYOUT_COMPOSITION.md).
+
+**Evidence-backed software checks in this tranche (4):**
+- **LAY-02:** finite, typed balanced/news-heavy/practical-heavy archetype family, independent of printer profile;
+- **LAY-04:** deterministic, auditable shorten/move/demote/replace/remove-unapproved-image/omit fit policy with no silently dropped mandatory calendar/task entries. A true post-render archetype repair switch remains an extension;
+- **LAY-05:** independently modelled editorial archetype and CSS theme tokens, shared four-page canonical structure;
+- **LAY-07:** deterministic production auto-selector based on manifest counts with a persisted `select_archetype` audit decision; direct archived/EPUB builder defaults to balanced for compatibility.
+
+**Partial work, deliberately unchecked:**
+- **LAY-01:** typed `CompositionBlock` (lead/brief/practical/source index) is real, but quote/table/language/continuation block taxonomy remains incomplete;
+- **LAY-03:** character and zero-image slot budgets work; printed line/glyph metrics, approved image sizes and caption/aspect-ratio constraints are not complete;
+- **LAY-06:** all three variants generate synthetic four-page PDFs in CI, but final design/reader approval and broad corpus acceptance are outstanding;
+- **LAY-08/09:** HTML/SVG/PDF comparison/box-diagnostics fixtures exist, but frozen approved visual baselines and six-column binding/fold-safe physical proof are missing. The WeasyPrint practical-row fallback is an intentional partial limitation;
+- **FMT-03:** test inspector adds per-page text/footer/size bounds, but content clipping/optical readability across real papers and fonts remains open;
+- **LAY-10/11:** discretionary vocabulary, charts, maps, reading time remain research.
+
+**Software ledger:** **17/90 tasks · 18.89%**, LAY **4/11 · 36.36%**. **Evidence gates G1–G8: 0/8 · 00.00%**; no release, printer, physical-reader or real editorial approval claim. The comparison kit uses only a fixed synthetic edition and never submits print/email or fetches live sources.
+
 ## North star
 
 **Kushluk should be capable of producing and delivering the morning edition without manual editorial layout work.**
@@ -173,12 +193,12 @@ Six previously unchecked tasks are now checked **for implemented software behavi
 ### P1 — Layout grammar and template family
 
 - [ ] **LAY-01** Define semantic content blocks independent of visual template: lead, brief, practical strip, calendar, weather, quote, image story, table, language item, continuation/QR, etc.
-- [ ] **LAY-02** Define a finite family of page archetypes rather than one rigid template or free-form generated design.
+- [x] **LAY-02** Define a finite family of page archetypes rather than one rigid template or free-form generated design.
 - [ ] **LAY-03** Define layout-slot capacity rules in characters/lines/aspect ratios so the editor can fit copy before rendering.
-- [ ] **LAY-04** Define overflow substitutions: shorten, move, demote, remove image, switch archetype, or cut story.
-- [ ] **LAY-05** Separate **layout archetype** from **visual theme/style tokens** so the same editorial structure can support multiple approved looks.
+- [x] **LAY-04** Define overflow substitutions: shorten, move, demote, remove image, switch archetype, or cut story.
+- [x] **LAY-05** Separate **layout archetype** from **visual theme/style tokens** so the same editorial structure can support multiple approved looks.
 - [ ] **LAY-06** Build at least three production-ready archetypes: balanced day, news-heavy day, and schedule/practical-heavy day.
-- [ ] **LAY-07** Add deterministic layout scoring/selection based on the publication manifest.
+- [x] **LAY-07** Add deterministic layout scoring/selection based on the publication manifest.
 - [ ] **LAY-08** Freeze approved explorations into HTML/CSS/SVG templates and regression fixtures.
 - [ ] **LAY-09** Implement/test the six-column A4 base grid with shared inner binding/fold safety.
 - [ ] **LAY-10 (RESEARCH)** Test the recovered editorial vocabulary (`WORTH KNOWING`, `FROM YESTERDAY`, `SINCE WE LAST LOOKED`, `NEARBY`, `ONE SMALL THING`, `WORD OF THE DAY`, `TEN MINUTES`, `GO DEEPER →`) without turning every label into a permanent box.

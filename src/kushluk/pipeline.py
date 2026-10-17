@@ -104,7 +104,8 @@ def run_pipeline(
     if on_stage is not None:
         on_stage("sources_complete")
 
-    stories = select_stories(candidates, limit=3)
+    # Keep a larger ranked candidate pool so the composer can replace unfit leads.
+    stories = select_stories(candidates, limit=6)
     if not stories:
         failures.append(
             Failure(
@@ -121,6 +122,7 @@ def run_pipeline(
         location_name=settings.home_name,
         practical=practical,
         stories=stories,
+        archetype="auto",
         notes=[failure.message for failure in failures if failure.severity != "info"],
     )
 

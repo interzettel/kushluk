@@ -8,6 +8,8 @@ from typing import Any, Literal
 SourceKind = Literal["weather", "calendar", "task", "rss", "newsletter", "other"]
 FailureSeverity = Literal["info", "degraded", "failed"]
 DeliveryStatus = Literal["skipped", "sent", "failed"]
+LayoutArchetype = Literal["balanced", "news-heavy", "practical-heavy"]
+BlockKind = Literal["practical", "lead", "brief", "source-index"]
 
 
 @dataclass(slots=True)
@@ -70,6 +72,8 @@ class Story:
     source_url: str | None = None
     why_selected: str | None = None
     cluster_size: int = 1
+    image_asset_id: str | None = None
+    image_caption: str | None = None
 
 
 @dataclass(slots=True)
@@ -89,12 +93,42 @@ class DeliveryResult:
 
 
 @dataclass(slots=True)
+class SlotBudget:
+    """Explicit copy/image capacities for one semantic slot, not style tokens."""
+    headline_chars: int = 0
+    deck_chars: int = 0
+    label_chars: int = 0
+    value_chars: int = 0
+    detail_chars: int = 0
+    image_slots: int = 0
+    caption_chars: int = 0
+
+
+@dataclass(slots=True)
+class CompositionBlock:
+    """Typed reference to canonical story or practical content."""
+    kind: BlockKind
+    ref: str
+    budget: SlotBudget
+
+
+@dataclass(slots=True)
+class CompositionDecision:
+    action: Literal["select_archetype", "shorten", "move", "demote", "replace", "omit", "remove_image"]
+    ref: str
+    reason: str
+    from_page: int | None = None
+    to_page: int | None = None
+
+
+@dataclass(slots=True)
 class EditionPage:
     """Logical A4 page; content references canonical item IDs/indices, never copies."""
     number: int
     kind: Literal["front", "day", "stories", "sources"]
     practical_indices: list[int] = field(default_factory=list)
     story_ids: list[str] = field(default_factory=list)
+    blocks: list[CompositionBlock] = field(default_factory=list)
 
 
 @dataclass(slots=True)
@@ -110,6 +144,8 @@ class Publication:
     notes: list[str] = field(default_factory=list)
     schema_version: int = 2
     pages: list[EditionPage] = field(default_factory=list)
+    archetype: LayoutArchetype = "balanced"
+    composition_decisions: list[CompositionDecision] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)

@@ -31,7 +31,7 @@ def validate_publication(publication: Publication) -> ValidationResult:
     if publication.schema_version != 2:
         errors.append("Publication schema must be version 2.")
     if len(publication.pages) != 4 or publication.pages != plan_pages(
-        publication.practical, publication.stories
+        publication.practical, publication.stories, publication.archetype
     ):
         errors.append("Edition must contain four canonical, correctly ordered logical A4 pages.")
     if len({story.id for story in publication.stories}) != len(publication.stories):
@@ -62,7 +62,10 @@ def compact_for_layout(publication: Publication, pass_number: int) -> Publicatio
     if pass_number >= 3 and len(stories) > 1:
         stories = stories[:1]
 
-    return replace(publication, practical=practical, stories=stories, pages=plan_pages(practical, stories))
+    return replace(
+        publication, practical=practical, stories=stories,
+        pages=plan_pages(practical, stories, publication.archetype),
+    )
 
 
 def pdf_page_count(pdf_path: Path) -> int:
