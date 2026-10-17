@@ -61,6 +61,13 @@
     .source-list { overflow-wrap: anywhere; }
     .deck { font-size: 10pt; max-width: 160mm; white-space: pre-wrap; }
     .source { font-size: 7pt; color: var(--muted); overflow-wrap: anywhere; }
+    /* Only owner-imported, checksum-verified data URI rasters reach this slot. */
+    figure.lead-media { float: right; width: 66mm; margin: 0 0 3mm 4mm;
+      break-inside: avoid; }
+    figure.lead-media img { display: block; width: 66mm; height: 33mm; object-fit: fill; }
+    figure.lead-media figcaption { font: 7pt/1.2 Arial, Helvetica, sans-serif;
+      overflow-wrap: anywhere; margin-top: 1mm; color: var(--muted); }
+    .source { clear: both; }
     .empty { border-top: .2mm solid var(--rule); padding-top: 3mm; color: var(--muted); }
     .source-list { list-style: none; margin: 0; padding: 0; }
     .source-list li { border-top: .2mm solid var(--rule); padding: 3mm 0; }
@@ -113,6 +120,13 @@
     {% set story = stories_by_id[story_id] %}
     <article>
       <p class="kicker">For you</p><h3>{{ story.headline }}</h3>
+      {% if images_by_story.get(story.id) %}
+      {% set media = images_by_story[story.id] %}
+      <figure class="lead-media">
+        <img src="{{ media.uri }}" alt="{{ media.alt }}">
+        <figcaption>{% if media.caption %}{{ media.caption }} · {% endif %}{{ media.credit }} · {{ media.license }}</figcaption>
+      </figure>
+      {% endif %}
       <p class="deck">{{ story.deck }}</p>
       <p class="source">{{ story.source_name }}{% if story.cluster_size > 1 %} · {{ story.cluster_size }} reports{% endif %}</p>
     </article>
@@ -141,6 +155,13 @@
       <article>
         <p class="kicker">Worth knowing</p>
         <h3>{{ story.headline }}</h3>
+        {% if images_by_story.get(story.id) %}
+        {% set media = images_by_story[story.id] %}
+        <figure class="lead-media">
+          <img src="{{ media.uri }}" alt="{{ media.alt }}">
+          <figcaption>{% if media.caption %}{{ media.caption }} · {% endif %}{{ media.credit }} · {{ media.license }}</figcaption>
+        </figure>
+        {% endif %}
         <p class="deck">{{ story.deck }}</p>
         <p class="source">{{ story.source_name }}{% if story.cluster_size > 1 %} · {{ story.cluster_size }} reports{% endif %}</p>
       </article>
