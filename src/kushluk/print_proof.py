@@ -59,12 +59,14 @@ def make_print_proof(output_dir: Path) -> dict[str, str]:
         import re
 
         identities = []
+        previews = []
         for page in PdfReader(str(a4)).pages:
             text = page.extract_text() or ""
             identities.append(re.findall(r"[1-4] / 4", text))
+            previews.append(" ".join(text.split())[:100])
         raise ValueError(
             "Invalid synthetic A4 proof: " + "; ".join(checked.errors)
-            + f"; page identities={identities}"
+            + f"; page identities={identities}; synthetic preview={previews}"
         )
     a3 = impose_a3_folded(a4, output_dir / "kushluk-proof-a3.pdf")
     report = {
