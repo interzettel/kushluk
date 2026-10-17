@@ -11,11 +11,11 @@
 ## Inspect one day
 
 ```bash
-kushluk run --date 2026-10-17 --latest-start 07:45 --ready-by 08:00
+kushluk run --date 2026-10-17 --latest-start 07:45 --expected-start 07:30 --ready-by 08:00
 kushluk run-report --date 2026-10-17
 ```
 
-`--ready-by` is an **observation target**, not a promise or a kill switch. It compares the archived-PDF software readiness timestamp with the local wall-clock target of 08:00 in the configured IANA timezone. The report carries machine-allowlisted stage events, UTC timestamps, duration to archived PDF, and `ready_by_met` (true/false or null when the required validated archive evidence is missing). It contains no headlines, feed URLs, credentials, address or external provider errors. Old receipts without timestamps are not inventively backfilled; timing values remain null.
+`--ready-by` is an **observation target**, not a promise or a kill switch. It compares the archived-PDF software readiness timestamp with the local wall-clock target of 08:00 in the configured IANA timezone. The report carries machine-allowlisted stage events, UTC timestamps, duration to archived PDF, and `ready_by_met` (true/false or null when the required validated archive evidence is missing). When `--expected-start HH:MM` is supplied (native generated scheduler templates now include it), the report separately measures **OS trigger-to-process-start delay** and **scheduled-trigger-to-PDF-archive duration**. An expected clock is an operator expectation, not proof the OS actually fired on time. It contains no headlines, feed URLs, credentials, address or external provider errors. Old receipts without timestamps are not inventively backfilled; timing values remain null.
 
 `kushluk operate --request PRIVATE.json` also supports v1 `{"schema_version":1,"action":"report","date":"2026-10-17"}`. The command is local, read-only and does not contact a feed, printer or email service.
 
@@ -26,7 +26,7 @@ kushluk timing-plan --date 2026-10-18 \
   --ready-by 08:00 --margin-minutes 10 --history-days 30
 ```
 
-This walks **at most 30 previous date-scoped local receipts**, bounded to a maximum of 90 days if requested. Only `completed` editions with ordered, timestamped `validated` and `archive_ready` milestones count. Stale, interrupted, degraded-before-validation and tampered receipts are excluded. The method uses the **nearest-rank 90th-percentile software archive latency** plus a user-specified 0–120 minute safety margin to suggest a local wall-clock start time. At least three valid prior samples are necessary; otherwise the output says `insufficient_history` and never guesses.
+This walks **at most 30 previous date-scoped local receipts**, bounded to a maximum of 90 days if requested. Only `completed` editions with ordered, timestamped `validated` and `archive_ready` milestones count. Stale, interrupted, degraded-before-validation and tampered receipts are excluded. When at least three receipts record the expected trigger clock, the method preferentially uses **trigger-to-archive elapsed time** (including observed scheduler launch delay). Otherwise it uses a separate, clearly labelled process-start-to-archive series without mixing the two samples. It applies the **nearest-rank 90th-percentile recorded elapsed time** plus a user-specified 0–120 minute safety margin to suggest a local wall-clock start time. At least three valid prior samples are necessary; otherwise the output says `insufficient_history` and never guesses.
 
 A returned `suggested_not_installed` result can include, for example, a recommended start of 07:42 for three synthetic durations of 3, 5 and 8 minutes, with a ten-minute margin and an 08:00 target. The tool **does not edit, install or enable** any systemd/launchd timer; one can review the plan and then use `kushluk schedule-export --start HH:MM --latest-start HH:MM` manually.
 
