@@ -19,6 +19,11 @@ separately under [the release plan](docs/RELEASE_PLAN.md).
 - Add a developer-oriented [preview installation guide](docs/PREVIEW_INSTALL.md)
   with explicit known limits, offline sample instructions and a separate
   release approval checkpoint.
+- Record environment-level installed Python dependencies and declared license
+  metadata with hashes in each clean wheel/sdist preview proof. `pip check`
+  detects inconsistent Python requirements, not vulnerable/native packages.
+- Add read-only `kushluk archive-check` with bounded schema-v2 reference checks
+  and explicit legacy-v1/future migration hold, never implicit archival edits.
 
 **No prerelease has been published.** `pyproject.toml` remains `0.1.0`;
 the future version `v0.2.0-alpha.1` requires an explicit owner decision,

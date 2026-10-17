@@ -2,6 +2,17 @@
 
 A concise, dated evidence/history record for one maintainer with AI helpers. **This is not an activity-time tracker or a substitute for GitHub commits and discussions.**
 
+## 2026-10-17 — Dependency inventory and archive migration preflight after M1 packaging
+
+**Issue:** #54 hardening / #87 M1; [PR #121](https://github.com/interzettel/kushluk/pull/121).
+
+- The actual M1 `main` postmerge CI completed green on Linux 3.11/3.12, macOS ARM/Intel, and project-health integrity; release remains unpublished.
+- Extended isolated wheel and sdist verification with `pip check` and privacy-sanitized installed Python package/version/license metadata inventories, digest-linked to CI release evidence. No automatic license, vulnerability, native dependency or SBOM conformance claim.
+- Added non-mutating v1/v2/future archive preflight with 2 MiB file bounds, symlink guards, canonical four-page/v2 references and aggregate counts only; v1 migration remains explicitly blocked.
+- Updated third-party dependencies, local compatibility guide and audit limits, keeping physical readiness and release authorization separate.
+
+No checked work-ledger tasks or release gates advanced from a preparatory assessment: **26/90 (28.89%)**, **G1–G8 0/8**, development **0.1.0** and **no release tag**.
+
 ## 2026-10-17 — M1 build/install smoke and frozen source-free sample
 
 **Issues:** #54 package hardening and #87 release milestone; [PR #120](https://github.com/interzettel/kushluk/pull/120). **No version bump or prerelease publication authorized.**

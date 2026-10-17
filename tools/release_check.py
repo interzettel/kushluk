@@ -91,7 +91,8 @@ def _check_packages(directory: Path, *, version: str) -> tuple[Path, Path]:
                 raise ReleaseCheckError(f"sdist_missing_required_module:{name}")
         for name in ("pyproject.toml", "README.md", "LICENSE",
                      "THIRD_PARTY_NOTICES.md", "SECURITY.md", "CHANGELOG.md",
-                     "docs/PREVIEW_INSTALL.md", "docs/RELEASE_PLAN.md"):
+                     "docs/PREVIEW_INSTALL.md", "docs/RELEASE_PLAN.md",
+                     "docs/DEPENDENCY_AUDIT.md", "docs/ARCHIVE_COMPATIBILITY.md"):
             if prefix + name not in names:
                 raise ReleaseCheckError(f"sdist_missing_required_file:{name}")
         if any(
@@ -133,6 +134,20 @@ def _clean_install(
     installed_path = _run(
         [str(python), "-c", check_code], cwd=home, env=env,
     ).strip()
+    _run([str(python), "-m", "pip", "check"], cwd=home, env=env)
+    # Execute the stdlib-only inventory tool using the *installed* venv Python.
+    # Never record metadata_location, installer paths, direct_url or user settings.
+    inventory_path = home / "installed-environment.json"
+    _run([
+        str(python), str(ROOT / "tools" / "release_inventory.py"),
+        "--output", str(inventory_path),
+    ], cwd=home, env=env)
+    inventory = json.loads(inventory_path.read_text(encoding="utf-8"))
+    if (not any(package["name"] == "kushluk" and package["version"] == version
+                for package in inventory["installed_packages"])
+            or inventory["legal_license_review_complete"]
+            or inventory["vulnerability_audit_complete"]):
+        raise ReleaseCheckError("invalid_installed_dependency_inventory")
     _run([str(command), "--help"], cwd=home, env=env)
     preview_dir = home / "preview"
     args = [str(command), "preview", "--output-dir", str(preview_dir)]
@@ -169,6 +184,11 @@ def _clean_install(
             raise ReleaseCheckError("installed_four_page_pdf_invalid")
     return {
         "installed_distribution": artifact.name,
+        "dependency_inventory": "installed-environment.json",
+        "dependency_inventory_sha256": _digest(inventory_path),
+        "dependency_count": len(inventory["installed_packages"]),
+        "legal_license_review_complete": False,
+        "vulnerability_audit_complete": False,
         "installed_package_location": "isolated-venv-site-packages",
         "runtime_module_from_venv": installed_path.startswith(str(venv_dir)),
         "fixture_version": manifest["fixture_version"],
@@ -214,6 +234,10 @@ def verify_preview(*, artifact_dir: Path, pdf: bool = False) -> dict:
         shutil.copy2(sdist, artifact_dir / sdist.name)
         for label in ("wheel", "sdist"):
             shutil.copytree(temp / label / "preview", artifact_dir / label)
+            shutil.copy2(
+                temp / label / "installed-environment.json",
+                artifact_dir / label / "installed-environment.json",
+            )
         evidence = {
             "schema_version": 1, "status": "clean_install_passed",
             "development_version": version,
@@ -222,6 +246,10 @@ def verify_preview(*, artifact_dir: Path, pdf: bool = False) -> dict:
             "platform": platform.system(), "machine": platform.machine(),
             "python_version": platform.python_version(),
             "builds_byte_reproducible": True,
+            "installed_dependency_inventory_available": True,
+            "legal_license_review_complete": False,
+            "vulnerability_audit_complete": False,
+            "native_dependency_review_complete": False,
             "pdf_validated": pdf,
             "physical_verified": False, "network_used_by_preview": False,
             "wheel_sha256": _digest(wheel),

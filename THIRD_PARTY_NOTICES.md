@@ -36,11 +36,14 @@ See `docs/UPSTREAM_REVIEW.md` for the current reuse assessment.
 ## Declared external package dependencies vs copied code
 
 At the current source tree, `pyproject.toml` declares the following **installed, not vendored** packages:
-- Runtime: `httpx`, `jinja2`.
-- Optional PDF: `weasyprint`, `pypdf` (plus their system/native and transitive dependencies).
-- Development/testing: `pytest`, `ruff`.
+- Core runtime: `httpx`, `jinja2`.
+- Optional print/PDF: `weasyprint`, `pypdf`, `Pillow` (plus their system/native and transitive dependencies).
+- Optional raster/image-only: `Pillow`.
+- Optional user-local Google OAuth: `google-auth`, `google-auth-oauthlib` (and their transitive dependencies).
+- Development/testing: `pytest`, `ruff`, `Pillow`.
+- Distribution build backend: `hatchling`; the independent M1 checker also installs `build` in CI.
 
-They are normal Python dependencies subject to their own licenses. Their *exact resolved versions, transitive licenses and any copied fonts/assets* require a package lock/SBOM/license check before a distribution release; declaring them here does not assert that check is complete.
+These are package install requirements, **not copied third-party source files**. The M1 clean-install check now produces an offline installed-version/licensing-*metadata* inventory for wheel and sdist environments, documenting missing or legacy license declarations as **review required**, not legal clearance. See [Dependency audit boundaries](docs/DEPENDENCY_AUDIT.md). Transitive package licenses, native Pango/Harfbuzz/cairo/fonts, bundled system assets and current security advisories still require explicit review before any official release. A passing automated metadata inventory does not complete that work.
 
 The new OPML parser is **original standard-library Python implementation informed by published feed/OPML interoperability concepts**, not a copy of OffScroll, Goosepaper, RSSPub or other reviewed source. No external license notice is required for original independent implementation.
 
