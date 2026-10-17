@@ -61,7 +61,7 @@ def make_print_proof(output_dir: Path) -> dict[str, str]:
         identities = []
         for page in PdfReader(str(a4)).pages:
             text = page.extract_text() or ""
-            identities.append(re.findall(r"\\b[1-4]\\s*/\\s*4\\b", text))
+            identities.append(re.findall(r"[1-4] / 4", text))
         raise ValueError(
             "Invalid synthetic A4 proof: " + "; ".join(checked.errors)
             + f"; page identities={identities}"
