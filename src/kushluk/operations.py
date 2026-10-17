@@ -25,7 +25,7 @@ class OperationError(ValueError):
 _ACTION_FIELDS = {
     "run": {"schema_version", "action", "date", "print", "email",
             "email_on_print_failure", "print_profile", "latest_start",
-            "acknowledge_delivery", "ready_by"},
+            "acknowledge_delivery", "ready_by", "expected_start"},
     "status": {"schema_version", "action", "date"},
     "report": {"schema_version", "action", "date"},
     "timing_plan": {"schema_version", "action", "date", "ready_by",
@@ -105,11 +105,14 @@ def operate_request(
         latest_start = (_time(request["latest_start"])
                         if "latest_start" in request else None)
         ready_by = _time(request["ready_by"]) if "ready_by" in request else None
+        expected_start = (_time(request["expected_start"])
+                          if "expected_start" in request else None)
         result = run_once(
             settings, target_date=target_date,
             send_to_printer=printer, send_email=email,
             email_on_print_failure=fallback, print_profile=profile,
-            latest_start=latest_start, ready_by=ready_by, now=now,
+            latest_start=latest_start, ready_by=ready_by,
+            expected_start=expected_start, now=now,
         )
     else:
         channel = request.get("channel")
