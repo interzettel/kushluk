@@ -6,7 +6,7 @@ import re
 import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
-from kushluk.feed_network import fetch_public_xml
+from kushluk.feed_network import FeedNetworkError, fetch_public_xml
 
 from kushluk.models import Candidate, SourceRef
 
@@ -17,48 +17,59 @@ class RSSConnector:
         self.urls = urls
         self.per_feed = per_feed
         self.reference_only_urls = frozenset(reference_only_urls)
+        self.failed_feeds: list[dict[str, int | str]] = []
 
     def fetch(self) -> list[Candidate]:
+        """Keep usable feeds even when one source fails; report redacted defects."""
         candidates: list[Candidate] = []
-        for url in self.urls:
-            xml_bytes = fetch_public_xml(url)
-            # Do not accept entity amplification or DTDs from feed publishers.
-            if re.search(rb"<!\s*(?:DOCTYPE|ENTITY)\b", xml_bytes, re.IGNORECASE):
-                raise ValueError("Feed XML contains disallowed declarations")
-            root = ET.fromstring(xml_bytes)
-            source_name = _feed_title(root) or "RSS feed"
-            source = SourceRef(
-                kind="rss",
-                name=source_name,
-                # Feed endpoints may embed subscription tokens; do not archive them.
-                url=None,
-                retrieved_at=datetime.now(timezone.utc).isoformat(timespec="seconds"),
-            )
-            for raw in _entries(root)[: self.per_feed]:
-                title = _clean(raw.get("title") or "Untitled")
-                link = raw.get("link") or ""
-                # All RSS is reference-only, including legacy env-configured
-                # endpoints and direct connector calls. No feed article body.
-                summary = ""
-                published_iso = _parse_time(raw.get("published"))
-                identity = link or f"{source_name}:{title}"
-                candidate_id = hashlib.sha256(identity.encode("utf-8")).hexdigest()[:16]
-                candidates.append(
-                    Candidate(
-                        id=candidate_id,
-                        title=title,
-                        summary=summary[:500],
-                        source=source,
-                        published_at=published_iso,
-                        url=link or None,
-                        relevance=0.55,
-                        importance=0.55,
-                        freshness=_freshness(published_iso),
-                        novelty=0.7,
-                    )
+        self.failed_feeds = []
+        for feed_number, url in enumerate(self.urls, start=1):
+            try:
+                xml_bytes = fetch_public_xml(url)
+                # Do not accept entity amplification or DTDs from feed publishers.
+                if re.search(rb"<!\s*(?:DOCTYPE|ENTITY)\b", xml_bytes, re.IGNORECASE):
+                    raise ValueError("Feed XML contains disallowed declarations")
+                root = ET.fromstring(xml_bytes)
+                source_name = _feed_title(root) or "RSS feed"
+                source = SourceRef(
+                    kind="rss",
+                    name=source_name,
+                    # Feed endpoints may embed subscription tokens; do not archive them.
+                    url=None,
+                    retrieved_at=datetime.now(timezone.utc).isoformat(timespec="seconds"),
                 )
+                for raw in _entries(root)[: self.per_feed]:
+                    title = _clean(raw.get("title") or "Untitled")
+                    link = raw.get("link") or ""
+                    # All RSS is reference-only, including legacy env-configured
+                    # endpoints and direct connector calls. No feed article body.
+                    summary = ""
+                    published_iso = _parse_time(raw.get("published"))
+                    identity = link or f"{source_name}:{title}"
+                    candidate_id = hashlib.sha256(identity.encode("utf-8")).hexdigest()[:16]
+                    candidates.append(
+                        Candidate(
+                            id=candidate_id,
+                            title=title,
+                            summary=summary[:500],
+                            source=source,
+                            published_at=published_iso,
+                            url=link or None,
+                            relevance=0.55,
+                            importance=0.55,
+                            freshness=_freshness(published_iso),
+                            novelty=0.7,
+                        )
+                    )
+            except (FeedNetworkError, ET.ParseError, ValueError) as exc:
+                # No URLs, subscription tokens, XML fragments or provider
+                # exception messages are included in the human-readable receipt.
+                reason = ("unsafe_or_unavailable" if isinstance(exc, FeedNetworkError)
+                          else "invalid_feed_xml")
+                self.failed_feeds.append({
+                    "feed_number": feed_number, "reason": reason,
+                })
         return candidates
-
 
 def _local(tag: str) -> str:
     return tag.rsplit("}", 1)[-1].lower()
