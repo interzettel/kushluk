@@ -35,7 +35,7 @@ jobs:
           "$RUNNER_TEMP/kushluk-target/bin/python" -m pip check
       - name: Collect deterministic installed Python component evidence
         run: |
-          "$RUNNER_TEMP/kushluk-target/bin/python" -m tools.python_sbom \\
+          "$RUNNER_TEMP/kushluk-target/bin/python" -m tools.python_sbom \
             --output output/security/installed-python-components.cdx.json
       - name: Install the independent auditor
         run: python -m pip install 'pip-audit>=2.9,<3'
