@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 
 from kushluk.models import PracticalItem, Story
-from kushluk.print_profiles import impose_a3_folded
+from kushluk.print_profiles import impose_a3_folded, impose_letter_home
 from kushluk.publication import build_publication
 from kushluk.renderer import render_html, render_pdf
 from kushluk.validation import validate_pdf
@@ -55,6 +55,7 @@ def make_print_proof(output_dir: Path) -> dict[str, str]:
     checked = validate_pdf(a4)
     if not checked.ok:
         raise ValueError("Invalid synthetic A4 proof: " + "; ".join(checked.errors))
+    letter = impose_letter_home(a4, output_dir / "kushluk-proof-letter.pdf")
     a3 = impose_a3_folded(a4, output_dir / "kushluk-proof-a3.pdf")
     report = {
         "format": "kushluk-physical-proof-v1",
@@ -62,6 +63,10 @@ def make_print_proof(output_dir: Path) -> dict[str, str]:
         "a4_file": a4.name,
         "a4_sha256": sha256(a4.read_bytes()).hexdigest(),
         "a4_logical_pages": 4,
+        "letter_file": letter.name,
+        "letter_sha256": sha256(letter.read_bytes()).hexdigest(),
+        "letter_logical_pages": 4,
+        "letter_media_box_pt": [612, 792],
         "a3_file": a3.name,
         "a3_sha256": sha256(a3.read_bytes()).hexdigest(),
         "a3_sheet_sides": 2,
@@ -81,6 +86,10 @@ def make_print_proof(output_dir: Path) -> dict[str, str]:
         "- [ ] Confirm pages 1/2 share a sheet, pages 3/4 share a sheet.\n"
         "- [ ] If simplex, verify four numbered sheets, 1 through 4.\n"
         "- [ ] Confirm no clipping, acceptable contrast, readable footer and margins.\n\n"
+        "## US Letter (home printer)\n\n"
+        "- [ ] Use Letter 8.5 × 11 in and print at 100% (disable automatic fit).\n"
+        "- [ ] Confirm all four pages on Letter paper, long-edge duplex if supported.\n"
+        "- [ ] Check printable margins, no clipping and readable page footers.\n\n"
         "## A3 (folded)\n\n"
         "- [ ] Use actual A3 landscape; duplex short-edge is initial software choice.\n"
         "- [ ] Check outside: page 4 on the left, page 1 on the right.\n"
@@ -97,6 +106,6 @@ def make_print_proof(output_dir: Path) -> dict[str, str]:
         encoding="utf-8",
     )
     return {key: str(output_dir / value) for key, value in {
-        "a4": a4.name, "a3": a3.name, "html": html.name,
+        "a4": a4.name, "letter": letter.name, "a3": a3.name, "html": html.name,
         "manifest": "kushluk-proof.json", "checklist": "PRINT-CHECKLIST.md",
     }.items()}

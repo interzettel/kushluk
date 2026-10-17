@@ -232,3 +232,58 @@ def test_renderer_exception_redacted_from_archived_publication(tmp_path, monkeyp
     for path in result.archive_dir.iterdir():
         if path.suffix in {".md", ".json", ".html"}:
             assert secret not in path.read_text(encoding="utf-8")
+
+
+def test_letter_selected_in_setup_generates_archived_letter_and_matching_cups_media(
+    tmp_path, monkeypatch,
+):
+    pytest.importorskip("weasyprint")
+    pytest.importorskip("pypdf")
+    from kushluk.print_profiles import validate_letter_home
+    import json
+
+    offline_sources(monkeypatch)
+    cfg = config(tmp_path)
+    cfg.paper_size = "letter"
+    called = []
+
+    def mock_cups(file, printer, **kwargs):
+        called.append((file, kwargs))
+        assert validate_letter_home(file) == []
+        return PrintResult(True, True, "Synthetic CUPS acceptance only")
+
+    monkeypatch.setattr(pipeline, "print_pdf", mock_cups)
+    result = pipeline.run_pipeline(cfg, target_date=DATE, send_to_printer=True)
+    assert result.print_result and result.print_result.success
+    assert len(called) == 1
+    assert called[0][1]["media"] == "Letter"
+    assert called[0][0] == result.printable_pdf_path
+    assert result.pdf_path != result.printable_pdf_path
+    assert validate_pdf(result.pdf_path).ok
+    letter_archive = cfg.archive_dir / "20260923-001" / "edition.letter.pdf"
+    assert letter_archive.read_bytes() == result.printable_pdf_path.read_bytes()
+    assert validate_letter_home(letter_archive) == []
+    assert validate_pdf(cfg.archive_dir / "20260923-001" / "edition.pdf").ok
+    summary = json.loads((cfg.archive_dir / "20260923-001" / "run.json").read_text())
+    assert summary["print_profile"] == "letter-home"
+
+
+def test_explicit_a4_override_preserves_a4_on_letter_profile(tmp_path, monkeypatch):
+    pytest.importorskip("weasyprint")
+    pytest.importorskip("pypdf")
+    offline_sources(monkeypatch)
+    cfg = config(tmp_path)
+    cfg.paper_size = "letter"
+    called = []
+    monkeypatch.setattr(
+        pipeline, "print_pdf",
+        lambda path, printer, **kwargs: (
+            called.append((path, kwargs))
+            or PrintResult(True, True, "Synthetic queue acceptance")
+        ),
+    )
+    result = pipeline.run_pipeline(cfg, target_date=DATE, send_to_printer=True,
+                                   print_profile="a4-home")
+    assert called[0][1]["media"] == "A4"
+    assert called[0][0] == result.pdf_path
+    assert not (cfg.archive_dir / "20260923-001" / "edition.letter.pdf").exists()

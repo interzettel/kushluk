@@ -111,3 +111,18 @@ def test_no_output_directory_overwrite(tmp_path):
     with pytest.raises(PrintInspectionError, match="already exists"):
         inspect_print_pdf(Path(kit["a4"]), dest)
     assert (dest / "old.txt").read_text() == "operator evidence"
+
+
+def test_letter_inspection_checks_real_geometry_not_physical_success(tmp_path):
+    kit = _synthetic_kit(tmp_path)
+    report = inspect_print_pdf(
+        Path(kit["letter"]), tmp_path / "letter-inspection", profile="letter-home"
+    )
+    assert report["profile"] == "letter-home"
+    assert report["structural_errors"] == []
+    assert len(report["pages"]) == 4
+    assert report["physical_verified"] is False
+    wrong = inspect_print_pdf(
+        Path(kit["a4"]), tmp_path / "mismatch-inspection", profile="letter-home"
+    )
+    assert wrong["structural_errors"]

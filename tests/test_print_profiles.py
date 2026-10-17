@@ -5,7 +5,9 @@ import pytest
 
 from kushluk import printing
 from kushluk.models import PracticalItem, Story
-from kushluk.print_profiles import impose_a3_folded, validate_a3_booklet
+from kushluk.print_profiles import (
+    impose_a3_folded, impose_letter_home, validate_a3_booklet, validate_letter_home,
+)
 from kushluk.printing import PrinterCapabilities, print_pdf
 from kushluk.publication import build_publication
 from kushluk.renderer import render_html, render_pdf
@@ -99,3 +101,46 @@ def test_a3_refuses_unknown_duplex(tmp_path, monkeypatch):
     )
     result = print_pdf(pdf, "Test", execute=True, media="A3", require_duplex=True)
     assert not result.success and "duplex" in result.detail
+
+
+def test_us_letter_has_real_media_boxes_and_order_without_rewriting_a4(tmp_path):
+    pytest.importorskip("weasyprint")
+    pypdf = pytest.importorskip("pypdf")
+    publication = build_publication(
+        target_date=date(2026, 9, 23), timezone="Europe/Berlin",
+        location_name="Synthetic home",
+        practical=[PracticalItem("Home", "08:00")],
+        stories=[Story(str(i), f"Story {i}", "Original fixture.", "Example") for i in range(3)],
+    )
+    a4 = render_pdf(
+        render_html(publication, tmp_path / "original.html"), tmp_path / "original.pdf",
+    )
+    original_bytes = a4.read_bytes()
+    letter = impose_letter_home(a4, tmp_path / "print-letter.pdf")
+    assert letter != a4
+    assert a4.read_bytes() == original_bytes
+    assert validate_letter_home(letter) == []
+    reader = pypdf.PdfReader(str(letter))
+    assert len(reader.pages) == 4
+    for i, page in enumerate(reader.pages, 1):
+        assert abs(float(page.mediabox.width) - 612) < 1
+        assert abs(float(page.mediabox.height) - 792) < 1
+        assert f"{i} / 4" in page.extract_text()
+    with pytest.raises(ValueError, match="new"):
+        impose_letter_home(a4, letter)
+    with pytest.raises(ValueError, match="overwrite"):
+        impose_letter_home(a4, a4)
+
+
+def test_us_letter_rejects_invalid_a4_source_and_wrong_page_count(tmp_path):
+    pypdf = pytest.importorskip("pypdf")
+    writer = pypdf.PdfWriter()
+    writer.add_blank_page(width=595.28, height=841.89)
+    one_page = tmp_path / "source.pdf"
+    with one_page.open("wb") as stream:
+        writer.write(stream)
+    output = tmp_path / "letter.pdf"
+    with pytest.raises(ValueError, match="unvalidated"):
+        impose_letter_home(one_page, output)
+    assert not output.exists()
+    assert validate_letter_home(one_page)

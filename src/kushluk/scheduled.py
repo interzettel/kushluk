@@ -18,6 +18,7 @@ except ImportError:  # Windows can still fail closed on nonterminal receipts
 
 from kushluk.config import Settings
 from kushluk.pipeline import run_pipeline
+from kushluk.print_profiles import resolve_home_print_profile
 
 
 @dataclass(slots=True)
@@ -263,14 +264,18 @@ def run_once(
     send_to_printer: bool = False,
     send_email: bool = False,
     email_on_print_failure: bool = False,
-    print_profile: str = "a4-home",
+    print_profile: str | None = None,
     latest_start: time | None = None,
     ready_by: time | None = None,
     expected_start: time | None = None,
     now: datetime | None = None,
 ) -> ScheduledOutcome:
     """At-most-once delivery attempt per local edition; uncertain states block replay."""
-    if print_profile not in {"a4-home", "a3-folded"}:
+    try:
+        print_profile = resolve_home_print_profile(
+            getattr(settings, "paper_size", "a4"), print_profile,
+        )
+    except ValueError:
         return ScheduledOutcome(
             "needs_review", f"{target_date:%Y%m%d}-001",
             failure_codes=("invalid_print_profile",),

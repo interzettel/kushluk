@@ -19,7 +19,9 @@ from kushluk.editor import select_stories
 from kushluk.media import read_media_assignments
 from kushluk.models import DeliveryResult, Failure, FailureSeverity, Publication
 from kushluk.printing import PrintResult, print_pdf
-from kushluk.print_profiles import impose_a3_folded
+from kushluk.print_profiles import (
+    impose_a3_folded, impose_letter_home, resolve_home_print_profile,
+)
 from kushluk.publication import build_publication, publication_markdown
 from kushluk.renderer import render_html, render_pdf
 from kushluk.validation import compact_for_layout, validate_pdf, validate_publication
@@ -50,12 +52,12 @@ def run_pipeline(
     send_to_printer: bool = False,
     send_email: bool = False,
     email_on_print_failure: bool = False,
-    print_profile: str = "a4-home",
+    print_profile: str | None = None,
     before_delivery: Callable[[str], None] | None = None,
     on_stage: Callable[[str], None] | None = None,
 ) -> PipelineResult:
-    if print_profile not in {"a4-home", "a3-folded"}:
-        raise ValueError(f"Unknown print profile: {print_profile}")
+    print_profile = resolve_home_print_profile(getattr(settings, "paper_size", "a4"),
+                                              print_profile)
     failures: list[Failure] = []
     practical = []
 
@@ -246,11 +248,16 @@ def run_pipeline(
         render_html(publication, html_path, media_store=settings.media_dir)
 
     printable_pdf: Path | None = rendered_pdf
-    if print_profile == "a3-folded" and rendered_pdf:
+    if print_profile in {"a3-folded", "letter-home"} and rendered_pdf:
         try:
-            printable_pdf = impose_a3_folded(
-                rendered_pdf, settings.output_dir / f"{publication.edition_id}.a3-folded.pdf"
-            )
+            if print_profile == "a3-folded":
+                printable_pdf = impose_a3_folded(
+                    rendered_pdf, settings.output_dir / f"{publication.edition_id}.a3-folded.pdf"
+                )
+            else:
+                printable_pdf = impose_letter_home(
+                    rendered_pdf, settings.output_dir / f"{publication.edition_id}.letter.pdf"
+                )
         except (ValueError, OSError, ImportError) as exc:
             printable_pdf = None
             failures.append(_failure("imposition_failed", "failed", exc, "imposition"))
@@ -263,6 +270,7 @@ def run_pipeline(
         html_path=html_path,
         pdf_path=rendered_pdf,
         imposed_pdf_path=printable_pdf if print_profile == "a3-folded" else None,
+        letter_pdf_path=printable_pdf if print_profile == "letter-home" else None,
         media_store=settings.media_dir,
         run_summary={
             "stage": "prepared",
@@ -281,7 +289,8 @@ def run_pipeline(
                 before_delivery("print")
             print_result = print_pdf(
                 printable_pdf, settings.printer, execute=True,
-                media="A3" if print_profile == "a3-folded" else "A4",
+                media={"a3-folded": "A3", "letter-home": "Letter"}.get(
+                    print_profile, "A4"),
                 duplex_edge="short" if print_profile == "a3-folded" else "long",
                 require_duplex=print_profile == "a3-folded",
             )
@@ -354,6 +363,7 @@ def run_pipeline(
         html_path=html_path,
         pdf_path=rendered_pdf,
         imposed_pdf_path=printable_pdf if print_profile == "a3-folded" else None,
+        letter_pdf_path=printable_pdf if print_profile == "letter-home" else None,
         run_summary=run_summary,
     )
     if on_stage is not None:

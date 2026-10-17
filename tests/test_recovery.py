@@ -240,3 +240,42 @@ def test_recovery_rejects_oversized_inputs_without_sending(
     )
     assert result.status == "blocked"
     assert not (folder / f"manual-{channel}-oversize.json").exists()
+
+
+def test_archived_letter_reprint_uses_only_verified_letter_pdf(tmp_path, monkeypatch):
+    cfg, folder = archive_fixture(tmp_path, monkeypatch)
+    letter = folder / "edition.letter.pdf"
+    letter.write_bytes(b"synthetic-four-page-letter")
+    monkeypatch.setattr(recovery, "validate_letter_home", lambda p: [])
+    printed = []
+
+    def fake_print(path, printer, **kwargs):
+        printed.append((path, kwargs))
+        return PrintResult(True, True, "CUPS accepted only")
+
+    monkeypatch.setattr(recovery, "print_pdf", fake_print)
+    response = resend(cfg, print_profile="letter-home")
+    assert response.status == "submitted"
+    assert printed[0][0] == letter
+    assert printed[0][1]["media"] == "Letter"
+    assert printed[0][1]["duplex_edge"] == "long"
+    assert resend(cfg, print_profile="letter-home").status == "already_attempted"
+    assert len(printed) == 1
+    saved = json.loads((folder / "manual-print-inspection-001.json").read_text())
+    assert saved["print_profile"] == "letter-home"
+    assert saved["pdf_sha256"]
+
+
+def test_archived_letter_preflight_fails_closed_on_missing_or_invalid_media(
+    tmp_path, monkeypatch,
+):
+    cfg, folder = archive_fixture(tmp_path, monkeypatch)
+    monkeypatch.setattr(recovery, "print_pdf",
+                        lambda *_a, **_kw: pytest.fail("Never print missing Letter"))
+    assert resend(cfg, print_profile="letter-home").status == "blocked"
+    letter = folder / "edition.letter.pdf"
+    letter.write_bytes(b"invalid-letter-file")
+    monkeypatch.setattr(recovery, "validate_letter_home",
+                        lambda p: ["Missing correct page geometry"])
+    assert resend(cfg, print_profile="letter-home").status == "blocked"
+    assert not (folder / "manual-print-inspection-001.json").exists()

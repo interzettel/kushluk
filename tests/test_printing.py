@@ -140,3 +140,61 @@ def test_cups_stderr_and_timeout_details_do_not_escape_into_receipts(tmp_path, m
     assert not result.success
     assert "TimeoutExpired" in result.detail
     assert secret not in result.detail
+
+
+def test_letter_driverless_queue_preflight_then_submits_matching_media(tmp_path, monkeypatch):
+    monkeypatch.setattr(printing.shutil, "which", lambda name: f"/usr/bin/{name}")
+    monkeypatch.setattr(printing, "detect_printer_capabilities",
+                        lambda printer: printing.PrinterCapabilities(
+                            "TestQueue", True, True,
+                            ("iso_a4_210x297mm", "na_letter_8.5x11in"), "Ready"))
+    from kushluk import print_profiles
+    monkeypatch.setattr(print_profiles, "validate_letter_home", lambda path: [])
+    calls = []
+    def fake_run(cmd, **kwargs):
+        calls.append(cmd)
+        return subprocess.CompletedProcess(cmd, 0, "request id: TestQueue-8", "")
+    monkeypatch.setattr(printing.subprocess, "run", fake_run)
+    path = tmp_path / "letter.pdf"
+    path.write_bytes(b"%PDF-1.4\n")
+    result = print_pdf(path, printer="TestQueue", execute=True, media="Letter")
+    assert result.success
+    assert "media=Letter" in calls[0]
+    assert "sides=two-sided-long-edge" in calls[0]
+
+
+def test_letter_submission_rejects_a4_only_or_unknown_queue_without_side_effect(
+    tmp_path, monkeypatch,
+):
+    monkeypatch.setattr(printing.shutil, "which", lambda name: "/usr/bin/lp")
+    monkeypatch.setattr(printing.subprocess, "run",
+                        lambda *_a, **_k: (_ for _ in ()).throw(AssertionError("No CUPS job")))
+    file = tmp_path / "letter.pdf"
+    file.write_bytes(b"%PDF-1.4\n")
+    for available, choices in [(True, ("A4",)), (False, ("Letter",)), (True, ())]:
+        monkeypatch.setattr(printing, "detect_printer_capabilities",
+                            lambda _p, a=available, m=choices:
+                            printing.PrinterCapabilities("Test", a, True, m, "Check"))
+        result = print_pdf(file, "Test", execute=True, media="Letter")
+        assert not result.success
+        assert result.attempted
+
+
+def test_letter_pdf_geometry_mismatch_blocks_even_letter_capable_queue(
+    tmp_path, monkeypatch,
+):
+    monkeypatch.setattr(printing.shutil, "which", lambda name: "/usr/bin/lp")
+    monkeypatch.setattr(printing, "detect_printer_capabilities",
+                        lambda printer: printing.PrinterCapabilities(
+                            "LetterQueue", True, True, ("Letter",), "Ready"))
+    from kushluk import print_profiles
+    monkeypatch.setattr(print_profiles, "validate_letter_home",
+                        lambda path: ["A4 source, not Letter"])
+    monkeypatch.setattr(printing.subprocess, "run",
+                        lambda *_a, **_kw: (_ for _ in ()).throw(
+                            AssertionError("Printer must not receive wrong paper geometry")))
+    path = tmp_path / "a4-source.pdf"
+    path.write_bytes(b"%PDF-1.4\n")
+    result = print_pdf(path, "LetterQueue", execute=True, media="Letter")
+    assert not result.success
+    assert "four-page Letter" in result.detail

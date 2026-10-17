@@ -1,4 +1,4 @@
-# A4/A3 physical print verification
+# A4/US Letter/A3 physical print verification
 
 Kushluk can verify print geometry and imposition in software. **Physical
 paper handling has not been verified by CI.** A CUPS job marked "submitted"
@@ -17,6 +17,7 @@ The generator neither fetches RSS/calendar/weather nor contacts CUPS/SMTP.
 It writes:
 
 - `kushluk-proof-a4.pdf` — four logical, portrait A4 pages.
+- `kushluk-proof-letter.pdf` — four portrait US Letter (612 × 792 pt) pages, proportionally fitted from the canonical A4 artwork.
 - `kushluk-proof-a3.pdf` — two imposed A3 landscape sides; outside `4 | 1`,
   inside `2 | 3`.
 - `kushluk-proof.html` — the synthetic editorial template source.
@@ -36,6 +37,12 @@ on the expected physical sheets, correct up/down orientation, right page
 reading order, and that the footer/rules have safe margins. Test simplex
 separately if the printer lacks duplex support.
 
+## US Letter acceptance
+
+Use **8.5 × 11 in US Letter** stock with the generated `kushluk-proof-letter.pdf` at actual size, without any automatic printer-side fit, cropping or media substitution. Confirm the physical page dimensions, four logical page numbers, margins, text legibility, long-edge duplex or single-sided fallback, and correct page order. The Letter variant scales the canonical A4 design proportionally, so its text is slightly smaller. An A4 PDF sent to a Letter queue is not a valid substitute.
+
+Check `kushluk inspect-print --profile letter-home --pdf output/print-proof/kushluk-proof-letter.pdf --output-dir output/letter-inspection` before the actual trial, and keep the original offline proof and SHA-256 linked to the evidence.
+
 ## A3 folded acceptance
 
 Use A3 landscape paper, actual size, and start with duplex short-edge.
@@ -51,8 +58,7 @@ may differ.
 For each printer/profile include model, firmware, CUPS queue name, macOS
 or Linux and version, driverless IPP/AirPrint vs vendor driver, duplex option,
 paper stock/weight, margins, actual-size setting, photographs of both sides,
-whether fold/binding works and any clipped text. Compare at least one A4
-and one A3 sample if hardware permits. If no A3 printer is available,
+whether fold/binding works and any clipped text. Compare A4 and Letter on their actual stock when possible, and A3 if hardware permits. If no A3 printer is available,
 record the test as **blocked**, not passed.
 
 Do not enable a daily auto-print schedule before physical output, queue

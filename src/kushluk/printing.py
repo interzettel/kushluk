@@ -104,13 +104,33 @@ def print_pdf(
 
     capabilities = detect_printer_capabilities(printer)
     resolved = capabilities.printer or printer
-    if media not in {"A4", "A3"} or duplex_edge not in {"long", "short"}:
+    if media not in {"A4", "A3", "Letter"} or duplex_edge not in {"long", "short"}:
         return PrintResult(True, False, "Unsupported print media or duplex edge.", printer=resolved)
     if require_duplex and not capabilities.duplex_supported:
         return PrintResult(
             True, False, "Selected print profile needs a confirmed duplex-capable printer.",
             printer=resolved,
         )
+    if media == "Letter":
+        if not capabilities.available:
+            return PrintResult(True, False, "Letter printer availability is unconfirmed.",
+                               printer=resolved)
+        if not any(_is_letter_media(value) for value in capabilities.media_options):
+            return PrintResult(True, False,
+                               "Printer does not advertise US Letter media; refusing submission.",
+                               printer=resolved)
+        # Do not fake Letter support by passing an A4 PDF with media=Letter.
+        # Verify geometry and numbered page identity again at the print boundary.
+        try:
+            from kushluk.print_profiles import validate_letter_home
+            if validate_letter_home(pdf_path):
+                return PrintResult(True, False,
+                                   "Selected PDF is not a validated four-page Letter edition.",
+                                   printer=resolved)
+        except (ImportError, OSError, ValueError):
+            return PrintResult(True, False,
+                               "Letter PDF validation unavailable; refusing submission.",
+                               printer=resolved)
     if media == "A3":
         if not capabilities.available:
             return PrintResult(True, False, "A3 printer is unavailable or offline.", printer=resolved)
@@ -157,6 +177,11 @@ def print_pdf(
         printer=resolved,
         duplex_used=duplex_used,
     )
+
+
+def _is_letter_media(option: str) -> bool:
+    token = option.lower().lstrip("*")
+    return token in {"letter", "na_letter"} or token.startswith("na_letter_")
 
 
 def _preferred_printer(printer: str | None, lpstat: str | None) -> str | None:
