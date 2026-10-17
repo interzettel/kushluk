@@ -30,7 +30,8 @@ def record_day(settings, day, *, seconds=180, status="completed", secret=None):
     folder = settings.archive_dir / f"{day:%Y%m%d}-001"
     folder.mkdir(parents=True, exist_ok=True)
     start = datetime.combine(day, time(5, 45), tzinfo=timezone.utc)
-    stamp = lambda diff: (start + timedelta(seconds=diff)).isoformat()
+    def stamp(diff):
+        return (start + timedelta(seconds=diff)).isoformat()
     events = [
         {"stage": "started", "at": stamp(0)},
         {"stage": "sources_complete", "at": stamp(20)},
