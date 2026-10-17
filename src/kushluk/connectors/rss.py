@@ -59,6 +59,8 @@ class RSSConnector:
                             importance=0.55,
                             freshness=_freshness(published_iso),
                             novelty=0.7,
+                            metadata={"origin_id": candidate_id, "rights_mode": "reference-only",
+                                      "transform_mode": "source-pointer"},
                         )
                     )
             except (FeedNetworkError, ET.ParseError, ValueError) as exc:
