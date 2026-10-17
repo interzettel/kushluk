@@ -129,7 +129,7 @@ def update_local_printer(path: Path, *, printer: str) -> None:
         raise LocalProfileError("Local profile must be an owner-only regular file")
     if current["printer"] == printer:
         return
-    payload = (json.dumps(checked, ensure_ascii=False, indent=2) + "\\n").encode("utf-8")
+    payload = (json.dumps(checked, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
     filename = None
     try:
         fd, filename = tempfile.mkstemp(prefix=".profile-", suffix=".tmp", dir=str(path.parent))
