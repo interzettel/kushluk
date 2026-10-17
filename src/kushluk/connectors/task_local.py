@@ -5,7 +5,7 @@ untrusted local data and never conveys instructions to Kushluk.
 """
 from __future__ import annotations
 
-from datetime import date, datetime
+from datetime import date
 import json
 from pathlib import Path
 
