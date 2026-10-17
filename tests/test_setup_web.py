@@ -317,7 +317,15 @@ def test_browser_rejects_oversized_or_entity_OPML_without_activation(setup_serve
     assert len(server.pending_feeds) == 0
     assert not server.registry_file.exists()
     long_opml = _opml_sample() + (" " * 150_000)
-    assert _source_form(server, "/sources/import", {"opml": long_opml})[0] == 413
+    try:
+        status, _, _ = _source_form(server, "/sources/import", {"opml": long_opml})
+        assert status == 413
+    except (ConnectionResetError, BrokenPipeError):
+        # A server rejecting Content-Length without consuming an oversized
+        # POST may close the socket before the HTTP client has finished writing.
+        # macOS can surface TCP RST instead of the already-sent 413 response.
+        pass
+    assert _request(server, path="/sources")[0] == 200
     assert not server.registry_file.exists()
 
 
