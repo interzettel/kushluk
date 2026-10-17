@@ -75,7 +75,7 @@ def _host_attestation(value: object) -> bool:
         return False
 
 
-def _receipts(receipts_dir: Path) -> tuple[dict[tuple[str, int], list[dict]], int]:
+def _receipts(receipts_dir: Path) -> tuple[dict[tuple[str, int], list[dict]], int, int]:
     if receipts_dir.is_symlink() or not receipts_dir.is_dir():
         raise HostTrialReviewError("receipt_directory_unavailable")
     try:
@@ -86,6 +86,7 @@ def _receipts(receipts_dir: Path) -> tuple[dict[tuple[str, int], list[dict]], in
         raise HostTrialReviewError("receipt_directory_exceeds_100_entries")
     indexed: dict[tuple[str, int], list[dict]] = {}
     invalid = 0
+    out_of_scope = 0
     for path in paths:
         data = _local_file_bytes(path, MAX_RECEIPT_BYTES) if path.suffix == ".json" else None
         if data is None:
@@ -97,11 +98,29 @@ def _receipts(receipts_dir: Path) -> tuple[dict[tuple[str, int], list[dict]], in
             invalid += 1
             continue
         if not _host_attestation(payload):
-            invalid += 1
+            # Other recorded hardware proofs and legitimate fail/blocked host
+            # outcomes are not matches, but must not be mislabeled as corrupt.
+            if (isinstance(payload, dict)
+                    and type(payload.get("schema_version")) is int
+                    and payload["schema_version"] == 1
+                    and payload.get("kind") in {
+                        "paper-a4", "paper-a3", "epub-reader", "host-resume"
+                    }
+                    and payload.get("operator_reported_result") in {
+                        "pass", "fail", "blocked"
+                    }
+                    and payload.get("independently_verified") is False
+                    and payload.get("release_gate_accepted") is False
+                    and payload.get("attestation") ==
+                    "operator-self-report; not independently validated"
+                    and _sha_entry(payload.get("artifact"))):
+                out_of_scope += 1
+            else:
+                invalid += 1
             continue
         key = (payload["artifact"]["sha256"], payload["artifact"]["bytes"])
         indexed.setdefault(key, []).append(payload)
-    return indexed, invalid
+    return indexed, invalid, out_of_scope
 
 
 def review_host_trial(
@@ -123,7 +142,7 @@ def review_host_trial(
         ZoneInfo(timezone)
     except (ZoneInfoNotFoundError, ValueError, TypeError) as exc:
         raise HostTrialReviewError("invalid_timezone") from exc
-    matching, invalid = _receipts(receipts_dir)
+    matching, invalid, out_of_scope = _receipts(receipts_dir)
     settings = Settings(archive_dir=archive_root, timezone=timezone)
     rows: list[dict] = []
     matched: set[tuple[str, int]] = set()
@@ -205,6 +224,7 @@ def review_host_trial(
             len(items) for key, items in matching.items() if key not in matched
         ),
         "invalid_or_unsupported_receipts": invalid,
+        "other_receipts_out_of_scope": out_of_scope,
         "days": rows,
         "independently_verified": False,
         "unattended_host_verified": False,
