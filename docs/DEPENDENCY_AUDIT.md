@@ -23,6 +23,12 @@ The existing native macOS CI job also records optional `pkg-config --modversion`
 
 **Interpretation:** a passing Python advisory scan only means the dependencies resolved by that workflow had no published findings from its configured vulnerability service at that time. It is not an SBOM, review of assets/native licences, assurance of zero vulnerabilities, proof of source permissions, or approval to publish.
 
+## 17 October 2026 advisory finding and remediation candidate
+
+The **first live scan** on [PR #124, run 39044303399](https://github.com/interzettel/kushluk/actions/runs/39044303399) **failed for a real finding**, not a scanner error. The isolated PDF-extra install resolved **WeasyPrint 69.0**, with two published identifiers (`PYSEC-2026-3940` / `CVE-2026-55073`; `PYSEC-2026-4311` / `CVE-2026-106443`). The advisory database listed **70.0** as the fixed version for both; upstream explicitly describes 70.0 as a security release, including EPS blocking and URL-fetcher propagation fixes. See [upstream changelog](https://github.com/Kozea/WeasyPrint/blob/main/docs/changelog.rst).
+
+The code's previous dependency bound `weasyprint>=62,<70` prevented pip from selecting the security fix. PR #124 changes this to **`weasyprint>=70,<71`**. This is a remediation **candidate** until the updated advisory workflow and full four-page Linux/macOS PDF regression matrix have passed. We have not reproduced an exploit in Kushluk, and dependency advisories are not evidence that any user has been compromised. Runtime still requires native font/lib inspection and restricted untrusted assets.
+
 ## What remains before publishing anything
 
 - Inspect each transitive Python distribution's actual license and retained notices; verify bundled code/assets/fonts and any incompatible terms.
