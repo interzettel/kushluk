@@ -13,6 +13,7 @@ from kushluk.connectors.rss import RSSConnector
 from kushluk.connectors.weather import OpenMeteoWeatherConnector
 from kushluk.delivery import send_email_edition
 from kushluk.editor import select_stories
+from kushluk.media import read_media_assignments
 from kushluk.models import DeliveryResult, Failure, FailureSeverity, Publication
 from kushluk.printing import PrintResult, print_pdf
 from kushluk.print_profiles import impose_a3_folded
@@ -106,6 +107,15 @@ def run_pipeline(
 
     # Keep a larger ranked candidate pool so the composer can replace unfit leads.
     stories = select_stories(candidates, limit=6)
+    # Images are never inferred from RSS enclosures; the owner must pin an
+    # imported, permission-approved local asset to this exact story ID.
+    if settings.media_dir is not None:
+        bindings = read_media_assignments(settings.media_dir)
+        stories = [
+            replace(story, image_asset_id=bindings[story.id])
+            if story.id in bindings else story
+            for story in stories
+        ]
     if not stories:
         failures.append(
             Failure(
