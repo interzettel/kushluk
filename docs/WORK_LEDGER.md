@@ -9,6 +9,23 @@ This is the cross-stage execution ledger for Kushluk. It records work that is de
 
 **Known ADR reconciliation issue:** accepted ADR 0015 (replaceable orchestration and agent runtime) is now indexed; two files still claim accepted ADR 0012. Resolve the duplicate under #44 before treating either variant as a uniquely canonical decision. Do not silently change accepted-ADR text.
 
+## Rights-aware owner-imported media — #50, 2026-10-17
+
+**Status:** [PR #117](https://github.com/interzettel/kushluk/pull/117) under full Linux/macOS CI review. [MEDIA_RIGHTS.md](MEDIA_RIGHTS.md) defines private-print versus shareable rights boundaries, explicit local grant/import/assignment, checksum-secured originals and text-only fallback.
+
+**Six software tasks implemented and checked, subject to final green CI:**
+
+- **IMG-01:** `MediaAsset` schema-v1 source/license/permission, SHA-256 normalized identity, attribution, alt/caption, resolution and crop/focal policy; owner must affirm `--approve-print`.
+- **IMG-04:** deterministic `lead-66x33` print slot in typed composition budget, one eligible lead on balanced or practical-heavy pages; multi-lead news covers remain deliberately text-only.
+- **IMG-05:** bounded focal crop or white-letterbox contain, and explicit fallback to the existing text article on low DPI, corrupt, missing, revoked, ineligible or unknown asset.
+- **IMG-06:** bounded caption/credit/alt metadata, printable credit/license below the figure, escaping/word wrapping, canonical source citation preserved.
+- **IMG-07:** minimum 180 DPI at 66×33 mm after crop and SHA-256 content checks, with no implicit upsampling of undersized image.
+- **IMG-08:** private content-addressed normalized originals and versioned rights record; selected immutable print crop copied into archived edition; explicit `media-remove` revocation does not silently rewrite earlier archived/distributed images.
+
+**Partial/unchecked:** IMG-02 remote provider-specific lawful acquisition deliberately not implemented; IMG-03 duplicate, hotlink, low-resolution, SVG, unknown-license and corruption checks exist, but real-world watermark detection and suitability review do not; IMG-09 synthetic shape tests and three image-bearing comparison PDFs exist, but genuine physical paper inspection/portrait editorial approval is still required. RES-IMG-01 research/legal approval remains outstanding despite a provisional written policy. Shareable rights are explicitly owner-attested, **not independently legally verified**.
+
+**Software task snapshot:** **23/90 · 25.56%** checked overall, image handling **6/9 · 66.67%**. Independent physical/product evidence **G1–G8 0/8 · 00.00%**; package stays `0.1.0`. Fixtures are original geometric artwork only, no web download or real print operation.
+
 ## Deterministic editorial composition — #51 / #21, 2026-10-17
 
 **Implementation branch:** [PR #116](https://github.com/interzettel/kushluk/pull/116), pending merge review and full PDF CI signoff. The canonical four logical A4 pages are unchanged; content planning now lives in `src/kushluk/composition.py` and [LAYOUT_COMPOSITION.md](LAYOUT_COMPOSITION.md).
@@ -180,14 +197,14 @@ Six previously unchecked tasks are now checked **for implemented software behavi
 
 ### P1 — Automated image acquisition and placement
 
-- [ ] **IMG-01** Add a first-class media asset model: source URL, local/cache path, licence/usage status, attribution, caption, alt text, aspect ratio, dimensions, focal point, crop policy, and verification state.
+- [x] **IMG-01** Add a first-class media asset model: source URL, local/cache path, licence/usage status, attribution, caption, alt text, aspect ratio, dimensions, focal point, crop policy, and verification state.
 - [ ] **IMG-02** Build image candidate acquisition for stories from original/reputable sources where lawful and technically available.
 - [ ] **IMG-03** Reject hotlink-only, low-resolution, watermarked, duplicate, or unclear-rights assets according to policy.
-- [ ] **IMG-04** Add deterministic image placement slots to the layout manifest.
-- [ ] **IMG-05** Add automatic crop/focal-point handling with safe fallbacks (`contain`, alternate crop, illustration, or text-only).
-- [ ] **IMG-06** Add caption and attribution fitting rules.
-- [ ] **IMG-07** Validate effective print resolution and prevent unusable assets from reaching print.
-- [ ] **IMG-08** Cache selected assets for reproducible archived editions.
+- [x] **IMG-04** Add deterministic image placement slots to the layout manifest.
+- [x] **IMG-05** Add automatic crop/focal-point handling with safe fallbacks (`contain`, alternate crop, illustration, or text-only).
+- [x] **IMG-06** Add caption and attribution fitting rules.
+- [x] **IMG-07** Validate effective print resolution and prevent unusable assets from reaching print.
+- [x] **IMG-08** Cache selected assets for reproducible archived editions.
 - [ ] **IMG-09** Create a fixture suite covering portrait, landscape, square, tiny, missing, and awkward-focal-point images.
 
 ### P1 — Layout grammar and template family
