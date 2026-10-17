@@ -48,6 +48,14 @@ jobs:
       - run: pytest -q
       - name: Hermetic macOS CLI + PDF smoke (no network, CUPS or SMTP)
         run: python -m tools.offline_smoke --pdf
+      - name: Generate three offline editorial archetype comparison PDFs
+        run: python -m tools.layout_compare --output-dir output/layout-compare
+      - name: Upload editorial archetype comparison kit
+        uses: actions/upload-artifact@v4
+        with:
+          name: kushluk-layout-compare-${{ matrix.runner }}
+          path: output/layout-compare/
+          retention-days: 14
       - name: Verify offline A4/A3 print-proof CLI
         run: |
           kushluk print-proof --output-dir output/print-proof
