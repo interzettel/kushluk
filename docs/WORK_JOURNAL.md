@@ -2,6 +2,16 @@
 
 A concise, dated evidence/history record for one maintainer with AI helpers. **This is not an activity-time tracker or a substitute for GitHub commits and discussions.**
 
+## 2026-10-17 — Typed editorial composition and three fixed-edition PDF variants
+
+**Issues:** #51 semantic composer and #21 print engine. **State:** PR #116 implementation under cross-platform acceptance review; **not** a hardware or visual design approval.
+
+- Implement finite archetype choice and typed semantic slot capacities; preserve source IDs and EPUB-compatible default publication structure while enabling auto-choice from the live pipeline.
+- Implement reason-coded shorten, move, demote, replace, omit and unapproved-image removal; mandatory calendar/task overcapacity is a hard failure, not a hidden deletion.
+- Implement practical half-width WeasyPrint-safe grid, six-column news layout, Unicode-safe copy limits and automated per-page text boundary/footer/font-size checks.
+- Generate three offline comparison PDFs from one immutable synthetic edition on both macOS CI architectures, with source/slot decision manifest. A4/A3 imposition, rights and physical printer assertions are **not** automatically advanced.
+- Software-only reconciliation: LAY-02/04/05/07 checked (4), ledger **17/90 = 18.89%**, eight release evidence gates **0/8**. LAY-01/03/06/08/09 and FMT-03 explicitly remain incomplete.
+
 ## 2026-10-17 — Observed stage metrics and readiness-planning software
 
 **Issue:** #47 · AUT-09/AUT-12 partial work · **Status:** implementation in review pending CI, not a real-host trial.
