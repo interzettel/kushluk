@@ -13,7 +13,7 @@ import tempfile
 from kushluk.config import Settings
 from kushluk.delivery import send_email_edition
 from kushluk.models import Publication
-from kushluk.print_profiles import validate_a3_booklet
+from kushluk.print_profiles import validate_a3_booklet, validate_letter_home
 from kushluk.printing import print_pdf
 from kushluk.validation import validate_pdf
 
@@ -84,7 +84,7 @@ def deliver_archived(
         raise ValueError("Channel must be 'print' or 'email'.")
     if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_-]{0,63}", request_id):
         raise ValueError("Request ID must be 1-64 letters/digits/_/- without paths.")
-    if print_profile not in {"a4-home", "a3-folded"}:
+    if print_profile not in {"a4-home", "letter-home", "a3-folded"}:
         raise ValueError("Unknown print profile.")
     if not acknowledge_possible_duplicate:
         return ArchiveDeliveryOutcome(
@@ -133,6 +133,11 @@ def deliver_archived(
             _require_archived_regular_file(pdf, max_bytes=30 * 1024 * 1024)
             if validate_a3_booklet(pdf):
                 raise ValueError("Archived A3 booklet failed validation.")
+        if channel == "print" and print_profile == "letter-home":
+            pdf = archive / "edition.letter.pdf"
+            _require_archived_regular_file(pdf, max_bytes=30 * 1024 * 1024)
+            if validate_letter_home(pdf):
+                raise ValueError("Archived Letter printable PDF failed validation.")
         pdf_hash = sha256(pdf.read_bytes()).hexdigest()
     except Exception as exc:
         # PDF parsers may raise custom exceptions; always fail closed and redact.
@@ -168,7 +173,8 @@ def deliver_archived(
         if channel == "print":
             result = print_pdf(
                 pdf, settings.printer, execute=True,
-                media="A3" if print_profile == "a3-folded" else "A4",
+                media={"a3-folded": "A3", "letter-home": "Letter"}.get(
+                    print_profile, "A4"),
                 duplex_edge="short" if print_profile == "a3-folded" else "long",
                 require_duplex=print_profile == "a3-folded",
             )
