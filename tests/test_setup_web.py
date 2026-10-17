@@ -61,6 +61,21 @@ def _post(server, body, headers=None, *, path="/"):
     return _request(server, "POST", path, headers=base, body=body)
 
 
+def test_home_setup_keyboard_and_screen_reader_contract(setup_server):
+    status, headers, markup = _request(setup_server)
+    assert status == 200
+    assert '<a class="skip" href="#setup-form">' in markup
+    assert '<form id="setup-form"' in markup
+    assert 'aria-label="Local home profile setup"' in markup
+    assert 'aria-describedby="location-help"' in markup
+    assert 'id="location-help"' in markup
+    assert 'aria-describedby="timezone-help"' in markup
+    assert 'id="timezone-help"' in markup
+    assert "After saving, your profile stays on this computer" in markup
+    assert "<script" not in markup
+    assert not setup_server.profile_file.exists()
+
+
 def test_only_loopback_listener_and_private_creation(setup_server):
     server = setup_server
     assert server.server_address[0] == "127.0.0.1"
