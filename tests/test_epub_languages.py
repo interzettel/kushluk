@@ -59,7 +59,7 @@ def test_xhtml_opf_and_nav_agree_on_explicit_language(tmp_path, language, second
 
 
 @pytest.mark.parametrize("language", [
-    "", "unknown language", "e_", "de"><script>", "en\n",
+    "", "unknown language", "e_", 'de"><script>', "en\n",
     "de@DE", "abcdef", "a", "en-",
     "x" * 40, None,
 ])
