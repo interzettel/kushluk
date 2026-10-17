@@ -13,6 +13,7 @@ from urllib.parse import urlencode
 
 import pytest
 
+from kushluk.config import Settings
 from kushluk.local_profile import read_local_profile
 from kushluk.printer_preflight import PrinterInventory, PrinterReadiness
 from kushluk.setup_web import SetupHTTPServer
@@ -21,8 +22,12 @@ from kushluk.source_registry import read_registry
 
 @pytest.fixture
 def browser(tmp_path):
-    server = SetupHTTPServer(tmp_path / "private" / "profile.json",
-                             registry=tmp_path / "private" / "sources.json")
+    server = SetupHTTPServer(
+        tmp_path / "private" / "profile.json",
+        registry=tmp_path / "private" / "sources.json",
+        status_settings=Settings(archive_dir=tmp_path / "archive",
+                                 output_dir=tmp_path / "output"),
+    )
     worker = Thread(target=server.serve_forever,
                     kwargs={"poll_interval": 0.01}, daemon=True)
     worker.start()
@@ -112,13 +117,14 @@ def test_synthetic_first_reader_journey_u1_to_u6(browser, monkeypatch):
     status, done = request(server, fields={
         "csrf": token, "home_name": "Synthetic home", "latitude": "50.9",
         "longitude": "6.9", "timezone": "Europe/Berlin",
-        "paper_size": "a4",
+        "paper_size": "letter",
     })
     assert status == 201
     assert "No sources were enabled and no paper was printed" in done
     profile = read_local_profile(server.profile_file)
     assert profile["printer"] is None
     assert profile["home_name"] == "Synthetic home"
+    assert profile["paper_size"] == "letter"
     assert (server.profile_file.stat().st_mode & 0o777) == 0o600
 
     # U3: proposing does not activate; approving one requires fresh checkbox.
@@ -167,6 +173,7 @@ def test_synthetic_first_reader_journey_u1_to_u6(browser, monkeypatch):
     status, printer_page = request(server, "/printer")
     assert status == 200
     assert "Discover local printer queues" in printer_page
+    assert '<option value="letter" selected>' in printer_page
     assert calls == []
     assert request(server, "/printer/save", {
         "csrf": token, "queue": "Local_A4", "consent": "yes",
@@ -190,6 +197,13 @@ def test_synthetic_first_reader_journey_u1_to_u6(browser, monkeypatch):
     })[0] == 200
     assert read_local_profile(server.profile_file)["printer"] == "Local_A4"
     assert calls == ["discover", ("check", "Local_A4")]
+
+    # U6: confirm local read-only status reports no real edition or printing.
+    status, morning = request(server, "/status")
+    assert status == 200
+    assert "Not started" in morning
+    assert "Validated archive not established" in morning
+    assert "no" in morning.lower()  # no hardware proof is claimed
 
     # U6: the flow must be truthful about disabled operations.
     assert "will never submit a print job" in printer_page

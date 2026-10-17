@@ -19,11 +19,11 @@ A separate synthetic integration regression, `tests/test_first_reader_journey.py
 | ID | Task posed to the reader | Observable acceptance | Maximum allotted |
 |---|---|---|---|
 | U1 | Install/start the local program using documented instructions | Open the loopback setup page without developer assistance; errors retained | 15 minutes |
-| U2 | Set a home label, *approximate* coordinates and timezone | Create a private profile; explain why street address is unnecessary | 5 minutes |
+| U2 | Set a home label, *approximate* coordinates and timezone | Create a private profile; identify DIN A4 / US Letter choice and explain why street address is unnecessary | 5 minutes |
 | U3 | Review a synthetic OPML list, including one untrusted provider | Accurately distinguish preview from approval; activate only one intentionally | 7 minutes |
 | U4 | Pause and resume an approved source | Pause leaves it disabled; resume requires distinct permission acknowledgment | 4 minutes |
-| U5 | Inspect printer queues without using paper | Explicitly start discovery; select and check a queue, optionally save that queue with separate consent if a profile exists, or understand a missing-CUPS result; no print submission | 6 minutes |
-| U6 | Explain what has **not** happened | Understand that no unattended edition, private article copying or printer proof has occurred | 3 minutes |
+| U5 | Inspect printer queues without using paper | Confirm chosen Letter paper remains in settings; explicitly start discovery, select/check a queue or understand missing CUPS; distinguish preference from queue media support; no printing | 6 minutes |
+| U6 | Explain what has **not** happened | Use read-only `/status`; understand that no unattended edition, private article copying, real printer proof or notification delivery has occurred | 3 minutes |
 
 If the printer is not configured, **U5 may succeed with an appropriate no-printer explanation**; do not pretend capability data was available. Failures of packaging or setup count as U1 problems rather than skipping the task.
 
@@ -41,7 +41,7 @@ The observer must note mismatches between expected and actual behavior, not “c
 
 ## Proposed acceptance rule (requires owner approval)
 
-A first-reader pilot counts as **evidence collected**, not a completed release gate, only when all six task records contain actual observations; no consent, surprise feed activation, secret leak, source text copying or spontaneous print job occurred; and the participant is independent. **Provisional product target**: U2/U3/U4/U5/U6 unassisted; U1 may be assisted once for packaging if explicitly logged and a follow-up install issue is filed. Any inability to distinguish preview and approval, copy permissions, or paper submission **blocks F-008 acceptance regardless of total task score**. UX/keyboard/screen-reader accessibility must be evaluated in a dedicated second pilot; a single novice participant does not establish accessibility.
+A first-reader pilot counts as **evidence collected**, not a completed release gate, only when all six task records contain actual observations; no consent, surprise feed activation, secret leak, source text copying or spontaneous print job occurred; and the participant is independent. **Provisional product target**: U2/U3/U4/U5/U6 unassisted; U1 may be assisted once for packaging if explicitly logged and a follow-up install issue is filed. Any inability to distinguish preview and approval, copy permissions, or paper submission **blocks F-008 acceptance regardless of total task score**. UX/keyboard/screen-reader accessibility must be evaluated in a dedicated second pilot using [ACCESSIBILITY_PILOT.md](ACCESSIBILITY_PILOT.md); a single novice participant does not establish accessibility.
 
 Do **not** mark G1–G8 / F-008 “accepted” or edit task percentages on a self-attested recording. A reviewer must inspect anonymized evidence and the relevant repository issues.
 

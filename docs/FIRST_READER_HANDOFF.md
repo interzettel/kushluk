@@ -10,15 +10,15 @@
 >
 > **U1: Start.** On Linux or macOS, open the repository checkout and follow the commands below. Tell the observer where you get stuck.
 >
-> **U2: Home.** In the browser, save the fictional home settings. Notice what the page says was *not* activated.
+> **U2: Home.** In the browser, save the fictional home settings. Observe the recommended **DIN A4 and US Letter** paper sizes; choose **US Letter** for this controlled trial, even if you normally use A4. Describe what changes and what is *not* activated.
 >
 > **U3: Sources.** On “Review your sources,” paste the fictional OPML below, preview it, and approve **only Trusted Example**, not Untrusted Example. Explain what you think approval permits.
 >
 > **U4: Pause.** Pause the approved feed, then resume it. Observe whether fresh confirmation is required.
 >
-> **U5: Printer.** Open the printer step. Only when you choose, discover local printer queues. If a queue is present, check it and optionally save it with the separate confirmation. If none are reported, explain the result. **Do not print anything.**
+> **U5: Printer.** Open the printer step, confirm that US Letter is still selected, and explain whether the printer itself advertises Letter paper. Only when you choose, discover local printer queues. If a queue is present, check it and optionally save it with the separate confirmation. If none are reported, explain the result. **Do not print anything.**
 >
-> **U6: Finish.** Explain what this process did *not* do: subscriptions, copying paid articles, contacting feeds, scheduling a newspaper or proving a physical print.
+> **U6: Finish.** Open the local **Morning status** page (`/status`). Explain why “Not started” or a queued print would *not* prove physical delivery, and what setup did *not* do: copy paid articles, contact feeds, schedule a newspaper or print on paper.
 
 ### Starting commands (Linux/macOS)
 
@@ -53,7 +53,7 @@ Those addresses are reserved examples, not working subscriptions. Import/preview
 
 ## Observer-facing evidence
 
-Before starting, obtain explicit consent to observation and note any separate consent to share redacted findings. Do not capture audio, video, screen, home address, personal account data or real printed editions without separate permission. Don't answer U6 for the participant. **U1 includes installation difficulty**; installing it on their behalf is assisted, not unassisted.
+Before starting, obtain explicit consent to observation and note any separate consent to share redacted findings. Do not capture audio, video, screen, home address, personal account data or real printed editions without separate permission. Don't answer U6 for the participant. **U1 includes installation difficulty**; installing it on their behalf is assisted, not unassisted. Record whether the reader understands the A4/Letter distinction and the read-only Morning status explanation; confusion or hints belong in the private U2, U5 and U6 notes, not as invented task passes.
 
 Record task outcome, measured time, hints, and observed friction in a **private local copy** of [FIRST_READER_TEMPLATE.json](FIRST_READER_TEMPLATE.json). Replace its example fields with actual anonymous codes, observed OS, local date and **real 40-character source commit**. After an actual session change `status` from `template-not-observation` to `observation`; fill all U1–U6 records and the five comprehension responses, including failures/blocks. Keep `independently_verified: false`, `reviewer_signoff: not_reviewed` and `release_gate_accepted: false`. Do not commit or upload the filled record.
 
