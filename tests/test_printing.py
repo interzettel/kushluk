@@ -148,6 +148,8 @@ def test_letter_driverless_queue_preflight_then_submits_matching_media(tmp_path,
                         lambda printer: printing.PrinterCapabilities(
                             "TestQueue", True, True,
                             ("iso_a4_210x297mm", "na_letter_8.5x11in"), "Ready"))
+    from kushluk import print_profiles
+    monkeypatch.setattr(print_profiles, "validate_letter_home", lambda path: [])
     calls = []
     def fake_run(cmd, **kwargs):
         calls.append(cmd)
@@ -176,3 +178,23 @@ def test_letter_submission_rejects_a4_only_or_unknown_queue_without_side_effect(
         result = print_pdf(file, "Test", execute=True, media="Letter")
         assert not result.success
         assert result.attempted
+
+
+def test_letter_pdf_geometry_mismatch_blocks_even_letter_capable_queue(
+    tmp_path, monkeypatch,
+):
+    monkeypatch.setattr(printing.shutil, "which", lambda name: "/usr/bin/lp")
+    monkeypatch.setattr(printing, "detect_printer_capabilities",
+                        lambda printer: printing.PrinterCapabilities(
+                            "LetterQueue", True, True, ("Letter",), "Ready"))
+    from kushluk import print_profiles
+    monkeypatch.setattr(print_profiles, "validate_letter_home",
+                        lambda path: ["A4 source, not Letter"])
+    monkeypatch.setattr(printing.subprocess, "run",
+                        lambda *_a, **_kw: (_ for _ in ()).throw(
+                            AssertionError("Printer must not receive wrong paper geometry")))
+    path = tmp_path / "a4-source.pdf"
+    path.write_bytes(b"%PDF-1.4\n")
+    result = print_pdf(path, "LetterQueue", execute=True, media="Letter")
+    assert not result.success
+    assert "four-page Letter" in result.detail
