@@ -34,9 +34,15 @@ Each selected `Story` may now contain bounded `StoryProvenance` entries: candida
 
 No automatic claim assertion, invented summary or model-generated citation is authorized by these states. Every external title, email subject, snippet and candidate is **untrusted data**. It may be safely rendered as escaped article text, but never evaluated as a CLI instruction, API key, tool call, email destination or permission change. Historical edition and print manifest remain local; do not log private URLs, source bodies or credentials. Test fixtures inject hostile web and mail instructions and assert inert handling.
 
+## Authorized Google provider adapters (optional)
+
+Local **separate** OAuth flows can now connect Gmail `gmail.metadata` for *header-only* newsletter review and Google Tasks `tasks.readonly` for due/overdue items. `gmail-discover` requires `--acknowledge-metadata-read`; it stores no message bodies and never enables newsletter ingestion. `KUSHLUK_GOOGLE_TASKS_VAULT` opts Google Tasks into a real edition. Tokens remain on the owner's machine and can be independently removed. There are no app-owned/pooled credentials. The code has mocked provider tests but no real account OAuth acceptance, so #48's connected-mail acceptance remains open. Follow the exact, scoped instructions and revocation procedure in [GOOGLE_PROVIDERS.md](GOOGLE_PROVIDERS.md).
+
+Exact DOI bibliographic title/year claims may be checked via `crossref-check`, which returns explicit match/conflict/abstain. A positive match still labels scientific conclusions and general news claims **unverified**: publisher-deposited metadata is not independent validation of a research result.
+
 ## Newsletter discovery — bounded, local, inert
 
-The first step is **not live mailbox OAuth**. The owner may locally export at most 250 **header-only** metadata records from the last 1–60 days (30 default) into a UTF-8 JSON file:
+The local export flow remains an offline alternative to the **new, separately consented Gmail metadata-only OAuth adapter**. The owner may locally export at most 250 **header-only** metadata records from the last 1–60 days (30 default) into a UTF-8 JSON file:
 
 ```json
 {
@@ -64,6 +70,8 @@ Untrusted webpage/email/recipe material must never cross the line into executabl
 No paid AI/model APIs, mail connections or subscription services are added. **Do not display 'zero cost' as a measured value**: print paper/ink, host electricity and optional external services still carry unknown or estimated costs. Complete #16 cost accounting, budgets and independent fact-checking remain open.
 
 ## Acceptance outstanding
+
+The new Gmail and Google Tasks OAuth code has not been exercised with a **real authorized user account** in CI, since the owner must supply and approve a local desktop client. The Crossref single-DOI endpoint is implemented and fixture-tested; a direct live check in this execution environment was blocked by DNS/network access. Treat that as missing acceptance evidence, not as a success.
 
 - #49: real authorized task-provider session, public research source quality and recency review, alternative Reddit/HN adapters, source disagreement/claim-level independent checks and travel signals
 - #48: scoped connected-mail provider integration, real inbox discovery consent and false-positive review, practical source permissions for derivatives and direct copy

@@ -9,6 +9,14 @@ This is the cross-stage execution ledger for Kushluk. It records work that is de
 
 **Known ADR reconciliation issue:** accepted ADR 0015 (replaceable orchestration and agent runtime) is now indexed; two files still claim accepted ADR 0012. Resolve the duplicate under #44 before treating either variant as a uniquely canonical decision. Do not silently change accepted-ADR text.
 
+## Google OAuth source adapters and exact DOI metadata checking — #49/#48/#16, 2026-10-17
+
+[PR #119](https://github.com/interzettel/kushluk/pull/119) adds a local Gmail metadata OAuth client, a separate Google Tasks read-only client wired into real editions, limited cloud HTTP queries and a conservative exact Crossref bibliographic checker. See [GOOGLE_PROVIDERS.md](GOOGLE_PROVIDERS.md).
+
+**Verification boundary:** the adapters are real API-shaped implementations, but both local OAuth grants require the owner to create their own Google Cloud client, explicitly consent and run a real-account test. This session had no such grant and no live Gmail/Tasks acceptance. Crossref direct live probe could not complete due to local network/DNS restrictions; fixture tests cover match/conflict/abstain. No generic factual claims are marked verified. Gmail review remains inactive, paid derivatives and private copy disabled.
+
+**Ledger unchanged: 26/90 · 28.89%; SRC 3/10 · 30.00%.** SRC-01 still awaits real connected-mail acceptance; SRC-08 still awaits claim-level verification across independent primary evidence; all gates G1–G8 0/8. Version 0.1.0 unchanged.
+
 ## Editorial input adapters, conservative provenance and local newsletter discovery — #49/#48/#16, 2026-10-17
 
 [PR #118](https://github.com/interzettel/kushluk/pull/118) adds optional task/research inputs and metadata-only newsletter proposals. [EDITORIAL_INPUTS.md](EDITORIAL_INPUTS.md) documents the rights and trust boundaries.

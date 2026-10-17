@@ -41,11 +41,19 @@ def discover(
     path: Path, *, days: int = 30, now: datetime | None = None,
 ) -> list[dict]:
     """Owner-exported headers; require repeated sender with newsletter signal."""
+    data = _private_json(path)
+    if data.get("schema_version") != 1:
+        raise NewsletterError("invalid_mail_header_schema")
+    return discover_headers(data.get("headers"), days=days, now=now)
+
+
+def discover_headers(
+    rows: object, *, days: int = 30, now: datetime | None = None,
+) -> list[dict]:
+    """No storage of Gmail header values; same validation for live/local input."""
     if type(days) is not int or not 1 <= days <= MAX_DISCOVERY_DAYS:
         raise NewsletterError("invalid_mail_window")
-    data = _private_json(path)
-    rows = data.get("headers")
-    if data.get("schema_version") != 1 or not isinstance(rows, list) or len(rows) > MAX_HEADERS:
+    if not isinstance(rows, list) or len(rows) > MAX_HEADERS:
         raise NewsletterError("invalid_mail_header_schema")
     reference = (now or datetime.now(timezone.utc)).astimezone(timezone.utc)
     cutoff = reference - timedelta(days=days)
