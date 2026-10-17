@@ -81,3 +81,11 @@ kushluk sources-preflight --network --limit 5
 An opt-in network preflight uses the same guarded public-only RSS transport as publication. It only fetches the approved reference-only feed metadata required to tell whether headlines are available; it **does not approve new sources, create a four-page edition, write to the archive, contact disabled sources, or store article bodies**. Each result refers to a stable hashed source ID and one of `reachable`, `empty`, `unsafe_or_unavailable`, `invalid_feed_xml`, `not_checked`, or `disabled`, never its private subscription URL, raw HTTP errors or headline text.
 
 The CLI exits 2 when any **checked** source fails, useful for optional manual troubleshooting. It does not call the network unless you pass `--network`; you can check at most ten approved feeds in one invocation to avoid surprise provider traffic. A good result verifies **reachability**, not source licensing, content accuracy, PDF print quality, or unattended scheduling. No remote telemetry is sent by the diagnostic beyond each explicitly requested feed access.
+
+### New readers: sources are opt-in
+
+Once you create a **local home profile** with `kushluk setup` or `kushluk setup-web`, Kuşluk will no longer insert the historical Hacker News example RSS feed as an implicit source. Your source list starts **empty** until you explicitly approve one, and pausing the last feed leaves it empty. Importing an OPML file *for review* alone never activates a feed.
+
+Compatibility: older installations that have **neither a local profile nor a source registry** retain the legacy example feed, so this increment does not silently break existing scripted demonstrations. An explicit `KUSHLUK_RSS_URLS` setting remains authoritative and follows the same reference-only content restrictions. Anyone configuring that setting is independently directing the program to retrieve those feed URLs.
+
+This is a source-selection safety default, not a confirmation of publisher reuse rights or remote service hardening beyond the RSS transport.
