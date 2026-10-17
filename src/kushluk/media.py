@@ -203,10 +203,17 @@ def prepare_placement(store: Path, asset_id: str, story_id: str) -> MediaPlaceme
         dpi = min(crop_w * 25.4 / SLOT_WIDTH_MM, crop_h * 25.4 / SLOT_HEIGHT_MM)
     else:
         bounds = (0, 0, image.width, image.height)
-        cropped = ImageOps.contain(image, (image.width, image.height))
-        # Containment can make the content physically smaller, improving DPI.
-        dpi = min(image.width * 25.4 / SLOT_WIDTH_MM,
-                  image.height * 25.4 / SLOT_HEIGHT_MM)
+        # White letterboxing preserves the entire source, no stretching or focal cut.
+        scale = min(image.width / target_w, image.height / target_h)
+        dpi = scale * MIN_DPI
+        if dpi < MIN_DPI:
+            raise MediaError("image_below_print_dpi")
+        contained = ImageOps.contain(image, (target_w, target_h))
+        cropped = Image.new("RGB", (target_w, target_h), "#ffffff")
+        cropped.paste(contained, (
+            (target_w - contained.width) // 2,
+            (target_h - contained.height) // 2,
+        ))
     if dpi < MIN_DPI or cropped.width < target_w or cropped.height < target_h:
         # For contain, compare intrinsic pixel density in each slot dimension.
         raise MediaError("image_below_print_dpi")
@@ -242,7 +249,15 @@ def render_bytes(store: Path, placement: MediaPlacement) -> bytes:
         if placement.crop_policy == "focal-crop":
             image = image.crop(placement.crop_box)
         else:
-            image = ImageOps.contain(image, (image.width, image.height))
+            target_w = round(SLOT_WIDTH_MM / 25.4 * MIN_DPI)
+            target_h = round(SLOT_HEIGHT_MM / 25.4 * MIN_DPI)
+            fitted = ImageOps.contain(image, (target_w, target_h))
+            letterbox = Image.new("RGB", (target_w, target_h), "#ffffff")
+            letterbox.paste(fitted, (
+                (target_w - fitted.width) // 2,
+                (target_h - fitted.height) // 2,
+            ))
+            image = letterbox
         output = BytesIO()
         image.save(output, format="PNG", optimize=False)
     data = output.getvalue()
