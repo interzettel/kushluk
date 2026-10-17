@@ -34,6 +34,7 @@ class PrinterReadiness:
     a3: bool
     duplex: bool
     note: str
+    letter: bool = False
 
 
 def discover_queues() -> PrinterInventory:
@@ -73,12 +74,15 @@ def check_queue(name: str, inventory: PrinterInventory) -> PrinterReadiness:
     options = tuple(value.lower() for value in capabilities.media_options)
     a4 = any(value == "a4" or value.startswith("iso_a4_") for value in options)
     a3 = any(value == "a3" or value.startswith("iso_a3_") for value in options)
+    letter = any(value in {"letter", "na_letter"} or value.startswith("na_letter_")
+                 for value in options)
     status = "reported-ready" if capabilities.available else "unconfirmed"
     return PrinterReadiness(
         name, status, a4, a3, capabilities.duplex_supported,
         "CUPS reports a usable queue. No paper has been printed or inspected."
         if capabilities.available
         else "Queue availability is not confirmed. Check CUPS and printer power.",
+        letter=letter,
     )
 
 
@@ -113,6 +117,7 @@ def render_printer_review(
             '<div class="status" role="status"><h2>' + escape(readiness.name)
             + '</h2><p>Queue: ' + escape(readiness.status)
             + '</p><p>A4 advertised: ' + ("yes" if readiness.a4 else "not confirmed")
+            + ' · Letter advertised: ' + ("yes" if readiness.letter else "not confirmed")
             + ' · A3 advertised: ' + ("yes" if readiness.a3 else "not confirmed")
             + ' · Duplex advertised: '
             + ("yes" if readiness.duplex else "not confirmed")
@@ -173,7 +178,7 @@ def render_printer_review(
         '<button type="submit">Discover local printer queues</button></form>'
         + listing + saved + result
         + '<p><strong>What this does not prove:</strong> that the printer is powered on, '
-        'has paper, prints A4/A3 correctly, handles duplex alignment, or works after reboot. '
+        'has paper, prints A4/Letter/A3 correctly, handles duplex alignment, or works after reboot. '
         'Complete a real hardware trial separately.</p>'
         '<p><a href="/sources">Previous: source permissions</a> · '
         '<a href="/">Home profile</a></p></body></html>'
