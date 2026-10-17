@@ -52,7 +52,7 @@
 <text x="847" y="595" fill="#6D6961" font-size="12" font-weight="600" letter-spacing="0" font-family="Georgia,Times New Roman,serif">0/8 VERIFIED · 00.00%</text>
 <rect x="68" y="602" width="1024" height="1" rx="0" fill="#BDB6A8"/>
 <text x="68" y="642" fill="#1A1A1A" font-size="19" font-weight="700" letter-spacing="0.8" font-family="Georgia,Times New Roman,serif">02  /  OPERATIONAL TASKS</text>
-<text x="802" y="642" fill="#1A1A1A" font-size="15" font-weight="700" letter-spacing="0" font-family="Georgia,Times New Roman,serif">10 / 90 CHECKED · 11.11%</text>
+<text x="802" y="642" fill="#1A1A1A" font-size="15" font-weight="700" letter-spacing="0" font-family="Georgia,Times New Roman,serif">12 / 90 CHECKED · 13.33%</text>
 <text x="68" y="668" fill="#6D6961" font-size="14" font-weight="400" letter-spacing="0" font-family="Georgia,Times New Roman,serif">Checkboxes from the work ledger, not a product-completion estimate.</text>
 <text x="68" y="702" fill="#1A1A1A" font-size="15" font-weight="500" letter-spacing="0" font-family="Georgia,Times New Roman,serif">Project records</text>
 <text x="412" y="702" fill="#6D6961" font-size="13" font-weight="600" letter-spacing="0" font-family="Georgia,Times New Roman,serif">4 / 5 · 80.00%</text>
@@ -63,9 +63,9 @@
 <rect x="586" y="711" width="474" height="7" rx="3" fill="#DDD6C9"/>
 <rect x="586" y="711" width="189.6" height="7" rx="3" fill="#1A1A1A"/>
 <text x="68" y="746" fill="#1A1A1A" font-size="15" font-weight="500" letter-spacing="0" font-family="Georgia,Times New Roman,serif">Unattended runs</text>
-<text x="412" y="746" fill="#6D6961" font-size="13" font-weight="600" letter-spacing="0" font-family="Georgia,Times New Roman,serif">2 / 13 · 15.38%</text>
+<text x="412" y="746" fill="#6D6961" font-size="13" font-weight="600" letter-spacing="0" font-family="Georgia,Times New Roman,serif">4 / 13 · 30.77%</text>
 <rect x="68" y="755" width="474" height="7" rx="3" fill="#DDD6C9"/>
-<rect x="68" y="755" width="72.92" height="7" rx="3" fill="#1A1A1A"/>
+<rect x="68" y="755" width="145.85" height="7" rx="3" fill="#1A1A1A"/>
 <text x="586" y="746" fill="#1A1A1A" font-size="15" font-weight="500" letter-spacing="0" font-family="Georgia,Times New Roman,serif">Source connectors</text>
 <text x="930" y="746" fill="#6D6961" font-size="13" font-weight="600" letter-spacing="0" font-family="Georgia,Times New Roman,serif">0 / 10 · 00.00%</text>
 <rect x="586" y="755" width="474" height="7" rx="3" fill="#DDD6C9"/>

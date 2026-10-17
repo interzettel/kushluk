@@ -2,6 +2,15 @@
 
 A concise, dated evidence/history record for one maintainer with AI helpers. **This is not an activity-time tracker or a substitute for GitHub commits and discussions.**
 
+## 2026-10-17 — Versioned local run controls, deadline and pause contract
+
+**Issue:** #47. **Scope:** first stable local JSON operations boundary, consent safety and local-date controls. **State:** implementation in PR under CI review, no host acceptance.
+
+- Implement schema-v1 run/status/pause/resume/archived-delivery operation adapter; reject unknown JSON fields, malformed dates/clocks, wrong booleans or missing explicit print/email/reprint consent.
+- Add `--latest-start HH:MM` to scheduled CLI as last permissible start, and owner-private date-scoped pause marker/fail-closed resume. Pre-existing receipts cannot be bypassed by revised dates, pauses or accidental reprints; active jobs are not cancelled.
+- Reconcile AUT-01 and AUT-03 only as software evidence (12/90, 13.33%); leave AUT-05/09/12 and all eight real-world gates open. Document repeat-safe native scheduler usage and remaining pause/start concurrency limitation.
+- No device/host deployment, automatic print activation, external paid orchestration, version or release change.
+
 ## 2026-10-17 — Privacy-safe failures, hermetic CI and evidence reconciliation
 
 **Issues:** #54 (CI/security), #44 (documentation), #45/#46 (FMT software), #47 (AUT software); implementation in PR under review.

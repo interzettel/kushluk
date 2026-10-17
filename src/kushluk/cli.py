@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 import argparse
-from datetime import date, datetime
+from datetime import date, datetime, time
 import json
+import re
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -13,6 +14,7 @@ from kushluk.epub import EpubError, export_archived_epub
 from kushluk.field_proof import FieldProofError, record_field_proof
 from kushluk.local_profile import LocalProfileError, profile_path, write_local_profile
 from kushluk.pipeline import run_pipeline
+from kushluk.operations import OperationError, operate_file
 from kushluk.opml import (
     OPMLImportError, read_opml, read_proposal, render_opml,
     write_private_file, write_proposal,
@@ -20,7 +22,7 @@ from kushluk.opml import (
 from kushluk.print_proof import make_print_proof
 from kushluk.print_inspection import PrintInspectionError, inspect_print_pdf
 from kushluk.recovery import deliver_archived
-from kushluk.scheduled import read_run_status, run_once
+from kushluk.scheduled import pause_day, read_run_status, resume_day, run_once
 from kushluk.setup_web import run_setup_web
 from kushluk.source_preflight import (
     SourcePreflightError, check_sources, save_private_preflight,
@@ -28,6 +30,12 @@ from kushluk.source_preflight import (
 from kushluk.source_registry import (
     SourceApprovalError, approve_source, read_registry, revoke_source, set_source_mode,
 )
+
+
+def _clock_time(value: str) -> time:
+    if not re.fullmatch(r"(?:[01]\d|2[0-3]):[0-5]\d", value):
+        raise argparse.ArgumentTypeError("Expected a local clock time HH:MM")
+    return time.fromisoformat(value)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -69,6 +77,25 @@ def build_parser() -> argparse.ArgumentParser:
     run.add_argument(
         "--print-profile", choices=("a4-home", "a3-folded"), default="a4-home"
     )
+
+    run.add_argument(
+        "--latest-start", metavar="HH:MM", type=_clock_time,
+        help="Last permitted local START, not a promise of completed printing",
+    )
+
+    for command, help_text in (
+        ("pause-day", "Pause future run starts for one local edition date"),
+        ("resume-day", "Resume future run starts; never starts or reprints by itself"),
+    ):
+        control = sub.add_parser(command, help=help_text)
+        control.add_argument("--date", dest="target_date",
+                             help="YYYY-MM-DD; defaults to today in local timezone")
+
+    operation = sub.add_parser(
+        "operate", help="Invoke stable local JSON operations schema v1 (no remote service)"
+    )
+    operation.add_argument("--request", type=Path, required=True,
+                           help="Local JSON request file, <= 4 KiB; use mode 0600")
 
     run_status = sub.add_parser("run-status", help="Read durable local edition run state")
     run_status.add_argument("--date", dest="target_date", help="YYYY-MM-DD")
@@ -250,6 +277,19 @@ def main(argv: list[str] | None = None) -> int:
 
     settings = Settings.from_env()
 
+    if args.command == "operate":
+        try:
+            outcome = operate_file(settings, args.request)
+        except OperationError as exc:
+            print(json.dumps({"schema_version": 1, "status": "rejected",
+                              "error": str(exc)}))
+            return 2
+        print(json.dumps(outcome, ensure_ascii=False))
+        return 0 if outcome["status"] in {
+            "completed", "already_completed", "not_run", "paused", "already_paused",
+            "resumed", "not_paused", "submitted",
+        } else 2
+
     if args.command == "generate":
         if args.no_pdf and args.print_profile == "a3-folded":
             parser.error("A3 folded imposition requires PDF rendering")
@@ -284,22 +324,29 @@ def main(argv: list[str] | None = None) -> int:
         )
         return 2 if failed_delivery else 0
 
-    if args.command in {"run", "run-status"}:
+    if args.command in {"run", "run-status", "pause-day", "resume-day"}:
         local_today = datetime.now(ZoneInfo(settings.timezone)).date()
         target = date.fromisoformat(args.target_date) if args.target_date else local_today
         if args.command == "run-status":
             outcome = read_run_status(settings, target_date=target)
+        elif args.command == "pause-day":
+            outcome = pause_day(settings, target_date=target)
+        elif args.command == "resume-day":
+            outcome = resume_day(settings, target_date=target)
         else:
             outcome = run_once(
-                settings,
-                target_date=target,
+                settings, target_date=target,
                 send_to_printer=args.send_to_printer,
                 send_email=args.send_email,
                 email_on_print_failure=args.email_on_print_failure,
                 print_profile=args.print_profile,
+                latest_start=args.latest_start,
             )
         print(json.dumps(outcome.as_dict(), ensure_ascii=False))
-        return 0 if outcome.status in {"completed", "already_completed", "not_run"} else 2
+        return 0 if outcome.status in {
+            "completed", "already_completed", "not_run", "paused",
+            "already_paused", "resumed", "not_paused",
+        } else 2
 
     if args.command == "deliver-archived":
         outcome = deliver_archived(
