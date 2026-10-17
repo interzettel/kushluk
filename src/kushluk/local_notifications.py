@@ -106,35 +106,50 @@ def notify_local(
             return {**base, "status": "unsafe_notification_marker"}
         if marker.exists():
             return {**base, "status": "already_submitted"}
+        # Claim the incident BEFORE OS submission. A crash after the OS call
+        # must not trigger an automatic duplicate on the next invocation.
+        receipt = {
+            "schema_version": 1, "incident_id": event["incident_id"],
+            "edition_id": event["edition_id"], "backend": kind,
+            "os_submission_state": "uncertain",
+            "display_or_human_read_confirmed": False,
+        }
+        create_flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_NOFOLLOW", 0)
         try:
-            # No shell, URL, private message, unbounded environment or retries.
+            marker_fd = os.open(marker, create_flags, 0o600)
+        except FileExistsError:
+            return {**base, "status": "already_submitted"}
+        with os.fdopen(marker_fd, "w", encoding="utf-8") as handle:
+            json.dump(receipt, handle, sort_keys=True)
+            handle.write("\n")
+            handle.flush()
+            os.fsync(handle.fileno())
+        try:
+            # No shell, URL, private message, unbounded output or retries.
             completed = subprocess.run(
                 args, capture_output=True, text=True, timeout=5, check=False,
             )
         except (OSError, subprocess.TimeoutExpired):
-            return {**base, "status": "os_submission_failed"}
+            return {**base, "status": "os_submission_uncertain_no_auto_retry"}
         if completed.returncode != 0:
-            return {**base, "status": "os_submission_failed"}
-        # A successful command may be silently discarded by a headless OS.
-        receipt = {"schema_version": 1, "incident_id": event["incident_id"],
-                   "edition_id": event["edition_id"], "backend": kind,
-                   "os_submission_accepted": True,
-                   "display_or_human_read_confirmed": False}
-        create_flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_NOFOLLOW", 0)
+            return {**base, "status": "os_submission_uncertain_no_auto_retry"}
+        # The backend accepted the request. Receipt was already claimed,
+        # so process death remains duplicate-safe; update without rewinding.
+        receipt["os_submission_state"] = "accepted_not_display_verified"
+        tmp_path = parent / (".notification-update-" + event["incident_id"])
         try:
-            marker_fd = os.open(marker, create_flags, 0o600)
-            with os.fdopen(marker_fd, "w", encoding="utf-8") as handle:
+            temp_fd = os.open(tmp_path, create_flags, 0o600)
+            with os.fdopen(temp_fd, "w", encoding="utf-8") as handle:
                 json.dump(receipt, handle, sort_keys=True)
-                handle.write("\n")
+                handle.write("\\n")
                 handle.flush()
                 os.fsync(handle.fileno())
-        except FileExistsError:
-            return {**base, "status": "already_submitted"}
+            os.replace(tmp_path, marker)
         except OSError:
-            # The OS accepted the submission; report the uncertainty, never
-            # claim success or silently resubmit due to missing marker.
             return {**base, "status": "os_submitted_receipt_unavailable",
                     "notification_sent_to_os": True}
+        finally:
+            tmp_path.unlink(missing_ok=True)
         return {**base, "status": "submitted_to_os_not_verified",
                 "notification_sent_to_os": True}
     except OSError:
