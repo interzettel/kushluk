@@ -57,6 +57,10 @@ EPUB export accepts an explicit IETF language tag (e.g., `--language de`) and pl
 
 The loopback-only `setup-web` page now offers a second, **fully offline** source-review page: paste a bounded OPML proposal in memory, preview escaped title and hostname only (no private query tokens), explicitly approve *one feed at a time* into the existing reference-only registry, or pause/resume with fresh consent. No source bodies are imported, fetched or enabled without opt-in. Browser and CLI reuse the same per-feed consent path. Provider-specific full-text rights, novices/accessibility and printer hardware remain unverified. See [LOCAL_SETUP.md](LOCAL_SETUP.md).
 
+### Acceptance-proof preparation, not gate acceptance
+
+The independent first-reader pilot [protocol and blank private record](FIRST_READER_PILOT.md) now specify observable U1–U6 onboarding tasks, anonymized evidence and provisional owner-review criteria. [Provider rights evidence](RIGHTS_EVIDENCE.md) specifies licensing scope, account tier, content transformations, third-party assets, reviewer/date and expiration requirements before derivative/private-direct workflows could be considered. No actual novice or provider authorization has been supplied; F-008/F-011 remain partial, hardware/host gates untouched.
+
 ## Repository hygiene
 
 - Default branch: `main`.
