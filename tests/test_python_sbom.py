@@ -43,10 +43,10 @@ def test_no_unsafe_expressions_or_paths_can_escape_into_component_names():
     assert "SECRET" not in raw and "PRIVATE_PASSWORD" not in raw
     assert "owner@host" not in raw
     assert value["components"] == [{
-        "type": "library", "name": "valid-name", "version": "1.0",
-        "purl": "pkg:pypi/valid-name@1.0",
-    }, {"type": "library", "name": "test", "version": "0.2",
-        "purl": "pkg:pypi/test@0.2"}]
+        "type": "library", "name": "test", "version": "0.2",
+        "purl": "pkg:pypi/test@0.2",
+    }, {"type": "library", "name": "valid-name", "version": "1.0",
+        "purl": "pkg:pypi/valid-name@1.0"}]
 
 
 def test_create_only_writes_deterministic_private_bom(tmp_path, monkeypatch, capsys):
