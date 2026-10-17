@@ -1,7 +1,6 @@
 """No-network media rights, provenance, geometry and fallback regression tests."""
 from __future__ import annotations
 
-from dataclasses import replace
 from datetime import date
 from io import BytesIO
 import json
