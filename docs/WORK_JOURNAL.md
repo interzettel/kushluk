@@ -2,6 +2,16 @@
 
 A concise, dated evidence/history record for one maintainer with AI helpers. **This is not an activity-time tracker or a substitute for GitHub commits and discussions.**
 
+## 2026-10-17 — Permission-gated print images and offline original artwork proof
+
+**Issues:** #50 media pipeline, #21 print, #4/#16 source rights/security. **State:** PR #117 implementation under final CI review; no physical/legal acceptance.
+
+- Add v1 normalized SHA-256 local media asset records with owner-granted scope, source provenance, credit/caption/alt and bounded focal/contain policy; never infer RSS rights or automatically download photographs.
+- Implement explicit local `media-import`/`media-info`/`media-assign`/`media-remove` and `KUSHLUK_MEDIA_DIR` opt-in; private local bindings to selected story IDs, no automated third-party acquisition.
+- Add deterministic 66×33 mm print lead slots with >=180 effective DPI preflight; inline approved PNG data URI and attribution. Failing records/under-resolution fall back to the story's text. Archive approved normalized crop and immutable placement metadata for repeatability.
+- CI/test portfolio generates original synthetic portrait/landscape/square media fixture PDFs and checks bad/tiny/missing/invalid license, duplicate, symlink, altered content, contain and focal behavior; **no real printer/provider/legal claims**.
+- Check IMG-01,04,05,06,07,08 on software evidence only: **23/90 · 25.56%**; IMG-02/03/09 and RES-IMG-01 remain open; G1–G8 remain 0/8, release version unchanged.
+
 ## 2026-10-17 — Typed editorial composition and three fixed-edition PDF variants
 
 **Issues:** #51 semantic composer and #21 print engine. **State:** PR #116 implementation under cross-platform acceptance review; **not** a hardware or visual design approval.
