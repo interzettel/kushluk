@@ -12,7 +12,8 @@ import pytest
 
 from kushluk.archive import archive_publication
 from kushluk.media import (
-    MIN_DPI, MediaError, import_local_media, prepare_placement, read_asset, render_bytes,
+    MIN_DPI, MediaError, assign_media, import_local_media, prepare_placement,
+    read_asset, read_media_assignments, remove_local_media, render_bytes,
 )
 from kushluk.models import Story
 from kushluk.publication import build_publication
@@ -267,3 +268,49 @@ def test_pdf_proof_with_approved_media_is_still_four_a4_pages(tmp_path, size):
     validation = validate_pdf(pdf, expected_pages=4)
     assert validation.ok, validation.errors
     assert pdf.stat().st_size > 1000
+
+
+def test_explicit_story_binding_works_and_revoke_removes_future_permission(tmp_path):
+    store, asset = imported(tmp_path)
+    assert read_media_assignments(store) == {}
+    assign_media(store, story_id="local-story-5", asset_id=asset.asset_id)
+    assert read_media_assignments(store) == {"local-story-5": asset.asset_id}
+    bindings = store / "bindings.json"
+    assert bindings.stat().st_mode & 0o777 == 0o600
+    assert paper(store, asset.asset_id).media
+    remove_local_media(store, asset.asset_id)
+    assert read_media_assignments(store) == {}
+    assert paper(store, asset.asset_id).media == []
+
+
+def test_story_binding_rejects_unapproved_stale_or_traversal_ids(tmp_path):
+    store, asset = imported(tmp_path)
+    for bad_id in ("../a", "folder/a", "", "bad id"):
+        with pytest.raises(MediaError, match="invalid_story_id"):
+            assign_media(store, story_id=bad_id, asset_id=asset.asset_id)
+    with pytest.raises(MediaError):
+        assign_media(store, story_id="valid-story", asset_id="not-a-sha")
+    assert read_media_assignments(store) == {}
+
+
+def test_explicit_media_assign_and_remove_cli(tmp_path, capsys):
+    from kushluk.cli import main
+    store, asset = imported(tmp_path)
+    command = ["media-assign", "--store", str(store), "--asset-id",
+               asset.asset_id, "--story-id", "owner-picked-story"]
+    assert main(command) == 0
+    assert json.loads(capsys.readouterr().out)["status"] == "approved_local_assignment"
+    assert read_media_assignments(store)["owner-picked-story"] == asset.asset_id
+    assert main(["media-remove", "--store", str(store), "--asset-id", asset.asset_id]) == 0
+    assert json.loads(capsys.readouterr().out)["existing_archives_unchanged"]
+    assert read_media_assignments(store) == {}
+
+
+def test_normalized_pixels_and_local_store_do_not_include_exif(tmp_path):
+    store, asset = imported(tmp_path)
+    record = (store / "records" / (asset.asset_id + ".json")).read_text()
+    original = (store / "originals" / (asset.asset_id + ".png")).read_bytes()
+    assert str(tmp_path) not in record
+    with Image.open(BytesIO(original)) as im:
+        assert "exif" not in im.info
+        assert im.mode == "RGB"
