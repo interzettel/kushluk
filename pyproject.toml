@@ -39,6 +39,8 @@ include = [
   "/CHANGELOG.md",
   "/docs/PREVIEW_INSTALL.md",
   "/docs/RELEASE_PLAN.md",
+  "/docs/DEPENDENCY_AUDIT.md",
+  "/docs/ARCHIVE_COMPATIBILITY.md",
   "/pyproject.toml",
 ]
 
