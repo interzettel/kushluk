@@ -24,7 +24,9 @@
     .sheet {
       display: flex;
       flex-direction: column;
-      min-height: 270mm;
+      /* Leave a measured bottom slack below the flex footer so grid layout
+         cannot strand the footer on a new sheet at the A4 page boundary. */
+      min-height: 257mm;
       break-after: page;
       page-break-after: always;
     }
