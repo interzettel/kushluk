@@ -106,6 +106,6 @@ def make_print_proof(output_dir: Path) -> dict[str, str]:
         encoding="utf-8",
     )
     return {key: str(output_dir / value) for key, value in {
-        "a4": a4.name, "a3": a3.name, "html": html.name,
+        "a4": a4.name, "letter": letter.name, "a3": a3.name, "html": html.name,
         "manifest": "kushluk-proof.json", "checklist": "PRINT-CHECKLIST.md",
     }.items()}
