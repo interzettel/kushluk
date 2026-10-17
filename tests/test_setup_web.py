@@ -47,7 +47,7 @@ def _token(markup):
 def _form(token, **changes):
     values = {
         "csrf": token, "home_name": "Household", "latitude": "50.9",
-        "longitude": "6.9", "timezone": "Europe/Berlin",
+        "longitude": "6.9", "timezone": "Europe/Berlin", "paper_size": "a4",
     }
     values.update(changes)
     return urlencode(values).encode("utf-8")
@@ -82,6 +82,8 @@ def test_only_loopback_listener_and_private_creation(setup_server):
     status, headers, html = _request(server)
     assert status == 200
     assert 'name="home_name"' in html
+    assert '<option value="a4" selected>' in html
+    assert '<option value="letter">' in html
     assert "Kushluk" in html
     assert "Save my local profile" in html
     assert 'name="printer"' not in html
@@ -95,6 +97,7 @@ def test_only_loopback_listener_and_private_creation(setup_server):
     assert "saved in a private file" in html
     assert server.profile_file.exists()
     assert read_local_profile(server.profile_file)["home_name"] == "Household"
+    assert read_local_profile(server.profile_file)["paper_size"] == "a4"
 
     status, _, html = _request(server)
     assert status == 409
@@ -137,6 +140,7 @@ def test_form_requires_csrf_and_exact_host(setup_server):
     {"latitude": "99.5"},
     {"longitude": "-190"},
     {"timezone": "Not_A_Valid_Zone"},
+    {"paper_size": "tabloid"},
     {"home_name": "<script>alert(1)</script>\n"},
 ])
 def test_invalid_input_never_writes_or_echoes_user_input(setup_server, override):
