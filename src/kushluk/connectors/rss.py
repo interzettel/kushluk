@@ -12,9 +12,11 @@ from kushluk.models import Candidate, SourceRef
 
 
 class RSSConnector:
-    def __init__(self, urls: tuple[str, ...], per_feed: int = 12) -> None:
+    def __init__(self, urls: tuple[str, ...], per_feed: int = 12,
+                 reference_only_urls: tuple[str, ...] = ()) -> None:
         self.urls = urls
         self.per_feed = per_feed
+        self.reference_only_urls = frozenset(reference_only_urls)
 
     def fetch(self) -> list[Candidate]:
         candidates: list[Candidate] = []
@@ -39,7 +41,10 @@ class RSSConnector:
             for raw in _entries(root)[: self.per_feed]:
                 title = _clean(raw.get("title") or "Untitled")
                 link = raw.get("link") or ""
-                summary = _clean(raw.get("summary") or "")
+                # Reference-only feeds must not ingest, summarize or embed
+                # publisher-provided article body/description in a newspaper.
+                summary = ("" if url in self.reference_only_urls
+                           else _clean(raw.get("summary") or ""))
                 published_iso = _parse_time(raw.get("published"))
                 identity = link or f"{source_name}:{title}"
                 candidate_id = hashlib.sha256(identity.encode("utf-8")).hexdigest()[:16]

@@ -51,8 +51,16 @@ def _source(item: object) -> dict:
         raise SourceApprovalError("Invalid source registry URL") from exc
     if item["id"] != identifier:
         raise SourceApprovalError("Source identity does not match its URL")
-    if item["mode"] != "reference-only" or item["enabled"] is not True:
-        raise SourceApprovalError("Only explicitly approved reference-only RSS is supported")
+    # All four requested modes can be persisted, but only reference-only may
+    # currently enter the fetch pipeline. No direct copying/synthesis engine
+    # exists yet, so requesting those modes must fail closed.
+    mode = item["mode"]
+    if mode not in {"ignore", "reference-only", "derivative", "private-direct"}:
+        raise SourceApprovalError("Unsupported source rights mode")
+    if type(item["enabled"]) is not bool:
+        raise SourceApprovalError("Source activation flag is invalid")
+    if item["enabled"] is not (mode == "reference-only"):
+        raise SourceApprovalError("Unsupported source mode cannot be active")
     if not isinstance(item["title"], str) or not item["title"].strip():
         raise SourceApprovalError("Invalid source registry title")
     if not isinstance(item["approved_at"], str) or not item["approved_at"]:
@@ -165,4 +173,33 @@ def revoke_source(identifier: str, *, path: Path | None = None) -> tuple[int, bo
 
 
 def approved_urls(path: Path | None = None) -> tuple[str, ...]:
-    return tuple(row["url"] for row in read_registry(path))
+    return tuple(
+        row["url"] for row in read_registry(path)
+        if row["enabled"] and row["mode"] == "reference-only"
+    )
+
+
+def set_source_mode(identifier: str, mode: str, *, acknowledge: bool = False,
+                    path: Path | None = None) -> tuple[str, bool]:
+    """Save reader intent without pretending unsupported reuse rights exist.
+
+    'derivative' and 'private-direct' remain disabled until a separate,
+    provider-specific rights check and actual renderer/adapter are implemented.
+    """
+    if mode not in {"ignore", "reference-only", "derivative", "private-direct"}:
+        raise SourceApprovalError("Unknown rights mode")
+    if mode in {"derivative", "private-direct"} and not acknowledge:
+        raise SourceApprovalError("Rights-sensitive mode requires explicit acknowledgement")
+    if (len(identifier) != 20 or
+            any(ch not in "0123456789abcdef" for ch in identifier)):
+        raise SourceApprovalError("Invalid source identifier")
+    path = path or registry_path()
+    with _registry_lock(path):
+        rows = read_registry(path)
+        for row in rows:
+            if row["id"] == identifier:
+                row["mode"] = mode
+                row["enabled"] = mode == "reference-only"
+                _atomic_registry(path, rows)
+                return mode, row["enabled"]
+        raise SourceApprovalError("Unknown source identifier")

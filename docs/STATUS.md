@@ -17,6 +17,10 @@ The offline `kushluk export-epub --date YYYY-MM-DD` command builds an EPUB3 ZIP 
 
 `kushluk inspect-print --pdf FILE --output-dir NEW_DIR [--rasterize]` produces private per-page geometry/text anchor reports and optional Poppler PNG snapshots from existing A4 or imposed A3 PDFs. It flags structural problems but **never** claims automatic glyph-accurate clipping or real physical paper approval. See [PRINT_INSPECTION.md](PRINT_INSPECTION.md); source printer reliability and print quality still require #13 hardware evidence.
 
+### Source-rights guardrail (F-007 / F-011 partial)
+
+The private source registry now stores four reader intent choices: ignore, reference-only, derivative, and private-direct. **Only reference-only is executable**; the other modes stay disabled until provider-specific rights and implementation checks exist. Reference-only RSS feeds discard feed-provided description/content from the candidate passed into editorial/archives; headline, link and generic "Open the source" pointer remain. The legacy explicitly configured RSS path is separate and has not been rights-audited. See [OPML.md](OPML.md), [#4](https://github.com/interzettel/kushluk/issues/4) and [#49](https://github.com/interzettel/kushluk/issues/49).
+
 ## Repository hygiene
 
 - Default branch: `main`.
