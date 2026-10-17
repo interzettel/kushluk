@@ -90,7 +90,8 @@ def _check_packages(directory: Path, *, version: str) -> tuple[Path, Path]:
             if prefix + "src/" + name not in names:
                 raise ReleaseCheckError(f"sdist_missing_required_module:{name}")
         for name in ("pyproject.toml", "README.md", "LICENSE",
-                     "THIRD_PARTY_NOTICES.md"):
+                     "THIRD_PARTY_NOTICES.md", "SECURITY.md", "CHANGELOG.md",
+                     "docs/PREVIEW_INSTALL.md", "docs/RELEASE_PLAN.md"):
             if prefix + name not in names:
                 raise ReleaseCheckError(f"sdist_missing_required_file:{name}")
         if any(
