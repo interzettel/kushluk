@@ -13,6 +13,11 @@ from urllib.parse import parse_qs
 import webbrowser
 
 from kushluk.local_profile import LocalProfileError, profile_path, write_local_profile
+from kushluk.opml import OPMLImportError
+from kushluk.setup_sources_web import (
+    approve_reviewed, change_reviewed_mode, import_review_opml, render_source_review,
+)
+from kushluk.source_registry import SourceApprovalError, registry_path
 
 _FORM = """<!doctype html>
 <html lang="en"><head>
@@ -80,16 +85,18 @@ h1{font:normal 54px/1.1 Georgia,serif}a{color:#244f3b}</style>
 <h1>You're ready for the next step.</h1>
 <p>Your personal preferences are saved in a private file on this computer.
 No sources were enabled and no paper was printed.</p>
-<p>Close this browser tab, then use <code>kushluk sources-preflight</code>
-to review sources, or <code>kushluk doctor</code> to inspect runtime readiness.</p>
+<p><a href="/sources">Review and approve your reading sources</a> in the next local step,
+or use <code>kushluk doctor</code> to inspect runtime readiness.</p>
 <p>No release or physical-printer verification is implied.</p></html>"""
 
 
 class SetupHTTPServer(HTTPServer):
     """Always loopback, with a per-instance CSRF token and no external routes."""
 
-    def __init__(self, path: Path, port: int = 0):
+    def __init__(self, path: Path, port: int = 0, *, registry: Path | None = None):
         self.profile_file = path
+        self.registry_file = registry if registry is not None else registry_path()
+        self.pending_feeds = ()  # Ephemeral, unapproved, never written to disk.
         self.csrf = secrets.token_urlsafe(32)
         super().__init__(("127.0.0.1", port), SetupHandler)
 
@@ -129,16 +136,29 @@ class SetupHandler(BaseHTTPRequestHandler):
         return (
             self.client_address[0] == "127.0.0.1"
             and self.headers.get("Host") == f"127.0.0.1:{self.server.server_port}"
-            and self.path == "/"
+            and self.path in {
+                "/", "/sources", "/sources/import", "/sources/approve", "/sources/mode",
+            }
         )
 
     def do_GET(self) -> None:
-        if not self._valid_request():
+        if not self._valid_request() or self.path not in {"/", "/sources"}:
             self._reply(404, "<h1>Not found</h1>")
+            return
+        if self.path == "/sources":
+            try:
+                page = render_source_review(
+                    self.server.pending_feeds, path=self.server.registry_file,
+                    csrf=self.server.csrf,
+                )
+            except SourceApprovalError:
+                self._reply(422, "<h1>Cannot read the private source registry</h1>")
+                return
+            self._reply(200, page)
             return
         if self.server.profile_file.exists() or self.server.profile_file.is_symlink():
             self._reply(409, "<h1>Profile already exists</h1>"
-                        "<p>This setup page never overwrites your local preferences.</p>")
+                        "<p>This setup page never overwrites your local preferences. <a href="/sources">Continue to source review</a>.</p>")
             return
         self._reply(200, _FORM.replace("__TOKEN__", self.server.csrf))
 
@@ -157,7 +177,8 @@ class SetupHandler(BaseHTTPRequestHandler):
             length = int(self.headers.get("Content-Length", "-1"))
         except ValueError:
             length = -1
-        if length <= 0 or length > 4096:
+        max_length = 131_072 if self.path == "/sources/import" else 4096
+        if length <= 0 or length > max_length:
             self._reply(413, "<h1>Invalid form size</h1>")
             return
         body = self.rfile.read(length)
@@ -168,13 +189,64 @@ class SetupHandler(BaseHTTPRequestHandler):
         except (UnicodeError, ValueError):
             self._reply(400, "<h1>Invalid form</h1>")
             return
-        expected = {"csrf", "home_name", "latitude", "longitude", "timezone", "printer"}
+        expected_fields = {
+            "/": {"csrf", "home_name", "latitude", "longitude", "timezone", "printer"},
+            "/sources/import": {"csrf", "opml"},
+            "/sources/approve": {"csrf", "index", "consent"},
+            "/sources/mode": {"csrf", "id", "mode"},
+        }
+        if self.path == "/sources/mode" and "consent" in fields:
+            expected_fields["/sources/mode"].add("consent")
+        expected = expected_fields.get(self.path)
+        if expected is None:
+            self._reply(404, "<h1>Not found</h1>")
+            return
         if set(fields) != expected or any(len(vals) != 1 for vals in fields.values()):
             self._reply(400, "<h1>Form fields do not match</h1>")
             return
         if (not fields["csrf"][0].isascii()
                 or not compare_digest(fields["csrf"][0], self.server.csrf)):
             self._reply(403, "<h1>Expired or invalid form</h1>")
+            return
+        if self.path.startswith("/sources/"):
+            try:
+                if self.path == "/sources/import":
+                    self.server.pending_feeds = import_review_opml(fields["opml"][0])
+                    notice = (
+                        f"{len(self.server.pending_feeds)} feeds proposed for review. "
+                        "None was approved or contacted."
+                    )
+                elif self.path == "/sources/approve":
+                    created = approve_reviewed(
+                        self.server.pending_feeds, fields["index"][0],
+                        consent=fields["consent"][0] == "yes",
+                        path=self.server.registry_file,
+                    )
+                    notice = (
+                        "One source approved for reference-only access."
+                        if created else "That source was already approved."
+                    )
+                else:
+                    action = fields["mode"][0]
+                    change_reviewed_mode(
+                        fields["id"][0], action,
+                        consent=fields.get("consent") == ["yes"],
+                        path=self.server.registry_file,
+                    )
+                    notice = (
+                        "One feed paused." if action == "ignore"
+                        else "One feed resumed for reference-only access."
+                    )
+                page = render_source_review(
+                    self.server.pending_feeds, path=self.server.registry_file,
+                    csrf=self.server.csrf, notice=notice,
+                )
+            except (OPMLImportError, SourceApprovalError):
+                self._reply(422, "<h1>Source review not changed</h1>"
+                            "<p>Invalid proposal, selection or missing permission. "
+                            "No source was silently activated.</p>")
+                return
+            self._reply(200, page)
             return
         try:
             write_local_profile(
