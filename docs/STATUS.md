@@ -25,6 +25,14 @@ The private source registry now stores four reader intent choices: ignore, refer
 
 `kushluk record-field-proof` stores privacy-conscious local operator observations and source-artifact/photo SHA-256 hashes for paper, e-reader, and host restart tests; matching structural PDF inspection is required before reporting a passing paper trial. All receipts explicitly remain **self-reported, independently unverified and not accepted as release gates**. See [FIELD_ACCEPTANCE.md](FIELD_ACCEPTANCE.md). Hardware access and actual user trials remain open under #13/#33/#47.
 
+### Evidence checkpoint — software / external validator / actual devices (17 Oct 2026)
+
+- [PR #93](https://github.com/interzettel/kushluk/pull/93): source-rights intent modes with fail-closed non-executable derivative/private-direct paths; approved RSS reference-only mode strips feed descriptions from exported story content. Full licensed-content processing and legacy RSS policy remain open.
+- [PR #94](https://github.com/interzettel/kushluk/pull/94): synthetic EPUB independently **passes W3C EPUBCheck 5.4.0** in [official conformance CI run](https://github.com/interzettel/kushluk/actions/runs/38984422462), plus standard Linux/macOS CI. This is **not** real reader/accessibility verification.
+- [PR #95](https://github.com/interzettel/kushluk/pull/95): local private operator reports for paper, e-reader and host reboot with SHA-256 provenance, plus actual-trial runbook. Every receipt remains **self-reported** until an independent reviewer accepts evidence; no real devices were accessed through the connector.
+
+No GitHub Release or version bump, no hardware acceptance or five-morning reliability evidence, no progress gate movement. F-006 is implemented-but-unreleased, F-007/F-011/F-016/F-023 remain partial, and F-009/F-010 remain hardware/host blocked.
+
 ## Repository hygiene
 
 - Default branch: `main`.
