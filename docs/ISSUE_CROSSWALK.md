@@ -1,6 +1,6 @@
 # Kushluk work-to-issue crosswalk
 
-**Audit date:** 2026-10-16 · **Status:** merged documentation map ([PR #53](https://github.com/interzettel/kushluk/pull/53)); still not evidence that implementation tasks are complete.
+**Audit date:** 2026-10-17 · **Status:** merged documentation map ([PR #53](https://github.com/interzettel/kushluk/pull/53)); still not evidence that implementation tasks are complete.
 
 This table maps every task identifier in [WORK_LEDGER.md](WORK_LEDGER.md) to a **single primary GitHub issue**. GitHub [master ledger #43](https://github.com/interzettel/kushluk/issues/43) indexes issue scope, state and dependencies. `WORK_LEDGER.md` remains the operational list of executable tasks and their checked/unchecked state. `STATUS.md` distinguishes implementation from plan. Accepted architecture decisions in `adr/` take precedence.
 
@@ -38,6 +38,10 @@ This table maps every task identifier in [WORK_LEDGER.md](WORK_LEDGER.md) to a *
 | **UX-08** | 1 | [#7 Delivery](https://github.com/interzettel/kushluk/issues/7) | Future messaging adapter; do not require WhatsApp access |
 | **TRIAL-01 to TRIAL-07** | 7 | [#13 Real-world proof](https://github.com/interzettel/kushluk/issues/13) | TRIAL-01/02/03 require real user host/hardware/provider permissions; no fabricated trial results |
 | **TOTAL** | **90** | **All mapped** | No task IDs left unassigned in the 2026-10-16 WORK_LEDGER snapshot |
+
+## Verified software reconciliation — 17 October 2026
+
+The operational ledger now checks **FMT-01/02, FMT-06/07 and AUT-02/10** against previously merged implementation, test suites and passing Linux/macOS Actions. See the individual dated evidence table in [WORK_LEDGER.md](WORK_LEDGER.md). These are not Issue #45/#46/#47 closure, physical printer proof, true end-to-end unattended host acceptance or G1–G8 verification. Tests of full clipping, A4 duplex device orientation, deadline guards and source/provider rights remain pending. Checkboxes count **10/90 (11.11%)**, not overall product completion.
 
 ## Physical dependency / execution order
 
