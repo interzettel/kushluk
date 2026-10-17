@@ -374,6 +374,8 @@ def build_parser() -> argparse.ArgumentParser:
     setup.add_argument("--longitude", type=float, help="Longitude for local weather")
     setup.add_argument("--timezone", help="IANA timezone, e.g. Europe/Berlin")
     setup.add_argument("--printer", help="Optional CUPS printer queue name")
+    setup.add_argument("--paper-size", choices=("a4", "letter"), default="a4",
+                       help="Home paper preference (DIN A4 or US Letter; default A4)")
     setup.add_argument("--output", type=Path, help="New private profile path")
     setup.add_argument(
         "--non-interactive", action="store_true",
@@ -456,7 +458,7 @@ def main(argv: list[str] | None = None) -> int:
             write_local_profile(
                 target, home_name=name, latitude=latitude,
                 longitude=longitude, timezone=zone,
-                printer=args.printer,
+                printer=args.printer, paper_size=args.paper_size,
             )
         except (LocalProfileError, ValueError) as exc:
             reason = str(exc) if isinstance(exc, LocalProfileError) else "Invalid coordinates"

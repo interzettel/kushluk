@@ -25,6 +25,7 @@ class Settings:
     research_query: str | None = None
     google_tasks_vault: Path | None = None
     printer: str | None = None
+    paper_size: str = "a4"  # A4 and US Letter are recommended home formats.
     smtp_host: str | None = None
     smtp_port: int = 587
     smtp_username: str | None = None
@@ -79,6 +80,7 @@ class Settings:
                 if "KUSHLUK_PRINTER" in os.environ
                 else (profile.get("printer") or None)
             ),
+            paper_size=_paper_size(os.getenv("KUSHLUK_PAPER_SIZE", profile.get("paper_size", "a4"))),
             smtp_host=os.getenv("KUSHLUK_SMTP_HOST") or None,
             smtp_port=int(os.getenv("KUSHLUK_SMTP_PORT", "587")),
             smtp_username=os.getenv("KUSHLUK_SMTP_USERNAME") or None,
@@ -87,6 +89,12 @@ class Settings:
             email_to=os.getenv("KUSHLUK_EMAIL_TO") or None,
             smtp_starttls=_env_bool("KUSHLUK_SMTP_STARTTLS", True),
         )
+
+
+def _paper_size(value: str) -> str:
+    if value not in {"a4", "letter"}:
+        raise ValueError("Invalid KUSHLUK_PAPER_SIZE (choose a4 or letter)")
+    return value
 
 
 def _has_source_registry() -> bool:

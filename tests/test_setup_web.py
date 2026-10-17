@@ -47,7 +47,7 @@ def _token(markup):
 def _form(token, **changes):
     values = {
         "csrf": token, "home_name": "Household", "latitude": "50.9",
-        "longitude": "6.9", "timezone": "Europe/Berlin",
+        "longitude": "6.9", "timezone": "Europe/Berlin", "paper_size": "a4",
     }
     values.update(changes)
     return urlencode(values).encode("utf-8")
@@ -82,6 +82,8 @@ def test_only_loopback_listener_and_private_creation(setup_server):
     status, headers, html = _request(server)
     assert status == 200
     assert 'name="home_name"' in html
+    assert '<option value="a4" selected>' in html
+    assert '<option value="letter">' in html
     assert "Kushluk" in html
     assert "Save my local profile" in html
     assert 'name="printer"' not in html
@@ -95,6 +97,7 @@ def test_only_loopback_listener_and_private_creation(setup_server):
     assert "saved in a private file" in html
     assert server.profile_file.exists()
     assert read_local_profile(server.profile_file)["home_name"] == "Household"
+    assert read_local_profile(server.profile_file)["paper_size"] == "a4"
 
     status, _, html = _request(server)
     assert status == 409
@@ -137,6 +140,7 @@ def test_form_requires_csrf_and_exact_host(setup_server):
     {"latitude": "99.5"},
     {"longitude": "-190"},
     {"timezone": "Not_A_Valid_Zone"},
+    {"paper_size": "tabloid"},
     {"home_name": "<script>alert(1)</script>\n"},
 ])
 def test_invalid_input_never_writes_or_echoes_user_input(setup_server, override):
@@ -369,3 +373,62 @@ def test_source_review_does_not_fetch_or_publish(setup_server, monkeypatch, tmp_
     )[0] == 200
     assert not server.profile_file.exists()
     assert not (tmp_path / "archive").exists()
+
+
+def test_browser_letter_selection_survives_printer_page_and_can_change(tmp_path):
+    server = SetupHTTPServer(
+        tmp_path / "private" / "profile.json",
+        registry=tmp_path / "private" / "sources.json",
+    )
+    worker = Thread(target=server.serve_forever,
+                    kwargs={"poll_interval": 0.01}, daemon=True)
+    worker.start()
+    try:
+        code, _, page = _request(server)
+        assert code == 200
+        assert 'name="paper_size"' in page
+        code, _, _ = _post(server, _form(_token(page), paper_size="letter"))
+        assert code == 201
+        assert read_local_profile(server.profile_file)["paper_size"] == "letter"
+        code, _, printer = _request(server, path="/printer")
+        assert code == 200
+        assert '<option value="letter" selected>' in printer
+        assert "Recommended formats: DIN A4" in printer
+        token = _token(printer)
+        body = urlencode({"csrf": token, "paper_size": "a4"}).encode("utf-8")
+        code, _, changed = _post(server, body, path="/paper/save")
+        assert code == 200
+        assert "Paper preference saved locally" in changed
+        profile = read_local_profile(server.profile_file)
+        assert profile["paper_size"] == "a4"
+        assert profile["printer"] is None
+        assert not (tmp_path / "archive").exists()
+        assert not (tmp_path / "output").exists()
+    finally:
+        server.shutdown()
+        worker.join(timeout=3)
+        server.server_close()
+
+
+def test_browser_paper_change_rejects_bad_values_and_csrf(setup_server):
+    code, _, page = _request(setup_server)
+    assert code == 200
+    token = _token(page)
+    assert _post(setup_server, _form(token))[0] == 201
+    original = setup_server.profile_file.read_bytes()
+    for payload in (
+        {"csrf": token, "paper_size": "tabloid"},
+        {"csrf": token, "paper_size": "Letter"},
+        {"csrf": "invalid", "paper_size": "letter"},
+    ):
+        body = urlencode(payload).encode()
+        status, _, _ = _post(setup_server, body, path="/paper/save")
+        assert status in {403, 422}
+        assert setup_server.profile_file.read_bytes() == original
+    # Missing and additional fields must fail, too.
+    for data in (
+        {"csrf": token},
+        {"csrf": token, "paper_size": "letter", "printer": "bypass"},
+    ):
+        assert _post(setup_server, urlencode(data).encode(),
+                     path="/paper/save")[0] == 400
