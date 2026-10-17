@@ -21,6 +21,7 @@ from kushluk.print_proof import make_print_proof
 from kushluk.print_inspection import PrintInspectionError, inspect_print_pdf
 from kushluk.recovery import deliver_archived
 from kushluk.scheduled import read_run_status, run_once
+from kushluk.setup_web import run_setup_web
 from kushluk.source_preflight import (
     SourcePreflightError, check_sources, save_private_preflight,
 )
@@ -188,6 +189,14 @@ def build_parser() -> argparse.ArgumentParser:
         help="Fail if any required value is missing instead of prompting",
     )
 
+    web_setup = sub.add_parser(
+        "setup-web", help="Local-only browser setup; no server outside 127.0.0.1"
+    )
+    web_setup.add_argument("--no-open", action="store_true",
+                           help="Print local URL instead of opening the browser")
+    web_setup.add_argument("--output", type=Path,
+                           help="New private profile path, never overwrite")
+
     archive = sub.add_parser("archive-list", help="List recent local Kushluk editions")
     archive.add_argument("--limit", type=int, default=20)
 
@@ -198,6 +207,10 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
+    if args.command == "setup-web":
+        run_setup_web(path=args.output, open_browser=not args.no_open)
+        return 0
+
     if args.command == "setup":
         def supply(value, prompt):
             if value is not None:
