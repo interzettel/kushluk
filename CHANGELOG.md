@@ -47,6 +47,8 @@ separately under [the release plan](docs/RELEASE_PLAN.md).
 
 - Independently audit M1 installer evidence before CI upload: compare wheel/sdist hashes, installed package/rights-pending receipts and deterministic fictional preview output, with a permanently unapproved release state; add a dated alpha evidence handoff (#54/#87).
 
+- Fix macOS clean-install evidence using real path containment instead of raw prefix comparison (which could misclassify `/var` versus `/private/var` venv paths), and reject any installed runtime that actually resides outside its venv (#54).
+
 **No prerelease has been published.** `pyproject.toml` remains `0.1.0`;
 the future version `v0.2.0-alpha.1` requires an explicit owner decision,
 review of dependencies/licenses and controlled tag/release creation.
