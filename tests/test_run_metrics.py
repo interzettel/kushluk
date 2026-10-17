@@ -278,3 +278,45 @@ def test_run_records_expected_trigger_as_a_clock_not_a_provider_url(
     )
     assert receipt["expected_start_local"] == "07:30"
     assert run_report(settings, target_date=TARGET)["timing"]["expected_trigger_local"] == "07:30"
+
+
+def test_operator_guidance_never_implies_physical_delivery(tmp_path):
+    settings = cfg(tmp_path)
+    record_day(settings, TARGET)
+    record_file = settings.archive_dir / "20260923-001" / "scheduled.json"
+    payload = json.loads(record_file.read_text())
+    payload["print_submitted"] = True
+    payload["request"]["send_to_printer"] = True
+    record_file.write_text(json.dumps(payload))
+    report = run_report(settings, target_date=TARGET)
+    assert report["operator_guidance"]["code"] == "printer_queue_not_physical_proof"
+    assert "Verify paper" in report["operator_guidance"]["message"]
+    assert report["delivery"]["physical_print_verified"] is False
+
+
+def test_operator_guidance_for_interrupted_delivery_blocks_silent_retry(tmp_path):
+    settings = cfg(tmp_path)
+    record_day(settings, TARGET, status="print_submission_unknown")
+    path = settings.archive_dir / "20260923-001" / "scheduled.json"
+    data = json.loads(path.read_text())
+    data["request"]["send_to_printer"] = True
+    path.write_text(json.dumps(data))
+    report = run_report(settings, target_date=TARGET)
+    assert report["operator_guidance"]["code"] == "manual_review_no_auto_retry"
+    assert "never start a silent replay" in report["operator_guidance"]["message"]
+    assert not report["delivery"]["physical_print_verified"]
+
+
+def test_operator_guidance_does_not_echo_corrupt_secret(tmp_path):
+    settings = cfg(tmp_path)
+    record_day(settings, TARGET, secret="token=HIDDEN_SECRET_123")
+    report = run_report(settings, target_date=TARGET)
+    assert "HIDDEN_SECRET_123" not in json.dumps(report)
+    assert report["operator_guidance"]["code"] == "archive_complete_delivery_not_implied"
+
+
+def test_operator_guidance_without_receipt_is_actionable_and_read_only(tmp_path):
+    settings = cfg(tmp_path)
+    result = run_report(settings, target_date=TARGET)
+    assert result["operator_guidance"]["code"] == "no_run_receipt"
+    assert not settings.archive_dir.exists()
