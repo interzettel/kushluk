@@ -80,6 +80,21 @@ def _timing(record: dict, *, target_date: date, timezone_name: str) -> dict:
     if started is None or archived is None or archived < started:
         archived = None
     elapsed = round((archived - started).total_seconds(), 2) if archived else None
+    expected_clock = record.get("expected_start_local")
+    expected = None
+    if isinstance(expected_clock, str) and re.fullmatch(
+        r"(?:[01]\\d|2[0-3]):[0-5]\\d", expected_clock
+    ):
+        expected = datetime.combine(
+            target_date, time.fromisoformat(expected_clock),
+            tzinfo=ZoneInfo(timezone_name),
+        ).astimezone(timezone.utc)
+    trigger_delay = round((started - expected).total_seconds(), 2) if (
+        started is not None and expected is not None
+    ) else None
+    trigger_to_archive = round((archived - expected).total_seconds(), 2) if (
+        archived is not None and expected is not None and archived >= expected
+    ) else None
     ready_clock = record.get("ready_by_local")
     cutoff = None
     met = None
@@ -97,6 +112,9 @@ def _timing(record: dict, *, target_date: date, timezone_name: str) -> dict:
         "started_at_utc": started.isoformat() if started else None,
         "archive_ready_at_utc": archived.isoformat() if archived else None,
         "elapsed_to_archive_seconds": elapsed,
+        "expected_trigger_local": expected_clock if expected is not None else None,
+        "trigger_delay_seconds": trigger_delay,
+        "trigger_to_archive_seconds": trigger_to_archive,
         "ready_by_local": cutoff,
         "ready_by_met": met,
         "finished_at_utc": (
@@ -154,7 +172,8 @@ def timing_plan(
     """Conservative p90 software-readiness recommendation, never a scheduler."""
     if not 0 <= margin_minutes <= 120 or not 3 <= history_days <= 90:
         raise ValueError("invalid_timing_options")
-    samples = []
+    started_samples = []
+    scheduled_samples = []
     for offset in range(1, history_days + 1):
         previous = target_date - timedelta(days=offset)
         report = run_report(settings, target_date=previous)
@@ -163,8 +182,15 @@ def timing_plan(
                 and metrics["elapsed_to_archive_seconds"] is not None):
             seconds = metrics["elapsed_to_archive_seconds"]
             if 0 <= seconds <= 21600:
-                samples.append(seconds)
-    samples.sort()
+                started_samples.append(seconds)
+            triggered = metrics["trigger_to_archive_seconds"]
+            if triggered is not None and 0 <= triggered <= 21600:
+                scheduled_samples.append(triggered)
+    # Use like-for-like observations; never silently mix trigger-to-ready
+    # and process-start-to-ready duration. Prefer the end-to-end series only
+    # when at least three real local receipts actually contain a trigger clock.
+    use_triggered = len(scheduled_samples) >= 3
+    samples = sorted(scheduled_samples if use_triggered else started_samples)
     summary = {
         "schema_version": 1, "status": "insufficient_history",
         "history_days": history_days, "sample_count": len(samples),
@@ -173,6 +199,9 @@ def timing_plan(
         "recommended_start_local": None, "p90_seconds": None,
         "evidence_scope": "local_receipts_not_independent_host_proof",
         "schedule_enabled": False,
+        "sample_basis": ("expected_trigger_to_archive" if use_triggered
+                         else "run_started_to_archive"),
+        "trigger_sample_count": len(scheduled_samples),
     }
     if len(samples) < 3:
         return summary
