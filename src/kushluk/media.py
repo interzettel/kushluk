@@ -11,6 +11,7 @@ from io import BytesIO
 import json
 import os
 from pathlib import Path
+import tempfile
 import re
 from urllib.parse import urlsplit
 
@@ -264,3 +265,91 @@ def render_bytes(store: Path, placement: MediaPlacement) -> bytes:
     if sha256(data).hexdigest() != placement.crop_sha256:
         raise MediaError("media_crop_checksum_mismatch")
     return data
+
+
+STORY_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$")
+
+
+def read_media_assignments(store: Path) -> dict[str, str]:
+    """No source guessing: only versioned, explicitly mapped owner choices."""
+    path = store / "bindings.json"
+    if not path.exists() and not path.is_symlink():
+        return {}
+    try:
+        payload = json.loads(_read_file(path, 65536))
+        if set(payload) != {"schema_version", "bindings"} or payload["schema_version"] != 1:
+            return {}
+        bindings = payload["bindings"]
+        if (not isinstance(bindings, dict) or len(bindings) > 500
+                or any(not isinstance(k, str) or not STORY_ID.fullmatch(k)
+                       or not isinstance(v, str) or not ASSET_ID.fullmatch(v)
+                       for k, v in bindings.items())):
+            return {}
+        return bindings
+    except (ValueError, UnicodeError, TypeError):
+        return {}
+
+
+def assign_media(store: Path, *, story_id: str, asset_id: str) -> None:
+    """Owner explicitly pins a reviewed asset to a stable editorial story ID."""
+    if not isinstance(story_id, str) or not STORY_ID.fullmatch(story_id):
+        raise MediaError("invalid_story_id")
+    # Never bind an image that already fails approved rights, checksum or print DPI.
+    prepare_placement(store, asset_id, story_id)
+    if store.is_symlink():
+        raise MediaError("invalid_media_store")
+    path = store / "bindings.json"
+    if path.is_symlink():
+        raise MediaError("unsafe_bindings_file")
+    bindings = read_media_assignments(store)
+    if path.exists() and not bindings:
+        raise MediaError("invalid_bindings_file")
+    bindings[story_id] = asset_id
+    content = (json.dumps({"schema_version": 1, "bindings": bindings},
+                          sort_keys=True) + "\n").encode()
+    store.mkdir(parents=True, exist_ok=True, mode=0o700)
+    fd, filename = tempfile.mkstemp(prefix=".bindings-", suffix=".tmp", dir=store)
+    try:
+        with os.fdopen(fd, "wb") as stream:
+            os.fchmod(stream.fileno(), 0o600)
+            stream.write(content)
+            stream.flush()
+            os.fsync(stream.fileno())
+        os.replace(filename, path)
+    finally:
+        Path(filename).unlink(missing_ok=True)
+
+
+def remove_local_media(store: Path, asset_id: str) -> None:
+    """Remove a local approval and origin. Already archived editions are separate."""
+    _file(store / "records", asset_id)
+    if store.is_symlink():
+        raise MediaError("invalid_media_store")
+    # Caller explicitly revokes locally; no remote fetch or archive rewrite.
+    for path in (
+        (store / "records" / asset_id).with_suffix(".json"),
+        (store / "originals" / asset_id).with_suffix(".png"),
+    ):
+        if path.is_symlink():
+            raise MediaError("unsafe_media_path")
+    meta = (store / "records" / asset_id).with_suffix(".json")
+    original = (store / "originals" / asset_id).with_suffix(".png")
+    if not meta.exists() and not original.exists():
+        raise MediaError("media_not_found")
+    meta.unlink(missing_ok=True)
+    original.unlink(missing_ok=True)
+    path = store / "bindings.json"
+    if path.exists() and not path.is_symlink():
+        bindings = read_media_assignments(store)
+        if bindings:
+            remaining = {k: v for k, v in bindings.items() if v != asset_id}
+            content = (json.dumps({"schema_version": 1, "bindings": remaining},
+                                  sort_keys=True) + "\n").encode()
+            fd, filename = tempfile.mkstemp(prefix=".bindings-", suffix=".tmp", dir=store)
+            try:
+                with os.fdopen(fd, "wb") as stream:
+                    os.fchmod(stream.fileno(), 0o600)
+                    stream.write(content)
+                os.replace(filename, path)
+            finally:
+                Path(filename).unlink(missing_ok=True)
