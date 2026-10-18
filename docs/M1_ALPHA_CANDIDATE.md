@@ -1,6 +1,6 @@
 # M1 alpha — source-only GitHub prerelease evidence
 
-**Release-candidate update (18 October 2026):** the actual checked-in Python package version is now `0.2.0a1`. The limited GitHub-only `v0.2.0-alpha.1` prerelease is conditionally authorized only after exact-main green six-job CI and a fresh, green runtime dependency advisory scan. Check [GitHub Releases](https://github.com/interzettel/kushluk/releases) for actual publication. No fonts, native binaries, generated PDFs, paid content or personal data are distributed as release assets. Physical/reader/native-rights gates remain unverified. Historical `0.1.0` evidence below is not a release artifact.
+**Release-candidate update (18 October 2026):** the actual checked-in Python package version is now `0.2.0a1`. The source-only [GitHub `v0.2.0-alpha.1` prerelease](https://github.com/interzettel/kushluk/releases/tag/v0.2.0-alpha.1) **was published on 18 October 2026** after the exact-main six-job CI and live advisory audit passed, with annotated tag targeting `d90f9a5ea0a65e7e9393675fd82cefb7e2d4159c`. No fonts, native binaries, generated PDFs, paid content or personal data are distributed as release assets. Physical/reader/native-rights gates remain unverified. Historical `0.1.0` evidence below is not a release artifact.
 
 ## Exact established software evidence, 17 October 2026
 
