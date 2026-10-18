@@ -25,5 +25,7 @@ jobs:
         run: python tools/project_health.py check
       - name: Test inventory and evidence safeguards
         run: python -m unittest discover -s tests -p 'test_project_health.py' -v
+      - name: Test pure portfolio comparison (no API credentials)
+        run: python -m unittest discover -s tests -p 'test_portfolio_audit.py' -v
       - name: Show verified gates and task checklist in job summary
         run: python tools/project_health.py render >> "$GITHUB_STEP_SUMMARY"
