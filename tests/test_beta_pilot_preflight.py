@@ -68,6 +68,7 @@ def safety_packet(tmp_path):
         "checks": {name: True for name in beta._REQUIRED_SAFETY},
         "human_rights_review_completed": False,
         "independently_verified": False,
+        "release_gate_accepted": False,
     })
 
 
@@ -164,6 +165,21 @@ def test_safety_checklist_does_not_count_as_legal_rights_approval(tmp_path):
     assert beta.assess_beta(safety_checklist=checklist)["domains"][
         "source_rights_safety"
     ] == "operator_evidence_invalid_or_incomplete"
+
+
+def test_operator_safety_record_must_not_self_accept_release_gate(tmp_path):
+    checklist = safety_packet(tmp_path)
+    data = json.loads(checklist.read_text())
+    for claimed in (True, None):
+        submitted = dict(data)
+        if claimed is None:
+            submitted.pop("release_gate_accepted")
+        else:
+            submitted["release_gate_accepted"] = claimed
+        write_json(checklist, submitted)
+        assert beta.assess_beta(safety_checklist=checklist)["domains"][
+            "source_rights_safety"
+        ] == "operator_evidence_invalid_or_incomplete"
 
 
 def test_no_private_content_in_cli_output(tmp_path, capsys):

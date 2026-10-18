@@ -136,3 +136,41 @@ def test_generating_pilot_kit_does_not_touch_external_devices(tmp_path, monkeypa
     assert report["status"] == "private_blank_pilot_kit_created"
     assert report["physical_print_verified"] is False
     assert report["first_reader_verified"] is False
+
+
+def test_canonicalizes_ancestor_alias_but_refuses_missing_parent(tmp_path):
+    private = tmp_path / "private"
+    private.mkdir()
+    alias = tmp_path / "alias"
+    alias.symlink_to(private, target_is_directory=True)
+    # A macOS /var-style ancestor alias is resolved BEFORE any writes.
+    # The resulting private 0700 kit is at a canonical filesystem location.
+    nested = alias / "nested"
+    nested.mkdir()
+    create_pilot_kit(nested / "kit")
+    assert (private / "nested" / "kit" / "MANIFEST.json").is_file()
+    assert (private / "nested" / "kit").stat().st_mode & 0o777 == 0o700
+    with pytest.raises(PilotKitError, match="parent_invalid"):
+        create_pilot_kit(tmp_path / "nonexistent" / "kit")
+    assert not (tmp_path / "nonexistent").exists()
+
+
+def test_failed_write_removes_only_own_partial_kit(tmp_path, monkeypatch):
+    import kushluk.pilot_kit as module
+
+    marker = tmp_path / "operator-notes.txt"
+    marker.write_text("private operator text", encoding="utf-8")
+    real_create = module._create_file
+
+    def fail_on_safety(path, blob):
+        if path.name == "safety.json":
+            raise OSError("PRIVATE_PATH_AND_CONTENT_MUST_NOT_LEAK")
+        return real_create(path, blob)
+
+    monkeypatch.setattr(module, "_create_file", fail_on_safety)
+    out = tmp_path / "partial"
+    with pytest.raises(PilotKitError, match="private_kit_creation_failed") as exc:
+        create_pilot_kit(out)
+    assert "PRIVATE_PATH_AND_CONTENT" not in str(exc.value)
+    assert not out.exists()
+    assert marker.read_text(encoding="utf-8") == "private operator text"
