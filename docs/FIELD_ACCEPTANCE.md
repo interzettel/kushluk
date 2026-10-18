@@ -25,6 +25,8 @@ kushluk record-field-proof --kind paper-a4 \
 
 On real A3 duplex/fold-capable hardware use `--kind paper-a3`, the **actual A3 booklet PDF**, and `--inspection` from `kushluk inspect-print --profile a3-folded`. Confirm outside **4|1**, inside **2|3**, short-edge orientation, fold and trim; record failures as `--result fail` with actual observed defects and retry only after corrective action. Do not mark A3 supported when testing only A4.
 
+To record a **passing** physical sample, the CLI requires a format-specific `inspection.json` whose `profile` is exactly `a4-home`, `letter-home`, or `a3-folded` as applicable, `structural_errors` is an empty JSON list, and the receipt destination directory has private permissions (`0700`). Use a private local directory, not a shared folder or symlink. Earlier operator receipts without a profile can still be independently reviewed as historical evidence but cannot be generated as new passing observations.
+
 To record a **passing** physical sample, the CLI requires one or more evidence files, explicit direct-observation attestation, and a structurally clean PDF inspection JSON with the **same PDF SHA-256**. It records only evidence hashes and byte counts, never copies photographs into Git or transmits anything. If the printer failed, `--result fail` records the failure without a false positive.
 
 ## 1b — Print US Letter on a real home printer
