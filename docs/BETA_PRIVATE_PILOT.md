@@ -18,6 +18,34 @@ U1–U6, and a source/rights/secret checklist. Unlike the later stable-release
 gate, the beta preflight does not demand *five unattended mornings* and
 explicitly cannot claim that a scheduler fired or that a printer delivered.
 
+## Before starting — create private blank observation forms
+
+Install the current development checkout and run:
+
+```bash
+kushluk pilot-kit --output-dir "$HOME/kushluk-private-beta-kit" \
+  --source-commit "$(git rev-parse HEAD)"
+```
+
+This creates a **private (0700) new directory** containing blank
+`first-reader.json`, `accessibility.json`, `safety.json`,
+`SESSION.md`, and a SHA256 `MANIFEST.json`; individual files are
+create-only (0600) on POSIX. The command **does not run the pilot**,
+print paper, contact sources, activate a scheduler, recruit anyone, or
+verify the SHA is the version actually installed. It cannot overwrite an
+existing kit. If you omit `--source-commit`, both observations retain
+`REPLACE_WITH_TESTED_MAIN_COMMIT` until manually filled from the real
+tested checkout.
+
+The blank forms match the same observation schemas already checked by
+`tools.first_reader_evidence`, `tools.accessibility_evidence`, and
+`tools.beta_pilot_preflight`. Those `tools` commands require a source
+checkout; the ordinary installed wheel provides the `kushluk pilot-kit`
+generator. The manifest hashes only the **original blank templates**:
+after participants fill forms, the hashes naturally change and must never
+be misrepresented as later signed evidence. Keep the kit *outside* the
+repository and share only consent-cleared redacted summaries.
+
 ## 1. Produce and physically inspect a synthetic A4 sample
 
 Use an actual printer that you have permission to operate; no third-party
