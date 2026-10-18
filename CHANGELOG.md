@@ -4,6 +4,8 @@ The experimental [GitHub source-only prerelease v0.2.0-alpha.1](https://github.c
 
 ## Unreleased — private beta engineering follow-up
 
+- Add `kushluk pilot-kit --output-dir DIR [--source-commit SHA]` to generate blank U1–U6, A1–A5 and operator safety checklists in a private create-only directory. Emit a SHA256 manifest of original templates and a human session guide; never touch printers, feeds, schedulers, participants or the network. No beta evidence or acceptance is self-awarded (#13).
+
 - Add a local, read-only M2a pilot packet preflight that matches real A4 PDF, inspection and photo hash evidence, host scheduled-run receipts and U1–U6 novice observation; it also requires operator source/consent/recovery checklist. Reports only anonymous fixed statuses and always leaves independent verification and beta publication false. Source-only alpha is unchanged.
 
 - Require all passing paper evidence receipts to match a complete format-specific inspection (`a4-home`, `letter-home` or `a3-folded`) with a strict empty error list; create receipt files only inside private, non-symlinked directories. Existing alpha GitHub release assets are not changed. No real printer or beta gate is certified.

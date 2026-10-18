@@ -180,6 +180,40 @@ def _clean_install(
                 inventory["installed_packages"])):
         raise ReleaseCheckError("invalid_license_review_worksheet")
     _run([str(command), "--help"], cwd=home, env=env)
+    # This is the *installed* wheel/sdist CLI, not an editable checkout.
+    # The kit must be private, completely blank and unable to self-approve.
+    kit_dir = home / "blank-pilot-kit"
+    kit_result = json.loads(_run([
+        str(command), "pilot-kit", "--output-dir", str(kit_dir),
+    ], cwd=home, env=env))
+    if (kit_result.get("status") != "private_blank_pilot_kit_created"
+            or kit_result.get("files_created") != 5
+            or kit_result.get("beta_publication_authorized") is not False):
+        raise ReleaseCheckError("invalid_clean_install_pilot_kit_cli")
+    kit_manifest = json.loads((kit_dir / "MANIFEST.json").read_text())
+    if (kit_manifest.get("kind") != "m2a_private_blank_operator_kit"
+            or kit_manifest.get("status") != "template_not_an_observation"
+            or kit_manifest.get("source_commit_verified_against_installation") is not False
+            or kit_manifest.get("participant_tested") is not False
+            or kit_manifest.get("paper_physically_tested") is not False
+            or kit_manifest.get("beta_publication_authorized") is not False
+            or kit_manifest.get("release_gates_independently_verified") != 0):
+        raise ReleaseCheckError("invalid_installed_blank_pilot_kit_manifest")
+    kit_files = kit_manifest.get("files_sha256")
+    if (not isinstance(kit_files, dict)
+            or set(kit_files) != {
+                "first-reader.json", "accessibility.json", "safety.json", "SESSION.md"
+            }):
+        raise ReleaseCheckError("invalid_installed_blank_pilot_kit_files")
+    for name, expected_sha in kit_files.items():
+        if _digest(kit_dir / name) != expected_sha:
+            raise ReleaseCheckError("installed_pilot_kit_checksum_mismatch")
+    if (json.loads((kit_dir / "first-reader.json").read_text()).get("status")
+            != "template-not-observation"):
+        raise ReleaseCheckError("installed_pilot_kit_not_blank")
+    if (json.loads((kit_dir / "safety.json").read_text()).get("status")
+            != "template-not-observation"):
+        raise ReleaseCheckError("installed_safety_kit_not_blank")
     preview_dir = home / "preview"
     args = [str(command), "preview", "--output-dir", str(preview_dir)]
     if pdf:
