@@ -2,6 +2,8 @@
 
 **Planning baseline:** 17 October 2026 · [Owner #87](https://github.com/interzettel/kushluk/issues/87) · [Release plan](RELEASE_PLAN.md) · [Current code status](STATUS.md). This is the **feature layer**, not an alternative issue/task backlog.
 
+**Release state correction — 18 October 2026:** `v0.2.0-alpha.1` is now a published GitHub source prerelease. Some individual feature-row labels below, notably `implemented-unreleased`, are **17 October planning snapshots** and do not automatically describe the currently published artifact. A future feature-by-feature verification should distinguish code present at the tagged alpha commit `d90f9a5`, later `main` changes, actual user-facing acceptance, and features still planned. Do not globally mark rows shipped merely because a source package was released. See [release plan](RELEASE_PLAN.md) and [18 October journal](WORK_JOURNAL.md).
+
 ## What is a feature?
 
 A **feature** is a user/maintainer-visible capability with a stable `F-###` ID, owner issue, demonstrable benefit, and release target. An **epic** is a coordination group of multiple features (the domain code below); a **milestone** is a vertical slice with acceptance evidence; an **issue/work package** owns implementation; the **90 task IDs** and **8 evidence gates** retain their existing authorities. Release versions indicate intended packaging **not shipped status**. Tasks can be completed before a milestone while a feature remains unverified. Features may move between *future* releases only with a dated note, and only an actual tag/release is marketed as shipped.
