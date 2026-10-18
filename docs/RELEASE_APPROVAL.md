@@ -1,6 +1,6 @@
 # Kuşluk alpha release — scoped source distribution approval
 
-**Limited owner direction:** prepare and publish `v0.2.0-alpha.1` as a **GitHub-only, first-party-source prerelease** after exact-main green six-job CI and a fresh green public dependency advisory audit. Python version is `0.2.0a1`. This is NOT approval for PyPI publication, bundled native/font binaries, generated PDFs, publisher content, unattended/physical/reader gate claims or outside invitations. Confirm an actual GitHub release before calling it published. Owner #54/#87.
+**Limited owner direction:** prepare and publish `v0.2.0-alpha.1` as a **GitHub-only, first-party-source prerelease** after exact-main green six-job CI and a fresh green public dependency advisory audit. Python version is `0.2.0a1`. This is NOT approval for PyPI publication, bundled native/font binaries, generated PDFs, publisher content, unattended/physical/reader gate claims or outside invitations. The [GitHub prerelease](https://github.com/interzettel/kushluk/releases/tag/v0.2.0-alpha.1) was independently verified **published on 18 October 2026**, with annotated tag at commit `d90f9a5ea0a65e7e9393675fd82cefb7e2d4159c`. The matching six-job main CI, live advisory audit and publication workflow passed. Later hardware/reader/native-rights gates remain unverified. Owner #54/#87.
 
 ## Engineering evidence to review
 
@@ -15,7 +15,7 @@ The current [M1 alpha evidence handoff](M1_ALPHA_CANDIDATE.md) records a green h
 - [ ] Compare actual supported CI platforms against [compatibility matrix](COMPATIBILITY_MATRIX.md); Windows and physical printer behavior remain **not verified**.
 - [ ] Approve final security, rights, data collection/privacy, contributor/legal notices and `CHANGELOG.md`. A synthetic edition does not authorize use of publisher body text or unlicensed images.
 - [x] **Limited owner direction:** conditionally release version `0.2.0a1` with annotated tag `v0.2.0-alpha.1`, a first-party source wheel/sdist and SHA256SUMS through GitHub only. No blanket native/rights approval.
-- [ ] Verify conditional automation actually tagged and published from exact-green `main` after archive audit and checksums. Do not claim completed if workflow failed or is queued. Never publish to PyPI.
+- [x] Verify the source-only GitHub prerelease, annotated tag, three downloadable assets, checksums, exact-main CI, fresh advisory audit and successful publication workflow. **No PyPI or native/physical/reader approvals.**
 
 ## Isolated alpha-version packaging trial (not publication)
 
