@@ -124,7 +124,8 @@ def parse_crosswalk(body: str) -> tuple[dict[str, int], list[str]]:
 def tag_for_python_version(version: str) -> str:
     m = re.fullmatch(r"(\d+\.\d+\.\d+)(a|b|rc)(\d+)", version)
     if m:
-        return f"v{m[1]}-{{'a': 'alpha', 'b': 'beta', 'rc': 'rc'}[m[2]]}.{int(m[3])}"
+        label = {"a": "alpha", "b": "beta", "rc": "rc"}[m[2]]
+        return f"v{m[1]}-{label}.{int(m[3])}"
     return "v" + version
 
 
