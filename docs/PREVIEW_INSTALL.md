@@ -1,6 +1,6 @@
 # M1 · First installable preview — candidate validation
 
-**Status:** engineering candidate only, under [#54](https://github.com/interzettel/kushluk/issues/54) and [#87](https://github.com/interzettel/kushluk/issues/87). **Alpha source-only release candidate:** package metadata is now `0.2.0a1`. Publication as `v0.2.0-alpha.1` is gated on final-main CI and live dependency audit. Check [GitHub Releases](https://github.com/interzettel/kushluk/releases) for actual publication. No native libraries, font files, generated PDFs or PyPI package are distributed.
+**Status:** engineering candidate only, under [#54](https://github.com/interzettel/kushluk/issues/54) and [#87](https://github.com/interzettel/kushluk/issues/87). **Published GitHub source-only alpha:** [v0.2.0-alpha.1](https://github.com/interzettel/kushluk/releases/tag/v0.2.0-alpha.1) (Python package `0.2.0a1`) was published on 18 October 2026 after exact-main six-job CI and the live runtime dependency audit passed. Download the tagged wheel/sdist and SHA256SUMS from that release. No native libraries, font files, generated PDFs or PyPI package are distributed.
 
 ## What is actually installable
 
