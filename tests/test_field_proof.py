@@ -17,7 +17,7 @@ def _files(tmp_path):
     inspect = tmp_path / "inspection.json"
     inspect.write_text(json.dumps({
         "schema_version": 1, "pdf_sha256": sha256(artifact.read_bytes()).hexdigest(),
-        "structural_errors": [], "visual_verified": False,
+        "profile": "a4-home", "structural_errors": [], "visual_verified": False,
         "physical_verified": False,
     }))
     return artifact, evidence, inspect
@@ -193,3 +193,76 @@ def test_a4_and_a3_reject_cross_profile_inspection_if_provided(tmp_path):
                 operator="Observer", observations="Observation",
                 result="pass", acknowledge=True,
             )
+
+
+@pytest.mark.parametrize("kind, wrong", [
+    ("paper-a4", None),
+    ("paper-a3", None),
+    ("paper-a4", "letter-home"),
+    ("paper-a3", "a4-home"),
+])
+def test_passing_paper_requires_exact_explicit_profile(tmp_path, kind, wrong):
+    artifact, photo, inspect = _files(tmp_path)
+    inspection = json.loads(inspect.read_text())
+    if wrong is None:
+        inspection.pop("profile", None)
+    else:
+        inspection["profile"] = wrong
+    inspect.write_text(json.dumps(inspection))
+    target = tmp_path / "private" / "field.json"
+    with pytest.raises(FieldProofError, match="does not match"):
+        record_field_proof(
+            kind=kind, artifact=artifact, evidence=[photo],
+            inspection=inspect, output=target, device="Observed printer",
+            operator="Observer", observations="Real physical inspection",
+            result="pass", acknowledge=True,
+        )
+    assert not target.exists()
+
+
+@pytest.mark.parametrize("bad_errors", [{}, "unverified", None, False])
+def test_passing_paper_rejects_nonstrict_inspection_errors(tmp_path, bad_errors):
+    artifact, photo, inspect = _files(tmp_path)
+    inspection = json.loads(inspect.read_text())
+    inspection["structural_errors"] = bad_errors
+    inspect.write_text(json.dumps(inspection))
+    with pytest.raises(FieldProofError, match="does not match"):
+        record_field_proof(
+            kind="paper-a4", artifact=artifact, evidence=[photo],
+            inspection=inspect, output=tmp_path / "private" / "field.json",
+            device="Printer", operator="Observer", observations="Real inspection",
+            result="pass", acknowledge=True,
+        )
+
+
+def test_private_receipt_refuses_symlink_directory(tmp_path):
+    artifact, photo, inspect = _files(tmp_path)
+    real = tmp_path / "private"
+    real.mkdir(mode=0o700)
+    alias = tmp_path / "link"
+    alias.symlink_to(real, target_is_directory=True)
+    target = alias / "receipt.json"
+    with pytest.raises(FieldProofError, match="symlink"):
+        record_field_proof(
+            kind="paper-a4", artifact=artifact, evidence=[photo],
+            inspection=inspect, output=target,
+            device="Printer", operator="Observer", observations="Real inspection",
+            result="pass", acknowledge=True,
+        )
+    assert not target.exists()
+
+
+def test_private_receipt_refuses_public_directory(tmp_path):
+    artifact, photo, inspect = _files(tmp_path)
+    target_dir = tmp_path / "public"
+    target_dir.mkdir()
+    target_dir.chmod(0o755)
+    target = target_dir / "receipt.json"
+    with pytest.raises(FieldProofError, match="private"):
+        record_field_proof(
+            kind="paper-a4", artifact=artifact, evidence=[photo],
+            inspection=inspect, output=target,
+            device="Printer", operator="Observer", observations="Real inspection",
+            result="pass", acknowledge=True,
+        )
+    assert not target.exists()
