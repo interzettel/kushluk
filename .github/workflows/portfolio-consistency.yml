@@ -1,0 +1,42 @@
+name: Portfolio consistency (read only)
+
+# Does not synchronize Project items, change issues or approve delivery.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 7 * * *"
+
+permissions:
+  contents: read
+  issues: read
+
+jobs:
+  audit:
+    name: Compare GitHub and repository authorities
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Offline contract and safety tests
+        run: python -m unittest discover -s tests -p 'test_portfolio_audit.py' -v
+      - name: Read live issues, Project and releases
+        env:
+          GH_TOKEN: ${{ secrets.KUSHLUK_PROJECT_TOKEN }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::error::KUSHLUK_PROJECT_TOKEN missing; audit incomplete."
+            exit 2
+          fi
+          python -m tools.portfolio_audit \
+            --output "$RUNNER_TEMP/portfolio-audit.json" \
+            --summary "$GITHUB_STEP_SUMMARY"
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: portfolio-audit
+          path: ${{ runner.temp }}/portfolio-audit.json
+          retention-days: 14
+          if-no-files-found: warn
