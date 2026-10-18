@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "status": "template-not-observation",
+  "checks": {
+    "private_data_remains_on_owner_device": false,
+    "sources_have_explicit_approved_rights_or_synthetic_only": false,
+    "operator_has_permission_to_use_printer": false,
+    "participant_consented_to_observation": false,
+    "host_schedule_and_retry_policy_reviewed": false,
+    "failure_and_rollback_instructions_understood": false
+  },
+  "human_rights_review_completed": false,
+  "independently_verified": false,
+  "release_gate_accepted": false
+}
