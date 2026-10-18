@@ -146,12 +146,22 @@ def _create_file(path: Path, content: bytes) -> None:
 def create_pilot_kit(directory: Path, *, source_commit: str | None = None) -> dict:
     if source_commit is not None and not COMMIT.fullmatch(source_commit):
         raise PilotKitError("invalid_source_commit")
-    if directory.is_symlink() or directory.exists() or directory.parent.is_symlink():
+    if directory.is_symlink() or directory.exists():
         raise PilotKitError("private_directory_must_be_new")
+    # Never traverse a symlink anywhere in the supplied parent chain. Requiring
+    # an existing parent also avoids silently creating world-readable ancestors
+    # whose names could disclose that a private participant trial exists.
+    if (not directory.parent.is_dir()
+            or any(part.is_symlink() for part in
+                   (directory.parent, *directory.parent.parents))):
+        raise PilotKitError("private_directory_parent_invalid")
     # The operator chooses the local destination. Only the kit is created;
     # the program never writes real observations or accesses external devices.
+    created: list[Path] = []
+    directory_created = False
     try:
-        directory.mkdir(mode=0o700, parents=True, exist_ok=False)
+        directory.mkdir(mode=0o700, exist_ok=False)
+        directory_created = True
         if directory.is_symlink() or directory.stat().st_mode & 0o077:
             raise PilotKitError("private_directory_permissions_invalid")
         source = source_commit if source_commit is not None else UNKNOWN_SHA
@@ -167,6 +177,7 @@ def create_pilot_kit(directory: Path, *, source_commit: str | None = None) -> di
         blobs["SESSION.md"] = INSTRUCTIONS.encode("utf-8")
         for name, blob in blobs.items():
             _create_file(directory / name, blob)
+            created.append(directory / name)
         manifest = {
             "schema_version": 1, "kind": "m2a_private_blank_operator_kit",
             "status": "template_not_an_observation",
@@ -187,6 +198,7 @@ def create_pilot_kit(directory: Path, *, source_commit: str | None = None) -> di
             directory / "MANIFEST.json",
             (json.dumps(manifest, indent=2, sort_keys=True) + "\n").encode("utf-8"),
         )
+        created.append(directory / "MANIFEST.json")
         return {
             "status": "private_blank_pilot_kit_created",
             "files_created": len(blobs) + 1,
@@ -195,9 +207,21 @@ def create_pilot_kit(directory: Path, *, source_commit: str | None = None) -> di
             "first_reader_verified": False,
             "beta_publication_authorized": False,
         }
-    except PilotKitError:
-        raise
-    except OSError as exc:
+    except (PilotKitError, OSError) as exc:
+        # A failed kit is not a valid handoff. Remove only entries this call
+        # successfully created; never recursively delete operator content.
+        if directory_created:
+            for child in reversed(created):
+                try:
+                    child.unlink()
+                except OSError:
+                    pass
+            try:
+                directory.rmdir()
+            except OSError:
+                pass
+        if isinstance(exc, PilotKitError):
+            raise
         raise PilotKitError("private_kit_creation_failed") from exc
 
 

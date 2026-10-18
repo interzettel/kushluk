@@ -33,7 +33,11 @@ This creates a **private (0700) new directory** containing blank
 create-only (0600) on POSIX. The command **does not run the pilot**,
 print paper, contact sources, activate a scheduler, recruit anyone, or
 verify the SHA is the version actually installed. It cannot overwrite an
-existing kit. If you omit `--source-commit`, both observations retain
+existing kit. **The parent directory must already exist and no parent path
+component may be a symlink**; use a dedicated local directory rather than a
+symlinked/shared location. If creation fails partway, the command removes
+only files it created and does not delete existing operator material.
+If you omit `--source-commit`, both observations retain
 `REPLACE_WITH_TESTED_MAIN_COMMIT` until manually filled from the real
 tested checkout.
 

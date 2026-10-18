@@ -158,7 +158,8 @@ def inspect_safety(path: Path) -> dict:
             or set(record["checks"]) != set(_REQUIRED_SAFETY)
             or not all(record["checks"][name] is True for name in _REQUIRED_SAFETY)
             or record.get("human_rights_review_completed") is not False
-            or record.get("independently_verified") is not False):
+            or record.get("independently_verified") is not False
+            or record.get("release_gate_accepted") is not False):
         raise BetaEvidenceError("safety_checklist_incomplete")
     return {
         "status": "operator_safety_checklist_complete",
