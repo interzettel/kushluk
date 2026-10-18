@@ -37,11 +37,11 @@ existing kit. If you omit `--source-commit`, both observations retain
 `REPLACE_WITH_TESTED_MAIN_COMMIT` until manually filled from the real
 tested checkout.
 
-The blank forms match the same observation schemas already checked by
+The blank forms match the observation schemas checked by
 `tools.first_reader_evidence`, `tools.accessibility_evidence`, and
 `tools.beta_pilot_preflight`. Those `tools` commands require a source
-checkout; the ordinary installed wheel provides the `kushluk pilot-kit`
-generator. The manifest hashes only the **original blank templates**:
+checkout. The new `kushluk pilot-kit` command exists in **this checkout or
+a future wheel built from it**, not the already-published `0.2.0a1` alpha wheel. The manifest hashes only the **original blank templates**:
 after participants fill forms, the hashes naturally change and must never
 be misrepresented as later signed evidence. Keep the kit *outside* the
 repository and share only consent-cleared redacted summaries.
