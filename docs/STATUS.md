@@ -1,5 +1,12 @@
 # Kushluk Status
 
+## Current release bulletin — 18 October 2026
+
+**[v0.2.0-alpha.1](https://github.com/interzettel/kushluk/releases/tag/v0.2.0-alpha.1) was published as a GitHub-only experimental source prerelease**, Python package version `0.2.0a1`, at annotated source tag `d90f9a5ea0a65e7e9393675fd82cefb7e2d4159c`. The six-job exact-main CI, current Python dependency advisory audit, strict first-party archive inspection and publication workflow passed. Wheel, sdist and SHA256SUMS are attached to that release. It is not on PyPI and bundles no system fonts/native libraries or generated PDFs.
+
+**The historical implementation snapshots below are retained as dated evidence** and therefore reference their then-current development version `0.1.0`. They do not override this newer release bulletin. Physical A4/Letter/A3, unattended home host, assistive-technology/first-reader trials and native/font redistribution rights remain independently unverified; [PROGRESS.md](PROGRESS.md) still reports **0/8 (00.00%)** delivery gates. No stable or beta release is implied.
+
+
 Last implementation verification snapshot: 2026-10-17 (four-page software CI; physical trials outstanding).
 Documentation and issue inventory reviewed: 2026-10-17; six evidence-backed task checkboxes reconciled.
 
