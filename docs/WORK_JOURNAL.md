@@ -2,6 +2,16 @@
 
 A concise, dated evidence/history record for one maintainer with AI helpers. **This is not an activity-time tracker or a substitute for GitHub commits and discussions.**
 
+## 2026-10-18 — Published alpha, M2a pilot tooling and portfolio reconciliation
+
+**Kind:** release and engineering evidence / portfolio maintenance. **Owners:** #13 (physical morning proof), #43 (central issue index), #44/#59 (documentation), #65 (Project metadata), #87 (release map).
+
+- [v0.2.0-alpha.1](https://github.com/interzettel/kushluk/releases/tag/v0.2.0-alpha.1) is now a **published GitHub-only experimental source prerelease** on tag `d90f9a5`; package version `0.2.0a1`. It is **not** on PyPI, nor a tested physical printer release. [PR #142](https://github.com/interzettel/kushluk/pull/142) prepared the release and [PR #143](https://github.com/interzettel/kushluk/pull/143) reconciled published release documentation.
+- [PR #144](https://github.com/interzettel/kushluk/pull/144) hardened physical print receipts; [PR #145](https://github.com/interzettel/kushluk/pull/145) added the read-only M2a evidence preflight; [PR #146](https://github.com/interzettel/kushluk/pull/146) added private blank `pilot-kit` operator forms; [PR #147](https://github.com/interzettel/kushluk/pull/147) hardened private paths, partial-write cleanup and safety-record self-approval refusal. Latest merged `main`: `3b8dd804bf3e` with [six-job CI passed](https://github.com/interzettel/kushluk/actions/runs/39124156271) and [Project health passed](https://github.com/interzettel/kushluk/actions/runs/39124156242). These post-tag changes are in the development checkout, **not in the published alpha artifacts**.
+- Live GitHub issue audit: **64 issues, 60 open / 4 closed**. The central [issue #43](https://github.com/interzettel/kushluk/issues/43) was missing newly created [#129](https://github.com/interzettel/kushluk/issues/129) (US Letter); the 18 October portfolio table was reconciled to 64 unique entries without changing issue states or dispositions.
+- [Project #3](https://github.com/orgs/interzettel/projects/3) native metadata backfill remains partial: [latest scheduled report](https://github.com/interzettel/kushluk/actions/runs/39124063717) found 63 of 64 issues attached (closed/deferred #1 missing), seven unset values per custom field, one unset Status and 12 pending issues by the sync script's broader criterion. The job is resumable in limited scheduled batches, **not completed**.
+- **Task ledger stays 26/90 (28.89%); G1–G8 independently verified gates stay 0/8 (00.00%).** Real printer output, host reboot/unattended delivery, participant acceptance, accessibility, source-rights approval and beta authorization are absent. Do not claim the merged pilot tooling itself satisfies them. Next step: private hardware/reader trial per [BETA_PRIVATE_PILOT.md](BETA_PRIVATE_PILOT.md); independently review consent-cleared evidence before a beta decision.
+
 ## 2026-10-17 — Dependency inventory and archive migration preflight after M1 packaging
 
 **Issue:** #54 hardening / #87 M1; [PR #121](https://github.com/interzettel/kushluk/pull/121).

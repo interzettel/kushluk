@@ -4,6 +4,10 @@
 
 **Agent workflow:** [tools/issue-intake/SKILL.md](../tools/issue-intake/SKILL.md) and `python -m tools.create_issue`. The owner's Actions secret is now authorized for organization Project #3. The first successful run created **Workstream, Maturity, and Evidence**. GitHub's existing reserved **Priority** field had no options and rejected API mutation ([attempt](https://github.com/interzettel/kushluk/actions/runs/38967689905)). This integration therefore provisions a distinct editable **Triage Priority** field; it does **not** delete, modify, or claim to populate the reserved Priority field. Run bootstrap/backfill/audit and verify issue values before declaring completion.
 
+## Live backfill checkpoint — 18 October 2026
+
+The [scheduled reconciliation run](https://github.com/interzettel/kushluk/actions/runs/39124063717) completed successfully and reported **64 repository issues, 63 already in Project #3, and #1 missing**. At that run's end: **7 missing each** for Triage Priority, Workstream, Maturity and Evidence; **1 missing Status**; and **12 pending issue records** by the sync tool's broader incompleteness test. Five issues (#8–#12) were processed during that run. This is progress, **not full field coverage**. Historical issue #1 is closed as not planned, not deleted. Keep #65 open until an actual complete audit reports zero pending or any deliberate exemptions are explicitly recorded.
+
 ## What the fields do
 
 | Native Project field | Values | Practical purpose |
