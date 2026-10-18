@@ -12,7 +12,7 @@ import os
 from pathlib import Path
 import re
 
-COMMIT = re.compile(r"[0-9a-f]{40}\\Z")
+COMMIT = re.compile(r"[0-9a-f]{40}\Z")
 UNKNOWN_SHA = "REPLACE_WITH_TESTED_MAIN_COMMIT"
 SAFETY_CHECKS = (
     "private_data_remains_on_owner_device",
@@ -161,7 +161,7 @@ def create_pilot_kit(directory: Path, *, source_commit: str | None = None) -> di
             "safety.json": _safety(),
         }
         blobs = {
-            name: (json.dumps(obj, indent=2, sort_keys=True) + "\\n").encode("utf-8")
+            name: (json.dumps(obj, indent=2, sort_keys=True) + "\n").encode("utf-8")
             for name, obj in templates.items()
         }
         blobs["SESSION.md"] = INSTRUCTIONS.encode("utf-8")
@@ -185,7 +185,7 @@ def create_pilot_kit(directory: Path, *, source_commit: str | None = None) -> di
         }
         _create_file(
             directory / "MANIFEST.json",
-            (json.dumps(manifest, indent=2, sort_keys=True) + "\\n").encode("utf-8"),
+            (json.dumps(manifest, indent=2, sort_keys=True) + "\n").encode("utf-8"),
         )
         return {
             "status": "private_blank_pilot_kit_created",
