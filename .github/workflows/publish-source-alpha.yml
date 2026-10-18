@@ -1,0 +1,177 @@
+name: Publish approved source-only GitHub alpha
+
+# One narrowly scoped publication path. Never publishes on a pull request,
+# CI alone, a tag push, cron, a failed advisory scan or a new patch version.
+on:
+  workflow_run:
+    workflows: ["Python dependency vulnerability audit (candidate only)"]
+    types: [completed]
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: kushluk-approved-v0.2.0-alpha.1-publication
+  cancel-in-progress: false
+
+jobs:
+  publish-limited-alpha:
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'main' &&
+      github.event.workflow_run.head_repository.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      RELEASE_SHA: ${{ github.event.workflow_run.head_sha }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      TAG: v0.2.0-alpha.1
+      PYTHON_PACKAGE_VERSION: 0.2.0a1
+    steps:
+      - name: Checkout exact audited main SHA, never a PR's untrusted branch
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Verify one-time distribution intent and current source head
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$RELEASE_SHA"
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$RELEASE_SHA"
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          import tomllib
+          intent = json.loads(Path("docs/releases/v0.2.0-alpha.1.intent.json").read_text())
+          project = tomllib.loads(Path("pyproject.toml").read_text())["project"]
+          assert project["version"] == "0.2.0a1"
+          assert intent["schema_version"] == 1
+          assert intent["tag"] == "v0.2.0-alpha.1"
+          assert intent["python_version"] == project["version"]
+          assert intent["distribution_channel"] == "github_prerelease_only"
+          assert intent["release_scope"] == "first_party_python_wheel_and_source_archive"
+          assert intent["release_requested_by_repository_owner"] is True
+          assert intent["allow_pypi_publish"] is False
+          assert intent["include_generated_pdf"] is False
+          assert intent["include_native_binaries"] is False
+          assert intent["include_font_files"] is False
+          assert intent["native_font_redistribution_rights_verified"] is False
+          assert intent["physical_printer_verified"] is False
+          assert intent["first_reader_verified"] is False
+          assert intent["release_gate_G1_to_G8_verified"] == 0
+          assert intent["allowed_release_assets"] == [
+              "kushluk-0.2.0a1-py3-none-any.whl",
+              "kushluk-0.2.0a1.tar.gz", "SHA256SUMS.txt",
+          ]
+          assert Path("docs/releases/v0.2.0-alpha.1.md").is_file()
+          print("Approved scope: GitHub first-party source only; native/fonts/PyPI excluded")
+          PY
+
+      - name: Require exactly matching green six-job main CI run
+        run: |
+          set -euo pipefail
+          success=0
+          for attempt in $(seq 1 60); do
+            ci_id="$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/ci.yml/runs?branch=main&per_page=25" \
+              --jq ".workflow_runs[] | select(.head_sha == \"$RELEASE_SHA\") | .id" | head -n1)"
+            if [ -n "$ci_id" ]; then
+              status="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$ci_id" --jq '.status')"
+              conclusion="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$ci_id" --jq '.conclusion // ""')"
+              if [ "$status" = "completed" ]; then
+                if [ "$conclusion" != "success" ]; then
+                  echo "Exact release SHA has failed or cancelled CI; refusing publication."
+                  exit 1
+                fi
+                jobs="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$ci_id/jobs?per_page=100")"
+                echo "$jobs" | jq -e '
+                  [.jobs[] | select(.conclusion == "success")] |
+                  (map(.name) |
+                   index("test") != null and
+                   index("Installable wheel/sdist / Linux Python 3.11") != null and
+                   index("Installable wheel/sdist / Linux Python 3.12") != null and
+                   index("macOS / macos-15") != null and
+                   index("macOS / macos-15-intel") != null and
+                   index("Experimental alpha source distribution / Python 3.12") != null)
+                ' >/dev/null
+                echo "Exact main SHA has all six green CI jobs: $ci_id"
+                success=1
+                break
+              fi
+            fi
+            sleep 15
+          done
+          if [ "$success" != 1 ]; then
+            echo "No completed, fully green six-job main CI for exact release SHA."
+            exit 1
+          fi
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$RELEASE_SHA"
+
+      - name: Build reproducible source assets and recheck independent evidence
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade build
+          python -m tools.release_check --artifact-dir output/source-alpha-release
+          python -m tools.m1_bundle_preflight --artifact-dir output/source-alpha-release \
+            > output/source-alpha-release/m1-preflight.json
+          python -m tools.release_source_scope \
+            --wheel output/source-alpha-release/kushluk-0.2.0a1-py3-none-any.whl \
+            --sdist output/source-alpha-release/kushluk-0.2.0a1.tar.gz \
+            > output/source-alpha-release/source-scope.json
+          (cd output/source-alpha-release && \
+            sha256sum kushluk-0.2.0a1-py3-none-any.whl kushluk-0.2.0a1.tar.gz > SHA256SUMS.txt)
+          git diff --exit-code
+          test "$(git rev-parse HEAD)" = "$RELEASE_SHA"
+
+      - name: Create annotated version tag only on the audited commit
+        run: |
+          set -euo pipefail
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "GitHub prerelease already exists; leave it unchanged."
+            exit 0
+          fi
+          if git ls-remote --exit-code --tags origin "refs/tags/$TAG" >/dev/null 2>&1; then
+            git fetch origin "refs/tags/$TAG:refs/tags/$TAG"
+            test "$(git rev-list -n1 "$TAG")" = "$RELEASE_SHA"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git tag -a "$TAG" "$RELEASE_SHA" -m "Kuşluk experimental source-only alpha v0.2.0-alpha.1"
+            git push origin "refs/tags/$TAG"
+          fi
+
+      - name: Publish GitHub prerelease source archives only (never PyPI)
+        run: |
+          set -euo pipefail
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "GitHub prerelease exists: not overwriting its assets or notes."
+            exit 0
+          fi
+          gh release create "$TAG" \
+            output/source-alpha-release/kushluk-0.2.0a1-py3-none-any.whl \
+            output/source-alpha-release/kushluk-0.2.0a1.tar.gz \
+            output/source-alpha-release/SHA256SUMS.txt \
+            --verify-tag --prerelease \
+            --title "Kuşluk v0.2.0-alpha.1 — experimental source preview" \
+            --notes-file docs/releases/v0.2.0-alpha.1.md
+          gh release view "$TAG" --json url,isPrerelease,tagName \
+            --jq '{url, isPrerelease, tagName}'
+
+      - name: Preserve machine preflight receipts (review data, not published assets)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kushluk-alpha-github-release-evidence
+          path: |
+            output/source-alpha-release/release-evidence.json
+            output/source-alpha-release/m1-preflight.json
+            output/source-alpha-release/source-scope.json
+            output/source-alpha-release/SHA256SUMS.txt
+          retention-days: 14
+          if-no-files-found: warn
