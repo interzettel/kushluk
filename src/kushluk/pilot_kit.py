@@ -146,7 +146,8 @@ def _create_file(path: Path, content: bytes) -> None:
 def create_pilot_kit(directory: Path, *, source_commit: str | None = None) -> dict:
     if source_commit is not None and not COMMIT.fullmatch(source_commit):
         raise PilotKitError("invalid_source_commit")
-    if directory.is_symlink() or directory.exists():
+    if (directory.is_symlink() or directory.exists()
+            or directory.parent.is_symlink()):
         raise PilotKitError("private_directory_must_be_new")
     # Never traverse a symlink anywhere in the supplied parent chain. Requiring
     # an existing parent also avoids silently creating world-readable ancestors
