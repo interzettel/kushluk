@@ -1,11 +1,8 @@
 # Changelog
 
-This repository is still in **unreleased development**. Changelog entries are
-engineering notes, not proof of a published package, signed download, or
-physical-product acceptance. A future release must be approved and tagged
-separately under [the release plan](docs/RELEASE_PLAN.md).
+The experimental [GitHub source-only prerelease v0.2.0-alpha.1](https://github.com/interzettel/kushluk/releases/tag/v0.2.0-alpha.1) (Python version `0.2.0a1`) was published **18 October 2026** at annotated commit `d90f9a5`. It is not a stable distribution, a native/font redistribution approval, or proof of physical printing or independent reader acceptance.
 
-## Unreleased — M1 installable-preview candidate (proposed v0.2.0-alpha.1)
+## v0.2.0-alpha.1 — 18 October 2026 · experimental GitHub source prerelease
 
 - Add an installed `kushluk preview --output-dir DIR [--pdf]` command: frozen
   original fictional editorial content, four logical A4 pages, HTML, Markdown,
