@@ -2,6 +2,10 @@
 
 The experimental [GitHub source-only prerelease v0.2.0-alpha.1](https://github.com/interzettel/kushluk/releases/tag/v0.2.0-alpha.1) (Python version `0.2.0a1`) was published **18 October 2026** at annotated commit `d90f9a5`. It is not a stable distribution, a native/font redistribution approval, or proof of physical printing or independent reader acceptance.
 
+## Unreleased — private beta engineering follow-up
+
+- Require all passing paper evidence receipts to match a complete format-specific inspection (`a4-home`, `letter-home` or `a3-folded`) with a strict empty error list; create receipt files only inside private, non-symlinked directories. Existing alpha GitHub release assets are not changed. No real printer or beta gate is certified.
+
 ## v0.2.0-alpha.1 — 18 October 2026 · experimental GitHub source prerelease
 
 - Add an installed `kushluk preview --output-dir DIR [--pdf]` command: frozen
