@@ -1,6 +1,5 @@
 """The first alpha release may distribute source, never system fonts/binaries."""
 import io
-from pathlib import Path
 import tarfile
 from zipfile import ZipFile, ZIP_DEFLATED
 
