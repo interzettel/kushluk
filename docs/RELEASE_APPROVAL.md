@@ -1,6 +1,6 @@
-# Proposed alpha release: human approval handoff
+# Kuşluk alpha release — scoped source distribution approval
 
-**Release candidate, not an issued release:** `v0.2.0-alpha.1` (proposed). Development package is `0.1.0` until separately approved. **No tag, PyPI upload, GitHub Release or external invitation is authorized by this checklist.** Owner #54/#87.
+**Limited owner direction:** prepare and publish `v0.2.0-alpha.1` as a **GitHub-only, first-party-source prerelease** after exact-main green six-job CI and a fresh green public dependency advisory audit. Python version is `0.2.0a1`. This is NOT approval for PyPI publication, bundled native/font binaries, generated PDFs, publisher content, unattended/physical/reader gate claims or outside invitations. Confirm an actual GitHub release before calling it published. Owner #54/#87.
 
 ## Engineering evidence to review
 
@@ -14,8 +14,8 @@ The current [M1 alpha evidence handoff](M1_ALPHA_CANDIDATE.md) records a green h
 - [ ] Confirm archive-v1 remains held for migration review, with no automatic conversion/resend; document backups and restoration from a private copy. See [migration playbook](ARCHIVE_MIGRATION_PLAYBOOK.md).
 - [ ] Compare actual supported CI platforms against [compatibility matrix](COMPATIBILITY_MATRIX.md); Windows and physical printer behavior remain **not verified**.
 - [ ] Approve final security, rights, data collection/privacy, contributor/legal notices and `CHANGELOG.md`. A synthetic edition does not authorize use of publisher body text or unlicensed images.
-- [ ] **Founder release decision** authorizes the exact alpha version bump, Git tag `v0.2.0-alpha.1`, release assets, checksums and distribution channel. A merge or green badge **does not** constitute that decision.
-- [ ] After explicit authorization only: update package version, build from the approved SHA, re-run clean installs and checks, create annotated tag and GitHub prerelease intentionally, and document SHA/recovery/upgrade contract. Do not publish to PyPI merely because GitHub artifacts exist.
+- [x] **Limited owner direction:** conditionally release version `0.2.0a1` with annotated tag `v0.2.0-alpha.1`, a first-party source wheel/sdist and SHA256SUMS through GitHub only. No blanket native/rights approval.
+- [ ] Verify conditional automation actually tagged and published from exact-green `main` after archive audit and checksums. Do not claim completed if workflow failed or is queued. Never publish to PyPI.
 
 ## Isolated alpha-version packaging trial (not publication)
 
