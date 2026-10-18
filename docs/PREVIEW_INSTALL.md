@@ -1,6 +1,6 @@
 # M1 · First installable preview — candidate validation
 
-**Status:** engineering candidate only, under [#54](https://github.com/interzettel/kushluk/issues/54) and [#87](https://github.com/interzettel/kushluk/issues/87). **No tag or release has been created.** The package metadata is still development version `0.1.0`; `v0.2.0-alpha.1` is a **proposed** future release decision, not an installed or published version.
+**Status:** engineering candidate only, under [#54](https://github.com/interzettel/kushluk/issues/54) and [#87](https://github.com/interzettel/kushluk/issues/87). **Alpha source-only release candidate:** package metadata is now `0.2.0a1`. Publication as `v0.2.0-alpha.1` is gated on final-main CI and live dependency audit. Check [GitHub Releases](https://github.com/interzettel/kushluk/releases) for actual publication. No native libraries, font files, generated PDFs or PyPI package are distributed.
 
 ## What is actually installable
 
@@ -12,7 +12,7 @@ The installed `kushluk preview` command produces one fixed, four-logical-page **
 
 Open [GitHub Actions → CI](https://github.com/interzettel/kushluk/actions/workflows/ci.yml), choose the latest successful **M1-enabled** run, and download one of the `kushluk-m1-*` artifact ZIPs. Linux Python 3.11/3.12 and macOS Apple Silicon/Intel variants include:
 
-- `kushluk-0.1.0-py3-none-any.whl` — source-free Python distribution
+- `kushluk-0.2.0a1-py3-none-any.whl` — source-free Python distribution
 - `kushluk-0.1.0.tar.gz` — buildable source distribution
 - `wheel/kushluk-preview.html`, `.md`, `-edition.json`, `preview-manifest.json` — synthetic sample generated **after clean wheel installation**
 - `sdist/...` — equivalent files generated from the **clean sdist installation**
@@ -67,9 +67,7 @@ For an existing private archive, the new **non-mutating** `kushluk archive-check
 The [compatibility matrix](COMPATIBILITY_MATRIX.md) records exactly which software/platform paths have CI evidence and which hardware/device claims remain open. A [human alpha approval handoff](RELEASE_APPROVAL.md) keeps all release publication steps separate from this development preview.
 
 The optional `kushluk-m1-isolated-0.2.0a1-trial` CI artifact is a
-*disposable proposed-version test* built from a temporary tracked source
-snapshot. It is not the development package or an officially supported
-alpha. The checked-in package remains `0.1.0`. See the
+*historical pre-release trial* built from a temporary tracked source snapshot; the current tagged candidate uses the real `0.2.0a1` metadata and its own final CI evidence. See the
 [M1 alpha evidence and remaining signoff](M1_ALPHA_CANDIDATE.md).
 
 ## Known limitations and release decision
