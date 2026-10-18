@@ -13,6 +13,7 @@ from kushluk.config import Settings
 from kushluk.doctor import core_ready, run_doctor
 from kushluk.epub import EpubError, export_archived_epub
 from kushluk.field_proof import FieldProofError, record_field_proof
+from kushluk.pilot_kit import PilotKitError, create_pilot_kit
 from kushluk.host_trial_review import HostTrialReviewError, review_host_trial
 from kushluk.local_profile import LocalProfileError, profile_path, write_local_profile
 from kushluk.newsletter_discovery import NewsletterError, discover, save_proposals, set_mode
@@ -370,6 +371,13 @@ def build_parser() -> argparse.ArgumentParser:
     host_review.add_argument("--receipts-dir", type=Path, required=True)
     host_review.add_argument("--archive-root", type=Path,
                              help="Private archive root; defaults to configured local archive")
+
+    pilot = sub.add_parser(
+        "pilot-kit", help="Create private blank M2a observation forms; no hardware use"
+    )
+    pilot.add_argument("--output-dir", type=Path, required=True)
+    pilot.add_argument("--source-commit",
+                       help="40-character tested Git SHA; no automatic verification")
 
     field = sub.add_parser(
         "record-field-proof", help="Record self-attested physical printer, reader or host trial"
@@ -884,6 +892,17 @@ def main(argv: list[str] | None = None) -> int:
             print(json.dumps({"status": "rejected", "error": code}))
             return 2
         print(json.dumps(report, ensure_ascii=False))
+        return 0
+
+    if args.command == "pilot-kit":
+        try:
+            result = create_pilot_kit(
+                args.output_dir, source_commit=args.source_commit,
+            )
+        except PilotKitError as exc:
+            print(json.dumps({"status": "rejected", "error": str(exc)}))
+            return 2
+        print(json.dumps(result, sort_keys=True))
         return 0
 
     if args.command == "record-field-proof":
