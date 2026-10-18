@@ -1,6 +1,12 @@
 name: Python dependency vulnerability audit (candidate only)
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'pyproject.toml'
+      - '.github/workflows/dependency-audit.yml'
+      - 'tools/python_sbom.py'
   workflow_dispatch:
   schedule:
     - cron: '17 6 * * 1'

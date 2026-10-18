@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "kushluk"
-version = "0.1.0"
+version = "0.2.0a1"
 description = "Local-first, print-first personal morning publication"
 readme = "README.md"
 requires-python = ">=3.11"

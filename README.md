@@ -83,7 +83,7 @@ kushluk preview --output-dir ./synthetic-preview
 kushluk preview --output-dir ./synthetic-preview-pdf --pdf
 ```
 
-[Preview install instructions, supported platforms and limitations](docs/PREVIEW_INSTALL.md) · [M1 release checklist](docs/RELEASE_PLAN.md). The built archives and sample proofs are available as temporary **CI artifacts**, not an official downloadable release. The installed version remains **0.1.0**; `v0.2.0-alpha.1` has **not** been tagged or published. Four-page PDF checks are software evidence, not physical printing or real-reader acceptance.
+[Preview install instructions, supported platforms and limitations](docs/PREVIEW_INSTALL.md) · [M1 release checklist](docs/RELEASE_PLAN.md). The built archives and sample proofs are available as temporary **CI artifacts**, not an official downloadable release. The source version is now **0.2.0a1** for the experimental first-party-source-only GitHub alpha. Its [release workflow](.github/workflows/publish-source-alpha.yml) publishes **only after** matching green main CI and live dependency audit; check [GitHub Releases](https://github.com/interzettel/kushluk/releases) for the actual published state. No PyPI release, bundled native fonts/libraries or physical/reader acceptance is claimed. Four-page PDF checks are software evidence, not physical printing or real-reader acceptance.
 
 ## Make an edition
 

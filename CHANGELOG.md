@@ -53,7 +53,9 @@ separately under [the release plan](docs/RELEASE_PLAN.md).
   isolated Git-tracked source snapshot with two clean installs and M1 bundle
   preflight. The checkout remains `0.1.0`, and no release/tag is made (#87).
 
-**No prerelease has been published.** `pyproject.toml` remains `0.1.0`;
+- Prepare real `0.2.0a1` for source-only GitHub prerelease: audit first-party wheel/sdist, exclude native/font binaries and PDFs, verify six-job exact-main CI and live dependency advisories, create checksums and an annotated Git tag only on success. No PyPI or real-device signoff (#54/#87).
+
+**Publication is conditional: verify the actual GitHub Release URL before claiming it exists.** `pyproject.toml` remains `0.1.0`;
 the future version `v0.2.0-alpha.1` requires an explicit owner decision,
 review of dependencies/licenses and controlled tag/release creation.
 

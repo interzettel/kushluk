@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "tag": "v0.2.0-alpha.1",
+  "python_version": "0.2.0a1",
+  "distribution_channel": "github_prerelease_only",
+  "release_scope": "first_party_python_wheel_and_source_archive",
+  "release_requested_by_repository_owner": true,
+  "allow_pypi_publish": false,
+  "include_generated_pdf": false,
+  "include_native_binaries": false,
+  "include_font_files": false,
+  "legal_scope": "first_party_MIT_source_and_prose_only",
+  "native_font_redistribution_rights_verified": false,
+  "physical_printer_verified": false,
+  "first_reader_verified": false,
+  "release_gate_G1_to_G8_verified": 0,
+  "allowed_release_assets": [
+    "kushluk-0.2.0a1-py3-none-any.whl",
+    "kushluk-0.2.0a1.tar.gz",
+    "SHA256SUMS.txt"
+  ],
+  "release_authorization_condition": "green_main_CI_and_green_current_runtime_dependency_audit"
+}

@@ -1,6 +1,6 @@
 # M1 dependency inventory and third-party review — #54
 
-**Status:** inventory automation, **not** completed legal/security approval. This is a developer engineering aid for the proposed, unpublished `v0.2.0-alpha.1`. The development package remains `0.1.0`.
+**Status:** inventory automation, **not** completed legal/security approval. This is a developer engineering aid for the proposed, unpublished `v0.2.0-alpha.1`. The source-only GitHub alpha candidate uses `0.2.0a1`; no native/font binaries are included as release assets. Human licensing remains pending for any future bundled native distribution.
 
 ## Evidence written by clean-install CI
 

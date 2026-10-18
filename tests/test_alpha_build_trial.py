@@ -73,7 +73,9 @@ def test_blocks_traversal_and_symlink_entries(tmp_path):
 
 
 def test_isolated_alpha_trial_holds_release_signoff_false(tmp_path, monkeypatch):
-    pyproject = Path("pyproject.toml").read_bytes()
+    pyproject = Path("pyproject.toml").read_bytes().replace(
+        b'version = "0.2.0a1"', b'version = "0.1.0"', 1,
+    )
     entries = [("pyproject.toml", pyproject)]
     entries += [(f"docs/synthetic-{i}.txt", b"fictional text") for i in range(24)]
     snapshot = _tar(entries)

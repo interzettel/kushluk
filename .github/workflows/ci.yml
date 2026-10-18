@@ -57,23 +57,28 @@ jobs:
           path: output/m1-preview/
           retention-days: 14
 
-  alpha-version-trial:
-    name: Isolated 0.2.0a1 candidate version / Linux Python 3.12
+  alpha-source-assets:
+    name: Experimental alpha source distribution / Python 3.12
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
-      - name: Install PEP 517 isolated build tooling
+      - name: Install PEP 517 build tooling
         run: python -m pip install --upgrade build
-      - name: Build and clean-install trial 0.2.0a1 without changing repo version
-        run: python -m tools.alpha_build_trial --artifact-dir output/m1-alpha-version-trial
-      - name: Upload isolated version trial evidence (NO tag, release, or PyPI)
+      - name: Build actual 0.2.0a1 source archives without publishing
+        run: python -m build --wheel --sdist --outdir dist
+      - name: Check first-party source-only release contract
+        run: |
+          python -m tools.release_source_scope \
+            --wheel dist/kushluk-0.2.0a1-py3-none-any.whl \
+            --sdist dist/kushluk-0.2.0a1.tar.gz
+      - name: Retain unsigned alpha source candidates
         uses: actions/upload-artifact@v4
         with:
-          name: kushluk-m1-isolated-0.2.0a1-trial
-          path: output/m1-alpha-version-trial/
+          name: kushluk-alpha-source-candidates
+          path: dist/
           retention-days: 14
 
   macos:
