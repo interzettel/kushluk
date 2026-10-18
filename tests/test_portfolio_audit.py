@@ -72,7 +72,9 @@ class PortfolioAuditTests(unittest.TestCase):
         s = self.snapshot["index_body"].replace(
             "| #43 | OPEN | NOW | Test |\n", ""
         ).replace("| #129 | OPEN", "| #129 | CLOSED")
-        self.snapshot["index_body"] = s + "\n| #129 | OPEN | NOW | Test |\n"
+        self.snapshot["index_body"] = s.replace(
+            "### Non-issues", "| #129 | OPEN | NOW | Test |\n### Non-issues"
+        )
         codes = {x["code"] for x in self.audit()["findings"]}
         self.assertIn("issues_missing_from_index", codes)
         self.assertIn("index_state_outdated", codes)
