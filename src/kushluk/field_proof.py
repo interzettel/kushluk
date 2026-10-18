@@ -45,9 +45,9 @@ def _inspection_hash(path: Path, expected_sha: str, kind: str) -> str:
                         "paper-a3": "a3-folded"}[kind]
     observed_profile = report.get("profile") if isinstance(report, dict) else None
     if (not isinstance(report, dict) or report.get("pdf_sha256") != expected_sha
-            or report.get("structural_errors") or report.get("schema_version") != 1
-            or (observed_profile is not None and observed_profile != expected_profile)
-            or (kind == "paper-letter" and observed_profile != "letter-home")):
+            or report.get("structural_errors") != []
+            or report.get("schema_version") != 1
+            or observed_profile != expected_profile):
         raise FieldProofError("Print inspection does not match a structurally valid PDF")
     return _fingerprint(path)["sha256"]
 
@@ -99,11 +99,22 @@ def record_field_proof(
         "independently_verified": False,
         "release_gate_accepted": False,
     }
-    output.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+    # A create-only 0600 file alone does not protect a public or symlinked
+    # receipt directory. Reject direct symlink parents and public directories.
+    if output.parent.is_symlink():
+        raise FieldProofError("Receipt directory must not be a symlink")
     try:
-        fd = os.open(output, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
+        output.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+        if output.parent.is_symlink() or output.parent.stat().st_mode & 0o077:
+            raise FieldProofError("Receipt directory must be private (0700)")
+        fd = os.open(
+            output, os.O_CREAT | os.O_EXCL | os.O_WRONLY |
+            getattr(os, "O_NOFOLLOW", 0), 0o600,
+        )
     except FileExistsError as exc:
         raise FieldProofError("Receipt already exists; use a unique output filename") from exc
+    except OSError as exc:
+        raise FieldProofError("Cannot safely create local receipt") from exc
     try:
         with os.fdopen(fd, "w", encoding="utf-8") as file:
             json.dump(receipt, file, ensure_ascii=False, indent=2)
