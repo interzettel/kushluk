@@ -6,6 +6,12 @@ remains the available release. An operator/self-reported `pass` is **not**
 independent printer, host, reader or rights approval. G1–G8 remain
 **0/8 independently verified (00.00%)** until genuine outside review.
 
+For reproducibility, record the **actual tested source commit** before
+enrolling anyone (`git rev-parse HEAD` in the checkout). The software
+preflight runs from that checkout, not from the published alpha wheel alone.
+Install dependencies in a fresh virtual environment and keep all evidence
+under a private folder outside the checkout.
+
 The minimum private pilot requires **one real A4 print**, an observed
 host restart/recovery run, a consenting **independent novice** completing
 U1–U6, and a source/rights/secret checklist. Unlike the later stable-release
