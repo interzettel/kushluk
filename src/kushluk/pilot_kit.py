@@ -149,13 +149,19 @@ def create_pilot_kit(directory: Path, *, source_commit: str | None = None) -> di
     if (directory.is_symlink() or directory.exists()
             or directory.parent.is_symlink()):
         raise PilotKitError("private_directory_must_be_new")
-    # Never traverse a symlink anywhere in the supplied parent chain. Requiring
-    # an existing parent also avoids silently creating world-readable ancestors
-    # whose names could disclose that a private participant trial exists.
-    if (not directory.parent.is_dir()
-            or any(part.is_symlink() for part in
-                   (directory.parent, *directory.parent.parents))):
-        raise PilotKitError("private_directory_parent_invalid")
+    # Canonicalize existing ancestors before any write. macOS /var is itself
+    # commonly a system symlink, so refusing all ancestors breaks valid
+    # temporary directories. This also removes those aliases from later file
+    # operations. Direct parent/destination symlinks stay prohibited above.
+    try:
+        parent = directory.parent.resolve(strict=True)
+        if not parent.is_dir():
+            raise PilotKitError("private_directory_parent_invalid")
+    except (OSError, RuntimeError) as exc:
+        raise PilotKitError("private_directory_parent_invalid") from exc
+    directory = parent / directory.name
+    if directory.is_symlink() or directory.exists():
+        raise PilotKitError("private_directory_must_be_new")
     # The operator chooses the local destination. Only the kit is created;
     # the program never writes real observations or accesses external devices.
     created: list[Path] = []

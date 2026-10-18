@@ -138,18 +138,18 @@ def test_generating_pilot_kit_does_not_touch_external_devices(tmp_path, monkeypa
     assert report["first_reader_verified"] is False
 
 
-
-def test_refuse_deeper_parent_symlink_and_missing_parent(tmp_path):
+def test_canonicalizes_ancestor_alias_but_refuses_missing_parent(tmp_path):
     private = tmp_path / "private"
     private.mkdir()
     alias = tmp_path / "alias"
     alias.symlink_to(private, target_is_directory=True)
-    # The immediate parent is a real directory, but a higher ancestor is a link.
+    # A macOS /var-style ancestor alias is resolved BEFORE any writes.
+    # The resulting private 0700 kit is at a canonical filesystem location.
     nested = alias / "nested"
     nested.mkdir()
-    with pytest.raises(PilotKitError, match="parent_invalid"):
-        create_pilot_kit(nested / "kit")
-    assert not (nested / "kit").exists()
+    create_pilot_kit(nested / "kit")
+    assert (private / "nested" / "kit" / "MANIFEST.json").is_file()
+    assert (private / "nested" / "kit").stat().st_mode & 0o777 == 0o700
     with pytest.raises(PilotKitError, match="parent_invalid"):
         create_pilot_kit(tmp_path / "nonexistent" / "kit")
     assert not (tmp_path / "nonexistent").exists()
