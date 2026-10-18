@@ -1,10 +1,6 @@
-# M1 alpha — artifact acceptance and release decision
+# M1 alpha — source-only GitHub prerelease evidence
 
-**Proposed distribution:** `v0.2.0-alpha.1`, not released. The checked-in
-package stays at development version `0.1.0`; its current CI ZIP artifacts
-contain **0.1.0** wheel/sdist files. **Do not rename the development files or
-tag this SHA as an alpha:** Python's prerelease version would be `0.2.0a1`
-and must be rebuilt/tested under a separately approved release version.
+**Release-candidate update (18 October 2026):** the actual checked-in Python package version is now `0.2.0a1`. The limited GitHub-only `v0.2.0-alpha.1` prerelease is conditionally authorized only after exact-main green six-job CI and a fresh, green runtime dependency advisory scan. Check [GitHub Releases](https://github.com/interzettel/kushluk/releases) for actual publication. No fonts, native binaries, generated PDFs, paid content or personal data are distributed as release assets. Physical/reader/native-rights gates remain unverified. Historical `0.1.0` evidence below is not a release artifact.
 
 ## Exact established software evidence, 17 October 2026
 
@@ -104,6 +100,10 @@ legal rights remain unapproved, and no tag/release was published.
 post-merge `main` SHA must independently pass this same job before an
 official release decision. Staged docs still contain development-version
 prose; these trial distributions are **not** approved public release assets.
+
+## Conditional narrow publication
+
+The release workflow checks the exact current main commit, verifies six green CI jobs and a successful live dependency-audit workflow for that commit, rebuilds reproducible wheel/sdist files, verifies their first-party-only contents and checksum manifest, and only then creates an annotated `v0.2.0-alpha.1` tag and GitHub prerelease. The workflow may fail; **verify that the GitHub Release actually exists**. It never publishes to PyPI. The exact-source audit does not approve font/native binary redistribution or future printed PDFs.
 
 ## Decision still required
 
