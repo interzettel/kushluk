@@ -4,7 +4,7 @@
 
 ## Current version ≠ official release
 
-`pyproject.toml` now declares **0.2.0a1** (experimental source-only GitHub alpha candidate). Version metadata alone is **not** evidence of a published GitHub Release or passed pilot. Check the GitHub Releases page and the narrow publication workflow for the actual state. Do not describe the working-tree version as an official launched product.
+`pyproject.toml` declares **0.2.0a1**, published on **18 October 2026** as the narrowly scoped, experimental **[v0.2.0-alpha.1 GitHub source prerelease](https://github.com/interzettel/kushluk/releases/tag/v0.2.0-alpha.1)**. This is the first actual GitHub prerelease but is **not a stable launch, PyPI distribution, native executable, or evidence of physical-device or first-reader acceptance**.
 
 **Version grammar:** normal [Semantic Versioning](https://semver.org): `MAJOR.MINOR.PATCH[-prerelease]`. `1.4.2` is valid; **`v1.04.002` is NOT valid SemVer** due to leading zeros, so zero-padded `01.04.002` is permitted only as a progress-board *display string*, never a Python package or Git tag. V1 does **not** include all speculative features at once. Within v1: new backward-compatible features → minor (1.1.0), bug fixes/security patches → patch (1.0.1), backwards-incompatible published contracts → major (2.0.0) or formally gated deprecation. For pre-1.0, internal APIs may change but archived edition schemas must remain explicitly migrated/readable.
 
