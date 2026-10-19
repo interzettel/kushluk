@@ -9,6 +9,12 @@ This is the cross-stage execution ledger for Kushluk. It records work that is de
 
 **Known ADR reconciliation issue:** accepted ADR 0015 (replaceable orchestration and agent runtime) is now indexed; two files still claim accepted ADR 0012. Resolve the duplicate under #44 before treating either variant as a uniquely canonical decision. Do not silently change accepted-ADR text.
 
+## First operator-reported physical and scheduled-host observations — 2026-10-19
+
+The dated [October local field-pilot register](FIELD_PILOT_2026_10.md) records four A4 **single-sided** pages produced on an HP DeskJet 2800 series (2026-10-18), manual edition `20261018-001` validated/archived in 6.47 s (2026-10-18), and one one-time Windows Task Scheduler → Ubuntu 24.04 WSL2 **digital-only** morning edition `20261019-001` (07:30 trigger; archive ready at 07:30:08 local, `ready_by_met=true`; 1.05 s recorded trigger lag; 7.19 s process-to-archive). Follow-up host evidence is tracked under [#47](https://github.com/interzettel/kushluk/issues/47); integration and paper quality under [#13](https://github.com/interzettel/kushluk/issues/13).
+
+**Next:** five distinct 07:30 digital-only trial tasks were registered for **20–24 October 2026**, but **0/5 has run or been observed** at this snapshot. Check task results and local receipts after each morning, then test reboot/wake, outage/replay and independently reviewed physical delivery. Windows printer access is **not** native WSL2 CUPS proof. The pilot does not change any **26/90** checked implementation tasks or **0/8** accepted delivery gates; manual paper output and one scheduled archive are *partial observations*, not automatic acceptance of TRIAL-01/02/04 or AUT-09/12.
+
 ## M1 follow-up: bounded archive compatibility and dependency inventory — #54/#87, 2026-10-17
 
 [PR #121](https://github.com/interzettel/kushluk/pull/121) builds on green M1 clean-install [PR #120](https://github.com/interzettel/kushluk/pull/120). Both clean wheel and sdist environments now run `pip check` and produce an installed Python distribution/version/license-**metadata** inventory, with SHA-256 provenance and explicitly **incomplete** legal, native dependency and vulnerability checks. [Audit bounds](DEPENDENCY_AUDIT.md).
