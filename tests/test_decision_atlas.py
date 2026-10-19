@@ -97,11 +97,11 @@ def test_viewer_javascript_parses_with_node_when_installed(tmp_path):
 def test_mapped_impact_ids_match_existing_feature_and_task_authorities():
     catalog = (ROOT / "docs" / "FEATURE_CATALOG.md").read_text(encoding="utf-8")
     ledger = (ROOT / "docs" / "WORK_LEDGER.md").read_text(encoding="utf-8")
-    feature_ids = set(re.findall(r"(?m)^\\| (F-\\d{3}) \\|", catalog))
-    task_ids = set(re.findall(r"(?m)^- \\[.\\] \\*\\*([A-Z]+(?:-[A-Z]+)*-\\d+)", ledger))
+    feature_ids = set(re.findall(r"(?m)^\| (F-\d{3}) \|", catalog))
+    task_ids = set(re.findall(r"(?m)^- \[.\] \*\*([A-Z]+(?:-[A-Z]+)*-\d+)", ledger))
     assert len(feature_ids) == 32
     assert len(task_ids) == 90
-    assert len([x for x in re.findall(r"(?m)^- \\[x\\] \\*\\*([A-Z]+(?:-[A-Z]+)*-\\d+)", ledger)]) == 26
+    assert len([x for x in re.findall(r"(?m)^- \[x\] \*\*([A-Z]+(?:-[A-Z]+)*-\d+)", ledger)]) == 26
     for n in load()["nodes"]:
         impact = n.get("impact")
         assert impact is not None, n["id"]
