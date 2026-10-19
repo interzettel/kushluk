@@ -31,7 +31,7 @@ def test_governance_is_nonrole_silo_and_truthful_about_a2a():
     for s in ("ChatGPT Work", "Claude Code", "DeepSeek", "founder",
               "Independent round", "Cross-examination", "Founder ruling",
               "No agent may say it contacted another participant",
-              "not A2A protocol compliance"):
+              "does not make GitHub comments A2A messages"):
         # The latter is in the review template rather than the constitution.
         if s == "not A2A protocol compliance":
             assert s.lower() in REVIEW.read_text(encoding="utf-8").lower()
