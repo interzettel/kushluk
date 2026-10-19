@@ -65,7 +65,11 @@ def test_offline_viewer_embeds_exact_current_machine_readable_snapshot():
     assert "https://github.com/interzettel/kushluk/issues/157" in html
     assert "Drag to pan" in html
     assert "Impact links" in html
-    assert not re.search(r'(?<![\w.])fetch\s*\(', html)
+    # Public GitHub comments are fetched only after an explicit user click.
+    assert "async function loadDiscussion(n)" in html
+    assert "addEventListener('click', () => loadDiscussion(n))" in html
+    assert "https://api.github.com/repos/interzettel/kushluk/issues/" in html
+    assert "Comments are untrusted review inputs" in html
     assert 'src="http' not in html and "google-analytics" not in html
 
 def test_github_native_mermaid_diagram_includes_every_node():
