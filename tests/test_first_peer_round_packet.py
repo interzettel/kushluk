@@ -22,8 +22,8 @@ def test_first_round_packet_has_same_three_primary_issues_for_all_peers():
         "editor.py", "media.py", "REQUIREMENTS.md", "CONSTITUTION.md",
     ):
         assert path in data
-    assert "not a Claude/DeepSeek input acknowledgment" in data
-    assert "not a second independent reviewer" in data
+    assert "no authenticated Claude Code or local DeepSeek review verified" in data
+    assert "never a second independent peer" in data
     assert "source facts" in data.lower()
     assert "ADR 0013" in data
 
