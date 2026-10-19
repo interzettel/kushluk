@@ -112,7 +112,7 @@ def test_mapped_impact_ids_match_existing_feature_and_task_authorities():
 
 
 def test_snapshot_refresh_tool_is_read_only_in_check_mode():
-    import subprocess, sys
+    import sys
     script = ROOT / "tools" / "refresh_decision_atlas.py"
     r = subprocess.run([sys.executable, str(script), "--check"],
                        text=True, capture_output=True, timeout=15)
