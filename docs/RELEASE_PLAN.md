@@ -16,7 +16,7 @@
 | --- | --- | --- | --- | --- |
 | **M0 · Press-line prototype** | Development 0.1.0 (not official release) | F-001..005 | Four logical A4 PDF pages, A4/A3 software profiles, crash-safe archive and dry-run evidence on Linux/Intel/ARM; **not** real-device completion | **Software slices implemented; G1/G2/G3 remain unverified as tracked** |
 | **M1 · First GitHub preview** | **v0.2.0-alpha.1** — proposed first official *prerelease* | F-001..006 | Source OPML preview is offline and requires explicit approval; reproducible build/package install; synthetic sample edition, readable README/config/SECURITY; CI green; exact release artifact and tag. No automatic home-print reliability advertised | **Published 18 Oct 2026 — GitHub source-only experimental prerelease, tag `d90f9a5`; exact-main six-job CI and live dependency audit green. No native/font or real-device rights signoff.** |
-| **M2a · First invited private pilot** | **v0.3.0-beta.1** | F-007..014, plus the M1 feature set | At least one supported physical A4 printer verified, tested run/failure/reboot and a reader able to set up; source rights and secrets check. A3 enabled only if actually verified on hardware | **Pilot software review kit ready; real A4 printer, restart/host, source permissions and independent novice acceptance still required. No beta tag/release.** |
+| **M2a · First invited private pilot** | **v0.3.0-beta.1** | F-007..014, plus the M1 feature set | At least one supported physical A4 printer verified, tested run/failure/reboot and a reader able to set up; source rights and secrets check, plus founder-approved M2a design-readiness proof (see below). A3 enabled only if actually verified on hardware | **Pilot software review kit ready; real A4 printer, restart/host, source permissions and independent novice acceptance still required. No beta tag/release; design-readiness evidence NOT YET SATISFIED.** |
 | **M2b · First stable public release** | **v1.0.0** | F-001..014 (scope narrowed to features that satisfy acceptance; any optional A3/SMTP unavailable in a profile is identified rather than falsely promised) | **Five real unattended mornings**, duplicate-delivery and fallback trials, genuine printer/provenance evidence, repeatable first-run installation, supported printer/platform matrix, privacy/security docs, packaging+changelog+tag. Passing unit tests alone not enough | **Not yet** |
 | **M3 · Reader formats** | **v1.1.0** | F-015..017 | Same canonical edition exports validated reflowable EPUB, tested on actual target reader; OPDS private/optional and only shipped if authenticated and tested | Proposed post-v1 |
 | **M4 · User-controlled source intelligence** | **v1.2.0** | F-018..021 | Approved newsletter discovery, source-right modes, optional research/social adapters with rate limits and provenance, reproducible local feedback | Proposed post-v1 |
@@ -25,6 +25,25 @@
 | **MX · Noncommitted investigations** | **No release assigned** | F-026, F-030..032 | Research-only issues and explicit adopt/reject; no schedule promises | Not a launch dependency |
 
 **First actual release:** `v0.2.0-alpha.1` when M1 checks are met. **First stable release:** `v1.0.0` only after M2b physical/personal-rights/first-reader proofs. No invented deadline. `1.0.1` would be the first patch *after* `1.0.0`, not a feature bucket. The M1/M2 version mapping is a release-planning proposal pending founder review, **not an accepted ADR or released tag**.
+
+
+## Founder-approved M2a-Design gate — private beta (ruling 1A, 19 October 2026)
+
+**Decision authority:** founder's explicit [R5 #162 verdict](https://github.com/interzettel/kushluk/issues/162#issuecomment-6277792815), registered in [release issue #87](https://github.com/interzettel/kushluk/issues/87#issuecomment-6277793595). This is an **additional release prerequisite inside existing M2a**, not a new numbered milestone or evidence gate, not retroactive acceptance and not approval of rejected [PR #153](https://github.com/interzettel/kushluk/pull/153). Passing ordinary CI does not fulfill it.
+
+Before any **invited private beta**, present **all** of:
+
+1. **Source- and rights-cleared substantive fixture** with representative editorial text, relevant original/licensed photos or illustrations, attribution, provenance and honest synthetic/demonstrative labels where applicable; no fabricated news or private paid-content redistributions.
+2. **Two materially different visual systems on the identical fixture**. Allocation modes (balanced/news-heavy/practical-heavy) alone are **not** art-direction alternatives. Preserve accurate type, image captions, bounded print length and deterministic validated geometry.
+3. **Real paper evidence** at 100% physical size from an explicitly approved run: typography, clipping/folds, margins, ink coverage and reader desirability. Include an economical, genuinely readable **grayscale** fallback. Do not credit simulated browser/PDF screenshots as physical acceptance.
+4. **Founder visual signoff**, documented against a quality rubric and a real first-reader trial; absence of a complaint is not approval.
+5. **Reversible initial user style/profile preference or demonstrable, safe prototype**, without demanding daily manual composition. This is a small M2a vertical slice, not full design authoring or unrestricted third-party recipes.
+
+The **existing** printer/host/reboot/permission/reader requirements remain necessary **in addition to** these proofs. Full portable recipe features **F-015 at M3**, complete visual studio/theme capabilities **F-024 at M5** and fluid web/editor capabilities **F-027 at M6** retain their original delivery targets. Any separately proposed earlier slice must be labelled **partial**; do not mark the parent F-ID fully shipped. No changes to accepted ADRs, 90-task ledger, G1–G8 completion, Python version or release tags are implied. Do not touch the currently frozen Windows/WSL pilot or authorize print jobs merely by documenting the gate.
+
+**Binding current output:** accepted **ADR 0013** still governs four logical A4 pages; the chosen supplement direction does not supersede it.
+
+**Connected owner direction 2A** ([R6 #171 verdict](https://github.com/interzettel/kushluk/issues/171#issuecomment-6277794493)): keep the existing **four-logical-A4-page daily core**. Research finite versioned **optional supplements** independently, with source-rights, archive/idempotency, time/ink and print-imposition evidence. The supplement schema/export is **not implemented** and requires separately approved ADR/requirement migration before deployment. The four-page baseline remains binding.
 
 ## What is an epic or milestone in this system?
 

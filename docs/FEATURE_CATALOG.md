@@ -47,6 +47,10 @@ A **feature** is a user/maintainer-visible capability with a stable `F-###` ID, 
 | F-031 | Business/licence/platform options | GOVERNANCE | MX | uncommitted | [#35](https://github.com/interzettel/kushluk/issues/35) [#38](https://github.com/interzettel/kushluk/issues/38) [#40](https://github.com/interzettel/kushluk/issues/40) [#41](https://github.com/interzettel/kushluk/issues/41) | decision-open | Founder-controlled separate policy decisions; MIT today |
 | F-032 | Community newsletter and launch film | COMMUNITY | MX | uncommitted | [#11](https://github.com/interzettel/kushluk/issues/11) [#23](https://github.com/interzettel/kushluk/issues/23) [#10](https://github.com/interzettel/kushluk/issues/10) | planned | Contact and claims require actual evidence and owner authorization |
 
+## Founder-approved M2a visual-readiness slice (19 October 2026)
+
+As ruled in [R5 #162](https://github.com/interzettel/kushluk/issues/162#issuecomment-6277792815) and documented in the authoritative [RELEASE_PLAN.md](RELEASE_PLAN.md), **invited private beta** requires substantive rights-cleared same-content editorial material, two genuinely different art-direction print proofs, credible grayscale, real-paper/reader evaluation, and explicit founder approval. An early reversible style/profile preference or demonstrable safe prototype belongs in that **bounded** checkpoint. **This does not change the 32 stable feature IDs, mark any feature complete or move full F-015 (M3), F-024 (M5), or F-027 (M6) into M2a.** All existing printer, reliability, licensing and source-rights gates remain. The separately approved [R6 #171](https://github.com/interzettel/kushluk/issues/171#issuecomment-6277794493) direction of a four-page daily core plus finite optional future supplements requires an ADR/schema migration before any new format ships.
+
 ## Epic descriptions
 
 | Epic | Why it exists | Gaining features |

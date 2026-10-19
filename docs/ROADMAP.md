@@ -4,6 +4,12 @@ Kushluk uses iterative vertical slices rather than a long waterfall build.
 
 The operational task source is `WORK_LEDGER.md`; this roadmap describes stage-level sequencing. The **cross-stage 32-feature registry** and proposed semantic-version milestones now live in [FEATURE_CATALOG.md](FEATURE_CATALOG.md) and [RELEASE_PLAN.md](RELEASE_PLAN.md). Neither changes the existing 90 task IDs or evidence gates. The initial **GitHub-only experimental source prerelease `v0.2.0-alpha.1` was published on 18 October 2026**, after M1 package/source-preview checks. The **proposed** next private beta is `v0.3.0-beta.1`, requiring independently reviewed physical printer, host and first-reader evidence. Stable `v1.0.0` remains gated by five real unattended mornings and relevant rights/reliability proof, not a date or a closed-issue count.
 
+## Founder rulings: design-ready beta and finite future supplements (19 October 2026)
+
+[Decision 1A in #162](https://github.com/interzettel/kushluk/issues/162#issuecomment-6277792815) adds an **explicit physical/visual quality prerequisite before invited M2a private beta**, alongside all prior reader, rights, printer, reliability and host proofs. The full checklist lives in [RELEASE_PLAN.md](RELEASE_PLAN.md); a green PDF build alone is not signoff. Prove two visually distinct same-content rights-cleared layouts, print at actual size with readable grayscale fallback, and obtain founder/reader acceptance. A small safe style preference may be shown as an early prototype, without dragging the complete Studio forward from its later planned stage. Rejected [#153](https://github.com/interzettel/kushluk/pull/153) is closed and not the accepted design.
+
+[Decision 2A in #171](https://github.com/interzettel/kushluk/issues/171#issuecomment-6277794493) establishes the future publication direction: **exactly four logical A4 pages remain the canonical daily profile**, with **optional bounded, separate supplements** to be prototyped on isolated branches after archive, source rights and format-migration design. No new supplements may ship under the existing ADR 0013 without an explicitly approved ADR/requirements migration. Phase I's separate Agent Council and local printing trial are unaffected.
+
 ## Stage 0 — Define the product
 
 Status: **implementation-ready**
