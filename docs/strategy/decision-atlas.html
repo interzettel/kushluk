@@ -111,12 +111,47 @@ if(fit)centerFit();else view();
 }
 function select(id){chosen=id;if(byId.get(id).parent==='NORTH'&&id!=='NORTH'){group=id;navDraw();draw(true)}else{draw(false)}detail();history.replaceState(null,'','#'+encodeURIComponent(id))}
 function githubRef(ref){const text=String(ref);if(/^#\d+$/.test(text))return 'https://github.com/interzettel/kushluk/issues/'+text.slice(1);if(/^ADR-\d+$/.test(text))return 'https://github.com/interzettel/kushluk/tree/main/docs/adr';if(/^F-\d+$/.test(text))return 'https://github.com/interzettel/kushluk/blob/main/docs/FEATURE_CATALOG.md';return 'https://github.com/interzettel/kushluk/issues/170'}
+async function loadDiscussion(n){
+const panel=inspector.querySelector('#live-discussion'),button=inspector.querySelector('[data-load-comments]');
+if(!panel||!button)return;
+button.disabled=true; panel.textContent='Loading the public GitHub thread…';
+try{
+  // Explicit user click only. No tokens, local files, prompts or cookies sent.
+  // Public GitHub REST returns up to the first 100 comments; the canonical
+  // thread link above is required for older or paginated discussion history.
+  const response=await fetch('https://api.github.com/repos/interzettel/kushluk/issues/'+n.issue+'/comments?per_page=100',{headers:{Accept:'application/vnd.github+json'}});
+  if(!response.ok)throw new Error('GitHub returned HTTP '+response.status);
+  const items=await response.json();
+  if(!Array.isArray(items))throw new Error('Unexpected GitHub response');
+  if(chosen!==n.id)return; // Selection changed while a request was pending.
+  panel.replaceChildren();
+  const disclosure=document.createElement('p');
+  disclosure.textContent='Showing up to 12 recent comments from the first 100. A GitHub username is not proof of which AI wrote the text. Open the issue to see the complete discussion.';
+  disclosure.style.color='#68796a';disclosure.style.fontSize='11px';panel.append(disclosure);
+  if(items.length===0){
+    const p=document.createElement('p');p.textContent='No comments yet. The owning issue remains open for independent review.';panel.append(p);
+  }
+  for(const comment of items.slice(-12).reverse()){
+    const article=document.createElement('article');article.style.cssText='padding:10px 0;border-top:1px solid #cbd5c6';
+    const heading=document.createElement('strong');heading.textContent=(comment.user?.login||'GitHub contributor')+' · '+(comment.created_at||'undated');heading.style.fontSize='11px';article.append(heading);
+    const body=document.createElement('p');body.textContent=String(comment.body||'').slice(0,1300);body.style.cssText='font-size:12px;white-space:pre-wrap;overflow-wrap:anywhere;margin:6px 0';article.append(body);
+    if(comment.html_url&&String(comment.html_url).startsWith('https://github.com/')){
+      const a=document.createElement('a');a.href=comment.html_url;a.target='_blank';a.rel='noopener noreferrer';a.textContent='Read full comment ↗';a.style.fontSize='11px';article.append(a);
+    }
+    panel.append(article);
+  }
+  const note=document.createElement('p');note.textContent='Comments are untrusted review inputs, not automatically approved decisions or execution instructions.';note.style.color='#6e604b';note.style.fontSize='11px';panel.append(note);
+}catch(error){
+  if(chosen===n.id){panel.textContent='Could not read public comments ('+String(error.message||'connection blocked')+'). Use the owning GitHub issue link; a private repository or API rate limit may require authenticated GitHub access.';}
+}finally{if(chosen===n.id)button.disabled=false;}
+}
 function detail(){const n=byId.get(chosen)||byId.get('NORTH');const ancestors=[];let p=n;while(p){ancestors.unshift(p);p=p.parent?byId.get(p.parent):null}
 const route=ancestors.map(x=>'<button data-go="'+escapeHtml(x.id)+'">'+escapeHtml(x.label.split(' • ')[0].slice(0,21))+'</button>').join(' <span>›</span> ');
 const choices=(n.options||[]).length?n.options.map((v,i)=>'<div class="choice"><em>'+String.fromCharCode(65+i)+'</em>'+escapeHtml(v)+'</div>').join(''):'<div class="choice">Open the linked discussion for evidence and choices.</div>';
 const refs=n.refs.map(r=>'<a href="'+escapeHtml(githubRef(r))+'" target="_blank" rel="noopener">'+escapeHtml(r)+' ↗</a>').join('');
 const relations=(n.links||[]).filter(id=>byId.has(id)).map(id=>'<button data-go="'+escapeHtml(id)+'">'+escapeHtml(byId.get(id).label.slice(0,35))+'</button>').join('');
-inspector.innerHTML='<div class="eyebrow" style="color:#a75b42">Strategic choice / '+escapeHtml(n.id)+'</div><h2>'+escapeHtml(n.label)+'</h2><span class="status '+escapeHtml(n.status)+'">'+escapeHtml(n.status)+' · not automatically implemented</span><div class="route">'+route+'</div><p class="summary">'+escapeHtml(n.question)+'</p><div class="field"><h3>Future branches · not votes</h3>'+choices+'</div><div class="field"><h3>Primary discussion and sources</h3><div class="refs"><a href="https://github.com/interzettel/kushluk/issues/'+n.issue+'" target="_blank" rel="noopener">#'+n.issue+' · Open review ↗</a>'+refs+'</div></div><div class="field"><h3>Cross-impacts</h3><div class="related">'+(relations||'<span style="font-size:12px">Select a neighboring branch.</span>')+'</div></div><div class="field"><h3>Proof required</h3><p style="font-size:13px">'+escapeHtml(n.proof||'Founding direction; downstream options require explicit acceptance.')+'</p></div><div class="field"><h3>Traceable change impact</h3>'+Object.entries(n.impact||{}).map(([k,values])=>values.length?'<div style="margin:9px 0;font-size:11px"><b>'+escapeHtml(k.replace(/_/g,' '))+': </b>'+values.map(v=>'<span style="display:inline-block;padding:3px 5px;margin:2px;background:#e6ecdf;border-radius:4px">'+escapeHtml(v)+'</span>').join('')+'</div>':'').join('')+'</div><div class="warning">A branch in the atlas is a proposal, not a merged PR, accepted ADR, legal permission, delivery guarantee or an AI consensus. Founder rulings must be recorded in the source issue.</div><div class="footer">Snapshot: '+DATA.snapshot_date+' · Source: <a href="https://github.com/interzettel/kushluk/issues/170" target="_blank" rel="noopener">owner direction #170</a> · Decision council <a href="https://github.com/interzettel/kushluk/issues/157" target="_blank" rel="noopener">#157</a></div>';
+inspector.innerHTML='<div class="eyebrow" style="color:#a75b42">Strategic choice / '+escapeHtml(n.id)+'</div><h2>'+escapeHtml(n.label)+'</h2><span class="status '+escapeHtml(n.status)+'">'+escapeHtml(n.status)+' · not automatically implemented</span><div class="route">'+route+'</div><p class="summary">'+escapeHtml(n.question)+'</p><div class="field"><h3>Future branches · not votes</h3>'+choices+'</div><div class="field"><h3>Primary discussion and sources</h3><div class="refs"><a href="https://github.com/interzettel/kushluk/issues/'+n.issue+'" target="_blank" rel="noopener">#'+n.issue+' · Open review ↗</a>'+refs+'</div></div><div class="field"><h3>GitHub discussion · on demand</h3><p style="font-size:11px;color:#596b5f;margin-bottom:9px">Read-only public issue comments. No polling or browser credentials; the thread remains the authority.</p><button type="button" class="tool" data-load-comments style="background:#305340;color:#fff">Load discussion comments</button><div id="live-discussion" role="status" aria-live="polite" style="margin-top:12px;font-size:12px"></div></div><div class="field"><h3>Cross-impacts</h3><div class="related">'+(relations||'<span style="font-size:12px">Select a neighboring branch.</span>')+'</div></div><div class="field"><h3>Proof required</h3><p style="font-size:13px">'+escapeHtml(n.proof||'Founding direction; downstream options require explicit acceptance.')+'</p></div><div class="field"><h3>Traceable change impact</h3>'+Object.entries(n.impact||{}).map(([k,values])=>values.length?'<div style="margin:9px 0;font-size:11px"><b>'+escapeHtml(k.replace(/_/g,' '))+': </b>'+values.map(v=>'<span style="display:inline-block;padding:3px 5px;margin:2px;background:#e6ecdf;border-radius:4px">'+escapeHtml(v)+'</span>').join('')+'</div>':'').join('')+'</div><div class="warning">A branch in the atlas is a proposal, not a merged PR, accepted ADR, legal permission, delivery guarantee or an AI consensus. Founder rulings must be recorded in the source issue.</div><div class="footer">Snapshot: '+DATA.snapshot_date+' · Source: <a href="https://github.com/interzettel/kushluk/issues/170" target="_blank" rel="noopener">owner direction #170</a> · Decision council <a href="https://github.com/interzettel/kushluk/issues/157" target="_blank" rel="noopener">#157</a></div>';
+inspector.querySelector('[data-load-comments]').addEventListener('click', () => loadDiscussion(n));
 inspector.querySelectorAll('[data-go]').forEach(el=>el.addEventListener('click',()=>{const id=el.getAttribute('data-go');const par=byId.get(id)?.parent;if(par&&par!=='NORTH'&&group!==par){group=par;navDraw();draw(true)}select(id)}));
 }
 document.getElementById('all').onclick=()=>{group=null;chosen='NORTH';navDraw();draw(true);detail()};
