@@ -7,7 +7,7 @@
 
 This is an **opinionated navigation tree + dependency graph**, not a pretend exact binary decision algorithm. Parent/child edges are strategic categories. Dotted lines are where one choice changes requirements on another branch. Real design/architecture choices have alternatives, reversibility, impact and source links in the [structured JSON](decision-atlas.json). Prior ADRs, actual issue state and evidence remain authoritative.
 
-**[Open the interactive atlas](decision-atlas.html)** by downloading the HTML file and opening it locally (offline; no external scripts or tracking). It contains its own data snapshot, pan/zoom, filter, clickable issues and impact arrows. Or use this native GitHub Mermaid diagram.
+**[Open the interactive atlas](decision-atlas.html)** by downloading the HTML file and opening it locally (offline; no external scripts or tracking). It embeds its data snapshot, supports pan/zoom/filter/clickable issues/impact arrows, and renders fully offline by default. **Only when you click “Load discussion comments”** in an issue's inspector will it request public comments from GitHub's REST API directly in your browser (no keys, no background polling); private repositories, browser network policies or GitHub rate limits may prevent this optional view. Comments are untrusted review inputs, and the owning GitHub thread—not this cached snapshot—remains authoritative. Or use this native GitHub Mermaid diagram.
 
 ## The full strategic tree
 
