@@ -68,12 +68,14 @@ def verify() -> tuple[int, int]:
     s.feed(html)
     assert not s.duplicate_ids, f"Duplicate HTML IDs: {s.duplicate_ids}"
     assert not s.external_scripts and not s.forms
-    for must in ("atlas-model", "tree", "nav", "inspector", "find", "decisionIndex", "selectionAnnouncement"):
+    for must in ("atlas-model", "tree", "nav", "inspector", "find", "decisionIndex", "selectionAnnouncement", "mobileDecisions"):
         assert must in s.ids
     assert "Search decisions" in s.labels
     assert "Selected decision details" in s.labels
     assert '<details class="decision-index">' in html
     assert "function indexDraw()" in html and "decisionIndex.replaceChildren(sections)" in html
+    assert "function mobileDraw()" in html and "mobileDecisions.replaceChildren()" in html
+    assert "#treeWrap{display:none}" in html, "Mobile must use legible HTML cards, not miniature SVG"
     assert "root.dataset.node='NORTH'" in html, "Decision index must include atlas root"
     assert "const nextGroup=id==='NORTH'?null:n.parent==='NORTH'?id:n.parent" in html
     assert "inspector.querySelector('h2')?.focus({preventScroll:true})" in html

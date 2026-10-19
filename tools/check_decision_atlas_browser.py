@@ -40,6 +40,7 @@ def render(chrome: str, size: str, name: str) -> None:
     assert re.search(r'<h2 tabindex="-1">ART DIRECTION', dom), (
         f"{name}: decision inspector did not render the selected hash branch"
     )
+    assert len(re.findall(r'class="mobile-card"', dom)) == 6, (f"{name}: selected branch mobile cards missing")
     assert len(re.findall(r'class="node-card"', dom)) > 2, (
         f"{name}: interactive SVG nodes missing from rendered DOM"
     )
