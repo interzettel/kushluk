@@ -26,7 +26,9 @@ def test_interior_masthead_differs_from_cover_without_changing_page_ids():
     assert 'data-page="{{ page.number }}"' in html
     assert 'aria-label="Page {{ page.number }} of 4"' in html
     assert "break-after: page;" in html
-    assert "margin-top: auto" in html
+    assert "position: absolute;" in html
+    assert "bottom: 0;" in html
+    assert "footer { left: 12mm; right: 12mm; bottom: 12mm; }" in html
     assert "grid-template-columns: repeat(2, 1fr)" in html
 
 
