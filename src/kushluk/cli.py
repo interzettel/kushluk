@@ -228,15 +228,19 @@ def build_parser() -> argparse.ArgumentParser:
 
     export = sub.add_parser(
         "schedule-export",
-        help="Write disabled systemd/launchd units; never install/enable services",
+        help="Export review-only native or Windows WSL2 scheduler templates",
     )
-    export.add_argument("--platform", choices=("systemd", "launchd"), required=True)
+    export.add_argument("--platform", choices=("systemd", "launchd", "windows-wsl"), required=True)
     export.add_argument("--executable", type=Path, required=True,
                         help="Absolute path to installed Kushluk executable")
     export.add_argument("--working-dir", type=Path, required=True,
                         help="Absolute existing location for local settings and archives")
     export.add_argument("--output-dir", type=Path, required=True,
                         help="New/empty directory for reviewable templates")
+    export.add_argument("--wsl-distro", default="Ubuntu-24.04",
+                        help="WSL distro name when platform=windows-wsl")
+    export.add_argument("--ready-by", type=_clock_time, default=time(8, 0),
+                        help="Software archive readiness target for windows-wsl (default 08:00)")
     export.add_argument("--start", type=_clock_time, default=time(7, 30),
                         help="OS local scheduler clock, HH:MM (default 07:30)")
     export.add_argument("--latest-start", type=_clock_time, default=time(7, 45),
@@ -620,6 +624,8 @@ def main(argv: list[str] | None = None) -> int:
                 working_dir=args.working_dir, output_dir=args.output_dir,
                 start=args.start.strftime("%H:%M"),
                 latest_start=args.latest_start.strftime("%H:%M"),
+                wsl_distro=args.wsl_distro,
+                ready_by=args.ready_by.strftime("%H:%M"),
             )
         except ScheduleTemplateError as exc:
             print(json.dumps({"status": "rejected", "error": str(exc)}))
