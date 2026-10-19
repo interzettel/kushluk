@@ -27,8 +27,11 @@ def test_same_sources_and_options_for_any_reviewing_model():
         assert "/issues/171" in run.stdout
         assert "ADR 0013" in run.stdout
         assert "FMT-01" in run.stdout
-        assert "Strongest" not in run.stdout or "strongest counterargument" in run.stdout.lower()
-        reviews.append(run.stdout.replace(reviewer, "REVIEWER"))
+        assert "strongest counterargument" in run.stdout.lower()
+        reviews.append(run.stdout.replace(
+            f"**Reviewer (self-reported):** {reviewer}",
+            "**Reviewer (self-reported):** REVIEWER",
+        ))
     assert reviews[0] == reviews[1] == reviews[2]
 
 
