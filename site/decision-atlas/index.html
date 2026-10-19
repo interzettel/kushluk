@@ -115,7 +115,7 @@ if(fit)centerFit();else view();
 function select(id){chosen=id;if(byId.get(id).parent==='NORTH'&&id!=='NORTH'){group=id;navDraw();draw(true)}else{draw(false)}detail();history.replaceState(null,'','#'+encodeURIComponent(id));if(window.matchMedia('(max-width:850px)').matches)inspector.scrollIntoView({block:'start',behavior:'auto'})}
 function githubRef(ref){const text=String(ref);if(/^#\d+$/.test(text))return 'https://github.com/interzettel/kushluk/issues/'+text.slice(1);
 if(text==='ADR-0013')return 'https://github.com/interzettel/kushluk/blob/main/docs/adr/0013-four-logical-a4-pages-multiple-print-profiles.md';
-if(text==='ADR-0008')return 'https://github.com/interzettel/kushluk/blob/main/docs/adr/0008-deterministic-rendering.md';
+if(text==='ADR-0008')return 'https://github.com/interzettel/kushluk/blob/main/docs/adr/0008-rendering-is-deterministic.md';
 if(text==='ADR-0012')return 'https://github.com/interzettel/kushluk/issues/44'; // Duplicate accepted ADR 0012: no silent canonical choice.
 if(/^ADR-\d+$/.test(text))return 'https://github.com/interzettel/kushluk/blob/main/docs/adr/README.md';
 if(/^F-\d+$/.test(text))return 'https://github.com/interzettel/kushluk/blob/main/docs/FEATURE_CATALOG.md';return 'https://github.com/interzettel/kushluk/issues/170'}
