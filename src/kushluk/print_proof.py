@@ -29,6 +29,8 @@ def make_print_proof(output_dir: Path) -> dict[str, str]:
             PracticalItem("Check contrast", "Black text", "Should remain readable"),
             PracticalItem("Check margins", "No clipping", "Inspect each paper edge"),
             PracticalItem("Check duplex", "A4 page 2", "Turn the first sheet over"),
+            PracticalItem("Check text", "Small type", "Read the source and page identifiers at normal distance"),
+            PracticalItem("Check order", "1 → 2 → 3 → 4", "Numbered pages must stay in sequence"),
         ],
         stories=[
             Story(
@@ -45,6 +47,12 @@ def make_print_proof(output_dir: Path) -> dict[str, str]:
             Story(
                 id="proof-third-b", headline="SOURCE INDEX ON PAGE 4",
                 deck="The opposite face is the back cover of the folded edition.",
+                source_name="Kushluk offline calibration",
+            ),
+            Story(
+                id="proof-third-c", headline="PRINT LEGIBILITY / TYPOGRAPHY",
+                deck="One more article tests a denser reading page, thin rules, long labels, "
+                     "and the text rhythm at actual print size. It is synthetic—not news.",
                 source_name="Kushluk offline calibration",
             ),
         ],
