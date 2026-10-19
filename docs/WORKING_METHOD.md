@@ -65,6 +65,16 @@ Issues also have a **kind**: **idea**, **bug**, **research**, **decision**, **en
 | Why this constraint? | Accepted [ADRs](adr/README.md) and normative requirements |
 | What changed or was learned recently? | [WORK_JOURNAL.md](WORK_JOURNAL.md) (dated links) |
 
+## Peer discussion versus temporary execution ownership
+
+**Governance reconciliation (proposed, 19 October 2026):** read the shared [coordination constitution](coordination/CONSTITUTION.md) and [authority audit](coordination/RECONCILIATION_AUDIT_2026-10-19.md). **The words “coordinator”, “worker” and “specialist” in this working method describe temporary execution/merge duties, not permanent cognitive roles for models.** The founder wants ChatGPT Work, Claude Code and local DeepSeek to each reason broadly across product, visual design, user benefit, source rights, architecture, finances and testing, and to challenge each other's assumptions.
+
+The **founder** accepts consequential product direction and art-quality decisions. An integrator may manage changes to the same file and review branch safety, but cannot convert draft opinions into accepted ADRs or override licensing/source permissions. Decisions [#158–#162](https://github.com/interzettel/kushluk/issues/158) and [#171–#176](https://github.com/interzettel/kushluk/issues/171) use independent attributed first-round comments, cross-examination, dissent and a founder ruling. All-issue catalogue #43 is **not** a second discussion log.
+
+This peer debate is currently supported by **ordinary GitHub threads**; no verified A2A transport, live autonomous three-model session or issue watcher has been installed. Separate future work must prove real connections, authorization, replay safety and actual delivered messages. Neither a shared prompt nor an automatic GitHub comment proves that another runtime received the message.
+
+**Status separation:** an owner's affirmed vision (#170), present normative four-page implementation (ADR 0013), two draft planning PRs (#169/#177), accepted decisions, merged features and independently verified paper deliveries are different facts. New constitutional text does not amend these authorities.
+
 ## Agent coordinator / worker contract
 
 The **steward** chooses priorities, authorizes spending and legal/policy changes, and can delegate specific issue-sized jobs. A coordinator agent may summarize the queue, detect duplicates, prepare PRs/decision alternatives, verify reports, and flag drift.
