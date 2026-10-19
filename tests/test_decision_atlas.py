@@ -89,7 +89,6 @@ def test_viewer_javascript_parses_with_node_when_installed(tmp_path):
 
 
 def test_mapped_impact_ids_match_existing_feature_and_task_authorities():
-    from importlib.util import spec_from_file_location, module_from_spec
     catalog = (ROOT / "docs" / "FEATURE_CATALOG.md").read_text(encoding="utf-8")
     ledger = (ROOT / "docs" / "WORK_LEDGER.md").read_text(encoding="utf-8")
     feature_ids = set(re.findall(r"(?m)^\\| (F-\\d{3}) \\|", catalog))
