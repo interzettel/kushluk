@@ -1,4 +1,4 @@
-# Kuşluk first peer round — shared factual source packet
+# Kushluk first peer round — shared factual source packet
 
 **Round identifier:** `2026-10-19-W1` · **Prepared by:** ChatGPT GPT-6 · **Source snapshot:** repository `main` at `fe25c90fa14e6875845074247a8a2b75e19e249c` · **State:** EVIDENCE PACKET PREPARED, no independent Claude or DeepSeek review implied.  
 **Scope:** the three consequential discussion rooms [#171](https://github.com/interzettel/kushluk/issues/171), [#172](https://github.com/interzettel/kushluk/issues/172), [#173](https://github.com/interzettel/kushluk/issues/173). **Canonical decisions:** only in those GitHub threads through founder verdicts and accepted ADRs, never in this snapshot.
