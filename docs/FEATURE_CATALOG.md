@@ -47,6 +47,21 @@ A **feature** is a user/maintainer-visible capability with a stable `F-###` ID, 
 | F-031 | Business/licence/platform options | GOVERNANCE | MX | uncommitted | [#35](https://github.com/interzettel/kushluk/issues/35) [#38](https://github.com/interzettel/kushluk/issues/38) [#40](https://github.com/interzettel/kushluk/issues/40) [#41](https://github.com/interzettel/kushluk/issues/41) | decision-open | Founder-controlled separate policy decisions; MIT today |
 | F-032 | Community newsletter and launch film | COMMUNITY | MX | uncommitted | [#11](https://github.com/interzettel/kushluk/issues/11) [#23](https://github.com/interzettel/kushluk/issues/23) [#10](https://github.com/interzettel/kushluk/issues/10) | planned | Contact and claims require actual evidence and owner authorization |
 
+## Proposed early visual-quality slices (NOT release reassignment; pending #162)
+
+**19 October 2026 · proposal from [discussion council #157](https://github.com/interzettel/kushluk/issues/157) and [milestone room #162](https://github.com/interzettel/kushluk/issues/162).** The 32 stable F-IDs above, their existing milestone/version columns, and statuses remain current planning snapshots. The table below is a *delta proposal for founder/independent reviewer approval*, **not** another set of features and not proof that code is shipped. The founder has rejected #153 as acceptable visual design despite green technical tests.
+
+| Stable feature | Candidate M2a-design minimum | Parent discussion | Atomic PR-sized evidence | Full current catalog milestone |
+| --- | --- | --- | --- | --- |
+| **F-015** private/portable recipe | Only a **local manifest/schema seed** with hard private vs shareable boundary; no public import/export promise | [R4 #161](https://github.com/interzettel/kushluk/issues/161) | [A03 #165](https://github.com/interzettel/kushluk/issues/165) proposal/negative tests | **M3 / v1.1.0** |
+| **F-021** personal preferences | Explicit module/style rule precedence + morning-vs-durable choice; no automatic learned interests | [R1 #158](https://github.com/interzettel/kushluk/issues/158) | [A05 #167](https://github.com/interzettel/kushluk/issues/167) UX proposal | **M4 / v1.2.0** |
+| **F-022** image provenance/crops | Original/cleared multi-role visuals within a frozen design fixture; no acquisition entitlement assumed | [R3 #160](https://github.com/interzettel/kushluk/issues/160) | [A01 #163](https://github.com/interzettel/kushluk/issues/163), [A04 #166](https://github.com/interzettel/kushluk/issues/166) | **M5 / v1.3.0** |
+| **F-023** visual fit proof | Art-direction approval + physical readability rubric separate from PDF geometry tests | [R2 #159](https://github.com/interzettel/kushluk/issues/159) | [A06 #168](https://github.com/interzettel/kushluk/issues/168) | **M5 / v1.3.0** |
+| **F-024** theme/archetype system | Compare ≥3 materially different same-content **concepts**, recommend ≥2 production looks if founder agrees, preserve excellent mono | [R2 #159](https://github.com/interzettel/kushluk/issues/159), [R5 #162](https://github.com/interzettel/kushluk/issues/162) | [A02 #164](https://github.com/interzettel/kushluk/issues/164), [A03 #165](https://github.com/interzettel/kushluk/issues/165) | **M5 / v1.3.0** |
+| **F-027** fluid digital surface | Optional isolated identity-preserving six-component tile/spread/PDF UX study; NOT full interactive editor | [R4 #161](https://github.com/interzettel/kushluk/issues/161) | [A05 #167](https://github.com/interzettel/kushluk/issues/167) | **M6 / v1.4.0** |
+
+**Boundary:** an atomic task issue is a bounded child of a *pre-existing* feature/epic, not a 33rd feature or a new `WORK_LEDGER.md` checkbox. [#43](https://github.com/interzettel/kushluk/issues/43) indexes all issues; [#157](https://github.com/interzettel/kushluk/issues/157) indexes cross-agent decisions; [#87](https://github.com/interzettel/kushluk/issues/87) alone coordinates approval/recording of future release-target changes. No new release date, tag or accepted G1–G8 gate follows from this proposal.
+
 ## Epic descriptions
 
 | Epic | Why it exists | Gaining features |
