@@ -82,7 +82,13 @@ def verify() -> tuple[int, int]:
         "Untrusted GitHub comment bodies must render via textContent"
     )
     assert "Comments are untrusted review inputs" in html
-    assert "No polling" not in html or "No polling" in html
+    # The only network fetch must be user-initiated; never schedule recurring checks.
+    assert html.count("fetch(") == 1
+    assert "matchMedia('(max-width:850px)').matches" in html
+    assert "inspector.scrollIntoView({block:'start',behavior:'auto'})" in html
+    assert "0008-rendering-is-deterministic.md" in html
+    assert "0013-four-logical-a4-pages-multiple-print-profiles.md" in html
+    assert "if(text==='ADR-0012')return 'https://github.com/interzettel/kushluk/issues/44'" in html
     assert "setInterval(" not in html and "setTimeout(" not in html
     assert "localStorage" not in html and "sessionStorage" not in html
     assert "fetch('https://api.github.com" in html
