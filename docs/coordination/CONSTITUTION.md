@@ -1,6 +1,6 @@
 # Kuşluk collaboration constitution — three generalist AI peers and one accountable founder
 
-**Status:** PROPOSED, pending founder review of the associated PR. This document is a **collaboration procedure**, not an accepted architecture ADR, a release authorization, a model integration or an Agent2Agent transport implementation.  
+**Status:** FOUNDER-APPROVED collaboration procedure, merged via [PR #178](https://github.com/interzettel/kushluk/pull/178) on 2026-10-19. This document is a **collaboration procedure**, not an accepted architecture ADR, a release authorization, a model integration or an Agent2Agent transport implementation.  
 **Founder mandate:** [#170](https://github.com/interzettel/kushluk/issues/170) · **Operating-model debate:** [#176](https://github.com/interzettel/kushluk/issues/176) · **Discussion index:** [#157](https://github.com/interzettel/kushluk/issues/157).
 
 ## 1. Purpose and permitted debate
@@ -62,7 +62,7 @@ The proposed Agent2Agent (A2A) interoperability layer is a **future, separately 
 
 ## 6. Memory, handovers and shared assumptions
 
-Individual agent session memory is **not** collective evidence. The separately reviewable Step 2 workspace at [coordination/README.md](../../coordination/README.md) (when its PR is merged) has these distinct storage surfaces:
+Individual agent session memory is **not** collective evidence. The durable Step 2 workspace at [coordination/README.md](../../coordination/README.md) (merged via [PR #179](https://github.com/interzettel/kushluk/pull/179)) has these distinct storage surfaces:
 
 - `coordination/agents/<runtime>/HANDOVER.md`: what that runtime actually did, environment/commit, limitations, own unresolved hypotheses and next safe action;
 - `coordination/collective/ASSUMPTIONS.md`: attributed hypotheses with provenance, confidence and invalidation condition; **not accepted facts**;
@@ -70,7 +70,7 @@ Individual agent session memory is **not** collective evidence. The separately r
 - `coordination/collective/DISSENT.md`: unresolved objections and their status;
 - `coordination/sessions/<date-id>/`: optional bounded snapshots and artifact links.
 
-These paths are **files in the Step 2 proposal branch**, not synchronized cross-model memory or a transport service. They become part of the current repository only after that distinct PR is merged. Never put API keys, private email/article bodies, personal home details, proprietary subscriptions, or raw unlicensed images into public repo memory. Use GitHub issue links and private artifact destinations with explicit access controls. Google Drive can hold authorized large visual evidence if real access is confirmed for **each** runtime; do not assume three-way connectivity merely because a human has a Drive.
+These paths are now **versioned repository files**, not synchronized cross-model memory or a transport service. The actual Claude and DeepSeek runner handovers remain uninitialized until they write attributed evidence. Never put API keys, private email/article bodies, personal home details, proprietary subscriptions, or raw unlicensed images into public repo memory. Use GitHub issue links and private artifact destinations with explicit access controls. Google Drive can hold authorized large visual evidence if real access is confirmed for **each** runtime; do not assume three-way connectivity merely because a human has a Drive.
 
 A session handover must specify **observed vs inferred**, source commit, known blockers, pending founder verdicts, active PRs, status of relevant tests and *what it did not do*. Restarting a conversation must not turn a preliminary opinion into an accepted decision.
 
@@ -98,9 +98,9 @@ Reversible art experiments may proceed on isolated branches during ongoing hardw
 
 ## 9. Immediate next stages (not installed here)
 
-**Step 1 (this PR):** reconcile authority; adopt the shared constitution after owner review; record unresolved conflicts accurately.
+**Step 1 (completed, PR #178):** founder approved and merged the shared constitution and source-authority reconciliation.
 
-**Step 2:** separate handovers/collective assumptions and three restart briefs; run independent GitHub-comment review with explicit user consent.
+**Step 2 (workspace merged, PR #179):** handover files, collective assumptions and restart briefs exist; genuine Claude/DeepSeek introductions and independent peer reviews have NOT been verified. Use the first-round facts-only packet under `coordination/rounds/`.
 
 **Step 3:** test actual Agent2Agent messaging against each runtime and live atlas/Pages deployment; prove end-to-end identity and resilience before recurring monitoring.
 

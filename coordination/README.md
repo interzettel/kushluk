@@ -1,6 +1,6 @@
 # Kuşluk — three-peer collaboration workspace
 
-**Status:** Step 2 **PROPOSAL**, dated 2026-10-19; merge and adopt only after review.  
+**Status:** Step 2 durable files **MERGED** on 2026-10-19 via [PR #179](https://github.com/interzettel/kushluk/pull/179); actual multi-model sessions are not yet verified.  
 **Canonical protocol:** [docs/coordination/CONSTITUTION.md](../docs/coordination/CONSTITUTION.md), accepted in [PR #178](https://github.com/interzettel/kushluk/pull/178). This directory is **working memory and restart support**, NOT a second issue tracker, an A2A server, a live model session or an automatic GitHub issue subscriber.
 
 ## What lives where
@@ -37,6 +37,6 @@
 
 ## Shared source anchors
 
-[Owner direction #170](https://github.com/interzettel/kushluk/issues/170) · [Decision council #157](https://github.com/interzettel/kushluk/issues/157) · [A2A and peer policy #176](https://github.com/interzettel/kushluk/issues/176) · [R6 variable length #171](https://github.com/interzettel/kushluk/issues/171) · [R7 prompt design #172](https://github.com/interzettel/kushluk/issues/172) · [R8 private source intake #173](https://github.com/interzettel/kushluk/issues/173) · [Feature/release authority #87](https://github.com/interzettel/kushluk/issues/87) · [Issue inventory #43](https://github.com/interzettel/kushluk/issues/43) · [Licensing #38](https://github.com/interzettel/kushluk/issues/38).
+[Public Decision Atlas (read-only dated preview)](https://interzettel.github.io/kushluk/) · [Owner direction #170](https://github.com/interzettel/kushluk/issues/170) · [Decision council #157](https://github.com/interzettel/kushluk/issues/157) · [A2A and peer policy #176](https://github.com/interzettel/kushluk/issues/176) · [R6 variable length #171](https://github.com/interzettel/kushluk/issues/171) · [R7 prompt design #172](https://github.com/interzettel/kushluk/issues/172) · [R8 private source intake #173](https://github.com/interzettel/kushluk/issues/173) · [Feature/release authority #87](https://github.com/interzettel/kushluk/issues/87) · [Issue inventory #43](https://github.com/interzettel/kushluk/issues/43) · [Licensing #38](https://github.com/interzettel/kushluk/issues/38).
 
-**Current published baseline:** `main` through merge commit `f077d2fc214beaf08eff61a55e52b632b06fe129` for Step 1; inspect the **live** HEAD because it may have changed. Unmerged draft strategy PRs #169/#177 remain proposals as last checked.
+**Verified Step 2 merge:** `fe25c90fa14e6875845074247a8a2b75e19e249c` ([PR #179](https://github.com/interzettel/kushluk/pull/179)); inspect the **live** HEAD because it may have changed. First-round unbiased primary-source packet: [2026-10-19-W1](rounds/2026-10-19-wave1/SOURCE_PACKET.md). Unmerged draft strategy PRs #169/#177 remain proposals as last checked.

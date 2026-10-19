@@ -11,6 +11,7 @@ This register links **actual source records**; it does not manufacture approvals
 | C-005 | Core LICENSE presently MIT; future MPL/Apache/AGPL options unresolved. | **CURRENT LICENSE STATE**, not an approved choice to relicense | [#38](https://github.com/interzettel/kushluk/issues/38) |
 | C-006 | Two distinct files claim accepted ADR 0012; neither chosen as canonical by the team yet. | **OPEN CONFLICT**, not a new decision | [#44](https://github.com/interzettel/kushluk/issues/44) |
 | C-007 | Roadmap rebaseline/design atlas changes in PRs #169/#177 are proposals. | **DRAFT PROPOSALS**, not accepted features or launch gates | [#169](https://github.com/interzettel/kushluk/pull/169), [#177](https://github.com/interzettel/kushluk/pull/177), [#87](https://github.com/interzettel/kushluk/issues/87) |
+| C-008 | Separate runtime handovers, shared assumption/dissent/decision index and three distinct restart briefs are versioned repo **documentation**, not A2A transport or proof of AI participation. | **STEP 2 DOCUMENTATION MERGED**, [PR #179](https://github.com/interzettel/kushluk/pull/179), commit `fe25c90fa14e6875845074247a8a2b75e19e249c` | [coordination index](../README.md); actual Claude/DeepSeek reviews remain pending |
 
 **Next founder verdicts sought:** R6 #171 (edition model), R7 #172 (prompt styling contract), R8 #173 (source access/reuse), R9 #174 (client API boundary); only after their actual independently authored reviews and meaningful proofs.
 

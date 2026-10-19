@@ -2,6 +2,8 @@
 
 **Do not initiate autonomous posting from this file.** This queue supports up to **three parallel consequential discussion threads**, each with independent first passes before cross-examination; it is not a monitoring daemon or second GitHub Project.
 
+**Common unbiased source packet:** [2026-10-19-W1](../rounds/2026-10-19-wave1/SOURCE_PACKET.md), frozen at `fe25c90` for all three open rooms. ChatGPT continuation (not a second independent reviewer) posted source-grounded observations in [#171](https://github.com/interzettel/kushluk/issues/171#issuecomment-6270759201), [#172](https://github.com/interzettel/kushluk/issues/172#issuecomment-6270760176), and [#173](https://github.com/interzettel/kushluk/issues/173#issuecomment-6270761103). Claude and DeepSeek have **no verified independent comments** in this packet's record. The separate Agent Council screenshot depicts its own local coordination statuses, not validated model execution or official provider quota. No automatic watcher has been enabled here.
+
 ## Active preparation (read-only; founder-approved constitution)
 
 | Lane | Owning discussion | Start question | Required shared packet | Reviewer status |
