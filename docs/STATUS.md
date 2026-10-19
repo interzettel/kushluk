@@ -1,5 +1,9 @@
 # Kushluk Status
 
+## Local owner-operated physical and host pilot — 19 October 2026
+
+[Field-pilot register](FIELD_PILOT_2026_10.md) and [#13](https://github.com/interzettel/kushluk/issues/13)/[#47](https://github.com/interzettel/kushluk/issues/47) now contain operator-reported physical A4 simplex output (18 October), manual digital archived edition `20261018-001` (6.47 s), and **one actual 07:30 Windows Task Scheduler → Ubuntu 24.04 WSL2** digital-only run `20261019-001` (7.19 s to validated archive; `ready_by_met=true`, task exit 0). **Five additional one-time daily runs for 20–24 October are scheduled but unobserved (0/5).** No email or print delivery was requested by those scheduled runs. Real-device quality, duplex, automated printing, cold boot/sleep/recovery and independent readers remain open. This observation **does not change 26/90 work-ledger software checks or 0/8 independent delivery gates**.
+
 ## Current release bulletin — 18 October 2026
 
 **[v0.2.0-alpha.1](https://github.com/interzettel/kushluk/releases/tag/v0.2.0-alpha.1) was published as a GitHub-only experimental source prerelease**, Python package version `0.2.0a1`, at annotated source tag `d90f9a5ea0a65e7e9393675fd82cefb7e2d4159c`. The six-job exact-main CI, current Python dependency advisory audit, strict first-party archive inspection and publication workflow passed. Wheel, sdist and SHA256SUMS are attached to that release. It is not on PyPI and bundles no system fonts/native libraries or generated PDFs.
