@@ -62,7 +62,7 @@ The proposed Agent2Agent (A2A) interoperability layer is a **future, separately 
 
 ## 6. Memory, handovers and shared assumptions
 
-Individual agent session memory is **not** collective evidence. A future coordination directory may hold:
+Individual agent session memory is **not** collective evidence. The separately reviewable Step 2 workspace at [coordination/README.md](../../coordination/README.md) (when its PR is merged) has these distinct storage surfaces:
 
 - `coordination/agents/<runtime>/HANDOVER.md`: what that runtime actually did, environment/commit, limitations, own unresolved hypotheses and next safe action;
 - `coordination/collective/ASSUMPTIONS.md`: attributed hypotheses with provenance, confidence and invalidation condition; **not accepted facts**;
@@ -70,7 +70,7 @@ Individual agent session memory is **not** collective evidence. A future coordin
 - `coordination/collective/DISSENT.md`: unresolved objections and their status;
 - `coordination/sessions/<date-id>/`: optional bounded snapshots and artifact links.
 
-These paths are a **proposed Step 2 structure**, not installed or synchronized in this Step 1 PR. Never put API keys, private email/article bodies, personal home details, proprietary subscriptions, or raw unlicensed images into public repo memory. Use GitHub issue links and private artifact destinations with explicit access controls. Google Drive can hold authorized large visual evidence if real access is confirmed for **each** runtime; do not assume three-way connectivity merely because a human has a Drive.
+These paths are **files in the Step 2 proposal branch**, not synchronized cross-model memory or a transport service. They become part of the current repository only after that distinct PR is merged. Never put API keys, private email/article bodies, personal home details, proprietary subscriptions, or raw unlicensed images into public repo memory. Use GitHub issue links and private artifact destinations with explicit access controls. Google Drive can hold authorized large visual evidence if real access is confirmed for **each** runtime; do not assume three-way connectivity merely because a human has a Drive.
 
 A session handover must specify **observed vs inferred**, source commit, known blockers, pending founder verdicts, active PRs, status of relevant tests and *what it did not do*. Restarting a conversation must not turn a preliminary opinion into an accepted decision.
 
