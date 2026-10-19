@@ -1,0 +1,73 @@
+name: Publish Decision Atlas (GitHub Pages)
+
+on:
+  pull_request:
+    paths:
+      - "site/decision-atlas/**"
+      - "tools/check_decision_atlas_site.py"
+      - ".github/workflows/decision-atlas-pages.yml"
+  push:
+    branches: [main]
+    paths:
+      - "site/decision-atlas/**"
+      - "tools/check_decision_atlas_site.py"
+      - ".github/workflows/decision-atlas-pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: decision-atlas-pages-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    name: Validate public atlas, provenance and safe comments
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate static publication and optional discussion viewer
+        run: python3 tools/check_decision_atlas_site.py
+      - name: Render atlas with desktop and mobile Chrome
+        if: github.event_name == 'pull_request'
+        run: python3 tools/check_decision_atlas_browser.py
+      - name: Preserve review screenshots (not deployed)
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: decision-atlas-visual-review
+          path: .review/decision-atlas/
+          if-no-files-found: ignore
+
+  deploy:
+    name: Publish read-only strategic preview
+    # Never deploy a PR. The repository's approved default branch is the only source.
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: verify
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+      - name: Assemble public-only static files
+        run: |
+          mkdir -p _site
+          cp site/decision-atlas/index.html _site/index.html
+          cp site/decision-atlas/decision-atlas.json _site/decision-atlas.json
+          touch _site/.nojekyll
+          test -s _site/index.html && test -s _site/decision-atlas.json
+      - name: Upload public-only GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
