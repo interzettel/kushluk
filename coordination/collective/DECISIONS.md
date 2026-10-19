@@ -12,6 +12,8 @@ This register links **actual source records**; it does not manufacture approvals
 | C-006 | Two distinct files claim accepted ADR 0012; neither chosen as canonical by the team yet. | **OPEN CONFLICT**, not a new decision | [#44](https://github.com/interzettel/kushluk/issues/44) |
 | C-007 | Roadmap rebaseline/design atlas changes in PRs #169/#177 are proposals. | **DRAFT PROPOSALS**, not accepted features or launch gates | [#169](https://github.com/interzettel/kushluk/pull/169), [#177](https://github.com/interzettel/kushluk/pull/177), [#87](https://github.com/interzettel/kushluk/issues/87) |
 
+| C-008 | Separate runtime handovers, shared assumption/dissent/decision index and three distinct restart briefs are versioned repo **documentation**, not A2A transport or proof of AI participation. | **STEP 2 DOCUMENTATION MERGED**, [PR #179](https://github.com/interzettel/kushluk/pull/179), commit `fe25c90fa14e6875845074247a8a2b75e19e249c` | [coordination index](../README.md); actual Claude/DeepSeek reviews remain pending |
+
 **Next founder verdicts sought:** R6 #171 (edition model), R7 #172 (prompt styling contract), R8 #173 (source access/reuse), R9 #174 (client API boundary); only after their actual independently authored reviews and meaningful proofs.
 
 Rule: use the owning issue's dated founder verdict plus accepted ADR/merge as the source of truth. This file can lag; update it with links after the actual outcome. Never copy an AI opinion into the `FOUNDER APPROVED` category.
