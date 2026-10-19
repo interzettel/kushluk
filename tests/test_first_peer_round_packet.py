@@ -3,6 +3,7 @@
 Static repository consistency only. No models launched, GitHub writes, issue
 monitoring or A2A transport started by these tests.
 """
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -69,3 +70,12 @@ def test_proposal_records_not_mistaken_for_delivered_model_discussions():
     assert "C-008" in decisions
     assert "STEP 2 DOCUMENTATION MERGED" in decisions
     assert "not A2A transport" in decisions
+
+
+def test_packet_relative_links_resolve_to_actual_files():
+    source = PACKET.read_text(encoding="utf-8")
+    for target in re.findall(r"\\]\\(([^)]+)\\)", source):
+        if target.startswith(("https://", "http://")):
+            continue
+        local_path = PACKET.parent / target.split("#", 1)[0]
+        assert local_path.is_file(), f"Broken packet source link: {target}"
