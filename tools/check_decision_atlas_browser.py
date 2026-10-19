@@ -47,7 +47,7 @@ def render(chrome: str, size: str, name: str) -> None:
     assert "PUBLIC PREVIEW" in dom and "Load discussion comments" in dom
     assert 'id="mobileBranch"' in dom and 'id="searchResults"' in dom
     assert "Skip to selected decision details" in dom
-    assert len(re.findall(r"<option(?:\\s|>)", dom)) >= 8, "Mobile topics must be populated"
+    assert dom.count("<option") >= 8, "Mobile topics must be populated"
 
     OUTPUT.mkdir(parents=True, exist_ok=True)
     screenshot = OUTPUT / f"{name}.png"
