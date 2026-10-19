@@ -68,9 +68,18 @@ def verify() -> tuple[int, int]:
     s.feed(html)
     assert not s.duplicate_ids, f"Duplicate HTML IDs: {s.duplicate_ids}"
     assert not s.external_scripts and not s.forms
-    for must in ("atlas-model", "tree", "nav", "inspector", "find", "decisionIndex", "selectionAnnouncement", "mobileDecisions"):
+    for must in ("atlas-model", "tree", "nav", "inspector", "find", "decisionIndex", "selectionAnnouncement", "mobileDecisions", "mobileBranch", "searchResults"):
         assert must in s.ids
     assert "Search decisions" in s.labels
+    assert "Choose decision topic" in s.labels
+    assert "Skip to selected decision details" in html
+    assert "function renderSearch()" in html
+    assert "No matching decisions." in html
+    assert "mobileBranch.addEventListener('change'" in html
+    assert "window.addEventListener('hashchange'" in html
+    assert ".sidebar .navlist{display:none}" in html
+    assert ".shell{grid-template-rows:auto auto auto}" in html
+    assert "searchResults.hidden=true" in html
     assert "Selected decision details" in s.labels
     assert '<details class="decision-index">' in html
     assert "function indexDraw()" in html and "decisionIndex.replaceChildren(sections)" in html
