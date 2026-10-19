@@ -47,7 +47,7 @@ Before implementation, test a real authenticated local agent, scope-isolation ac
 
 1. Update the frozen normalized source only after a reviewable change to the underlying discussion graph. An issue being closed or an agent comment is **not** automatic acceptance.
 2. Regenerate the embedded model from the same JSON; test with `python3 tools/check_decision_atlas_site.py`.
-3. Open PR to `main` with a screenshot/keyboard audit on desktop/mobile, a public-source rights check, and a documented snapshot date.
+3. Open PR to `main` with a screenshot/keyboard audit on desktop/mobile, a public-source rights check, and a documented snapshot date. PR validation runs headless Chrome with desktop/mobile DOM assertions and uploads review screenshots; these are browser smoke evidence, **not** a human visual/a11y sign-off.
 4. On merge, allow Pages deploy; check `github-pages` environment and actual user-visible page.
 5. If a real **read-only** authenticated status adapter is later desired, debate its permissions, public-data boundaries and provenance in [#157](https://github.com/interzettel/kushluk/issues/157) / [#176](https://github.com/interzettel/kushluk/issues/176) before connecting it. Avoid leaking private decisions/credentials through Pages.
 

@@ -29,6 +29,16 @@ jobs:
       - uses: actions/checkout@v4
       - name: Validate static publication and optional discussion viewer
         run: python3 tools/check_decision_atlas_site.py
+      - name: Render atlas with desktop and mobile Chrome
+        if: github.event_name == 'pull_request'
+        run: python3 tools/check_decision_atlas_browser.py
+      - name: Preserve review screenshots (not deployed)
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: decision-atlas-visual-review
+          path: .review/decision-atlas/
+          if-no-files-found: ignore
 
   deploy:
     name: Publish read-only strategic preview
