@@ -18,7 +18,7 @@
     body {
       background: var(--paper);
       color: var(--ink);
-      font: 10pt/1.35 Georgia, "Times New Roman", serif;
+      font: 10pt/1.42 Georgia, "Times New Roman", serif;
       overflow-wrap: break-word;
     }
     .sheet {
@@ -32,26 +32,32 @@
     header {
       border-bottom: .35mm solid var(--ink);
       padding-bottom: 3mm;
-      margin-bottom: 7mm;
+      margin-bottom: 5mm;
     }
     .masthead { display: flex; align-items: baseline; justify-content: space-between; gap: 8mm; }
-    h1 { font-size: 32pt; line-height: .95; margin: 0; letter-spacing: -.04em; }
+    h1 { font-size: 30pt; line-height: 1; margin: 0; letter-spacing: -.035em; }
+    /* Interior pages are sections of one newspaper, not four repeated covers. */
+    .sheet:not(.front) h1 { font-size: 19pt; letter-spacing: -.025em; }
+    .sheet:not(.front) header { margin-bottom: 5mm; }
+    .sheet:not(.front) .meta { font-size: 6.5pt; }
+    .front h2 { max-width: 158mm; }
+    .day .practical-grid { margin-bottom: 4mm; }
     .meta, .kicker, .source, footer, .label {
       font-family: Arial, Helvetica, sans-serif;
     }
     .meta { font-size: 7pt; letter-spacing: .07em; text-align: right; color: var(--muted); }
-    .kicker { margin: 0 0 3mm; font-size: 7pt; letter-spacing: .15em; text-transform: uppercase; }
-    h2 { margin: 0 0 5mm; font-size: 24pt; line-height: 1.05; }
-    h3 { margin: 0 0 2mm; font-size: 16pt; line-height: 1.1; }
+    .kicker { margin: 0 0 3mm; font-size: 7pt; letter-spacing: .105em; text-transform: uppercase; }
+    h2 { margin: 0 0 4mm; font-size: 22pt; line-height: 1.09; }
+    h3 { margin: 0 0 2mm; font-size: 15pt; line-height: 1.13; }
     p { margin: 0 0 3mm; }
     /* Six-column A4 editorial grid; typography and paper tokens stay theme-owned. */
     /* Keep the previously validated A4 practical half-width grid. */
-    .practical-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4mm; }
-    .practical { padding: 3mm 3mm 4mm 0; border-top: .2mm solid var(--rule); }
+    .practical-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 3mm 5mm; }
+    .practical { padding: 2.5mm 3mm 3mm 0; border-top: .2mm solid var(--rule); }
     .label { text-transform: uppercase; font-size: 7pt; letter-spacing: .08em; color: var(--muted); }
-    .value { margin-top: 1mm; font-weight: bold; font-size: 14pt; }
+    .value { margin-top: 1mm; font-weight: bold; font-size: 13pt; line-height: 1.15; }
     .detail { margin-top: 1mm; color: var(--muted); }
-    article { border-top: .3mm solid var(--ink); padding-top: 3mm; margin-top: 5mm; break-inside: avoid; overflow-wrap: anywhere; }
+    article { border-top: .25mm solid var(--ink); padding-top: 3mm; margin-top: 4mm; break-inside: avoid; overflow-wrap: anywhere; }
     .story-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); grid-auto-rows: min-content; align-content: start; gap: 0 4mm; }
     .story-grid > article { grid-column: span 6; min-width: 0; }
     .archetype-news-heavy.front .story-grid > article { grid-column: span 3; }
@@ -59,7 +65,7 @@
     .archetype-news-heavy.front .story-grid .deck { font-size: 9pt; }
     .archetype-practical-heavy.front h2 { font-size: 22pt; }
     .source-list { overflow-wrap: anywhere; }
-    .deck { font-size: 10pt; max-width: 160mm; white-space: pre-wrap; }
+    .deck { font-size: 10pt; line-height: 1.44; max-width: 160mm; white-space: pre-wrap; }
     .source { font-size: 7pt; color: var(--muted); overflow-wrap: anywhere; }
     /* Only owner-imported, checksum-verified data URI rasters reach this slot. */
     figure.lead-media { float: right; width: 66mm; margin: 0 0 3mm 4mm;
@@ -68,7 +74,7 @@
     figure.lead-media figcaption { font: 7pt/1.2 Arial, Helvetica, sans-serif;
       overflow-wrap: anywhere; margin-top: 1mm; color: var(--muted); }
     .source { clear: both; }
-    .empty { border-top: .2mm solid var(--rule); padding-top: 3mm; color: var(--muted); }
+    .empty { border-top: .2mm solid var(--rule); padding-top: 3mm; color: var(--muted); font-style: italic; }
     .source-list { list-style: none; margin: 0; padding: 0; }
     .source-list li { border-top: .2mm solid var(--rule); padding: 3mm 0; }
     .source-list a { color: var(--ink); text-decoration: underline; }
@@ -89,7 +95,12 @@
         margin: 0 auto 12px; background: var(--paper); box-shadow: 0 2px 18px #0002;
         break-after: auto; page-break-after: auto; }
     }
-    @media print { body { print-color-adjust: exact; -webkit-print-color-adjust: exact; } }
+    /* Warm stock is a material choice; do not flood home printers with beige ink. */
+    @media print {
+      body { background: #fff; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .sheet { background: #fff; }
+      .sun { background: var(--ink); }
+    }
   </style>
 </head>
 <body>
