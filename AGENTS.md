@@ -44,6 +44,19 @@ When documents conflict, resolve in this order:
 
 Do not silently reinterpret a recorded decision. Propose a new ADR when changing architecture or a non-trivial product invariant.
 
+## Three-peer AI collaboration and founder authority
+
+**Proposed collaboration constitution:** [docs/coordination/CONSTITUTION.md](docs/coordination/CONSTITUTION.md), with a [source-of-truth reconciliation audit](docs/coordination/RECONCILIATION_AUDIT_2026-10-19.md) and [review template](docs/coordination/REVIEW_TEMPLATE.md). The procedure is open to founder review in [#176](https://github.com/interzettel/kushluk/issues/176). It does **not** replace the documentation-precedence list above or give draft strategies normative authority.
+
+- **Owner direction versus existing contract:** [#170](https://github.com/interzettel/kushluk/issues/170) affirms a beautiful, reader-owned, finite publishing medium, potentially with variable-length paper, prompt-directed styles and user-authorized agent composition. **Existing accepted ADR 0013 and REQUIREMENTS still specify exactly four logical A4 pages for today's canonical edition**, and accepted ADR 0008/0015 still require deterministic Kuşluk-owned rendering and provider-independent agents. Debate future changes in [#171](https://github.com/interzettel/kushluk/issues/171)/[#172](https://github.com/interzettel/kushluk/issues/172); change contracts only through explicit founder-approved ADR/requirement migration.
+- **No permanent AI discipline silos:** ChatGPT Work, Claude Code, and a user-operated local DeepSeek are **generalist peers in critical discussion**. Temporary ownership of a PR, file boundary or test does not restrict anyone's right to examine design, product, engineering, legal, security, privacy, cost or testing. The founder makes consequential decisions; peers do not vote them into policy.
+- **Review evidence:** distinguish `PROPOSED`, `REVIEWED`, `DECIDED`, `IMPLEMENTED`, and `VERIFIED`. An AI must disclose its real runner, exact sources/commit, limitations, strongest counterargument and falsifying test. Never claim other AIs participated, agreed, received a message or tested local hardware without attributable evidence.
+- **Communication currently available:** GitHub issue threads are durable asynchronous review records. Actual Agent2Agent/A2A interoperability, continuous watchers, agent memory synchronization, Google Drive sharing and deployment of the visual decision atlas remain **separate unverified integration tasks**, not features provided by this file.
+- **Single sources of truth:** all-issue inventory [#43](https://github.com/interzettel/kushluk/issues/43), decision discussions [#157](https://github.com/interzettel/kushluk/issues/157), release/feature planning [#87](https://github.com/interzettel/kushluk/issues/87), original `WORK_LEDGER.md`, independently accepted `PROGRESS.md` gates, and accepted ADRs above. [PR #169](https://github.com/interzettel/kushluk/pull/169) and [PR #177](https://github.com/interzettel/kushluk/pull/177) are **unmerged strategy proposals** as of this reconciliation; do not derive approved release dates or milestones from them.
+- **Capabilities and consent:** no AI gets implicit authority to view personal mail, share paid content, install external code/skills, publish external posts, spend money, deploy publicly, schedule recurrent jobs, print physical pages or merge sensitive PRs. Research and draft documentation cannot silently become operational access.
+
+The design/owner vision may justify reviewing prior decisions; it does not authorize rewriting their history. The known duplicate **accepted ADR 0012** remains unresolved under [#44](https://github.com/interzettel/kushluk/issues/44).
+
 ## Working method
 
 Use vertical slices. Prefer a working bicycle over disconnected car parts.
