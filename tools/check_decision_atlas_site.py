@@ -76,6 +76,8 @@ def verify() -> tuple[int, int]:
     assert "function indexDraw()" in html and "decisionIndex.replaceChildren(sections)" in html
     assert "function mobileDraw()" in html and "mobileDecisions.replaceChildren()" in html
     assert "#treeWrap{display:none}" in html, "Mobile must use legible HTML cards, not miniature SVG"
+    assert "#relatedToggle,#minus,#plus,#reset{display:none}" in html, "Hide controls for invisible mobile SVG"
+    assert "setAttribute('aria-pressed',String(group===null))" in html, "Overview state must follow the selected branch"
     assert "root.dataset.node='NORTH'" in html, "Decision index must include atlas root"
     assert "const nextGroup=id==='NORTH'?null:n.parent==='NORTH'?id:n.parent" in html
     assert "inspector.querySelector('h2')?.focus({preventScroll:true})" in html
