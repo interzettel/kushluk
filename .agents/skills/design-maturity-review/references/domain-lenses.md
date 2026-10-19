@@ -1,0 +1,5 @@
+# Domain lenses
+
+Stiprā-local companion reference, derived from the owner's uploaded Design Maturity Review v1.0.0 SKILL.md; the originally referenced document was not supplied. Use the original SKILL.md as authority. Do not attribute this material to the missing original reference.
+
+For public roadmaps and changelogs, evaluate chronological orientation, search and accessibility, evidence links, change evolution, and honest status. For the Studio, evaluate import → image → per-ink separation → proof → physical export, including error/recovery states. For code design, test APIs, dependency boundaries, build repeatability, and actual source-contract consistency. For physical artifacts, add construction/material/tolerance/field-use observations. Never infer print performance from a screenshot.

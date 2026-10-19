@@ -47,8 +47,18 @@ These are package install requirements, **not copied third-party source files**.
 
 The new OPML parser is **original standard-library Python implementation informed by published feed/OPML interoperability concepts**, not a copy of OffScroll, Goosepaper, RSSPub or other reviewed source. No external license notice is required for original independent implementation.
 
-## Incorporated third-party code
+## Incorporated third-party text: Phase III design skills (19 October 2026)
 
-None recorded yet beyond normal declared package dependencies.
+Six text-only third-party skills (unaltered `SKILL.md` entrypoints, selected Markdown references and full original licences) are now copied to `.agents/skills/`. **Executable scripts, browser probes, downloaded assets, package dependencies, remote installation and global agent configuration are not incorporated.** This is skill guidance, not confirmation that an external runtime executed it. See [audit](docs/design/PHASE3_SKILLS_AUDIT.md).
 
-When code or substantial adapted material is incorporated, add the exact source, license, copyright notice and affected Kushluk files here.
+| Local files | Pinned source | Attribution / licence |
+| --- | --- | --- |
+| `.agents/skills/design-maturity-review/` | [Stiprā](https://github.com/yigit-denktas/stipra/tree/a72969932bd4fb850eafd9694a5b54a62c68dd9f/.agents/skills/design-maturity-review) | Stiprā contributors / repo MIT |
+| `.agents/skills/design-taste-frontend/` | [Stiprā](https://github.com/yigit-denktas/stipra/tree/a72969932bd4fb850eafd9694a5b54a62c68dd9f/.agents/skills/design-taste-frontend) | Leonxlnx / MIT |
+| `.agents/skills/good-css/` | [Stiprā](https://github.com/yigit-denktas/stipra/tree/a72969932bd4fb850eafd9694a5b54a62c68dd9f/.agents/skills/good-css) | Vojta Holik / MIT |
+| `.agents/skills/impeccable/` | [Stiprā](https://github.com/yigit-denktas/stipra/tree/a72969932bd4fb850eafd9694a5b54a62c68dd9f/.agents/skills/impeccable) | Original upstream licence, Apache-2.0 |
+| `.agents/skills/awwwards/` | [juliobsz/skills](https://github.com/juliobsz/skills/tree/f193f6745aae738e9d54a0ca28792822e4777a63/awwwards) | Julio (juliobsz) / MIT |
+| `.agents/skills/jury/` | [juliobsz/skills](https://github.com/juliobsz/skills/tree/f193f6745aae738e9d54a0ca28792822e4777a63/jury) | Julio (juliobsz) / MIT |
+
+Original licence files are present beside each skill, including Apache-2.0 under `impeccable/`. Incorporation does not relicense the rest of Kushluk, and does not authorize npm/pip installs or outside asset downloads.
+

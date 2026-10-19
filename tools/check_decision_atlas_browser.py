@@ -45,6 +45,9 @@ def render(chrome: str, size: str, name: str) -> None:
         f"{name}: interactive SVG nodes missing from rendered DOM"
     )
     assert "PUBLIC PREVIEW" in dom and "Load discussion comments" in dom
+    assert 'id="mobileBranch"' in dom and 'id="searchResults"' in dom
+    assert "Skip to selected decision details" in dom
+    assert dom.count("<option") >= 8, "Mobile topics must be populated"
 
     OUTPUT.mkdir(parents=True, exist_ok=True)
     screenshot = OUTPUT / f"{name}.png"
@@ -59,4 +62,5 @@ def render(chrome: str, size: str, name: str) -> None:
 if __name__ == "__main__":
     chrome = chrome_binary()
     render(chrome, "1440,900", "desktop-1440")
+    render(chrome, "900,900", "tablet-900")
     render(chrome, "390,844", "mobile-390")

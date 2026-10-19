@@ -68,9 +68,21 @@ def verify() -> tuple[int, int]:
     s.feed(html)
     assert not s.duplicate_ids, f"Duplicate HTML IDs: {s.duplicate_ids}"
     assert not s.external_scripts and not s.forms
-    for must in ("atlas-model", "tree", "nav", "inspector", "find", "decisionIndex", "selectionAnnouncement", "mobileDecisions"):
+    for must in ("atlas-model", "tree", "nav", "inspector", "find", "decisionIndex", "selectionAnnouncement", "mobileDecisions", "mobileBranch", "searchResults"):
         assert must in s.ids
     assert "Search decisions" in s.labels
+    assert "Choose decision topic" in s.labels
+    assert "Skip to selected decision details" in html
+    assert "function renderSearch()" in html
+    assert "No matching decisions." in html
+    assert "matches.forEach(n=>" in html
+    assert "Back to decision list" in html
+    assert "mobileBranch.addEventListener('change'" in html
+    assert "window.addEventListener('hashchange'" in html
+    assert ".sidebar .navlist{display:none}" in html
+    assert ".shell{grid-template-rows:auto auto auto}" in html
+    assert "searchResults.hidden=true" in html
+    assert "if(tree.clientWidth<1||tree.clientHeight<1)" in html
     assert "Selected decision details" in s.labels
     assert '<details class="decision-index">' in html
     assert "function indexDraw()" in html and "decisionIndex.replaceChildren(sections)" in html
@@ -96,7 +108,7 @@ def verify() -> tuple[int, int]:
     assert "Comments are untrusted review inputs" in html
     # The only network fetch must be user-initiated; never schedule recurring checks.
     assert html.count("fetch(") == 1
-    assert "matchMedia('(max-width:850px)').matches" in html
+    assert "matchMedia('(max-width:1100px)').matches" in html
     assert "inspector.scrollIntoView({block:'start',behavior:'auto'})" in html
     assert "0008-rendering-is-deterministic.md" in html
     assert "0013-four-logical-a4-pages-multiple-print-profiles.md" in html

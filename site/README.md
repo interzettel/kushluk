@@ -1,4 +1,4 @@
-# Kuşluk Decision Atlas — GitHub Pages public preview
+# Kushluk Decision Atlas — GitHub Pages public preview
 
 **Status:** a static, read-only **strategy preview**, not an accepted ADR, an actively synchronized dashboard, or proof of three-agent participation. The product's owner direction is recorded in [#170](https://github.com/interzettel/kushluk/issues/170); actual decisions remain in their [owning GitHub discussions](https://github.com/interzettel/kushluk/issues/157). The source visual concept and normalized decision graph remain under **[draft PR #177](https://github.com/interzettel/kushluk/pull/177)**; copying the **public view** does *not* approve that draft's milestone or architecture changes.
 
@@ -6,7 +6,7 @@
 
 - `site/decision-atlas/index.html`: source-linked, standalone pan/zoom diagram with a keyboard-accessible HTML index of all 56 decisions, alternative futures, ADR/F-ID/task/evidence impact and owner-approved-vs-open disclaimers. SVG accessibility and mobile rendering still require human/browser review.
 - `site/decision-atlas/decision-atlas.json`: exact public JSON snapshot **embedded in the HTML**, so the app opens without a backend.
-- All inputs are **public Kuşluk issues and strategy drafts**. No personal email, project secrets, source article bodies, private Drive content, AGENT Council credential, local printer or private log is incorporated.
+- All inputs are **public Kushluk issues and strategy drafts**. No personal email, project secrets, source article bodies, private Drive content, AGENT Council credential, local printer or private log is incorporated.
 - JavaScript does **not** poll by default. A user explicitly clicking **Load discussion comments** makes a **read-only unauthenticated HTTPS GET** to `api.github.com` for the selected public GitHub issue; comment bodies are displayed with `textContent`, not executed as HTML. This may fail due to rate limits, network controls or private/restricted repository policies. GitHub remains authoritative; this view may be stale or truncated.
 - **No live Agent Council integration.** Council is under development in [its own repository](https://github.com/interzettel/agent-council) and remains local-only. This Pages site will not connect to localhost, auto-wake models, publish GitHub comments or claim live model quotas.
 - The frozen snapshot can become stale; its public visible date is **19 October 2026**, not an automated status sync.
@@ -20,7 +20,7 @@ The official route is via [`.github/workflows/decision-atlas-pages.yml`](../.git
 
 **One-time GitHub setting may be required:** open [repository Pages settings](https://github.com/interzettel/kushluk/settings/pages) → **Build and deployment** → **Source: GitHub Actions**. The GitHub connector in this session does **not** expose Pages settings writes or a Pages status read, so do not call this step complete unless the Pages deployment job succeeds and the returned URL serves the actual atlas. If `configure-pages` fails because Pages is disabled, change the repository Pages source and **rerun the workflow**; do not change the permissions scope or paste PATs into workflows.
 
-The normal GitHub.com repository URL shape is `https://interzettel.github.io/kushluk/`; this is a **candidate, not a verified live URL** until GitHub's deployment job reports success and a browser fetch confirms the published content. A custom domain or Pages restriction can change the actual URL.
+**Verified public URL:** https://interzettel.github.io/kushluk/ — GitHub Pages [run #39292589068 attempt 2](https://github.com/interzettel/kushluk/actions/runs/39292589068) deployed successfully on 19 October 2026, independently fetched over HTTPS along with the JSON snapshot. Future deployments must be independently checked again; a URL verified yesterday does not guarantee today's new code.
 
 ## Local Agent Council interoperability — future contract, not connected
 
@@ -52,3 +52,10 @@ Before implementation, test a real authenticated local agent, scope-isolation ac
 5. If a real **read-only** authenticated status adapter is later desired, debate its permissions, public-data boundaries and provenance in [#157](https://github.com/interzettel/kushluk/issues/157) / [#176](https://github.com/interzettel/kushluk/issues/176) before connecting it. Avoid leaking private decisions/credentials through Pages.
 
 **Deliberate separation:** the repo's design/roadmap planning PR #177 can stay unmerged. This public preview does not confer a milestone approval, overturn ADR 0013, validate A2A protocol or authorize access to private source material.
+
+## Phase III UX and design skills (19 October 2026)
+
+- Six original, pinned, licence-preserving **text-only skill entrypoints** from Stiprā (4) and juliobsz/skills (2) are in [`.agents/skills/`](../.agents/skills/README.md). Scripts, heavyweight assets, global loader installation and claimed Claude/DeepSeek execution are **not** included; see the [provenance and scope audit](../docs/design/PHASE3_SKILLS_AUDIT.md).
+- UX improvements: native mobile topic selector replaces a clipped horizontal branch rail; global search presents explicit actionable results instead of silently jumping to the first hit; a keyboard skip link reaches the selected inspector; the mobile grid grows naturally instead of pinning a fixed-height workspace.
+- Read-only and dated: no change to the 56-node source snapshot, model reviews, accepted ADRs, or authorized-source permissions. No Agent Council connection.
+- Test `python3 tools/check_decision_atlas_site.py`. Headless Chrome CI captures desktop, tablet and mobile screenshots. Manual assistive-technology and founder design acceptance remain separate.
