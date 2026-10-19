@@ -15,6 +15,7 @@ def test_first_run_helper_is_readonly_by_default():
     assert "KUSHLUK_PRESENT" in src
     assert "KUSHLUK_MISSING" in src
     assert "wsl" in src
+    assert "-replace [char]0" in src
     assert "docker-desktop" in src
     assert "test -x" in src
 
