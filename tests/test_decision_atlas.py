@@ -86,3 +86,33 @@ def test_viewer_javascript_parses_with_node_when_installed(tmp_path):
     result = subprocess.run([node, "--check", str(script)], capture_output=True,
                             text=True, timeout=20)
     assert result.returncode == 0, result.stderr
+
+
+def test_mapped_impact_ids_match_existing_feature_and_task_authorities():
+    from importlib.util import spec_from_file_location, module_from_spec
+    catalog = (ROOT / "docs" / "FEATURE_CATALOG.md").read_text(encoding="utf-8")
+    ledger = (ROOT / "docs" / "WORK_LEDGER.md").read_text(encoding="utf-8")
+    feature_ids = set(re.findall(r"(?m)^\\| (F-\\d{3}) \\|", catalog))
+    task_ids = set(re.findall(r"(?m)^- \\[.\\] \\*\\*([A-Z]+(?:-[A-Z]+)*-\\d+)", ledger))
+    assert len(feature_ids) == 32
+    assert len(task_ids) == 90
+    assert len([x for x in re.findall(r"(?m)^- \\[x\\] \\*\\*([A-Z]+(?:-[A-Z]+)*-\\d+)", ledger)]) == 26
+    for n in load()["nodes"]:
+        impact = n.get("impact")
+        assert impact is not None, n["id"]
+        assert set(impact) == {
+            "accepted_adrs", "feature_ids", "work_ledger_task_ids",
+            "evidence_gates", "release_milestones"
+        }
+        assert set(impact["feature_ids"]) <= feature_ids, n["id"]
+        assert set(impact["work_ledger_task_ids"]) <= task_ids, n["id"]
+        assert all(x in {f"G{j}" for j in range(1, 9)} for x in impact["evidence_gates"])
+    assert "ADR 0013" in next(x["impact"]["accepted_adrs"] for x in load()["nodes"] if x["id"] == "length")
+
+
+def test_snapshot_refresh_tool_is_read_only_in_check_mode():
+    import subprocess, sys
+    script = ROOT / "tools" / "refresh_decision_atlas.py"
+    r = subprocess.run([sys.executable, str(script), "--check"],
+                       text=True, capture_output=True, timeout=15)
+    assert r.returncode == 0, r.stderr + r.stdout
