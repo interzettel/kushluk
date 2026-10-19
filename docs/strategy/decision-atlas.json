@@ -33,7 +33,16 @@
         "#2",
         "#170"
       ],
-      "links": []
+      "links": [],
+      "impact": {
+        "accepted_adrs": [],
+        "feature_ids": [],
+        "work_ledger_task_ids": [],
+        "evidence_gates": [],
+        "release_milestones": []
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "owner_intent_recorded"
     },
     {
       "id": "VALUE",
@@ -47,7 +56,16 @@
         "#170",
         "#6"
       ],
-      "links": []
+      "links": [],
+      "impact": {
+        "accepted_adrs": [],
+        "feature_ids": [],
+        "work_ledger_task_ids": [],
+        "evidence_gates": [],
+        "release_milestones": []
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "owner_intent_recorded"
     },
     {
       "id": "PAPER",
@@ -61,7 +79,16 @@
         "#170",
         "#171"
       ],
-      "links": []
+      "links": [],
+      "impact": {
+        "accepted_adrs": [],
+        "feature_ids": [],
+        "work_ledger_task_ids": [],
+        "evidence_gates": [],
+        "release_milestones": []
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "ART",
@@ -75,7 +102,16 @@
         "#170",
         "#159"
       ],
-      "links": []
+      "links": [],
+      "impact": {
+        "accepted_adrs": [],
+        "feature_ids": [],
+        "work_ledger_task_ids": [],
+        "evidence_gates": [],
+        "release_milestones": []
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "owner_intent_recorded"
     },
     {
       "id": "SOURCE",
@@ -89,7 +125,16 @@
         "#170",
         "#173"
       ],
-      "links": []
+      "links": [],
+      "impact": {
+        "accepted_adrs": [],
+        "feature_ids": [],
+        "work_ledger_task_ids": [],
+        "evidence_gates": [],
+        "release_milestones": []
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "AGENT",
@@ -103,7 +148,16 @@
         "#170",
         "#174"
       ],
-      "links": []
+      "links": [],
+      "impact": {
+        "accepted_adrs": [],
+        "feature_ids": [],
+        "work_ledger_task_ids": [],
+        "evidence_gates": [],
+        "release_milestones": []
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "OUTPUT",
@@ -117,7 +171,16 @@
         "#170",
         "#13"
       ],
-      "links": []
+      "links": [],
+      "impact": {
+        "accepted_adrs": [],
+        "feature_ids": [],
+        "work_ledger_task_ids": [],
+        "evidence_gates": [],
+        "release_milestones": []
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "STUDIO",
@@ -131,7 +194,16 @@
         "#170",
         "#175"
       ],
-      "links": []
+      "links": [],
+      "impact": {
+        "accepted_adrs": [],
+        "feature_ids": [],
+        "work_ledger_task_ids": [],
+        "evidence_gates": [],
+        "release_milestones": []
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "GOV",
@@ -145,7 +217,16 @@
         "#170",
         "#176"
       ],
-      "links": []
+      "links": [],
+      "impact": {
+        "accepted_adrs": [],
+        "feature_ids": [],
+        "work_ledger_task_ids": [],
+        "evidence_gates": [],
+        "release_milestones": []
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "owner_intent_recorded"
     },
     {
       "id": "audiences",
@@ -164,7 +245,16 @@
         "#13"
       ],
       "links": [],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [],
+        "feature_ids": [],
+        "work_ledger_task_ids": [],
+        "evidence_gates": [],
+        "release_milestones": []
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "finish",
@@ -185,7 +275,16 @@
       "links": [
         "proof"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [],
+        "feature_ids": [],
+        "work_ledger_task_ids": [],
+        "evidence_gates": [],
+        "release_milestones": []
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "serendipity",
@@ -207,7 +306,28 @@
         "modules",
         "length"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [
+          "ADR 0014"
+        ],
+        "feature_ids": [
+          "F-021"
+        ],
+        "work_ledger_task_ids": [
+          "ED-03",
+          "ED-04",
+          "ED-05"
+        ],
+        "evidence_gates": [
+          "G8"
+        ],
+        "release_milestones": [
+          "M4"
+        ]
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "modules",
@@ -230,7 +350,32 @@
         "recipe",
         "personal"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [
+          "ADR 0014"
+        ],
+        "feature_ids": [
+          "F-021",
+          "F-024"
+        ],
+        "work_ledger_task_ids": [
+          "LAY-01",
+          "ED-02",
+          "ED-05",
+          "UX-03"
+        ],
+        "evidence_gates": [
+          "G8"
+        ],
+        "release_milestones": [
+          "M2a",
+          "M4",
+          "M5"
+        ]
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "density",
@@ -251,7 +396,16 @@
       "links": [
         "length"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [],
+        "feature_ids": [],
+        "work_ledger_task_ids": [],
+        "evidence_gates": [],
+        "release_milestones": []
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "personal",
@@ -274,7 +428,16 @@
         "recipe",
         "rights"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [],
+        "feature_ids": [],
+        "work_ledger_task_ids": [],
+        "evidence_gates": [],
+        "release_milestones": []
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "length",
@@ -298,7 +461,35 @@
         "archive",
         "budget"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. Formal ADR 0013 change required before code contract migration."
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. Formal ADR 0013 change required before code contract migration.",
+      "impact": {
+        "accepted_adrs": [
+          "ADR 0013"
+        ],
+        "feature_ids": [
+          "F-001",
+          "F-002",
+          "F-015"
+        ],
+        "work_ledger_task_ids": [
+          "FMT-01",
+          "FMT-02",
+          "FMT-03",
+          "FMT-06",
+          "FMT-09"
+        ],
+        "evidence_gates": [
+          "G1",
+          "G2"
+        ],
+        "release_milestones": [
+          "M2a",
+          "M2b",
+          "M3"
+        ]
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "supplements",
@@ -320,7 +511,31 @@
         "length",
         "source-rights"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [
+          "ADR 0013"
+        ],
+        "feature_ids": [
+          "F-001",
+          "F-015"
+        ],
+        "work_ledger_task_ids": [
+          "FMT-01",
+          "FMT-02",
+          "FMT-09"
+        ],
+        "evidence_gates": [
+          "G1",
+          "G2"
+        ],
+        "release_milestones": [
+          "M2a",
+          "M3"
+        ]
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "imposition",
@@ -342,7 +557,31 @@
         "length",
         "ink"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [
+          "ADR 0013"
+        ],
+        "feature_ids": [
+          "F-002"
+        ],
+        "work_ledger_task_ids": [
+          "FMT-04",
+          "FMT-06",
+          "FMT-07",
+          "FMT-09",
+          "FMT-10"
+        ],
+        "evidence_gates": [
+          "G2"
+        ],
+        "release_milestones": [
+          "M2a",
+          "M2b"
+        ]
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "budget",
@@ -365,7 +604,16 @@
         "length",
         "print-proof"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [],
+        "feature_ids": [],
+        "work_ledger_task_ids": [],
+        "evidence_gates": [],
+        "release_milestones": []
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "archive",
@@ -388,7 +636,31 @@
         "length",
         "recipe"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [
+          "ADR 0008",
+          "ADR 0013"
+        ],
+        "feature_ids": [
+          "F-001",
+          "F-015"
+        ],
+        "work_ledger_task_ids": [
+          "FMT-01",
+          "AUT-10"
+        ],
+        "evidence_gates": [
+          "G1",
+          "G5"
+        ],
+        "release_milestones": [
+          "M2b",
+          "M3"
+        ]
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "deadline",
@@ -411,7 +683,16 @@
         "budget",
         "print-proof"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [],
+        "feature_ids": [],
+        "work_ledger_task_ids": [],
+        "evidence_gates": [],
+        "release_milestones": []
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "families",
@@ -433,7 +714,31 @@
         "prompt",
         "proof"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [
+          "ADR 0008"
+        ],
+        "feature_ids": [
+          "F-024"
+        ],
+        "work_ledger_task_ids": [
+          "LAY-05",
+          "LAY-06",
+          "LAY-08",
+          "LAY-09"
+        ],
+        "evidence_gates": [
+          "G1",
+          "G8"
+        ],
+        "release_milestones": [
+          "M2a",
+          "M5"
+        ]
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "prompt",
@@ -456,7 +761,31 @@
         "recipe",
         "safety"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [
+          "ADR 0008"
+        ],
+        "feature_ids": [
+          "F-024",
+          "F-025"
+        ],
+        "work_ledger_task_ids": [
+          "LAY-05",
+          "LAY-08",
+          "DES-EXT-04"
+        ],
+        "evidence_gates": [
+          "G1",
+          "G8"
+        ],
+        "release_milestones": [
+          "M2a",
+          "M5"
+        ]
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "images",
@@ -477,7 +806,34 @@
       "links": [
         "rights"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [],
+        "feature_ids": [
+          "F-022",
+          "F-024"
+        ],
+        "work_ledger_task_ids": [
+          "IMG-01",
+          "IMG-02",
+          "IMG-03",
+          "IMG-04",
+          "IMG-05",
+          "IMG-06",
+          "IMG-07",
+          "IMG-09"
+        ],
+        "evidence_gates": [
+          "G4",
+          "G8"
+        ],
+        "release_milestones": [
+          "M2a",
+          "M5"
+        ]
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "typography",
@@ -500,7 +856,16 @@
         "proof",
         "ink"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [],
+        "feature_ids": [],
+        "work_ledger_task_ids": [],
+        "evidence_gates": [],
+        "release_milestones": []
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "art-accept",
@@ -523,7 +888,29 @@
         "proof",
         "milestones"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [],
+        "feature_ids": [
+          "F-023",
+          "F-024"
+        ],
+        "work_ledger_task_ids": [
+          "LAY-08",
+          "LAY-09",
+          "TRIAL-05",
+          "TRIAL-07"
+        ],
+        "evidence_gates": [
+          "G8"
+        ],
+        "release_milestones": [
+          "M2a",
+          "M2b"
+        ]
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "styles-policy",
@@ -546,7 +933,16 @@
         "license",
         "recipe"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [],
+        "feature_ids": [],
+        "work_ledger_task_ids": [],
+        "evidence_gates": [],
+        "release_milestones": []
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "mail",
@@ -568,7 +964,31 @@
         "rights",
         "source-rights"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [
+          "ADR 0012"
+        ],
+        "feature_ids": [
+          "F-007",
+          "F-018"
+        ],
+        "work_ledger_task_ids": [
+          "SRC-01",
+          "SRC-02",
+          "UX-02"
+        ],
+        "evidence_gates": [
+          "G4",
+          "G5"
+        ],
+        "release_milestones": [
+          "M2a",
+          "M4"
+        ]
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "timeline",
@@ -590,7 +1010,27 @@
         "rights",
         "serendipity"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [
+          "ADR 0012"
+        ],
+        "feature_ids": [
+          "F-019"
+        ],
+        "work_ledger_task_ids": [
+          "SRC-05",
+          "SRC-06"
+        ],
+        "evidence_gates": [
+          "G4"
+        ],
+        "release_milestones": [
+          "M4"
+        ]
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "substack",
@@ -612,7 +1052,16 @@
       "links": [
         "rights"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [],
+        "feature_ids": [],
+        "work_ledger_task_ids": [],
+        "evidence_gates": [],
+        "release_milestones": []
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "rights",
@@ -635,7 +1084,31 @@
         "source-rights",
         "images"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [
+          "ADR 0012"
+        ],
+        "feature_ids": [
+          "F-011",
+          "F-022"
+        ],
+        "work_ledger_task_ids": [
+          "SRC-02",
+          "SRC-07",
+          "RES-IMG-01"
+        ],
+        "evidence_gates": [
+          "G4"
+        ],
+        "release_milestones": [
+          "M2a",
+          "M2b",
+          "M5"
+        ]
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "source-rights",
@@ -658,7 +1131,27 @@
         "license",
         "recipe"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [
+          "ADR 0012"
+        ],
+        "feature_ids": [
+          "F-011"
+        ],
+        "work_ledger_task_ids": [
+          "SRC-02",
+          "RES-IMG-01"
+        ],
+        "evidence_gates": [
+          "G4"
+        ],
+        "release_milestones": [
+          "M2a"
+        ]
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "revoke",
@@ -681,7 +1174,16 @@
         "safety",
         "agents"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [],
+        "feature_ids": [],
+        "work_ledger_task_ids": [],
+        "evidence_gates": [],
+        "release_milestones": []
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "interop",
@@ -704,7 +1206,33 @@
         "recipe",
         "safety"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [
+          "ADR 0015"
+        ],
+        "feature_ids": [
+          "F-003",
+          "F-015",
+          "F-025"
+        ],
+        "work_ledger_task_ids": [
+          "AUT-01",
+          "AUT-02",
+          "AUT-06"
+        ],
+        "evidence_gates": [
+          "G3",
+          "G5"
+        ],
+        "release_milestones": [
+          "M2b",
+          "M3",
+          "M5"
+        ]
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "agents",
@@ -726,7 +1254,30 @@
         "interop",
         "safety"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [
+          "ADR 0015"
+        ],
+        "feature_ids": [
+          "F-025"
+        ],
+        "work_ledger_task_ids": [
+          "AUT-01",
+          "AUT-02",
+          "AUT-04"
+        ],
+        "evidence_gates": [
+          "G3",
+          "G5"
+        ],
+        "release_milestones": [
+          "M2b",
+          "M5"
+        ]
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "recipe",
@@ -748,7 +1299,29 @@
         "modules",
         "prompt"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [
+          "ADR 0015"
+        ],
+        "feature_ids": [
+          "F-015",
+          "F-024"
+        ],
+        "work_ledger_task_ids": [
+          "LAY-05",
+          "DES-EXT-04"
+        ],
+        "evidence_gates": [
+          "G5"
+        ],
+        "release_milestones": [
+          "M3",
+          "M5"
+        ]
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "safety",
@@ -771,7 +1344,33 @@
         "print-proof",
         "license"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [
+          "ADR 0008",
+          "ADR 0015"
+        ],
+        "feature_ids": [
+          "F-011",
+          "F-015",
+          "F-025"
+        ],
+        "work_ledger_task_ids": [
+          "SRC-08",
+          "IMG-03",
+          "AUT-03"
+        ],
+        "evidence_gates": [
+          "G4",
+          "G5"
+        ],
+        "release_milestones": [
+          "M2b",
+          "M3"
+        ]
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "autonomy",
@@ -793,7 +1392,31 @@
         "agents",
         "printer"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [
+          "ADR 0015"
+        ],
+        "feature_ids": [
+          "F-003",
+          "F-013"
+        ],
+        "work_ledger_task_ids": [
+          "AUT-03",
+          "AUT-09",
+          "AUT-10",
+          "AUT-11",
+          "AUT-12"
+        ],
+        "evidence_gates": [
+          "G3"
+        ],
+        "release_milestones": [
+          "M2b"
+        ]
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "fallback",
@@ -816,7 +1439,16 @@
         "recipe",
         "deadline"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [],
+        "feature_ids": [],
+        "work_ledger_task_ids": [],
+        "evidence_gates": [],
+        "release_milestones": []
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "printer",
@@ -839,7 +1471,30 @@
         "print-proof",
         "ink"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [],
+        "feature_ids": [
+          "F-002",
+          "F-009"
+        ],
+        "work_ledger_task_ids": [
+          "FMT-04",
+          "FMT-08",
+          "FMT-09",
+          "AUT-13",
+          "TRIAL-02"
+        ],
+        "evidence_gates": [
+          "G2"
+        ],
+        "release_milestones": [
+          "M2a",
+          "M2b"
+        ]
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "print-proof",
@@ -862,7 +1517,30 @@
         "art-accept",
         "proof"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [],
+        "feature_ids": [
+          "F-004",
+          "F-023"
+        ],
+        "work_ledger_task_ids": [
+          "FMT-03",
+          "FMT-09",
+          "TRIAL-04",
+          "TRIAL-05"
+        ],
+        "evidence_gates": [
+          "G1",
+          "G2"
+        ],
+        "release_milestones": [
+          "M2a",
+          "M2b"
+        ]
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "ink",
@@ -885,7 +1563,16 @@
         "commerce",
         "imposition"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [],
+        "feature_ids": [],
+        "work_ledger_task_ids": [],
+        "evidence_gates": [],
+        "release_milestones": []
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "digital",
@@ -907,7 +1594,25 @@
         "finish",
         "archive"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [],
+        "feature_ids": [
+          "F-016",
+          "F-027"
+        ],
+        "work_ledger_task_ids": [],
+        "evidence_gates": [
+          "G5",
+          "G8"
+        ],
+        "release_milestones": [
+          "M3",
+          "M6"
+        ]
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "proof",
@@ -929,7 +1634,31 @@
       "links": [
         "milestones"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [],
+        "feature_ids": [
+          "F-009",
+          "F-010",
+          "F-023"
+        ],
+        "work_ledger_task_ids": [
+          "TRIAL-04",
+          "TRIAL-05",
+          "TRIAL-06",
+          "TRIAL-07"
+        ],
+        "evidence_gates": [
+          "G2",
+          "G3",
+          "G8"
+        ],
+        "release_milestones": [
+          "M2b"
+        ]
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "license",
@@ -951,7 +1680,24 @@
         "styles-policy",
         "interop"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [],
+        "feature_ids": [
+          "F-031"
+        ],
+        "work_ledger_task_ids": [
+          "DOC-04"
+        ],
+        "evidence_gates": [
+          "G7"
+        ],
+        "release_milestones": [
+          "MX"
+        ]
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "commerce",
@@ -974,7 +1720,24 @@
         "ink",
         "license"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [],
+        "feature_ids": [
+          "F-030",
+          "F-031"
+        ],
+        "work_ledger_task_ids": [],
+        "evidence_gates": [
+          "G6",
+          "G7"
+        ],
+        "release_milestones": [
+          "MX"
+        ]
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "contributors",
@@ -997,7 +1760,16 @@
         "interop",
         "milestones"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [],
+        "feature_ids": [],
+        "work_ledger_task_ids": [],
+        "evidence_gates": [],
+        "release_milestones": []
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "film",
@@ -1020,7 +1792,22 @@
         "art-accept",
         "commerce"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [],
+        "feature_ids": [
+          "F-032"
+        ],
+        "work_ledger_task_ids": [],
+        "evidence_gates": [
+          "G6"
+        ],
+        "release_milestones": [
+          "MX"
+        ]
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "growth",
@@ -1042,7 +1829,16 @@
       "links": [
         "contributors"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [],
+        "feature_ids": [],
+        "work_ledger_task_ids": [],
+        "evidence_gates": [],
+        "release_milestones": []
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "ethics",
@@ -1065,7 +1861,16 @@
         "license",
         "personal"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [],
+        "feature_ids": [],
+        "work_ledger_task_ids": [],
+        "evidence_gates": [],
+        "release_milestones": []
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "review",
@@ -1087,7 +1892,20 @@
         "milestones",
         "door"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [],
+        "feature_ids": [],
+        "work_ledger_task_ids": [
+          "DOC-04"
+        ],
+        "evidence_gates": [],
+        "release_milestones": [
+          "M2a"
+        ]
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "door",
@@ -1109,7 +1927,16 @@
         "length",
         "license"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [],
+        "feature_ids": [],
+        "work_ledger_task_ids": [],
+        "evidence_gates": [],
+        "release_milestones": []
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "milestones",
@@ -1132,7 +1959,32 @@
         "art-accept",
         "proof"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [],
+        "feature_ids": [
+          "F-009",
+          "F-010",
+          "F-024"
+        ],
+        "work_ledger_task_ids": [
+          "DOC-04",
+          "TRIAL-07"
+        ],
+        "evidence_gates": [
+          "G1",
+          "G2",
+          "G3",
+          "G8"
+        ],
+        "release_milestones": [
+          "M2a",
+          "M2b",
+          "M5"
+        ]
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "tracker",
@@ -1155,7 +2007,16 @@
         "review",
         "milestones"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [],
+        "feature_ids": [],
+        "work_ledger_task_ids": [],
+        "evidence_gates": [],
+        "release_milestones": []
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "cadence",
@@ -1177,7 +2038,16 @@
         "review",
         "tracker"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [],
+        "feature_ids": [],
+        "work_ledger_task_ids": [],
+        "evidence_gates": [],
+        "release_milestones": []
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     },
     {
       "id": "gates",
@@ -1200,7 +2070,16 @@
         "proof",
         "milestones"
       ],
-      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. ",
+      "impact": {
+        "accepted_adrs": [],
+        "feature_ids": [],
+        "work_ledger_task_ids": [],
+        "evidence_gates": [],
+        "release_milestones": []
+      },
+      "evidence_state": "discussion_or_proposal_only",
+      "decision_verdict": "pending"
     }
   ],
   "notes": [
