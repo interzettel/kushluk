@@ -33,7 +33,9 @@ def test_atlas_nodes_unique_hierarchical_and_cross_links_valid():
         assert n["status"] in {"owner", "open", "contested", "research"}
         assert n["question"]
         assert isinstance(n["options"], list)
-        assert len(n["options"]) >= 2
+        # Navigation categories are headings; only actual forks need options.
+        if n["parent"] not in (None, "NORTH"):
+            assert len(n["options"]) >= 2
         assert isinstance(n["issue"], int) and n["issue"] > 0
         assert any(s.startswith("#") for s in n["refs"])
         if n["parent"]:
