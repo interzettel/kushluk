@@ -4,7 +4,7 @@
 
 ## Public content and non-goals
 
-- `site/decision-atlas/index.html`: source-linked, standalone, accessible-attempting pan/zoom diagram with domain filters, alternative futures, ADR/F-ID/task/evidence impact and owner-approved-vs-open disclaimers.
+- `site/decision-atlas/index.html`: source-linked, standalone pan/zoom diagram with a keyboard-accessible HTML index of all 56 decisions, alternative futures, ADR/F-ID/task/evidence impact and owner-approved-vs-open disclaimers. SVG accessibility and mobile rendering still require human/browser review.
 - `site/decision-atlas/decision-atlas.json`: exact public JSON snapshot **embedded in the HTML**, so the app opens without a backend.
 - All inputs are **public Kuşluk issues and strategy drafts**. No personal email, project secrets, source article bodies, private Drive content, AGENT Council credential, local printer or private log is incorporated.
 - JavaScript does **not** poll by default. A user explicitly clicking **Load discussion comments** makes a **read-only unauthenticated HTTPS GET** to `api.github.com` for the selected public GitHub issue; comment bodies are displayed with `textContent`, not executed as HTML. This may fail due to rate limits, network controls or private/restricted repository policies. GitHub remains authoritative; this view may be stale or truncated.

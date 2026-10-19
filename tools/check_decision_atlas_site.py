@@ -68,9 +68,16 @@ def verify() -> tuple[int, int]:
     s.feed(html)
     assert not s.duplicate_ids, f"Duplicate HTML IDs: {s.duplicate_ids}"
     assert not s.external_scripts and not s.forms
-    for must in ("atlas-model", "tree", "nav", "inspector", "find"):
+    for must in ("atlas-model", "tree", "nav", "inspector", "find", "decisionIndex", "selectionAnnouncement"):
         assert must in s.ids
     assert "Search decisions" in s.labels
+    assert "Selected decision details" in s.labels
+    assert '<details class="decision-index">' in html
+    assert "function indexDraw()" in html and "decisionIndex.replaceChildren(sections)" in html
+    assert "const nextGroup=id==='NORTH'?null:n.parent==='NORTH'?id:n.parent" in html
+    assert "inspector.querySelector('h2')?.focus({preventScroll:true})" in html
+    assert '<h2 tabindex="-1">' in html
+    assert "Kuşluk" not in html, "Use canonical public-facing brand name Kushluk"
     assert "PUBLIC PREVIEW" in html
     assert "Proposals, not approved architecture" in html
     assert "Content-Security-Policy" in html
