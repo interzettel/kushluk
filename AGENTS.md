@@ -57,6 +57,8 @@ Do not silently reinterpret a recorded decision. Propose a new ADR when changing
 
 The design/owner vision may justify reviewing prior decisions; it does not authorize rewriting their history. The known duplicate **accepted ADR 0012** remains unresolved under [#44](https://github.com/interzettel/kushluk/issues/44).
 
+**Step 2 durable handover workspace (proposed for adoption):** [coordination/README.md](coordination/README.md) links individual ChatGPT/Claude/DeepSeek handovers, shared assumptions/decisions/dissent/discussion queue and restart briefs. These documents are **cached working context**, not accepted ADRs, live cross-agent memory, an A2A service, a permissions grant, or confirmation that another model received a message. Each peer owns its **own** attributable handover; all participants may challenge any product decision. If the separate Step 2 PR is not yet merged, read its dedicated branch rather than assuming these files are on `main`.
+
 ## Working method
 
 Use vertical slices. Prefer a working bicycle over disconnected car parts.
