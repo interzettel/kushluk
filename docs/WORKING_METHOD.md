@@ -26,6 +26,16 @@ These words are intentionally different:
 
 No sprint velocity, burndown games, story points, mandatory standups, or invented all-project percentages. The **single project coordinator** (human steward or delegated AI with limited permissions) maintains coherence and issue links; specialist agents make bounded branches/PRs and cannot independently claim completion or change their authorization.
 
+## Cross-agent discussion council: decisions before code (19 October proposal)
+
+[**#157 — Configurable publishing decision council**](https://github.com/interzettel/kushluk/issues/157) is a **decision/discussion index**, **not** a competing task ledger or a new GitHub Project. It indexes conflicting/gapped requirements (C-01..C-11), independent reviewer commentary and five scoped discussion rooms [#158–#162](https://github.com/interzettel/kushluk/issues/158). [#43](https://github.com/interzettel/kushluk/issues/43) remains the complete GitHub issue catalogue; [#87](https://github.com/interzettel/kushluk/issues/87) owns feature/version planning, accepted ADRs remain supreme by `AGENTS.md`, and `WORK_LEDGER.md` owns original implementation tasks.
+
+**Suggested status flow** for these debates: `INTAKE → EVIDENCE READY → ALTERNATIVES → INDEPENDENT REVIEW → FOUNDER DECISION → ADR/PLAN PATCH → ACCEPTED FOR BUILD → VERIFIED`; `CONTESTED` and `BLOCKED: EVIDENCE` are valid states. These are discussion labels inside issue bodies/comments, not newly provisioned GitHub Project field values. The founder or authorized maintainer alone records consequential art direction, source-rights policy, license, architecture and release decisions.
+
+Each independent AI/person's **attributed comment** must identify exact document/branch commit, observed sources, at least two distinct options and keeping the current state, a counterargument/failure mode, reproducible evidence, F-ID/ADR effects, and any dissent. A comment from ChatGPT is *not* independent Claude review; never invent cross-agent consensus. The full copyable template lives in [DESIGN_COUNCIL.md](DESIGN_COUNCIL.md).
+
+**Atomized execution:** [#163–#168](https://github.com/interzettel/kushluk/issues/163) are child **PR-sized work packages**, not new canonical task IDs, each with existing epic owner, input/expected artifact, acceptance and fail-closed tests, file-change boundaries, dependency, role-oriented agent handoff and readiness status. A01/A02/A06 proofs can begin without approval to modify production; A03 contract is proposal-only; A04/A05 implementation waits for council decisions. Reviewers may work concurrently in disjoint branches; integrator reconciles any shared data/model boundaries in an explicit PR and evidence review.
+
 ## One intake → delivery path
 
 | State | Meaning | Entry / exit test |
