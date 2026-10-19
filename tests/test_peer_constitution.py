@@ -33,7 +33,7 @@ def test_governance_is_nonrole_silo_and_truthful_about_a2a():
               "No agent may say it contacted another participant",
               "does not make GitHub comments A2A messages"):
         # The latter is in the review template rather than the constitution.
-        if s == "not A2A protocol compliance":
+        if s == "does not make GitHub comments A2A messages":
             assert s.lower() in REVIEW.read_text(encoding="utf-8").lower()
         else:
             assert s.lower() in src.lower()
