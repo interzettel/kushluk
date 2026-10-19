@@ -74,6 +74,7 @@ def verify() -> tuple[int, int]:
     assert "Selected decision details" in s.labels
     assert '<details class="decision-index">' in html
     assert "function indexDraw()" in html and "decisionIndex.replaceChildren(sections)" in html
+    assert "root.dataset.node='NORTH'" in html, "Decision index must include atlas root"
     assert "const nextGroup=id==='NORTH'?null:n.parent==='NORTH'?id:n.parent" in html
     assert "inspector.querySelector('h2')?.focus({preventScroll:true})" in html
     assert '<h2 tabindex="-1">' in html
