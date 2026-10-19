@@ -71,6 +71,29 @@ The five-morning host trial is a **reliability experiment**, not a ban on unrela
 
 **Feasibility:** local DeepSeek can provide current hardware/compiler/renderer feedback **only if you run and configure it on your laptop** with appropriate filesystem/GitHub access. ChatGPT cannot see or activate that process from GitHub comments. A proof should include actual `git rev-parse HEAD`, command, OS/Python/renderer versions, exact results, and sanitized local paths/hostnames; no tokens, private article bodies, full inbox dumps or printer-spool payloads.
 
+### Equal-input review packet (works with any of the three AIs)
+
+A small **offline, read-only** utility on this branch builds the *same* source-and-alternatives brief for ChatGPT, Claude or local DeepSeek. Run from a **separate strategy clone/worktree**, **not** the frozen 20–24 October WSL2 reliability pilot checkout:
+
+```bash
+python3 tools/prepare_decision_review.py --node length --reviewer "DeepSeek V4.1 Flash" > /tmp/kushluk-r6-prompt.md
+# Feed the prompt to your actual local model. It does not launch DeepSeek itself.
+# For another peer use exactly the same node; only --reviewer changes.
+python3 tools/prepare_decision_review.py --node length --reviewer "Claude" > /tmp/kushluk-r6-claude.md
+```
+
+Every generated brief cites the same owner issue, alternatives, source refs, affected ADRs, F-IDs, stable work-ledger tasks, G1–G8 gates and milestones. An independent first pass should read original repository sources rather than relying only on the brief. A later `--phase cross_exam` prompt invites dissent and revision after reviewing *actual other-agent comments*. This command only prints a prompt; it doesn't interact with models, ingest email, call GitHub or change files.
+
+When the owner authorizes publishing a completed and inspected model review:
+
+```bash
+gh issue view 171 -R interzettel/kushluk --json title,body,comments
+# The reviewer writes /tmp/kushluk-r6-review.md; human checks it first.
+gh issue comment 171 -R interzettel/kushluk --body-file /tmp/kushluk-r6-review.md
+```
+
+The final `gh issue comment` is an **illustrative opt-in user action**, not executed by the repository or automatically authorized by preparing a prompt. Disclose the true model/runner and source commit; note if one operator paraphrased or edited the review. Never publish private inputs.
+
 Suggested user-run inspection commands (inside the repo):
 
 ```bash
