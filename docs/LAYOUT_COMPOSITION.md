@@ -50,3 +50,15 @@ python -m tools.layout_compare --output-dir output/layout-compare
 One frozen **synthetic** edition (same date, title/deck inputs and edition ID) is forced into balanced, news-heavy and practical-heavy archetypes. The output contains three HTML layouts, **three A4 PDFs** and `comparison.json` with per-page slot contracts, omitted/replaced/shortened item decisions, page counts, geometry findings and legibility-floor evidence. The PDFs are not physically printed; no feeds/calendar/printer/SMTP are contacted. Current CI creates downloadable layout-comparison ZIP artifacts for **both macOS architectures**; approved visual baselines and physical sample photos are a future acceptance step.
 
 The manual review should inspect each four-page PDF at actual print size, compare front-page hierarchy, check a long German and Turkish headline, readability, page count/footers, margins and source attributions, then feed concrete adjustments back to #51. No software score is a substitute for that judgment.
+
+## Owner field-print critique and first hierarchy refinement — 19 October 2026
+
+**Linked issues:** [#51](https://github.com/interzettel/kushluk/issues/51) layout and [#13](https://github.com/interzettel/kushluk/issues/13) physical trial. The owner printed the 18 October synthetic A4 fixture and called its layout unconvincing while accepting its engineering purpose. That print is *not an approved editorial baseline*.
+
+**Problems seen in the fixture:** giant repeated interior mastheads, exaggerated letterspacing, thin evidence of real text density on pages 2–3, and beige coverage across ordinary paper. A page without approved stories should remain honestly sparse rather than manufacturing material to fill space.
+
+**Small reversible changes in this PR:** give interior pages a smaller masthead than the front cover, tighten utilitarian tracking and spacing, preserve readable 10pt body/decks, and use true white when generating the **physical print**, leaving the warm paper concept to the actual stock or the **screen preview**. The yellow sun cue becomes black in print; the base six-column/composition slots, story assignments, page order, source rights, archived IDs, and printer profiles do not change. The offline calibration fixture now supplies two additional practical checks and one additional explicitly synthetic density/legibility story. **No real news, personalization or image rights are invented.**
+
+**Verification:** review A4/Letter/A3 fixture generation and comparison PDFs on PDF-capable macOS CI, existing per-page structural validation, and the new non-hardware CSS/template assertions. Compare printed copies at actual size and ask a reader about text hierarchy and ink economy before approving this as any frozen layout template. The first *real editorial* signoff for balanced/news/practical variants, accurate line budgets, six-column binding/fold safety, and reliable clipping remains under LAY-03/06/08/09 and FMT-03.
+
+**Accounting:** no LAY checkbox or independent evidence gate advances on code/text comparison alone.
