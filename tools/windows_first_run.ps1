@@ -13,7 +13,7 @@ if (-not (Test-Path -LiteralPath $wsl -PathType Leaf)) {
     throw 'WSL is unavailable. Install Ubuntu 24.04 first.'
 }
 # Diagnosis uses requested distro; never default into docker-desktop.
-$distros = (& $wsl --list --quiet) -join [Environment]::NewLine
+$distros = ((& $wsl --list --quiet) -join [Environment]::NewLine) -replace [char]0, ''
 if ($distros -notmatch [regex]::Escape($Distro)) {
     throw 'Requested Ubuntu WSL2 distribution missing. Install Ubuntu 24.04 before Kushluk.'
 }
