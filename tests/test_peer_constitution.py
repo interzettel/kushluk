@@ -48,9 +48,9 @@ def test_source_audit_preserves_real_unresolved_conflicts():
     for key in ("S01", "S03", "S04", "S05", "S07", "S09", "S10", "S15"):
         assert f"**{key}**" in src
     for authority in ("ADR 0013", "ADR 0012", "#44", "#38",
-                      "#169", "#177", "not a silent"):
+                      "#169", "#177", "not accepted architecture"):
         assert authority.lower() in src.lower()
-    assert "not installed" in src.lower()
+    assert "not been verified or installed" in src.lower()
     assert "No checkbox changes" in src
 
 
@@ -58,7 +58,7 @@ def test_review_template_distinguishes_peer_and_founder_authorship():
     src = REVIEW.read_text(encoding="utf-8")
     for required in ("Independent peer review", "Cross-examination reply",
                      "Founder-only decision record", "model and runner",
-                     "strongest counterargument"):
+                     "strongest opposing argument"):
         assert required.lower() in src.lower()
     assert "no" in src.lower() and "fictitious" not in src.lower()
 
