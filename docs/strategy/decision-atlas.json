@@ -1,0 +1,1212 @@
+{
+  "schema_version": "kushluk-decision-atlas-v1",
+  "snapshot_date": "2026-10-19",
+  "owner_intent": "Issue #170 affirmed; branch decisions and release/ADR changes still open",
+  "review_peers": [
+    "ChatGPT",
+    "Claude",
+    "DeepSeek V4.1 Flash (local laptop)"
+  ],
+  "verified_peer_reviews": 0,
+  "source_of_truth": {
+    "owner": "#170",
+    "all_issue_inventory": "#43",
+    "council": "#157",
+    "release": "#87",
+    "existing_adr": "docs/adr/",
+    "tasks": "docs/WORK_LEDGER.md",
+    "physical_gates": "docs/PROGRESS.md"
+  },
+  "nodes": [
+    {
+      "id": "NORTH",
+      "parent": null,
+      "label": "THE PAPER • Product promise",
+      "issue": 170,
+      "status": "owner",
+      "question": "A finite, beautiful publishing medium people choose to read and keep.",
+      "options": [
+        "Owner-approved enduring product promise; no carte blanche to overwrite ADRs.",
+        "Product operations follow decisions, implementation and evidence."
+      ],
+      "refs": [
+        "#2",
+        "#170"
+      ],
+      "links": []
+    },
+    {
+      "id": "VALUE",
+      "parent": "NORTH",
+      "label": "READER • Intent & meaning",
+      "issue": 6,
+      "status": "owner",
+      "question": "Help users truly consume, understand and finish their own information.",
+      "options": [],
+      "refs": [
+        "#170",
+        "#6"
+      ],
+      "links": []
+    },
+    {
+      "id": "PAPER",
+      "parent": "NORTH",
+      "label": "ARTIFACT • Editions & format",
+      "issue": 171,
+      "status": "contested",
+      "question": "Four A4 pages vs longer still-finite issues and supplements.",
+      "options": [],
+      "refs": [
+        "#170",
+        "#171"
+      ],
+      "links": []
+    },
+    {
+      "id": "ART",
+      "parent": "NORTH",
+      "label": "ART DIRECTION • Visual language",
+      "issue": 159,
+      "status": "owner",
+      "question": "Beautiful by default; reader-selectable distinct design families.",
+      "options": [],
+      "refs": [
+        "#170",
+        "#159"
+      ],
+      "links": []
+    },
+    {
+      "id": "SOURCE",
+      "parent": "NORTH",
+      "label": "INPUTS • Private information & rights",
+      "issue": 173,
+      "status": "open",
+      "question": "Own sources, inboxes, timelines, Substack and personal context with permission.",
+      "options": [],
+      "refs": [
+        "#170",
+        "#173"
+      ],
+      "links": []
+    },
+    {
+      "id": "AGENT",
+      "parent": "NORTH",
+      "label": "AGENTS • Language to editions",
+      "issue": 174,
+      "status": "contested",
+      "question": "Independent AI agents can request and build safe editions for their own users.",
+      "options": [],
+      "refs": [
+        "#170",
+        "#174"
+      ],
+      "links": []
+    },
+    {
+      "id": "OUTPUT",
+      "parent": "NORTH",
+      "label": "DELIVERY • Reliable reading surfaces",
+      "issue": 13,
+      "status": "open",
+      "question": "Home printer delight; responsible finite digital alternatives.",
+      "options": [],
+      "refs": [
+        "#170",
+        "#13"
+      ],
+      "links": []
+    },
+    {
+      "id": "STUDIO",
+      "parent": "NORTH",
+      "label": "STUDIO • Ecosystem & economics",
+      "issue": 175,
+      "status": "open",
+      "question": "We sell exceptional paper, not a compulsory cloud subscription.",
+      "options": [],
+      "refs": [
+        "#170",
+        "#175"
+      ],
+      "links": []
+    },
+    {
+      "id": "GOV",
+      "parent": "NORTH",
+      "label": "GOVERNANCE • One founder / three AIs",
+      "issue": 176,
+      "status": "owner",
+      "question": "No role silos: independently reasoned reviews, accountable founder choices.",
+      "options": [],
+      "refs": [
+        "#170",
+        "#176"
+      ],
+      "links": []
+    },
+    {
+      "id": "audiences",
+      "parent": "VALUE",
+      "label": "Who is the first intended reader",
+      "issue": 13,
+      "status": "open",
+      "question": "Who is the first intended reader?",
+      "options": [
+        "Home-printer morning reader",
+        "commuter/newsletter collector",
+        "general-purpose digital reader"
+      ],
+      "refs": [
+        "#6",
+        "#13"
+      ],
+      "links": [],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    },
+    {
+      "id": "finish",
+      "parent": "VALUE",
+      "label": "What should an edition optimize",
+      "issue": 170,
+      "status": "open",
+      "question": "What should an edition optimize?",
+      "options": [
+        "Comprehension and finish",
+        "desire-to-hold/keep",
+        "time-on-platform (rejected hypothesis)"
+      ],
+      "refs": [
+        "#6",
+        "#170"
+      ],
+      "links": [
+        "proof"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    },
+    {
+      "id": "serendipity",
+      "parent": "VALUE",
+      "label": "How much editorial surprise and disagreement",
+      "issue": 158,
+      "status": "open",
+      "question": "How much editorial surprise and disagreement?",
+      "options": [
+        "User controls beats with serendipity budget",
+        "curated editorial floor",
+        "absolute hide controls"
+      ],
+      "refs": [
+        "#14",
+        "#158"
+      ],
+      "links": [
+        "modules",
+        "length"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    },
+    {
+      "id": "modules",
+      "parent": "VALUE",
+      "label": "Which information modules can be added or hidden",
+      "issue": 158,
+      "status": "contested",
+      "question": "Which information modules can be added or hidden?",
+      "options": [
+        "Typed module configuration",
+        "visual home-screen canvas",
+        "small first-release presets"
+      ],
+      "refs": [
+        "#14",
+        "#33",
+        "#158"
+      ],
+      "links": [
+        "recipe",
+        "personal"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    },
+    {
+      "id": "density",
+      "parent": "VALUE",
+      "label": "How should quiet vs full news days read",
+      "issue": 160,
+      "status": "open",
+      "question": "How should quiet vs full news days read?",
+      "options": [
+        "Honest short paper",
+        "expand only with valid extras",
+        "backfill arbitrary content (unacceptable)"
+      ],
+      "refs": [
+        "#6",
+        "#160"
+      ],
+      "links": [
+        "length"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    },
+    {
+      "id": "personal",
+      "parent": "VALUE",
+      "label": "How do private context and published stories coexist",
+      "issue": 161,
+      "status": "contested",
+      "question": "How do private context and published stories coexist?",
+      "options": [
+        "Private profile and immutable edition",
+        "per-edition consent",
+        "never share private components in recipes"
+      ],
+      "refs": [
+        "#14",
+        "#15",
+        "#161"
+      ],
+      "links": [
+        "recipe",
+        "rights"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    },
+    {
+      "id": "length",
+      "parent": "PAPER",
+      "label": "Is four logical A4 pages a ceiling",
+      "issue": 171,
+      "status": "contested",
+      "question": "Is four logical A4 pages a ceiling?",
+      "options": [
+        "4-page core + supplements",
+        "single bounded variable N-page edition",
+        "retain strictly four pages"
+      ],
+      "refs": [
+        "#45",
+        "#171",
+        "ADR-0013"
+      ],
+      "links": [
+        "imposition",
+        "archive",
+        "budget"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. Formal ADR 0013 change required before code contract migration."
+    },
+    {
+      "id": "supplements",
+      "parent": "PAPER",
+      "label": "What are sports and Substack extra pages",
+      "issue": 171,
+      "status": "open",
+      "question": "What are sports and Substack extra pages?",
+      "options": [
+        "Tagged optional insert",
+        "extra section in longer edition",
+        "digital-only supplement"
+      ],
+      "refs": [
+        "#40",
+        "#171"
+      ],
+      "links": [
+        "length",
+        "source-rights"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    },
+    {
+      "id": "imposition",
+      "parent": "PAPER",
+      "label": "How to assemble, collate and fold",
+      "issue": 171,
+      "status": "open",
+      "question": "How to assemble, collate and fold?",
+      "options": [
+        "A4 simplex/duplex",
+        "A3 folded booklets",
+        "longer signatures / separate insert"
+      ],
+      "refs": [
+        "#46",
+        "#171"
+      ],
+      "links": [
+        "length",
+        "ink"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    },
+    {
+      "id": "budget",
+      "parent": "PAPER",
+      "label": "Who chooses page, time and ink limits",
+      "issue": 171,
+      "status": "open",
+      "question": "Who chooses page, time and ink limits?",
+      "options": [
+        "Reader-configurable budget",
+        "default bounded cap with override",
+        "platform-enforced fixed count"
+      ],
+      "refs": [
+        "#6",
+        "#22",
+        "#171"
+      ],
+      "links": [
+        "length",
+        "print-proof"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    },
+    {
+      "id": "archive",
+      "parent": "PAPER",
+      "label": "What must remain reproducible",
+      "issue": 161,
+      "status": "open",
+      "question": "What must remain reproducible?",
+      "options": [
+        "Immutable edition + asset hashes",
+        "content-linked ordered supplements",
+        "portable recipe and archive separate"
+      ],
+      "refs": [
+        "#15",
+        "#33",
+        "#161"
+      ],
+      "links": [
+        "length",
+        "recipe"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    },
+    {
+      "id": "deadline",
+      "parent": "PAPER",
+      "label": "How do extra pages affect morning readiness",
+      "issue": 171,
+      "status": "open",
+      "question": "How do extra pages affect morning readiness?",
+      "options": [
+        "Optional inserts run separately",
+        "deadline-based partial delivery",
+        "all-or-nothing extended edition"
+      ],
+      "refs": [
+        "#17",
+        "#47",
+        "#171"
+      ],
+      "links": [
+        "budget",
+        "print-proof"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    },
+    {
+      "id": "families",
+      "parent": "ART",
+      "label": "How many distinct authored visual families",
+      "issue": 159,
+      "status": "open",
+      "question": "How many distinct authored visual families?",
+      "options": [
+        "Several curated layouts",
+        "one excellent baseline then expand",
+        "open arbitrary design plugins"
+      ],
+      "refs": [
+        "#9",
+        "#159"
+      ],
+      "links": [
+        "prompt",
+        "proof"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    },
+    {
+      "id": "prompt",
+      "parent": "ART",
+      "label": "Can a prompt restyle a personal edition",
+      "issue": 172,
+      "status": "contested",
+      "question": "Can a prompt restyle a personal edition?",
+      "options": [
+        "Prompt to bounded declarative style recipe",
+        "reviewed sandbox template package",
+        "map prompt to preset controls"
+      ],
+      "refs": [
+        "#31",
+        "#172",
+        "ADR-0008"
+      ],
+      "links": [
+        "recipe",
+        "safety"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    },
+    {
+      "id": "images",
+      "parent": "ART",
+      "label": "Which image roles support real editorial meaning",
+      "issue": 160,
+      "status": "open",
+      "question": "Which image roles support real editorial meaning?",
+      "options": [
+        "Original/authorized documentary photos",
+        "illustrative or chart-led pieces",
+        "optional printmaking filters"
+      ],
+      "refs": [
+        "#50",
+        "#160"
+      ],
+      "links": [
+        "rights"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    },
+    {
+      "id": "typography",
+      "parent": "ART",
+      "label": "What is readable and culturally expressive",
+      "issue": 159,
+      "status": "open",
+      "question": "What is readable and culturally expressive?",
+      "options": [
+        "Licensed multilingual type families",
+        "contrasting art-directed grids",
+        "monochrome/low-ink equivalence"
+      ],
+      "refs": [
+        "#9",
+        "#51",
+        "#159"
+      ],
+      "links": [
+        "proof",
+        "ink"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    },
+    {
+      "id": "art-accept",
+      "parent": "ART",
+      "label": "Who approves desirability beyond PDF correctness",
+      "issue": 168,
+      "status": "contested",
+      "question": "Who approves desirability beyond PDF correctness?",
+      "options": [
+        "Founder art-direction approval",
+        "independent blinded print trial",
+        "geometry CI as necessary but insufficient"
+      ],
+      "refs": [
+        "#13",
+        "#159",
+        "#168"
+      ],
+      "links": [
+        "proof",
+        "milestones"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    },
+    {
+      "id": "styles-policy",
+      "parent": "ART",
+      "label": "May artistic styles be traded or shared",
+      "issue": 38,
+      "status": "open",
+      "question": "May artistic styles be traded or shared?",
+      "options": [
+        "Safe recipe files",
+        "independently licensed original packs",
+        "trusted plugin boundaries"
+      ],
+      "refs": [
+        "#15",
+        "#36",
+        "#38"
+      ],
+      "links": [
+        "license",
+        "recipe"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    },
+    {
+      "id": "mail",
+      "parent": "SOURCE",
+      "label": "How may mailbox newsletters be assembled",
+      "issue": 173,
+      "status": "contested",
+      "question": "How may mailbox newsletters be assembled?",
+      "options": [
+        "Consented provider adapter",
+        "local EML/export import",
+        "reference/link-only digest"
+      ],
+      "refs": [
+        "#48",
+        "#173"
+      ],
+      "links": [
+        "rights",
+        "source-rights"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    },
+    {
+      "id": "timeline",
+      "parent": "SOURCE",
+      "label": "What is permitted timeline intake",
+      "issue": 173,
+      "status": "open",
+      "question": "What is permitted timeline intake?",
+      "options": [
+        "Official scoped APIs",
+        "reader-exported bookmarks",
+        "bounded agent-selected public signals"
+      ],
+      "refs": [
+        "#49",
+        "#173"
+      ],
+      "links": [
+        "rights",
+        "serendipity"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    },
+    {
+      "id": "substack",
+      "parent": "SOURCE",
+      "label": "What happens to paid Substack content",
+      "issue": 173,
+      "status": "open",
+      "question": "What happens to paid Substack content?",
+      "options": [
+        "Eligible private compilation with provenance",
+        "summary and source link",
+        "block when reproduction rights unclear"
+      ],
+      "refs": [
+        "#4",
+        "#40",
+        "#173"
+      ],
+      "links": [
+        "rights"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    },
+    {
+      "id": "rights",
+      "parent": "SOURCE",
+      "label": "What exactly are licensed inclusion modes",
+      "issue": 16,
+      "status": "contested",
+      "question": "What exactly are licensed inclusion modes?",
+      "options": [
+        "Direct content with permission",
+        "traceable excerpt/summary",
+        "metadata-only reference"
+      ],
+      "refs": [
+        "#4",
+        "#16",
+        "ADR-0012"
+      ],
+      "links": [
+        "source-rights",
+        "images"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    },
+    {
+      "id": "source-rights",
+      "parent": "SOURCE",
+      "label": "What is shared vs printed privately",
+      "issue": 173,
+      "status": "open",
+      "question": "What is shared vs printed privately?",
+      "options": [
+        "Source-rights tagged per component",
+        "private only authorized direct copy",
+        "public recipes exclude bodies"
+      ],
+      "refs": [
+        "#4",
+        "#15",
+        "#173"
+      ],
+      "links": [
+        "license",
+        "recipe"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    },
+    {
+      "id": "revoke",
+      "parent": "SOURCE",
+      "label": "Can users revoke connections safely",
+      "issue": 173,
+      "status": "open",
+      "question": "Can users revoke connections safely?",
+      "options": [
+        "Local per-source pause/revoke",
+        "explicit deletion/retention",
+        "independent agent permission receipts"
+      ],
+      "refs": [
+        "#4",
+        "#14",
+        "#173"
+      ],
+      "links": [
+        "safety",
+        "agents"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    },
+    {
+      "id": "interop",
+      "parent": "AGENT",
+      "label": "Which interface should every AI use",
+      "issue": 174,
+      "status": "contested",
+      "question": "Which interface should every AI use?",
+      "options": [
+        "Versioned JSON CLI",
+        "bounded local MCP surface",
+        "authenticated localhost API"
+      ],
+      "refs": [
+        "#15",
+        "#20",
+        "#174"
+      ],
+      "links": [
+        "recipe",
+        "safety"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    },
+    {
+      "id": "agents",
+      "parent": "AGENT",
+      "label": "What can ChatGPT/Claude/DeepSeek/Hermes/OpenClaw do",
+      "issue": 174,
+      "status": "open",
+      "question": "What can ChatGPT/Claude/DeepSeek/Hermes/OpenClaw do?",
+      "options": [
+        "Compose validated draft",
+        "propose durable preferences",
+        "deliver only under explicit grant"
+      ],
+      "refs": [
+        "#20",
+        "#174"
+      ],
+      "links": [
+        "interop",
+        "safety"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    },
+    {
+      "id": "recipe",
+      "parent": "AGENT",
+      "label": "What is the versioned publication recipe",
+      "issue": 161,
+      "status": "contested",
+      "question": "What is the versioned publication recipe?",
+      "options": [
+        "Declarative layout/module/style without private content",
+        "private reader profile",
+        "immutable edition identity"
+      ],
+      "refs": [
+        "#15",
+        "#161"
+      ],
+      "links": [
+        "modules",
+        "prompt"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    },
+    {
+      "id": "safety",
+      "parent": "AGENT",
+      "label": "How are untrusted prompts and recipes contained",
+      "issue": 174,
+      "status": "open",
+      "question": "How are untrusted prompts and recipes contained?",
+      "options": [
+        "No executable code in untrusted recipes",
+        "sandbox reviewed plugins",
+        "strict permissions and receipts"
+      ],
+      "refs": [
+        "#15",
+        "#31",
+        "#174"
+      ],
+      "links": [
+        "print-proof",
+        "license"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    },
+    {
+      "id": "autonomy",
+      "parent": "AGENT",
+      "label": "Which actions require reader authorization",
+      "issue": 174,
+      "status": "contested",
+      "question": "Which actions require reader authorization?",
+      "options": [
+        "Inspect/preview by default",
+        "bounded standing morning grant",
+        "confirm first physical/email delivery"
+      ],
+      "refs": [
+        "#17",
+        "#174"
+      ],
+      "links": [
+        "agents",
+        "printer"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    },
+    {
+      "id": "fallback",
+      "parent": "AGENT",
+      "label": "How does publishing work without AI access",
+      "issue": 174,
+      "status": "open",
+      "question": "How does publishing work without AI access?",
+      "options": [
+        "Deterministic local preset",
+        "cached licensed approved content",
+        "no fabricated filler"
+      ],
+      "refs": [
+        "#6",
+        "#31",
+        "#174"
+      ],
+      "links": [
+        "recipe",
+        "deadline"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    },
+    {
+      "id": "printer",
+      "parent": "OUTPUT",
+      "label": "Can an ordinary dusty printer really deliver",
+      "issue": 47,
+      "status": "open",
+      "question": "Can an ordinary dusty printer really deliver?",
+      "options": [
+        "Windows queue bridge",
+        "CUPS on supported hosts",
+        "manual fallback when offline"
+      ],
+      "refs": [
+        "#13",
+        "#46",
+        "#47"
+      ],
+      "links": [
+        "print-proof",
+        "ink"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    },
+    {
+      "id": "print-proof",
+      "parent": "OUTPUT",
+      "label": "When is delivery actually proven",
+      "issue": 168,
+      "status": "open",
+      "question": "When is delivery actually proven?",
+      "options": [
+        "Validated software PDF",
+        "spool submission not physical proof",
+        "operator real-sheet acceptance"
+      ],
+      "refs": [
+        "#13",
+        "#46",
+        "#168"
+      ],
+      "links": [
+        "art-accept",
+        "proof"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    },
+    {
+      "id": "ink",
+      "parent": "OUTPUT",
+      "label": "How do paper stock and ink shape cost",
+      "issue": 36,
+      "status": "open",
+      "question": "How do paper stock and ink shape cost?",
+      "options": [
+        "Great monochrome baseline",
+        "optional color/halftone",
+        "premium papers with known cost"
+      ],
+      "refs": [
+        "#22",
+        "#24",
+        "#36"
+      ],
+      "links": [
+        "commerce",
+        "imposition"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    },
+    {
+      "id": "digital",
+      "parent": "OUTPUT",
+      "label": "What does responsible scrolling mean",
+      "issue": 33,
+      "status": "open",
+      "question": "What does responsible scrolling mean?",
+      "options": [
+        "Finite scroll with final page",
+        "static EPUB",
+        "optional audio—not engagement feed"
+      ],
+      "refs": [
+        "#6",
+        "#33"
+      ],
+      "links": [
+        "finish",
+        "archive"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    },
+    {
+      "id": "proof",
+      "parent": "OUTPUT",
+      "label": "Which experiences get tested",
+      "issue": 47,
+      "status": "open",
+      "question": "Which experiences get tested?",
+      "options": [
+        "Paper desirability and comprehension",
+        "layout/rights accessibility",
+        "5-morning reliable delivery"
+      ],
+      "refs": [
+        "#13",
+        "#168",
+        "#47"
+      ],
+      "links": [
+        "milestones"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    },
+    {
+      "id": "license",
+      "parent": "STUDIO",
+      "label": "Which licenses protect core and interoperability",
+      "issue": 175,
+      "status": "contested",
+      "question": "Which licenses protect core and interoperability?",
+      "options": [
+        "Keep MIT",
+        "MPL core + permissive clean SDK",
+        "evaluate AGPL/GPL"
+      ],
+      "refs": [
+        "#38",
+        "#175"
+      ],
+      "links": [
+        "styles-policy",
+        "interop"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    },
+    {
+      "id": "commerce",
+      "parent": "STUDIO",
+      "label": "What does selling THE paper mean",
+      "issue": 175,
+      "status": "open",
+      "question": "What does selling THE paper mean?",
+      "options": [
+        "Optional excellent paper products",
+        "optional original art packs",
+        "licensed paid fulfillment later"
+      ],
+      "refs": [
+        "#35",
+        "#36",
+        "#175"
+      ],
+      "links": [
+        "ink",
+        "license"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    },
+    {
+      "id": "contributors",
+      "parent": "STUDIO",
+      "label": "How do outside maintainers arrive",
+      "issue": 175,
+      "status": "open",
+      "question": "How do outside maintainers arrive?",
+      "options": [
+        "Approachable tasks + tests",
+        "portable recipe community",
+        "transparent governance and contribution policy"
+      ],
+      "refs": [
+        "#38",
+        "#43",
+        "#175"
+      ],
+      "links": [
+        "interop",
+        "milestones"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    },
+    {
+      "id": "film",
+      "parent": "STUDIO",
+      "label": "How do we tell the paper-company story",
+      "issue": 175,
+      "status": "open",
+      "question": "How do we tell the paper-company story?",
+      "options": [
+        "Original warm editorial film",
+        "playful absurd paper-commercial cut",
+        "no unlicensed The Office footage/marks"
+      ],
+      "refs": [
+        "#11",
+        "#10",
+        "#175"
+      ],
+      "links": [
+        "art-accept",
+        "commerce"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    },
+    {
+      "id": "growth",
+      "parent": "STUDIO",
+      "label": "What signals ecosystem adoption",
+      "issue": 175,
+      "status": "open",
+      "question": "What signals ecosystem adoption?",
+      "options": [
+        "First useful edition",
+        "repeat print completion",
+        "community reuse—not stars alone"
+      ],
+      "refs": [
+        "#23",
+        "#35",
+        "#175"
+      ],
+      "links": [
+        "contributors"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    },
+    {
+      "id": "ethics",
+      "parent": "STUDIO",
+      "label": "Can we fund without user lock-in",
+      "issue": 175,
+      "status": "open",
+      "question": "Can we fund without user lock-in?",
+      "options": [
+        "Free complete open core",
+        "optional original materials",
+        "no centrally monetized reader data"
+      ],
+      "refs": [
+        "#2",
+        "#36",
+        "#175"
+      ],
+      "links": [
+        "license",
+        "personal"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    },
+    {
+      "id": "review",
+      "parent": "GOV",
+      "label": "How do three AIs actually disagree",
+      "issue": 176,
+      "status": "open",
+      "question": "How do three AIs actually disagree?",
+      "options": [
+        "Independent first-round briefs",
+        "cross-critiques with evidence",
+        "founder verdict including dissent"
+      ],
+      "refs": [
+        "#157",
+        "#176"
+      ],
+      "links": [
+        "milestones",
+        "door"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    },
+    {
+      "id": "door",
+      "parent": "GOV",
+      "label": "Which decisions require an ADR",
+      "issue": 176,
+      "status": "open",
+      "question": "Which decisions require an ADR?",
+      "options": [
+        "Reversible prototypes fast",
+        "one-way contracts formal decision",
+        "preserve supersession history"
+      ],
+      "refs": [
+        "#44",
+        "#176"
+      ],
+      "links": [
+        "length",
+        "license"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    },
+    {
+      "id": "milestones",
+      "parent": "GOV",
+      "label": "What must be built and tested first",
+      "issue": 169,
+      "status": "contested",
+      "question": "What must be built and tested first?",
+      "options": [
+        "Value/beauty prototype before scaling",
+        "small semantic recipe spine",
+        "parallel reliability evidence"
+      ],
+      "refs": [
+        "#87",
+        "#162",
+        "#169"
+      ],
+      "links": [
+        "art-accept",
+        "proof"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    },
+    {
+      "id": "tracker",
+      "parent": "GOV",
+      "label": "How to connect all the ledgers",
+      "issue": 176,
+      "status": "open",
+      "question": "How to connect all the ledgers?",
+      "options": [
+        "One issue inventory #43",
+        "decision atlas with ADR/feature links",
+        "no fabricated completion percentages"
+      ],
+      "refs": [
+        "#43",
+        "#65",
+        "#176"
+      ],
+      "links": [
+        "review",
+        "milestones"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    },
+    {
+      "id": "cadence",
+      "parent": "GOV",
+      "label": "How does a solo founder avoid PM theater",
+      "issue": 176,
+      "status": "open",
+      "question": "How does a solo founder avoid PM theater?",
+      "options": [
+        "Weekly decision windows",
+        "independent async agent review",
+        "work-in-progress limits per shared subsystem"
+      ],
+      "refs": [
+        "#87",
+        "#176"
+      ],
+      "links": [
+        "review",
+        "tracker"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    },
+    {
+      "id": "gates",
+      "parent": "GOV",
+      "label": "How should we score delivery evidence",
+      "issue": 168,
+      "status": "open",
+      "question": "How should we score delivery evidence?",
+      "options": [
+        "Existing G1–G8 independently",
+        "new editorial rubric separately",
+        "never promote simulated CI to real-paper acceptance"
+      ],
+      "refs": [
+        "#13",
+        "#87",
+        "#168"
+      ],
+      "links": [
+        "proof",
+        "milestones"
+      ],
+      "proof": "Review alternatives in owning issue; demonstrate via frozen, rights-safe edition fixture plus negative tests. "
+    }
+  ],
+  "notes": [
+    "Parent nodes provide an editorial navigation tree; cross-links are a dependency graph, not a single either/or binary tree.",
+    "A proposed option is not a founder-approved implementation; ADR 0013 remains authoritative until amended.",
+    "No real Claude or DeepSeek review is claimed.",
+    "Story, media and private sources are not copied into this data."
+  ]
+}
