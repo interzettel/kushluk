@@ -1,4 +1,4 @@
-# Native unattended scheduling — reviewable Linux and macOS recipes
+# Native unattended scheduling — reviewable Linux, macOS and Windows/WSL2 recipes
 
 **Owner:** [#47](https://github.com/interzettel/kushluk/issues/47) · **Status:** reproducible templates and synthetic tests, **not a deployed service or accepted host**. No scheduler, print job, SMTP delivery or third-party orchestrator is enabled by Kushluk's template export.
 
@@ -54,6 +54,25 @@ launchctl print "gui/$(id -u)/org.interzettel.kushluk.morning"
 ```
 
 To disable: `launchctl bootout "gui/$(id -u)/org.interzettel.kushluk.morning"`. This is a **logged-in-user LaunchAgent**, **not a headless LaunchDaemon**; do not assume it survives logout, a sleeping Mac or a reboot without user login. If the PDF renderer requires an inherited environment/loaded Pango libraries, resolve those in the host session before enabling. No shell, secret, provider URL or printer flag is inserted into the generated plist.
+
+## Windows Task Scheduler → Ubuntu WSL2 (opt-in, review first)
+
+The **Windows/WSL2** adapter is not a supported native Windows PDF/print transport. It exports a single, inspectable PowerShell registration script that invokes the existing Linux CLI through `wsl.exe`. This follows a **one-morning operator-reported digital-only test** on 19 October 2026; sustained runtime, recovery and sleep/wake are not established.
+
+Generate from an installed Linux checkout in WSL2 (existing absolute Linux paths, matching installed distro name):
+
+```bash
+kushluk schedule-export --platform windows-wsl \
+  --executable /home/reader/kushluk/.venv/bin/kushluk \
+  --working-dir /home/reader/kushluk \
+  --output-dir /home/reader/kushluk/scheduler-review \
+  --wsl-distro Ubuntu-24.04 \
+  --start 07:30 --latest-start 07:45 --ready-by 08:00
+```
+
+The exported `kushluk-windows-wsl.ps1` is **inert until its owner deliberately runs it with `-Register` from Windows PowerShell**. Read the file before executing; merely exporting it does not register anything. Copy the reviewed file to a private Windows-accessible path before invoking it. With no switch, it displays the intended task name and `wsl.exe` argument string and performs **no registration**. After review, `-Register` creates one **daily** task named `Kushluk-WSL2-Morning` under the current Windows interactive user. It refuses to overwrite an existing task. To remove it deliberately: `Unregister-ScheduledTask -TaskName Kushluk-WSL2-Morning`.
+
+No `--print` or `--email` flags are exported, no system service or sleep/wake override is installed, and it is **not** a printer bridge. The start and cutoff are local wall-clock times; confirm Windows and WSL IANA timezone agreement and timezone/DST changes. Interactive-logon tasks require the account to be signed in and laptop awake. The task does **not** prove actual archive completion or media handling: inspect Windows task results and `kushluk run-report` after each real run. Actual power/reboot resilience, privacy, safe late-start handling and real hardware delivery remain acceptance work under #47/#13. An owner already conducting a trial with other tasks must **not register a competing daily task** until those trials are finished and reviewed.
 
 ## Timing and evidence reports (read-only)
 
