@@ -75,6 +75,8 @@ def verify() -> tuple[int, int]:
     assert "Skip to selected decision details" in html
     assert "function renderSearch()" in html
     assert "No matching decisions." in html
+    assert "matches.forEach(n=>" in html
+    assert "Back to decision list" in html
     assert "mobileBranch.addEventListener('change'" in html
     assert "window.addEventListener('hashchange'" in html
     assert ".sidebar .navlist{display:none}" in html
