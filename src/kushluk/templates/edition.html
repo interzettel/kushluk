@@ -89,7 +89,13 @@
         margin: 0 auto 12px; background: var(--paper); box-shadow: 0 2px 18px #0002;
         break-after: auto; page-break-after: auto; }
     }
-    @media print { body { print-color-adjust: exact; -webkit-print-color-adjust: exact; } }
+    /* Printing on white stock should not spend ink on a simulated beige paper tint.
+       Screen previews remain warm; the original typography/grid is unchanged. */
+    @media print {
+      body { background: #fff; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .sheet { background: #fff; }
+      .sun { background: var(--ink); }
+    }
   </style>
 </head>
 <body>
