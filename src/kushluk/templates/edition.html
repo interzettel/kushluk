@@ -22,6 +22,7 @@
       overflow-wrap: break-word;
     }
     .sheet {
+      position: relative;
       display: flex;
       flex-direction: column;
       min-height: 270mm;
@@ -81,7 +82,10 @@
     .notes { padding: 4mm 0; margin-top: 5mm; border-top: .2mm solid var(--rule); }
     .notes li { margin: 1mm 0; }
     footer {
-      margin-top: auto;
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
       border-top: .2mm solid var(--rule);
       padding-top: 2mm;
       display: flex; justify-content: space-between;
@@ -94,6 +98,7 @@
       .sheet { width: 210mm; min-height: 297mm; padding: 11mm 12mm 12mm;
         margin: 0 auto 12px; background: var(--paper); box-shadow: 0 2px 18px #0002;
         break-after: auto; page-break-after: auto; }
+      footer { left: 12mm; right: 12mm; bottom: 12mm; }
     }
     /* Warm stock is a material choice; do not flood home printers with beige ink. */
     @media print {
