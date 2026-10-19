@@ -26,6 +26,62 @@
 
 **First actual release:** `v0.2.0-alpha.1` when M1 checks are met. **First stable release:** `v1.0.0` only after M2b physical/personal-rights/first-reader proofs. No invented deadline. `1.0.1` would be the first patch *after* `1.0.0`, not a feature bucket. The M1/M2 version mapping is a release-planning proposal pending founder review, **not an accepted ADR or released tag**.
 
+## Proposed milestone rebaseline — design quality before first invited beta (DECISION OPEN)
+
+**Proposal recorded 19 October 2026; NOT accepted policy, NOT a GitHub milestone reassignment or release authorization.** Multi-review discussion [R5 #162](https://github.com/interzettel/kushluk/issues/162) under [design council #157](https://github.com/interzettel/kushluk/issues/157) and original owner [#87](https://github.com/interzettel/kushluk/issues/87). Explicit founder clarification: the physical publication should be beautiful, with user-selectable styles and information modules. A valid PDF or a synthetic layout fixture is insufficient product-quality evidence. [Draft PR #153](https://github.com/interzettel/kushluk/pull/153) is rejected for visual direction, even though its mechanical tests passed.
+
+### Three options under independent review
+
+| Option | Rebaseline effect | Benefits | Risks / current disposition |
+| --- | --- | --- | --- |
+| **A · Bounded M2a-Design slice (review recommendation)** | Add a **pre-beta visual-readiness checkpoint** alongside current M2a printer/host/first-reader/source-rights criteria; keep full F-015/M3, F-024/M5, F-027/M6 targets intact. | Makes design quality a genuine release decision without pretending a full modular canvas ships at beta; permits concurrent reliability work. | Requires original/licensed fixture, real style proof, operator/human signoff and explicit definition of minimum visible choice. **Not accepted yet.** |
+| **B · Move full Studio into M2a** | Deliver complete portable recipes, all theme modes and interactive tiles before private beta. | Complete vision earliest. | Large cross-surface, data/privacy, accessibility and renderer risk; could indefinitely delay field reliability. **No authorization.** |
+| **C · Current milestone plan unchanged** | Keep F-024 in M5 and F-027 in M6; treat visual studies as optional. | Lowest short-term engineering disruption. | Fails founder's stated quality expectation if beta still produces an undesirable newspaper. **Not founder-approved.** |
+
+### Proposed M2a-Design checkpoint — explicit acceptance candidates
+
+A **proposed**, *not-yet-authorized* addition to M2a, without altering the already listed M2a core delivery criteria:
+
+1. **One real editorial-value fixture** ([A01 #163](https://github.com/interzettel/kushluk/issues/163)): substantial text and distinct reading lengths, public/original or properly permissioned asset usage, credits, actual source references or expressly synthetic test data, and private-context placeholders that disclose no real person. No fabricated journalism.
+2. **Real visual alternatives** ([A02 #164](https://github.com/interzettel/kushluk/issues/164)): compare at least **three concept** compositions of the *exact same* content and images; the founder/independent reviewers choose **at least two materially differentiated production candidates** if the founder confirms that minimum. Include excellent monochrome/low-ink fallback. These are proposed counts for debate, not accepted quotas.
+3. **Minimum user-visible preference** ([R1 #158](https://github.com/interzettel/kushluk/issues/158), [R2 #159](https://github.com/interzettel/kushluk/issues/159), [R4 #161](https://github.com/interzettel/kushluk/issues/161), [A03 #165](https://github.com/interzettel/kushluk/issues/165)): a reversible, locally stored style selection or equivalent demonstrable reader configuration, no need for daily manual layout. Full drag-and-drop modular tile editor and unrestricted third-party recipe marketplace are NOT M2a prerequisites under option A.
+4. **Image and print proof** ([A04 #166](https://github.com/interzettel/kushluk/issues/166), [A06 #168](https://github.com/interzettel/kushluk/issues/168)): correctly licensed/original images in meaningful roles, readable captions and provenance, exact four-A4-page software QA, physical 100% A4 sample comparison, and an **explicit founder art-direction acceptance** distinct from minimum-font/clipping CI. An independent novice physical-read trial and G1–G8 still have their existing verification standards.
+5. **Maintained reliability and privacy:** already requested host/print trials, graceful content/fx fallback, deterministic manifests, the accepted four logical A4 default under ADR 0013, source-specific permissions and EN/DE/TR readability remain binding.
+
+**Not acceptance:** opening six issues, producing a mood board, rendering synthetic empty pages, passing only page-count CI, writing draft schema code, or having AI reviewers agree without attributable comments.
+
+### Preserve stable feature IDs and releases
+
+| Feature ID | Optional **earlier slice** proposed for M2a-design | Full original delivery target unchanged pending decision |
+| --- | --- | --- |
+| F-015 · Portable recipe manifest | Validate an internal **non-shareable** typed profile/identity seed with private/public boundary tests (A03/R4); no export marketplace. | **M3 / v1.1.0** full portable import/export, if still accepted |
+| F-022 · Image rights/crops | Use original/permissioned multi-role assets in frozen proofs, not all providers or automated image acquisitions (A01/A04). | **M5 / v1.3.0** complete validated rights and image asset QA |
+| F-023 · Visual-fit QA | Physical typography/photo/layout comparisons and a design-acceptance rubric (A06). | **M5 / v1.3.0** full automated fitting/visual regression |
+| F-024 · Layout archetypes/themes | Author-accepted minimum visual set + opt-in style selection concept from verified fixtures (A02/A03; interface capability decision R1/R4). | **M5 / v1.3.0** general reusable theme/layout library |
+| F-027 · Fluid web reading | Optional isolated UX proof with same semantic IDs (A05), **not** a production animated editor. | **M6 / v1.4.0** full accessible web/tile/spread experiences |
+| F-021 · Preferences | Validate precedence and persistence semantics in R1 as a proposal; not a claim that full taste learning shipped. | **M4 / v1.2.0** complete local preference/feedback policy |
+
+This is a **cross-milestone dependency proposal**, not a silent retarget of all feature rows or 32-F-ID redesign. The M0/M1/M2b/M3/M4/M5/M6 printed table above remains the current planning baseline until an explicit founder decision and a separately reviewed promotion PR.
+
+### Dependency and agent execution order
+
+```text
+R1 policy / R2 art direction / R3 content+rights / R4 recipe contract
+     ↓             ↓                 ↓                 ↓
+A01 substantive rights-safe corpus ──→ A02 style design proofs
+     │                   └───────────→ A06 paper/beauty QA rubric
+     └──→ A03 profile/media proposal ──→ A04 image rendering (after R2/R3/R4)
+R1 + R4 decision ──→ A05 local controls demo (after agreement)
+A01 + A02 + A06 + decision on visible choice ──→ R5 founder M2a-design decision
+M2a-design (if approved) + original M2a hardware/reader/rights evidence → proposed beta review
+```
+
+**Continuous execution:** A01/A02/A06 can run in independent branches while the founder's five-morning WSL2 **digital-only** trial continues against an unchanged checkout. A03 spec-only work is safe; A04/A05 production implementation stays BLOCKED until decisions. No real printer submission or private sources are needed for proofs.
+
+### Governance and updates after decision
+
+R1–R5 collect **independent, attributable** ChatGPT/Claude/other reviews; no hypothetical agreement is recorded. The founder/authorized maintainer then decides between options and the precise visual acceptance threshold. Only **after** that decision, reconcile `FEATURE_CATALOG.md`, `ROADMAP.md`, any necessary accepted ADRs, #87 and #43. Gate G1–G8 verification, package version, tags, GitHub milestone assignments and all `WORK_LEDGER.md` checkboxes remain unchanged during this proposed rebaseline.
+
 ## What is an epic or milestone in this system?
 
 We practice **continuous flow with evidence gates**, *not fixed-time Scrum*. Using the word **epic** is fine: it is a useful umbrella around several features, not a Scrum ceremony. A **feature** is an expected user-visible capability; **milestone** is a verified combination that matters to a user; **work package** is a GitHub issue; **task** is a stable work-ledger ID or bounded PR; **proof** is a test, artifact, hardware trial or recorded review. GitHub Project statuses stay Backlog, Ready, In progress, In review and Done. Work is pulled by priority/dependencies, not pre-allocated into sprints; review can be async; WIP ideally one principal engineering slice at a time. We do not score velocity, story points or fictional capacity. The coordinator must not equate a merged PR or planning document with a released feature. No second parallel kanban/project board is created.
